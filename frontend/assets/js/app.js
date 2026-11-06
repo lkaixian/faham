@@ -32,7 +32,8 @@
   };
   const CONSENT_V = 1;
   const consented = () => (store.get("consent", null) || {}).v === CONSENT_V;
-  const syncRun = () => { $("#runBtn").disabled = state.running || !consented(); };
+  // consent is needed only for the user's own letter; the bundled sample letters are fictional
+  const syncRun = () => { $("#runBtn").disabled = state.running; };
   const save = () => {
     store.set("lang", state.lang); store.set("learned", [...state.learned]);
     store.set("cleared", [...state.cleared]); store.set("xp", state.xp); store.set("todo", state.todo);
@@ -301,9 +302,9 @@
 
   async function runAgent() {
     if (state.running) return;
-    if (!consented()) { go("agent"); toast("Tick “Saya faham / I understand” first."); $("#consentBox").focus(); return; }
-    state.running = true; state.ran = false;
     const inp = ownInput();
+    if (inp && !consented()) { go("agent"); toast("Tick “Saya faham / I understand” to use your own letter."); $("#consentBox").focus(); return; }
+    state.running = true; state.ran = false;
     $("#results").classList.add("empty");
     resetPipeline();
     const con = $("#console"); con.innerHTML = "";
