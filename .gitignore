@@ -10,3 +10,5 @@ Thumbs.db
 .idea/
 node_modules/
 .codegraph/
+.env.*
+!.env.example
