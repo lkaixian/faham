@@ -19,6 +19,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>
         <span id="themeLbl"></span>
       </button>
+      <button class="btn btn-quiet" id="voiceBtn" type="button" aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+        <span id="voiceLbl"></span>
+      </button>
       <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
       <span class="mode" id="mode" role="status"></span>
     </div>
@@ -51,11 +55,13 @@
           <label for="pasteBox" data-i18n="f_paste"></label>
           <textarea id="pasteBox" rows="7" maxlength="20000" aria-describedby="vhint cnt" data-i18n-ph="f_ph"></textarea>
           <div class="meta"><span class="vh" id="vhint" role="status"></span><span class="cnt" id="cnt"></span></div>
-          <p class="muted" data-i18n="f_priv"></p>
+          <p class="muted priv"><span data-i18n="f_priv"></span> <a href="#about" data-i18n="f_priv_a"></a></p>
 
           <label for="fileBox" data-i18n="f_file"></label>
           <input type="file" id="fileBox" accept="image/png,image/jpeg" />
 
+          <details class="ex" id="exBox">
+          <summary data-i18n="ex_sum"></summary>
           <div class="row2">
             <div>
               <span class="label" id="langLbl" data-i18n="f_explain"></span>
@@ -67,6 +73,10 @@
               <input type="text" id="postBox" inputmode="numeric" pattern="[0-9]{1,5}" maxlength="5" autocomplete="postal-code" />
             </div>
           </div>
+          <span class="label" data-i18n="ex_h"></span>
+          <p class="muted" data-i18n="ex_note"></p>
+          <div class="examples" id="examples"></div>
+          </details>
 
           <div class="consent" id="consentBlock" hidden>
             <label class="tick"><input type="checkbox" id="consentBox" /><span data-i18n="consent_t"></span></label>
@@ -90,11 +100,6 @@
           <div class="skel" aria-hidden="true"></div><div class="skel s2" aria-hidden="true"></div><div class="skel s3" aria-hidden="true"></div>
         </div>
 
-        <details class="ex" id="exBox">
-          <summary data-i18n="ex_sum"></summary>
-          <p class="muted" data-i18n="ex_note"></p>
-          <div class="examples" id="examples"></div>
-        </details>
       </div>
 
       <!-- result -->
@@ -190,8 +195,10 @@
         <li data-i18n="a_dt1"></li>
         <li data-i18n="a_dt2"></li>
         <li data-i18n="a_dt3"></li>
+        <li data-i18n="a_dt4"></li>
       </ul>
       <button class="btn btn-secondary" id="clearData" type="button" data-i18n="a_clear"></button>
+      <button class="btn btn-quiet" id="obAgain" type="button" data-i18n="ob_again"></button>
       <p class="muted" id="clearMsg" role="status"></p>
 
       <h2 data-i18n="a_guid_h"></h2>
@@ -207,6 +214,7 @@
     <p><span data-i18n="foot_scam"></span> <a href="tel:997">NSRC 997</a>.</p>
     <p data-i18n="foot_disc"></p>
   </footer>
+  <div class="ob" id="ob" role="dialog" aria-modal="true" aria-labelledby="obH" hidden></div>
   <div id="toast" role="status" aria-live="polite"></div>
 
   <script src="assets/js/config.js"></script>

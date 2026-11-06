@@ -22,6 +22,7 @@
     theme: store.get("theme", "light"),
     learned: new Set(store.get("learned", [])),
     xp: store.get("xp", 0),
+    voice: store.get("voice", true), all: store.get("all", false), step: 0,   // voice: auto-read on by default; all: whole result on one page
     api: false, mode: "wait", busy: false, tts: { available: false, langs: [] },
     result: null, last: null, route: "online", retry: null,
     practice: { items: D.practice, order: [], i: 0, score: 0, answered: false, results: [] }
@@ -58,7 +59,12 @@
     risk: '<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4m0 3h.01"/>',
     ok: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
     info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/>',
-    speaker: '<path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>'
+    speaker: '<path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>',
+    doc: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',
+    device: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+    eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    scale: '<path d="M12 3v18M6 21h12M5 7h14"/><path d="m5 7-3 7a3.5 3.5 0 0 0 6 0L5 7zm14 0-3 7a3.5 3.5 0 0 0 6 0l-3-7z"/>'
   };
   const svg = (n) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
 
@@ -80,7 +86,7 @@
   const ttsOk = (l) => state.api && state.tts.available && state.tts.langs.includes(l);
   function setSpeakBtn(btn, mode) {
     if (!btn) return;
-    btn.querySelector("span").textContent = t(mode === "loading" ? "loading" : mode === "playing" ? "stop" : "listen");
+    btn.querySelector("span").textContent = t(mode === "loading" ? "loading" : mode === "playing" ? "stop" : btn.dataset.idle || "listen");
     btn.setAttribute("aria-busy", mode === "loading");
   }
   function stopSpeak() {
@@ -93,13 +99,16 @@
     }
     $$(".speak").forEach((b) => setSpeakBtn(b, "idle"));
   }
+  // browsers refuse audio without a recent tap: show a big button instead of failing silently
+  function blocked() { stopSpeak(); const b = $("#tapListen"); if (b) b.hidden = false; }
   function browserSpeak(text, lang, me) {
     if (!("speechSynthesis" in window)) { toast(t("no_speech")); stopSpeak(); return; }
     const u = new SpeechSynthesisUtterance(text);
     u.lang = D.languages[lang].speech; u.rate = 0.9;
     const v = speechSynthesis.getVoices().find((x) => x.lang && x.lang.toLowerCase().startsWith(u.lang.slice(0, 2).toLowerCase()));
     if (v) u.voice = v; else toast(t("no_voice", { n: langName(lang) }));
-    u.onend = u.onerror = () => { if (cur === me) stopSpeak(); };
+    u.onend = () => { if (cur === me) stopSpeak(); };
+    u.onerror = (ev) => { if (cur === me) (ev.error === "not-allowed" ? blocked() : stopSpeak()); };
     me.note.textContent = t("vnote");
     setSpeakBtn(me.btn, "playing");
     speechSynthesis.speak(u);
@@ -120,7 +129,7 @@
           if (!res.ok) throw new Error(res.status);
           blob = await res.blob();
           if (!blob.size) throw new Error("empty");
-          if (ttsCache.size >= 4) ttsCache.delete(ttsCache.keys().next().value);
+          if (ttsCache.size >= 8) ttsCache.delete(ttsCache.keys().next().value);
           ttsCache.set(key, blob);
         }
         if (cur !== me) return;                        // stopped while loading
@@ -131,6 +140,7 @@
         return;
       } catch (e) {
         if (cur !== me) return;
+        if (e.name === "NotAllowedError") { blocked(); return; }
         if (me.url) { URL.revokeObjectURL(me.url); me.url = null; }
         me.audio = null; me.ctrl = null;
       }
@@ -330,25 +340,25 @@
   });
 
   /* language chips: header = whole UI, form = explanation language */
-  function renderChips() {
-    const mk = (attr) => Object.entries(D.languages).map(([k, v]) => `<button type="button" class="chip" ${attr}="${esc(k)}" lang="${HTML_LANG[k]}" aria-pressed="false">${esc(v.label)}</button>`).join("");
-    $("#uiChips").innerHTML = mk("data-u"); $("#langChips").innerHTML = mk("data-x");
-  }
+  const chipBtns = (attr) => Object.entries(D.languages).map(([k, v]) => `<button type="button" class="chip" ${attr}="${esc(k)}" lang="${HTML_LANG[k]}" aria-pressed="false">${esc(v.label)}</button>`).join("");
+  function renderChips() { $("#uiChips").innerHTML = chipBtns("data-u"); $("#langChips").innerHTML = chipBtns("data-x"); }
   function syncChips() {
     $$("[data-u]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.u === state.lang));
     $$("[data-x]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.x === state.xl));
   }
-  $("#uiChips").addEventListener("click", (e) => {
+  document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-u]"); if (!b || b.dataset.u === state.lang) return;
     state.lang = b.dataset.u; state.xl = state.lang; state.xlManual = false; $("#detectNote").textContent = "";
     save(); refreshLang();
+    if (!$("#ob").hidden) $(`#ob [data-u="${state.lang}"]`).focus();
   });
   $("#langChips").addEventListener("click", (e) => {
     const b = e.target.closest("[data-x]"); if (!b) return;
     state.xl = b.dataset.x; state.xlManual = true; $("#detectNote").textContent = ""; syncChips();
   });
   function refreshLang() {
-    stopSpeak(); $("#fLang").value = state.lang; applyI18n(); syncChips(); renderMode(); renderExamples(); setTheme(); updateCount(true); renderLevel();
+    stopSpeak(); $("#fLang").value = state.lang; applyI18n(); syncChips(); renderMode(); renderExamples(); setTheme(); setVoice();
+    if (!$("#ob").hidden) renderOb(); updateCount(true); renderLevel();
     if (state.result && !$("#result").hidden) renderResult(state.result, true);
     if (!state.practice.answered) renderPractice();
     route(true);
@@ -358,24 +368,40 @@
   }
   $("#examples").addEventListener("click", (e) => { const b = e.target.closest("[data-id]"); if (b && !state.busy) checkSample(b.dataset.id); });
 
-  /* ---------- result screen ---------- */
+  /* ---------- result screen: one idea per step, or everything on one page ---------- */
+  const cut = (s, n = 400) => { s = String(s).trim(); const a = s.slice(0, n), i = Math.max(a.lastIndexOf(". "), a.lastIndexOf("。")); return s.length <= n ? s : i > 80 ? a.slice(0, i + 1) : a; };
+  const rl = (r) => (r.sample ? state.lang : r.lang);                       // language of the text that came with the result
+  const sentences = (ps) => ps.join(" ").split(/(?<=[.!?。！？])\s*/).filter(Boolean);
+  const more = (html, k) => `<details class="more"><summary>${esc(t(k || "show_all"))}</summary>${html}</details>`;
+  let pages = [];                                                           // built by renderResult: { id, h, html, say() -> [text, lang] }
+  const curPage = (manual) => (state.all ? (manual && pages.find((p) => p.id === "says")) || pages[0] : pages[Math.min(state.step, pages.length - 1)]);
+  function speakStep(manual) {
+    const p = curPage(manual), x = p && p.say(); if (!x || !x[0]) return;
+    readAloud(cut(x[0]), x[1], $("[data-act=speak]", $("#result")), $("#vnote"));
+  }
+  function autoSay() {                                                      // called from a tap on Check, Next or Back, never on page load
+    stopSpeak(); $("#tapListen").hidden = true;
+    if (state.voice) speakStep(false);
+  }
   function show(r) {
-    state.result = r; state.route = "online";
+    state.result = r; state.route = "online"; state.step = 0;
     renderResult(r);
     $("#checker").hidden = true; $("#result").hidden = false;
     store.set("checked", true); $("#hint").hidden = true;
-    window.scrollTo(0, 0);
+    $("#result").scrollIntoView();
     const h = $("#vHead"); if (h) h.focus({ preventScroll: true });
+    autoSay();
   }
   function backToChecker() {
-    stopSpeak();
+    stopSpeak(); state.step = 0;
     $("#result").hidden = true; $("#checker").hidden = false;
     window.scrollTo(0, 0); $("#checker h1").focus();
   }
   function routeHtml(r) {
-    const o = r.route[state.route === "online" ? "online" : "walkin"];
+    const o = r.route[state.route === "online" ? "online" : "walkin"], st = (o.steps || []).map(clean);
     const src = /^https:\/\//.test(r.route.url || "") ? `<a href="${esc(r.route.url)}" target="_blank" rel="noopener noreferrer">${esc(r.route.label)}</a>` : esc(r.route.label);
-    return `<ol class="steps">${(o.steps || []).map((s) => `<li>${esc(clean(s))}</li>`).join("")}</ol>
+    const ol = (a, n) => `<ol class="steps" start="${n}" lang="en">${a.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>`;
+    return `${ol(st.slice(0, 4), 1)}${st.length > 4 ? more(ol(st.slice(4), 5), "show_more") : ""}
       ${(o.prepare || []).length ? `<p class="muted">${esc(t("ready"))}</p><div class="facts">${o.prepare.map((p) => `<span class="fact">${esc(p)}</span>`).join("")}</div>` : ""}
       <p class="src">${t("src", { s: src, d: esc(tr(r.route.date)), c: esc(tr(r.route.confidence)) })}</p>`;
   }
@@ -391,55 +417,109 @@
     return ["FAHAM", t("v_" + v), t("vs_" + v), "", line("f_from", f.issuer), line("f_amount", f.amount), line("f_deadline", f.deadline), line("f_ref", f.reference), "",
       t("h_verify") + ":", ...verifyOf(r).map((x, i) => `${i + 1}. ${clean(x)}`), "", ...paras(r).map(clean), "", t("disc")].filter((x, i, a) => x !== "" || a[i - 1] !== "").join("\n");
   }
+
+  /* bodies shared by the step view and the one-page view */
+  const reasonText = (x) => (x.text === null ? t("info_default") : tr(clean(x.text)));
+  const reasonLi = (x) => `<li class="r-${x.k}">${svg(x.k)}<div><span class="rk">${esc(t("rk_" + x.k))}</span>${esc(reasonText(x))}</div></li>`;
+  const whyHtml = (r, n = 99) => {
+    const ul = (a) => `<ul class="reasons" lang="${HTML_LANG[rl(r)]}">${a.map(reasonLi).join("")}</ul>`;
+    return ul(r.reasons.slice(0, n)) + (r.reasons.length > n ? more(ul(r.reasons.slice(n))) : "");
+  };
+  const stepsOl = (r, a, n) => `<ol class="steps" start="${n}" lang="${HTML_LANG[rl(r)]}">${a.map((x) => `<li>${esc(clean(x))}</li>`).join("")}</ol>`;
+  const verifyHtml = (r) => stepsOl(r, verifyOf(r), 1);
+  function nowHtml(r) {
+    const s = verifyOf(r), lg = `lang="${HTML_LANG[rl(r)]}"`;
+    return `<p class="next-step" ${lg}>${esc(clean(s[0]))}</p>${s[1] ? `<p class="muted">${esc(t("more_chk"))}</p><p ${lg}>${esc(clean(s[1]))}</p>` : ""}${s.length > 2 ? more(stepsOl(r, s.slice(2), 3)) : ""}`;
+  }
+  function saysHtml(r, short) {
+    const f = r.fields, ps = paras(r).map(clean), sn = sentences(ps), lg = `lang="${HTML_LANG[paraLang(r)]}"`;
+    const chip = (k, val) => `<span class="fact"><span>${esc(t(k))}</span><b>${esc(val ? tr(val) : t("not_found"))}</b></span>`;
+    const facts = (a) => `<div class="facts">${a.map(([k, v]) => chip(k, v)).join("")}</div>`;
+    const A = [["f_amount", f.amount], ["f_deadline", f.deadline]], B = [["f_from", f.issuer], ["f_ref", f.reference]];
+    const reexplain = !r.sample && r.lang !== state.xl && state.last;
+    const re = reexplain ? `<p class="muted">${esc(t("x_note", { a: langName(r.lang) }))}</p><button class="btn btn-secondary" type="button" data-act="reexplain"><span>${esc(t("x_btn", { b: langName(state.xl) }))}</span></button>` : "";
+    return (short ? `${facts(A)}<p ${lg}>${esc(sn.slice(0, 3).join(" "))}</p>${more((sn.length > 3 ? `<p ${lg}>${esc(sn.slice(3).join(" "))}</p>` : "") + facts(B))}`
+      : `<div ${lg}>${ps.map((p) => `<p>${esc(p)}</p>`).join("")}</div>${facts([...B.slice(0, 1), ...A, ...B.slice(1)])}`) + re;
+  }
+  const todoHtml = (r) => `<div class="seg" role="group" aria-label="${esc(t("h_todo"))}">
+      <button type="button" class="chip" data-route="online" aria-pressed="${state.route === "online"}">${esc(t("online"))}</button>
+      <button type="button" class="chip" data-route="walkin" aria-pressed="${state.route !== "online"}">${esc(t("office"))}</button>
+    </div><div id="routePanel">${routeHtml(r)}</div>`;
+  const draftHtml = (r) => `<p><b>${esc(t("rem_label"))}</b> ${esc(reminderText(r))}</p>
+    <p class="muted">${esc(t("draft_hint"))}</p>
+    <pre class="draft" lang="ms">${esc(r.draft)}</pre>
+    <button class="btn btn-primary" type="button" data-act="copy"><span>${esc(t("copy"))}</span></button>
+    <p class="note"><b>${esc(t("draft_note_b"))}</b> ${esc(t("draft_note"))}</p>`;
+  function learnHtml(r) {
+    const learnable = r.terms.filter((x) => D.glossary[x]), allIn = learnable.length && learnable.every((x) => state.learned.has(x));
+    return `<h3 class="h3">${esc(tr(r.kenapa.q))}</h3><p>${esc(clean(r.kenapa.a))}</p>
+      ${learnable.length ? `<p class="muted">${esc(t("words_in"))} ${learnable.map(esc).join(", ")}</p>
+      <button class="btn btn-secondary" type="button" data-act="add" ${allIn ? "disabled" : ""}><span>${esc(allIn ? t("added") : t("add"))}</span></button>` : ""}`;
+  }
+
+  /* the steps; a step with nothing to show is left out. say() gives the short text to read aloud and its language */
+  function buildPages(r) {
+    const v = r.verdict, f = r.fields, vs = verifyOf(r).map(clean), ps = paras(r).map(clean);
+    const route = () => ((r.route[state.route === "online" ? "online" : "walkin"].steps) || []).map(clean);
+    const out = [
+      { id: "verdict", say: () => [`${t("v_" + v)} ${t("vs_" + v)}`, state.lang] },
+      { id: "now", h: "next_h", html: nowHtml(r), say: () => [vs.slice(0, 2).join(" "), rl(r)] },
+      { id: "why", h: "h_why", html: whyHtml(r, 3), say: () => [r.reasons.slice(0, 3).map(reasonText).join(" "), rl(r)] }
+    ];
+    if (ps.length || f.amount || f.deadline) out.push({ id: "says", h: "h_says", html: saysHtml(r, true), say: () => [sentences(ps).slice(0, 3).join(" "), paraLang(r)] });
+    if (["online", "walkin"].some((k) => (r.route[k].steps || []).length)) out.push({ id: "todo", h: "h_todo", html: todoHtml(r), say: () => [route().slice(0, 4).join(" "), "en"] });
+    out.push({ id: "draft", h: "h_draft", html: draftHtml(r), say: () => [`${t("rem_label")} ${reminderText(r)}`, state.lang] });
+    out.push({ id: "learn", h: "h_learn", html: learnHtml(r), say: () => [clean(r.kenapa.a), "en"] });
+    return out;
+  }
   function renderResult(r, keep) {
     const open = {};
     if (keep) $$("#result details[data-g]").forEach((d) => { open[d.dataset.g] = d.open; });
     const wide = matchMedia("(min-width: 700px)").matches;
     const grp = (id, title, body, dflt) => `<details class="grp" data-g="${id}"${(id in open ? open[id] : dflt || wide) ? " open" : ""}><summary><h2>${esc(title)}</h2></summary><div class="gbody">${body}</div></details>`;
-    const v = r.verdict, f = r.fields, ps = paras(r), lg = paraLang(r), steps = verifyOf(r);
-    const chip = (k, val) => `<span class="fact"><span>${esc(t(k))}</span><b>${esc(val ? tr(val) : t("not_found"))}</b></span>`;
-    const learnable = r.terms.filter((x) => D.glossary[x]);
-    const allIn = learnable.length && learnable.every((x) => state.learned.has(x));
-    const reexplain = !r.sample && r.lang !== state.xl && state.last;
-    $("#result").innerHTML = `
+    const v = r.verdict;
+    const verdict = `<div class="verdict v-${v}${keep ? "" : " fresh"}">${svg(v)}<div><h1 id="vHead" tabindex="-1">${esc(t("v_" + v))}</h1><p>${esc(t("vs_" + v))}</p></div></div>`;
+    const tail = `<details class="trace"><summary>${esc(t("tr_sum"))}</summary>
+        <p class="muted">${esc(t("tr_note"))}</p>
+        <ol class="trace-list" lang="en">${(r.trace || []).map((x) => `<li class="${x.flag ? "flag" : ""}"><span class="tag">${esc(STATUS[x.k] ? t(STATUS[x.k]) : t("st_step"))}${x.t ? " " + esc(x.t) : ""}</span>${esc(clean(x.m))}</li>`).join("") || `<li>${esc(t("tr_none"))}</li>`}</ol>
+      </details>`;
+    pages = buildPages(r);
+    const head = `
       <div class="rbar">
         <button class="btn btn-secondary" type="button" data-act="again">&larr; <span>${esc(t("r_again"))}</span></button>
         <button class="btn btn-secondary speak" type="button" data-act="speak">${svg("speaker")}<span>${esc(t("listen"))}</span></button>
       </div>
-      <div class="verdict v-${v}${keep ? "" : " fresh"}">${svg(v)}<div><h1 id="vHead" tabindex="-1">${esc(t("v_" + v))}</h1><p>${esc(t("vs_" + v))}</p></div></div>
       <p class="muted vnote" id="vnote" role="status"></p>
-      ${r.sample ? `<p class="note">${esc(t("sample_note"))}${state.lang !== "en" ? " " + esc(t("sample_lang")) : ""}</p>` : ""}
-
+      <button class="btn btn-primary btn-big tap" type="button" id="tapListen" data-act="speak" hidden>${svg("speaker")}<span>${esc(t("tap"))}</span></button>
+      ${r.sample ? `<p class="note">${esc(t("sample_note"))}${state.lang !== "en" ? " " + esc(t("sample_lang")) : ""}</p>` : ""}`;
+    const allBtn = `<button class="btn btn-quiet alink" type="button" data-act="all">${esc(t(state.all ? "all_off" : "all_on"))}</button>`;
+    let body;
+    if (state.all) {
+      body = `${allBtn}${verdict}
       <section class="card next" aria-labelledby="nextH">
         <h2 class="h3" id="nextH">${esc(t("next_h"))}</h2>
-        <p class="next-step">${esc(clean(steps[0]))}</p>
+        <p class="next-step">${esc(clean(verifyOf(r)[0]))}</p>
         <button class="btn btn-secondary" type="button" data-act="sum"><span>${esc(t("r_copy_sum"))}</span></button>
       </section>
-
-      ${grp("why", t("h_why"), `<ul class="reasons" lang="${HTML_LANG[r.sample ? state.lang : r.lang]}">${r.reasons.map((x) => `<li class="r-${x.k}">${svg(x.k)}<div><span class="rk">${esc(t("rk_" + x.k))}</span>${esc(x.text === null ? t("info_default") : tr(clean(x.text)))}</div></li>`).join("")}</ul>`, true)}
-      ${grp("verify", t("h_verify"), `<ol class="steps" lang="${HTML_LANG[r.sample ? state.lang : r.lang]}">${steps.map((x) => `<li>${esc(clean(x))}</li>`).join("")}</ol>`, true)}
-      ${grp("says", t("h_says"), `<div lang="${HTML_LANG[lg]}">${ps.map((p) => `<p>${esc(clean(p))}</p>`).join("")}</div>
-        ${reexplain ? `<p class="muted">${esc(t("x_note", { a: langName(r.lang) }))}</p><button class="btn btn-secondary" type="button" data-act="reexplain"><span>${esc(t("x_btn", { b: langName(state.xl) }))}</span></button>` : ""}
-        <div class="facts">${chip("f_from", f.issuer)}${chip("f_amount", f.amount)}${chip("f_deadline", f.deadline)}${chip("f_ref", f.reference)}</div>`)}
-      ${grp("todo", t("h_todo"), `<div class="seg" role="group" aria-label="${esc(t("h_todo"))}">
-          <button type="button" class="chip" data-route="online" aria-pressed="${state.route === "online"}">${esc(t("online"))}</button>
-          <button type="button" class="chip" data-route="walkin" aria-pressed="${state.route !== "online"}">${esc(t("office"))}</button>
-        </div><div id="routePanel">${routeHtml(r)}</div>`)}
-      ${grp("draft", t("h_draft"), `<p><b>${esc(t("rem_label"))}</b> ${esc(reminderText(r))}</p>
-        <p class="muted">${esc(t("draft_hint"))}</p>
-        <pre class="draft" lang="ms">${esc(r.draft)}</pre>
-        <button class="btn btn-primary" type="button" data-act="copy"><span>${esc(t("copy"))}</span></button>
-        <p class="note"><b>${esc(t("draft_note_b"))}</b> ${esc(t("draft_note"))}</p>`)}
-      ${grp("learn", t("h_learn"), `<h3 class="h3">${esc(tr(r.kenapa.q))}</h3>
-        <p>${esc(clean(r.kenapa.a))}</p>
-        ${learnable.length ? `<p class="muted">${esc(t("words_in"))} ${learnable.map(esc).join(", ")}</p>
-        <button class="btn btn-secondary" type="button" data-act="add" ${allIn ? "disabled" : ""}><span>${esc(allIn ? t("added") : t("add"))}</span></button>` : ""}`)}
-
-      <details class="trace"><summary>${esc(t("tr_sum"))}</summary>
-        <p class="muted">${esc(t("tr_note"))}</p>
-        <ol class="trace-list" lang="en">${(r.trace || []).map((x) => `<li class="${x.flag ? "flag" : ""}"><span class="tag">${esc(STATUS[x.k] ? t(STATUS[x.k]) : t("st_step"))}${x.t ? " " + esc(x.t) : ""}</span>${esc(clean(x.m))}</li>`).join("") || `<li>${esc(t("tr_none"))}</li>`}</ol>
-      </details>
-      <p class="muted">${esc(t("disc"))}</p>`;
+      ${grp("why", t("h_why"), whyHtml(r), true)}
+      ${grp("verify", t("h_verify"), verifyHtml(r), true)}
+      ${grp("says", t("h_says"), saysHtml(r, false))}
+      ${grp("todo", t("h_todo"), todoHtml(r))}
+      ${grp("draft", t("h_draft"), draftHtml(r))}
+      ${grp("learn", t("h_learn"), learnHtml(r))}
+      ${tail}`;
+    } else {
+      const i = (state.step = Math.min(state.step, pages.length - 1)), p = pages[i], last = i === pages.length - 1;
+      body = `<div class="stepbar"><p>${esc(t("st_of", { n: i + 1, m: pages.length }))}</p><ol class="dots" aria-hidden="true">${pages.map((_, j) => `<li${j <= i ? ' class="on"' : ""}></li>`).join("")}</ol></div>
+      ${p.id === "verdict" ? verdict : `<section class="card step"><h2 id="stepH" tabindex="-1">${esc(t(p.h))}</h2>${p.html}</section>`}
+      <div class="snav">
+        <button class="btn btn-secondary" type="button" data-act="prev"${i === 0 ? " disabled" : ""}>&larr; ${esc(t("bk"))}</button>
+        ${last ? `<button class="btn btn-primary" type="button" data-act="again">${esc(t("st_done"))}</button>` : `<button class="btn btn-primary" type="button" data-act="next">${esc(t(p.id === "now" ? "st_got" : "nx"))}</button>`}
+      </div>
+      ${allBtn}
+      ${last ? `<button class="btn btn-quiet" type="button" data-act="sum"><span>${esc(t("r_copy_sum"))}</span></button>${tail}` : ""}`;
+    }
+    $("#result").innerHTML = `${head}${body}<p class="muted">${esc(t("disc"))}</p>`;
   }
   $("#result").addEventListener("click", (e) => {
     const r = state.result; if (!r) return;
@@ -454,7 +534,13 @@
     if (act === "again") backToChecker();
     else if (act === "copy") copyText(r.draft, t("draft_copied"));
     else if (act === "sum") copyText(summaryText(r), t("sum_copied"));
-    else if (act === "speak") readAloud(paras(r).map(clean).join(" "), paraLang(r), a, $("#vnote"));
+    else if (act === "speak") { $("#tapListen").hidden = true; speakStep(true); }
+    else if (act === "next" || act === "prev") {
+      state.step += act === "next" ? 1 : -1; renderResult(r, true); $("#result").scrollIntoView();
+      const h = $("#vHead, #stepH"); if (h) h.focus({ preventScroll: true });
+      autoSay();
+    }
+    else if (act === "all") { state.all = !state.all; store.set("all", state.all); stopSpeak(); renderResult(r, true); $("#result").scrollIntoView(); }
     else if (act === "reexplain") { backToChecker(); checkOwn(state.last); }
     else if (act === "add") {
       const fresh = r.terms.filter((x) => D.glossary[x] && !state.learned.has(x));
@@ -464,6 +550,74 @@
       toast(t(fresh.length === 1 ? "w1" : "wn", { n: fresh.length }));
     }
   });
+
+  /* ---------- voice switch ---------- */
+  function setVoice() { $("#voiceBtn").setAttribute("aria-pressed", state.voice); $("#voiceLbl").textContent = t(state.voice ? "vc_on" : "vc_off"); }
+  $("#voiceBtn").addEventListener("click", () => { state.voice = !state.voice; store.set("voice", state.voice); if (!state.voice) stopSpeak(); setVoice(); });
+
+  /* ---------- welcome dialog (first visit) ----------
+     faham_onboarded=<OB_V> is a first-party cookie that holds only this flag; localStorage mirrors it for browsers that block cookies.
+     It is written only when the user taps Start on the last card. Bump OB_V to show the welcome again after the terms change. */
+  const OB_V = "1";
+  const OB = [["ob1", "doc"], ["ob2", "device"], ["ob3", "eye"], ["ob4", "phone"], ["ob5", "scale"]];
+  const ckEnd = "; Path=/; SameSite=Lax" + (location.protocol === "https:" ? "; Secure" : "");
+  const onboarded = () => document.cookie.split("; ").includes("faham_onboarded=" + OB_V) || store.get("onboarded", "") === OB_V;
+  const markOb = () => { document.cookie = "faham_onboarded=" + OB_V + "; Max-Age=31536000" + ckEnd; store.set("onboarded", OB_V); };
+  const forgetOb = () => { document.cookie = "faham_onboarded=; Max-Age=0" + ckEnd; try { localStorage.removeItem("faham_onboarded"); } catch (e) {} };
+  let obI = 0, obTick = false;
+  function renderOb() {
+    const [k, ico] = OB[obI], last = obI === OB.length - 1;
+    const lis = (a) => `<ul class="ob-list">${a.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+    const extra = ["", `<p class="muted">${esc(t("ob2_n", { b: t("a_clear") }))}</p>`, "",
+      `<a class="btn btn-primary btn-big call" href="tel:997">${esc(t("ob4_call"))}</a><p class="muted">${esc(t("ob4_n"))}</p>`,
+      `${more(lis(t("ob_tc")), "ob_tc_sum")}${more(lis(t("ob_cc")), "ob_cc_sum")}
+       <label class="tick"><input type="checkbox" id="obTick"${obTick ? " checked" : ""} /><span>${esc(t("ob_agree"))}</span></label><p class="muted">${esc(t("ob_draft"))}</p>`][obI];
+    $("#ob").innerHTML = `<div class="wrap">
+      <div class="chips" role="group" aria-label="${esc(t("ui_lang"))}">${chipBtns("data-u")}</div>
+      <div class="stepbar"><p>${esc(t("st_of", { n: obI + 1, m: OB.length }))}</p><ol class="dots" aria-hidden="true">${OB.map((_, j) => `<li${j <= obI ? ' class="on"' : ""}></li>`).join("")}</ol></div>
+      <section class="card">
+        <div class="ob-ico">${svg(ico)}</div>
+        <h2 id="obH" tabindex="-1">${esc(t(k + "_h"))}</h2>
+        ${lis(t(k + "_b"))}${extra}
+        <button class="btn btn-secondary speak" type="button" data-ob="hear" data-idle="ob_hear">${svg("speaker")}<span>${esc(t("ob_hear"))}</span></button>
+        <p class="muted vnote" id="obNote" role="status"></p>
+      </section>
+      <div class="snav">
+        <button class="btn btn-secondary" type="button" data-ob="back"${obI === 0 ? " disabled" : ""}>&larr; ${esc(t("bk"))}</button>
+        ${last ? `<button class="btn btn-primary" type="button" data-ob="start" id="obStart"${obTick ? "" : " disabled"}>${esc(t("ob_start"))}</button>` : `<button class="btn btn-primary" type="button" data-ob="next">${esc(t("nx"))} &rarr;</button>`}
+      </div></div>`;
+    syncChips();
+  }
+  const setInert = (on) => [...document.body.children].forEach((el) => { if (el.id !== "ob" && el.id !== "toast" && el.tagName !== "SCRIPT") el.inert = on; });
+  function obGo(d) {
+    const n = obI + d; if (n < 0 || n >= OB.length) return;
+    stopSpeak(); obI = n; renderOb(); $("#ob").scrollTop = 0; $("#obH").focus();
+  }
+  function showOb() { obI = 0; obTick = false; renderOb(); $("#ob").hidden = false; setInert(true); $("#obH").focus(); }
+  function endOb() {
+    markOb(); stopSpeak(); $("#ob").hidden = true; $("#ob").innerHTML = ""; setInert(false);
+    const h = $(".view:not([hidden]) h1"); if (h) h.focus();
+  }
+  $("#ob").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ob]"); if (!b) return;
+    const a = b.dataset.ob, k = OB[obI][0];
+    if (a === "next") obGo(1); else if (a === "back") obGo(-1);
+    else if (a === "start" && obTick) endOb();
+    else if (a === "hear") readAloud([t(k + "_h") + ".", ...t(k + "_b")].join(" "), state.lang, b, $("#obNote"));   // static text only, and only when asked
+  });
+  $("#ob").addEventListener("change", (e) => { if (e.target.id === "obTick") { obTick = e.target.checked; $("#obStart").disabled = !obTick; } });
+  $("#ob").addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { e.preventDefault(); return; }                                    // no way to skip
+    if (e.key === "Tab") {                                                                       // focus trap
+      const f = $$("a[href], button:not(:disabled), input, summary", $("#ob")).filter((x) => x.offsetParent), end = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); end.focus(); } else if (!e.shiftKey && document.activeElement === end) { e.preventDefault(); f[0].focus(); }
+      return;
+    }
+    if (e.target.matches("input, summary")) return;
+    if (e.key === "ArrowRight") obGo(1); else if (e.key === "ArrowLeft") obGo(-1);
+    else if (e.key === "Enter" && !e.target.closest("button, a")) obGo(1);
+  });
+  $("#obAgain").addEventListener("click", () => { forgetOb(); showOb(); });
 
   /* ---------- levels and dictionary ---------- */
   const levelFor = (xp) => D.levels.reduce((l, x) => (xp >= x.min ? x : l), D.levels[0]);
@@ -591,7 +745,8 @@
   $("#clearData").addEventListener("click", () => {
     if (state.busy) { toast(t("wait_check")); return; }
     try { Object.keys(localStorage).filter((k) => k.startsWith("faham_")).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
-    Object.assign(state, { lang: "bm", xl: "bm", xlManual: false, theme: "light", learned: new Set(), xp: 0, result: null, last: null });
+    forgetOb();
+    Object.assign(state, { lang: "bm", xl: "bm", xlManual: false, theme: "light", learned: new Set(), xp: 0, voice: true, all: false, step: 0, result: null, last: null });
     $("#consentBox").checked = false; $("#consentBlock").hidden = true; $("#pasteBox").value = ""; $("#fileBox").value = ""; $("#postBox").value = ""; formErr("");
     $("#detectNote").textContent = ""; $("#hint").hidden = false;
     $("#result").hidden = true; $("#result").innerHTML = ""; $("#checker").hidden = false;
@@ -625,8 +780,9 @@
   }
 
   /* ---------- init ---------- */
-  renderChips(); setTheme(); applyI18n(); syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();
+  renderChips(); setTheme(); setVoice(); applyI18n(); syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();
   $("#hint").hidden = !!store.get("checked", false);
   state.practice.order = D.practice.map((_, i) => i).sort(() => Math.random() - 0.5).slice(0, 6);
   renderPractice(); route(true); checkApi();
+  if (!onboarded()) showOb();
 })();

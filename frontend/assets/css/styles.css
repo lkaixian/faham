@@ -6,7 +6,7 @@
    - Flat cards with one 12px radius, only around groups of related fields; the page itself stays plain.
    - Single 720px column, no sidebar or grid: one task per screen, easy to read aloud and to follow with a screen reader.
    - No gradients, blur, orbs or emoji; icons are inline SVG using currentColor so they follow the theme.
-   - Tap targets are at least 44px so thumbs and shaky hands hit them first time.
+   - Tap targets are at least 48px (seniors, shaky hands) so thumbs and shaky hands hit them first time.
    - Motion (dial 2): short opacity fades between pages, one 220ms rise for the result, one ring on the verdict, smooth accordions,
      press feedback, toast fade, a calm 4-stage progress bar. Each explains state or confirms an action. All off under prefers-reduced-motion.
    - Dark theme is a swap of the color tokens below, not a second design.
@@ -52,11 +52,11 @@ h1:focus, h2:focus { outline: none; }
 /* header */
 .top { background: var(--surface); border-bottom: 1px solid var(--line); }
 .bar { display: flex; align-items: center; gap: 10px; min-height: 56px; flex-wrap: wrap; }
-.brand { font-weight: 800; font-size: 1.3rem; letter-spacing: .04em; color: var(--accent); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+.brand { font-weight: 800; font-size: 1.3rem; letter-spacing: .04em; color: var(--accent); text-decoration: none; min-height: 48px; display: inline-flex; align-items: center; }
 .brand { margin-right: auto; }
 .mode { order: 3; flex-basis: 100%; font-size: .85rem; color: var(--muted); padding-bottom: 4px; }
 .top nav { display: flex; flex-wrap: wrap; gap: 4px; padding-bottom: 8px; }
-.top nav a { min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 8px; text-decoration: none; color: var(--text); font-weight: 600; }
+.top nav a { min-height: 48px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 8px; text-decoration: none; color: var(--text); font-weight: 600; }
 .top nav a[aria-current="page"] { background: var(--accent); color: var(--on-accent); }
 
 /* buttons */
@@ -64,13 +64,13 @@ h1:focus, h2:focus { outline: none; }
 .btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .btn-primary { background: var(--accent); color: var(--on-accent); }
 .btn-secondary { background: transparent; color: var(--link); border-color: var(--accent); }
-.btn-quiet { background: transparent; color: var(--text); border-color: var(--line); min-height: 44px; }
+.btn-quiet { background: transparent; color: var(--text); border-color: var(--line); min-height: 48px; }
 .btn-big { min-height: 56px; font-size: 1.1rem; }
 .btn:disabled { opacity: .55; cursor: not-allowed; }
 .bar .btn { margin: 0; }
-.bar #themeBtn { order: 1; }
+.bar #themeBtn, .bar #voiceBtn { order: 1; }
 .uilang { flex-basis: 100%; order: 2; }
-@media (min-width: 640px) { .uilang { flex-basis: auto; order: 1; } .bar #themeBtn { order: 2; } }
+@media (min-width: 640px) { .uilang { flex-basis: auto; order: 1; } .bar #themeBtn, .bar #voiceBtn { order: 2; } }
 .uilang .chip { min-width: 52px; padding: 0 12px; }
 .mode[data-s="on"] { font-weight: 700; color: var(--text); }
 
@@ -81,18 +81,18 @@ label:first-child { margin-top: 0; }
 textarea, input[type="text"], input[type="search"], select { width: 100%; font: inherit; color: var(--text); background: var(--bg); border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 48px; }
 textarea { resize: vertical; }
 input[type="file"] { width: 100%; font: inherit; }
-input[type="file"]::file-selector-button { font: inherit; font-weight: 600; min-height: 44px; margin-right: 12px; padding: 0 16px; border-radius: 10px; border: 2px solid var(--accent); background: transparent; color: var(--link); cursor: pointer; }
+input[type="file"]::file-selector-button { font: inherit; font-weight: 600; min-height: 48px; margin-right: 12px; padding: 0 16px; border-radius: 10px; border: 2px solid var(--accent); background: transparent; color: var(--link); cursor: pointer; }
 textarea:disabled, input:disabled, select:disabled { opacity: .55; }
 .row2 { display: grid; gap: 0 20px; }
 @media (min-width: 600px) { .row2 { grid-template-columns: 1fr 1fr; } }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { font: inherit; font-weight: 600; min-height: 44px; min-width: 56px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--line); background: transparent; color: var(--text); cursor: pointer; }
+.chip { font: inherit; font-weight: 600; min-height: 48px; min-width: 56px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--line); background: transparent; color: var(--text); cursor: pointer; }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .consent { margin-top: 16px; }
 .tick { display: flex; gap: 12px; align-items: flex-start; font-weight: 400; margin: 0; }
 .tick input { width: 28px; height: 28px; flex: none; margin: 2px 0 0; accent-color: var(--accent); }
 .more { margin: 8px 0 0 40px; }
-.more summary, details.more summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--link); text-decoration: underline; font-weight: 600; }
+.more summary, details.more summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; color: var(--link); text-decoration: underline; font-weight: 600; }
 .err { color: var(--bad); font-weight: 600; margin: 12px 0 4px; }
 .err:empty { display: none; }
 .errbox .btn { margin-top: 0; }
@@ -131,7 +131,7 @@ details.ex > summary { cursor: pointer; min-height: 48px; display: flex; align-i
 
 /* verdict */
 .verdict { display: flex; gap: 14px; align-items: flex-start; padding: 18px; border-radius: var(--r); border: 2px solid var(--c); border-left-width: 10px; background: var(--cb); color: var(--c); margin: 12px 0; }
-.verdict svg { width: 44px; height: 44px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.verdict svg, .ob-ico svg { width: 44px; height: 44px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .verdict h1 { margin: 0 0 4px; font-size: 1.45rem; color: var(--c); }
 .verdict p { margin: 0; color: var(--text); }
 .v-likely_scam { --c: var(--bad); --cb: var(--bad-bg); }
@@ -221,3 +221,35 @@ details.grp[open]::details-content { height: auto; }
   details.grp::details-content { transition: none; }
   #toast { transform: translateX(-50%); }
 }
+
+/* step flow and welcome dialog: one idea per screen, large targets */
+.priv { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
+.priv a { display: inline-flex; align-items: center; min-height: 48px; font-weight: 600; }
+.stepbar { margin: 12px 0 4px; }
+.stepbar p { margin: 0 0 6px; font-weight: 700; }
+.dots { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.dots li { flex: 1; height: 8px; border-radius: 4px; background: var(--line); }
+.dots li.on { background: var(--accent); }
+.step { font-size: 1.1rem; }
+.step .next-step { font-size: 1.3rem; }
+.snav { display: flex; gap: 10px; margin: 16px 0; }
+.snav .btn { flex: 1; margin: 0; min-height: 56px; font-size: 1.1rem; padding: 0 10px; }
+.snav .btn-secondary { white-space: nowrap; }
+.snav .btn-primary { flex: 1.6; }
+.tap { width: 100%; margin: 12px 0 0; }
+.alink { margin: 4px 0 0; }
+.step details.more { margin: 8px 0 0; }
+.ob { position: fixed; inset: 0; z-index: 30; background: var(--bg); overflow-y: auto; }
+.ob .wrap { padding-top: 12px; }
+.ob-ico { color: var(--accent); }
+.ob-ico svg { width: 56px; height: 56px; }
+.ob h2 { margin: 8px 0 8px; font-size: 1.5rem; }
+.ob ul.ob-list { padding-left: 1.3rem; margin: 8px 0; font-size: 1.1rem; }
+.ob ul.ob-list li { padding: 6px 0; }
+.ob .tick { margin-top: 14px; }
+.ob details.more { margin: 8px 0 0; }
+.ob details.more > div { padding: 0 0 8px; }
+.ob .call { display: flex; width: 100%; text-decoration: none; margin: 8px 0; }
+@media (max-width: 420px) { .ob .chip { min-width: 48px; padding: 0 12px; } }
+.step h2 { margin: 0 0 .6rem; font-size: 1.3rem; }
+.ob .snav { position: sticky; bottom: 0; background: var(--bg); padding: 10px 0; margin: 0; border-top: 1px solid var(--line); }
