@@ -3,126 +3,115 @@
 > **Faham surat. Faham langkah. Faham hak anda.**
 > Every scary letter becomes a 60-second lesson, so people need help less each time.
 
-FAHAM is our UTHM team's entry for the **Agentic AI Challenge** at **Festival Idea Putrajaya 2026** (19 Nov 2026; theme: *Edutainment & Innovation*).
+FAHAM is the UTHM team's entry for the **Agentic AI Challenge** at **Festival Idea Putrajaya 2026** (19 Nov 2026, theme: *Edutainment & Innovation*). It helps people who struggle with official letters from LHDN, JPJ, PDRM, PTPTN, courts, councils and banks.
 
-Many Malaysians struggle with letters from LHDN, JPJ, PDRM, PTPTN, the courts, local councils, banks and insurers. FAHAM is an **agent, not a chatbot**. For each letter it:
+For each letter the agent:
 
-1. **Reads** the letter (OCR, PII redaction, issuer classification, field extraction)
-2. **Verifies** it is real (domain allowlist, red-flag rules, reference patterns)
-3. **Explains** it in plain words in BM, English, 中文 or தமிழ், with read-aloud
-4. **Teaches** the rule behind it with a *"Kenapa saya dapat surat ini?"* card and adds the letter's terms to a personal *Kamus Surat*
-5. **Routes** the user online (click by click) or walk-in (nearest office, hours, booking, documents to bring)
-6. **Acts** by drafting the reply and a reminder. **The user approves before anything is sent or paid.**
+1. **Reads** it: OCR hook, PII redaction, issuer classification, field extraction
+2. **Verifies** it: domain allowlist and red-flag rules give a genuine or scam verdict
+3. **Explains** it in BM, English, 中文 or தமிழ், with read-aloud
+4. **Teaches** the rule behind it ("Kenapa saya dapat surat ini?") and grows a personal *Kamus Surat*
+5. **Routes** the user online or walk-in (nearest office, hours, booking, documents)
+6. **Acts** by drafting a reply and a reminder. The user approves; nothing is sent or paid automatically.
 
-The **Spot-the-scam** practice mode and **Family mode** ("help my parents") run on the same agent.
+Spot-the-scam practice and Family mode run on the same agent.
 
----
+![Live agent](docs/screenshots/live-agent.png)
 
-## Screenshots
+## Architecture
 
-| Overview | Live agent | Architecture |
-|---|---|---|
-| ![Overview](docs/screenshots/overview.png) | ![Live agent](docs/screenshots/live-agent.png) | ![Architecture](docs/screenshots/architecture.png) |
+```mermaid
+flowchart LR
+  U[User] --> FE["Dashboard<br/>static HTML/JS"]
+  FE -- "text, language, postcode" --> API["FastAPI<br/>POST /api/analyze"]
+  FE -. "API down" .-> DEMO["In-browser demo mode"]
+  API --> O["Orchestrator<br/>read, verify, explain, teach, route, act"]
+  O --> T["10 tools<br/>rules and regex"]
+  T --> K[("Source registry<br/>and offices JSON")]
+  O -. "redacted text only, optional" .-> L[("LLM provider")]
+  O --> G{"Scam verdict"}
+  G -- genuine --> H["Help comply"]
+  G -- scam --> P["Protect and report"]
+  H --> A["Draft needs user approval"]
+  P --> A
+```
+
+- **Deterministic first, LLM second.** Classification, extraction and scam checks are testable rules. The LLM only rewrites the explanation and is off by default, so the demo works offline.
+- **Redact before anything else.** The API is stateless and stores no letters.
+- **The plan changes on evidence.** A scam verdict switches the agent from "help comply" to "protect and report".
+- **Human in the loop.** Every action is a draft with `requires_approval: true`.
+
+More detail: [Architecture](docs/ARCHITECTURE.md) · [Agent flow](docs/AGENT_FLOW.md) · [API](docs/API.md) · [Privacy and safety](docs/PRIVACY_SAFETY.md) · [Research](docs/RESEARCH.md) · [Notes](docs/NOTES.md)
 
 ## Repository layout
 
 ```
-faham/
-├── frontend/                 # Dashboard: static HTML/CSS/JS, no build step
-│   ├── index.html
-│   └── assets/
-│       ├── css/styles.css    # Glass bento design system (palette below)
-│       ├── js/config.js      # API_BASE; falls back to in-browser demo mode
-│       ├── js/data.js        # Fictional sample letters, glossary, practice set, team
-│       ├── js/intro.js       # "Welcome to FAHAM" neural-network intro animation
-│       └── js/app.js         # Views, agent simulation, practice, family mode
-├── backend/                  # FastAPI agent service
-│   ├── app/
-│   │   ├── main.py           # /api/analyze, /api/practice, /api/tools, /api/health
-│   │   ├── models.py         # Typed Pydantic contracts
-│   │   ├── llm.py            # Pluggable LLM (offline templates by default)
-│   │   ├── config.py
-│   │   ├── agent/
-│   │   │   ├── orchestrator.py   # read → verify → explain → teach → route → act
-│   │   │   └── tools.py          # Tool registry (10 tools)
-│   │   └── data/             # Official source registry, demo offices, practice set
-│   ├── tests/test_agent.py
-│   ├── requirements.txt / requirements-dev.txt
-│   ├── Dockerfile
-│   └── .env.example
-├── docs/
-│   ├── ARCHITECTURE.md       # System design and diagrams (Mermaid)
-│   ├── AGENT_FLOW.md         # Decision flow, tools, trace format
-│   ├── API.md                # Endpoint reference
-│   ├── PRIVACY_SAFETY.md     # Risks and mitigations, PDPA design goals
-│   └── PITCH_PLAN.md         # 5-minute video outline and next steps
-├── .github/workflows/
-│   ├── ci.yml                # Backend tests on every push / PR
-│   └── pages.yml             # Deploys frontend/ to GitHub Pages
-├── docker-compose.yml
-├── LICENSE
-└── .gitignore
+frontend/   static dashboard, no build step (config.js sets API_BASE)
+backend/
+  app/main.py            routes: /api/health /api/tools /api/analyze /api/practice
+  app/agent/             orchestrator.py and tools.py (tool registry)
+  app/data/              official_sources.json, offices.json (demo), practice.json
+  app/llm.py             optional Anthropic call
+  tests/                 pytest
+docs/       design notes and research
 ```
 
-## Quick start
+## Setup
 
-### 1. Dashboard only (no install)
-Open `frontend/index.html` in a browser, or serve it:
+Requirements: Python 3.12 or newer. Docker is optional. Node is not needed.
+
+### 1. Dashboard only (demo mode)
 ```bash
-python3 -m http.server 5500 -d frontend
-# → http://localhost:5500
+python -m http.server 5500 -d frontend
+# open http://localhost:5500
 ```
-With no backend running, the sidebar shows **Demo mode** and the agent runs entirely in the browser.
+With no API running the sidebar shows **Demo mode** and the agent runs in the browser.
 
-### 2. Dashboard and agent API
+### 2. Dashboard and API
 ```bash
 cd backend
-python3 -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements-dev.txt
-uvicorn app.main:app --reload --port 8000           # API docs at http://localhost:8000/docs
+uvicorn app.main:app --reload --port 8000    # docs at http://localhost:8000/docs
 ```
-Then serve the frontend on port 5500 as above. The sidebar switches to **Agent API online**, and the reasoning trace now comes from the real orchestrator.
+In a second terminal serve the frontend on port 5500 as above. The sidebar switches to **Agent API online** and the reasoning trace comes from the real orchestrator.
+
+Opening `frontend/index.html` straight from disk needs `FAHAM_ALLOW_NULL_ORIGIN=1` in the API's environment.
 
 ### 3. Docker
 ```bash
 docker compose up --build
-# Frontend → http://localhost:8080   API → http://localhost:8000/docs
+# web http://localhost:8080    API http://localhost:8000/docs
 ```
+The API image runs as a non-root user with a healthcheck, and nginx adds security headers (`frontend/nginx.conf`).
 
 ### Tests
 ```bash
 cd backend && pytest -q
 ```
 
-## Deploying to GitHub Pages
-1. Push this repo to GitHub.
-2. Go to **Settings → Pages → Source: GitHub Actions**.
-3. The `pages.yml` workflow publishes `frontend/` on each push to `main`. The public site runs in demo mode. To use a hosted API, set `API_BASE` in `frontend/assets/js/config.js` and add the site's origin to `FAHAM_ALLOWED_ORIGINS`.
+### Configuration
+Copy `backend/.env.example` to `backend/.env`.
 
-## Optional: LLM explanations
-FAHAM works offline using templates. To generate richer explanations, set these in `backend/.env`:
-```
-FAHAM_LLM_PROVIDER=anthropic
-ANTHROPIC_API_KEY=...
-```
-Only **redacted** text is ever sent to the model.
-
-## Design system
-| Token | Hex | Use |
+| Variable | Default | Purpose |
 |---|---|---|
-| Ink | `#0E0B1D` | Page background |
-| Plum | `#2a1e4d` | Glass card base |
-| Violet | `#5a3b8c` | Primary accent, active states |
-| Lavender | `#8b7cc7` | Highlights, links, glow |
-| Mist | `#c9c2e3` | Secondary text, light accents |
-| Slate | `#3a3a52` | Neutral surfaces |
+| `FAHAM_ALLOWED_ORIGINS` | localhost :5500 and :8080 | Origins allowed by CORS. Add your site when hosting |
+| `FAHAM_ALLOW_NULL_ORIGIN` | `0` | Set `1` only to call the API from a `file://` page |
+| `FAHAM_LLM_PROVIDER` | `none` | `anthropic` to enable LLM explanations |
+| `ANTHROPIC_API_KEY` | empty | Needed when the provider is `anthropic` |
+| `FAHAM_LLM_MODEL` | `claude-sonnet-5-5` | Model for explanations |
 
-Cards are frosted glass (`backdrop-filter: blur(18px)`) over animated plum and violet orbs, laid out in a 12-column bento grid.
+Only **redacted** text is sent to the model, and the call is skipped if long digit runs remain. For image OCR install `pytesseract` and `pillow` (the Docker image already includes Tesseract).
+
+## Deploying
+**GitHub Pages:** in *Settings → Pages* choose *GitHub Actions*. `pages.yml` publishes `frontend/` on every push to `main` in demo mode. To use a hosted API, set `API_BASE` in `frontend/assets/js/config.js`, add the site origin to `FAHAM_ALLOWED_ORIGINS`, and update `connect-src` in `frontend/nginx.conf` if you use it.
 
 ## Important
-- **All letters, names, IC numbers and accounts in this repo are fictional.** Never use real people's letters in the demo or practice mode.
-- FAHAM gives **guidance, not legal advice**. Procedures must be retrieved from official sources at the time of use. Office data in `backend/app/data/offices.json` is demo data only.
-- Chinese and Tamil strings should be reviewed by a native speaker before the demo.
+- All letters, names, IC numbers and accounts here are **fictional** (marked SAMPEL · FIKTIF). Never use real people's letters.
+- FAHAM gives **guidance, not legal advice**. Steps come from a cached official-source registry dated in the response; office data is demo data.
+- Chinese and Tamil text needs native-speaker review before the demo.
+- Known gaps and next steps are tracked in [docs/NOTES.md](docs/NOTES.md).
 
 ## Team
 UTHM: Yb, Kevinraj, Muhammad Aqil, Larm Kai Xian. Advisor: Dr. Ramhuzaini bin Abd Rahman.
