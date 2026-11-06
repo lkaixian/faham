@@ -6,7 +6,10 @@
   <title>FAHAM</title>
   <meta name="description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
   <meta name="theme-color" content="#0b5c63" />
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="assets/img/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="icon" href="assets/img/favicon-48.png" type="image/png" sizes="48x48" />
+  <link rel="icon" href="assets/img/favicon-256.png" type="image/png" sizes="256x256" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
@@ -14,16 +17,18 @@
 
   <header class="top">
     <div class="wrap bar">
-      <a class="brand" href="#check">FAHAM</a>
-      <button class="btn btn-quiet" id="themeBtn" type="button" aria-pressed="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>
-        <span id="themeLbl"></span>
-      </button>
-      <button class="btn btn-quiet" id="voiceBtn" type="button" aria-pressed="true">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
-        <span id="voiceLbl"></span>
-      </button>
-      <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
+      <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="" width="31" height="40" /><span>FAHAM</span></a>
+      <div class="ctrls">
+        <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
+        <button class="btn btn-quiet" id="themeBtn" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>
+          <span id="themeLbl"></span>
+        </button>
+        <button class="btn btn-quiet" id="voiceBtn" type="button" aria-pressed="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+          <span id="voiceLbl"></span>
+        </button>
+      </div>
       <span class="mode" id="mode" role="status"></span>
     </div>
     <nav class="wrap" data-i18n-aria="nav_label">
@@ -110,7 +115,6 @@
         <div class="busy" id="busy" hidden>
           <p id="busyTxt" role="status"></p>
           <ol class="stages" id="stages" aria-hidden="true"></ol>
-          <div class="skel" aria-hidden="true"></div><div class="skel s2" aria-hidden="true"></div><div class="skel s3" aria-hidden="true"></div>
         </div>
 
       </div>

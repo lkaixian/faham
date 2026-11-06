@@ -44,3 +44,9 @@ def test_providers_without_key_are_skipped(monkeypatch):
     monkeypatch.setattr(config, "ILMU_API_KEY", "")
     monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "k2")
     assert config.llm_chain() == ["anthropic"]
+
+
+def test_email_display_name_is_masked():
+    from app.agent.tools import redact
+    out, c = redact("Larm Kai Xian <lkx@contoh.example>\nCc: Perhubungan Awam <info@contoh.example>")
+    assert "Larm" not in out and "Kai" not in out and c["name"] >= 2 and out.count("<[EMAIL]>") == 2

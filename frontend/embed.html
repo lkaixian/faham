@@ -6,7 +6,10 @@
   <meta name="color-scheme" content="light dark" />
   <title>FAHAM</title>
   <meta name="theme-color" content="#0b5c63" />
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="assets/img/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="icon" href="assets/img/favicon-48.png" type="image/png" sizes="48x48" />
+  <link rel="icon" href="assets/img/favicon-256.png" type="image/png" sizes="256x256" />
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body data-embed="1">
@@ -16,12 +19,14 @@
        Keep the markup between UPLOAD_START and UPLOAD_END in step with index.html. -->
   <header class="top">
     <div class="wrap bar">
-      <a class="brand" href="embed.html">FAHAM</a>
-      <button class="btn btn-quiet" id="voiceBtn" type="button" aria-pressed="true">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
-        <span id="voiceLbl"></span>
-      </button>
-      <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
+      <a class="brand" href="embed.html"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="" width="31" height="40" /><span>FAHAM</span></a>
+      <div class="ctrls">
+        <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
+        <button class="btn btn-quiet" id="voiceBtn" type="button" aria-pressed="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+          <span id="voiceLbl"></span>
+        </button>
+      </div>
     </div>
   </header>
 

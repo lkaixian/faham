@@ -73,6 +73,9 @@ SWEEP_RE = re.compile(r"(?<![\w/])(?:\d[ -]?){8,}\d(?![\w/])")
 TITLE_NAME_RE = re.compile(r"\b((?:Encik|Puan|Cik|Tuan|Dato['’]?)[ \t]+)([A-Z][A-Z'.@]+(?:[ \t]+[A-Z][A-Z'.@/]+)+)")
 
 
+EMAIL_NAME_RE = re.compile(r"(?:[A-Z][\w'’.-]*[ 	]+){1,4}<\[EMAIL\]>")  # email display name: "Ali Bin Abu <[EMAIL]>"
+
+
 @tool("privacy.redact", "Mask IC numbers, phones, account numbers, emails, addresses, plates and names before processing.")
 def redact(text: str) -> tuple[str, dict[str, int]]:
     # Decision: all phone numbers are masked, including official agency lines.
@@ -86,6 +89,7 @@ def redact(text: str) -> tuple[str, dict[str, int]]:
 
     out = sub(IC_RE, "IC", "ic", text)
     out = sub(EMAIL_RE, "EMAIL", "email", out)
+    out = EMAIL_NAME_RE.sub(lambda m: (counts.__setitem__("name", counts["name"] + 1), "[NAME] <[EMAIL]>")[1], out)
     out = sub(PHONE_RE, "PHONE", "phone", out)
     out = sub(LANDLINE_RE, "PHONE", "phone", out)
     out = sub(ACCOUNT_RE, "ACCOUNT", "account", out)
@@ -196,6 +200,16 @@ def _domains(text: str) -> list[str]:
     return out
 
 
+def _urls(text: str) -> list[tuple[str, str]]:
+    """(url as written, host) for every link in the text."""
+    out = []
+    for u in URL_RE.findall(text):
+        u = u.rstrip(".,;:)]'\"")
+        host = urlparse(u if "://" in u else "http://" + u).hostname or ""
+        out.append((u, host.lower()))
+    return out
+
+
 def _social_handles(text: str) -> list[str]:
     """Social URLs in the text as 'host/handle' (www and @ stripped, lowercase), each once."""
     out = []
@@ -212,45 +226,57 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     """Verdict plus reasons. Sentences come from i18n.TEXT in `language`; each reason carries its stable `code`."""
     low = text.lower()
     r = lambda code, **kw: render(code, language, **kw)
-    flags: list[tuple[str, str]] = [(k, r(k)) for pat, k in RED_FLAGS if re.search(pat, low)]  # (code, text)
+    ev: dict[tuple[str, str], list[str]] = {}  # (code, text) -> exact snippets of the input that caused it
+    flags: list[tuple[str, str]] = []  # (code, text)
+    for pat, k in RED_FLAGS:
+        m = re.search(pat, low)
+        if m:
+            flags.append((k, r(k)))
+            ev[flags[-1]] = [text[m.start():m.end()][:80]]
     flags += [(c, r(c)) for c in extra if c in TEXT]  # extra risk codes, e.g. email header signals
     good: list[tuple[str, str]] = []
     official = SOURCES.get(issuer, {}).get("domains", [])
     info: list[tuple[str, str]] = []
     for d in dict.fromkeys(_domains(text)):  # each host once
         hit = lambda names: any(d == n or d.endswith("." + n) for n in names)
+        links = [u for u, h in _urls(text) if h == d]
         if d in SHORTENERS:
-            flags.append(("shortener", r("shortener", d=d)))
+            flags.append(("shortener", r("shortener", d=d))); ev[flags[-1]] = links
         elif d.endswith(".gov.my") or any(d == o or d.endswith("." + o) for o in official if o != ".gov.my"):
-            good.append(("official_domain", r("official_domain", d=d)))
+            good.append(("official_domain", r("official_domain", d=d))); ev[good[-1]] = links
         elif hit(SOCIAL):
-            if not any(c == "social_links" for c, _ in info) and not SOURCES.get(issuer, {}).get("social"):
-                info.append(("social_links", r("social_links")))
+            if not SOURCES.get(issuer, {}).get("social"):
+                if not any(c == "social_links" for c, _ in info):
+                    info.append(("social_links", r("social_links")))
+                ev.setdefault(info[[c for c, _ in info].index("social_links")], []).extend(links)
         elif hit(FORMS):
-            info.append(("form_link", r("form_link", d=d)))
+            info.append(("form_link", r("form_link", d=d))); ev[info[-1]] = links
         else:
-            flags.append(("unofficial_domain", r("unofficial_domain", d=d)))
+            flags.append(("unofficial_domain", r("unofficial_domain", d=d))); ev[flags[-1]] = links
             if _lookalike(d):
-                flags.append(("lookalike", r("lookalike", d=d)))
+                flags.append(("lookalike", r("lookalike", d=d))); ev[flags[-1]] = links
     known = {h.lower().removeprefix("www.") for h in SOURCES.get(issuer, {}).get("social", [])}
     if known:  # the registry lists this agency's real accounts: anything else claiming to be them is suspect
         for h in _social_handles(text):
+            links = [u for u, _ in _urls(text) if _social_handles(u) == [h]]
             if h in known:
-                good.append(("official_social", r("official_social", d=h)))
+                good.append(("official_social", r("official_social", d=h))); ev[good[-1]] = links
             else:
-                flags.append(("social_mismatch", r("social_mismatch", d=h)))
+                flags.append(("social_mismatch", r("social_mismatch", d=h))); ev[flags[-1]] = links
     if issuer != "UNKNOWN" and not flags:
         good.append(("known_pattern", r("known_pattern", issuer=issuer)))
-    if REF_RE.search(text):
-        good.append(("ref_format", r("ref_format")))
+    ref = REF_RE.search(text)
+    if ref:
+        good.append(("ref_format", r("ref_format"))); ev[good[-1]] = [ref.group(1)]
     score = max(0, min(100, 80 + 5 * len(good) - 22 * len(flags)))
     # Three levels: rules can rule a scam in, never prove a letter genuine.
     verdict = "likely_scam" if score < 60 else "no_signals" if issuer != "UNKNOWN" and not flags and score >= 80 else "caution"
-    reasons = ([{"kind": "risk", "code": c, "text": t} for c, t in flags] + [{"kind": "ok", "code": c, "text": t} for c, t in good]
-               + [{"kind": "info", "code": c, "text": t} for c, t in info]
-               + [{"kind": "info", "code": "cannot_see", "text": r("cannot_see")}])
+    R = lambda kind, c, t: {"kind": kind, "code": c, "text": t, "evidence": list(dict.fromkeys(ev.get((c, t), [])))}
+    reasons = ([R("risk", c, t) for c, t in flags] + [R("ok", c, t) for c, t in good]
+               + [R("info", c, t) for c, t in info]
+               + [R("info", "cannot_see", r("cannot_see"))])
     if re.search(r"payment|account|akaun|bayar", low):
-        reasons.append({"kind": "info", "code": "pay_confirmed", "text": r("pay_confirmed")})
+        reasons.append(R("info", "pay_confirmed", r("pay_confirmed")))
     src = SOURCES.get(issuer, {})
     verify = [r("type_url", site=src.get("source_url") or "https://www.malaysia.gov.my"),
               r("call_official", who=src.get("name") or r("the_agency")),

@@ -220,3 +220,12 @@ def test_social_links_checked_against_registry(monkeypatch):
     fake = T.scam_check("PTPTN: https://facebook.com/ptptn.bantuan", "PTPTN", "en")
     assert any(r["code"] == "official_social" for r in ok["reasons"]) and not ok["red_flags"]
     assert any(r["code"] == "social_mismatch" for r in fake["reasons"]) and fake["verdict"] != "no_signals"
+
+
+def test_reasons_carry_evidence_snippets():
+    t = "Bayar dalam 24 jam ke https://hasil-gov.my.com/bayar. Ruj: LHDN/SAMPEL/TT2025/0001 Portal https://www.hasil.gov.my"
+    v = T.scam_check(t, "LHDN", "en")
+    ev = {r["code"]: r["evidence"] for r in v["reasons"]}
+    assert ev["urgency"] == ["dalam 24 jam"] and ev["unofficial_domain"] == ["https://hasil-gov.my.com/bayar"]
+    assert ev["ref_format"] == ["LHDN/SAMPEL/TT2025/0001"] and ev["official_domain"] == ["https://www.hasil.gov.my"]
+    assert all(s in t for r in v["reasons"] for s in r["evidence"])

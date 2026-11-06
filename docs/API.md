@@ -19,7 +19,7 @@ Request:
   "postcode": "84000"
 }
 ```
-`scam.verdict` is `likely_scam` (score < 60), `no_signals` (known issuer, no red flags, score >= 80; not proof) or `caution` (everything else). `genuine` is kept and means "not flagged", not "proven". `reasons[].kind` is `risk | ok | info`.
+`scam.verdict` is `likely_scam` (score < 60), `no_signals` (known issuer, no red flags, score >= 80; not proof) or `caution` (everything else). `genuine` is kept and means "not flagged", not "proven". `reasons[].kind` is `risk | ok | info`. `reasons[].evidence` lists the exact snippets of `redacted_text` behind a reason (a link, a phrase, a reference number); the web app highlights them beside the result.
 
 Response (abridged):
 ```json

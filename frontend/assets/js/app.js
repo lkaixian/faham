@@ -169,12 +169,12 @@
   function normReasons(s) {
     let out = [];
     if (Array.isArray(s.reasons) && s.reasons.length) {
-      out = s.reasons.map((x) => typeof x === "string" ? { k: "info", text: x } : { k: reasonKind(x.kind || x.type || x.level || x.status), text: x.text || x.message || x.reason || x.label || "" }).filter((x) => x.text);
+      out = s.reasons.map((x) => typeof x === "string" ? { k: "info", text: x } : { k: reasonKind(x.kind || x.type || x.level || x.status), text: x.text || x.message || x.reason || x.label || "", ev: Array.isArray(x.evidence) ? x.evidence : [] }).filter((x) => x.text);
     } else {
       out = [...(s.red_flags || []).map((x) => ({ k: "risk", text: x })), ...(s.good_signs || []).map((x) => ({ k: "ok", text: x }))];
     }
     if (!out.some((x) => x.k === "info")) out.push({ k: "info", text: null });
-    return out;
+    return out.map((x, i) => Object.assign(x, { i }));
   }
   const normVerify = (s) => (Array.isArray(s.verify_yourself) ? s.verify_yourself.map((x) => typeof x === "string" ? x : (x && (x.text || x.message || x.step)) || "").filter(Boolean) : []);
   const applyScam = (r, s) => Object.assign(r, { verdict: deriveVerdict(s), reasons: normReasons(s), verify: normVerify(s) });
@@ -185,7 +185,7 @@
   function fromApi(d, lang) {
     const f = d.fields, r = d.route;
     return applyScam({
-      sample: false, lang, explain: { [lang]: String(d.explanation || "").split(/\n+/).filter(Boolean) },
+      sample: false, lang, redacted: String(d.redacted_text || ""), explain: { [lang]: String(d.explanation || "").split(/\n+/).filter(Boolean) },
       fields: { issuer: f.issuer, type: f.letter_type, amount: f.amount, deadline: f.deadline, reference: f.reference },
       kenapa: { q: d.lesson.question, a: d.lesson.answer }, terms: d.lesson.terms || [],
       route: { url: r.source_url, label: String(r.source_url).replace(/^https?:\/\//, ""), date: r.retrieved_at, confidence: r.confidence,
@@ -381,10 +381,10 @@
     x.send(q.file);
   });
   const httpMsg = (s, name) => (s === 0 ? t("e_net") : [413, 415, 422, 429].includes(s) ? t("h_" + s, { n: name }) : t("e_server", { n: s }));
-  function toItem(f, lang) {
+  function toItem(f, lang, file) {
     const it = { name: f.name, kind: f.kind, status: f.status, detail: f.detail, warnings: f.warnings || [], r: null };
     if (f.status === "ok" && f.result) {
-      try { it.r = Object.assign(fromApi(f.result, lang), { file: { name: f.name, kind: f.kind }, warnings: it.warnings, fromBatch: true }); } catch (e) { it.detail = "unreadable result"; }
+      try { it.r = Object.assign(fromApi(f.result, lang), { file: { name: f.name, kind: f.kind }, warnings: it.warnings, fromBatch: true, blob: /^(pdf|image)$/.test(EXT[(file.name.split(".").pop() || "").toLowerCase()]) ? file : null }); } catch (e) { it.detail = "unreadable result"; }
     }
     return it;
   }
@@ -397,7 +397,7 @@
       $("#busyTxt").textContent = t("u_busy", { i: i + 1, n: todo.length });
       q.st = "send"; q.pct = 0; q.msg = ""; renderQueue();
       const res = await sendFile(q);
-      if (res.status === 200 && res.json && Array.isArray(res.json.files)) { q.st = "done"; items.push(...res.json.files.map((f) => toItem(f, lang))); }
+      if (res.status === 200 && res.json && Array.isArray(res.json.files)) { q.st = "done"; items.push(...res.json.files.map((f) => toItem(f, lang, q.file))); }
       else { q.st = "fail"; q.msg = httpMsg(res.status, q.file.name); firstErr = firstErr || q.msg; items.push({ name: q.file.name, kind: q.kind, status: "error", http: q.msg, warnings: [], r: null }); }
       renderQueue();
     }
@@ -411,7 +411,7 @@
   /* ---------- summary of several files: worst first, each opens its normal step-by-step result ---------- */
   const skipText = (x) => x.http || (/encrypt|password|protect/i.test(x.detail || "") ? t("sk_enc") : /ocr|scan/i.test(x.detail || "") ? t("sk_ocr") : t("sk_gen"));
   function showSummary() {
-    stopSpeak(); state.view = "sum"; state.step = 0; renderSummary();
+    freeBlob(); stopSpeak(); state.view = "sum"; state.step = 0; renderSummary();
     $("#checker").hidden = true; $("#result").hidden = false;
     $("#result").scrollIntoView(); const h = $("#vHead"); if (h) h.focus({ preventScroll: true });
     autoSay();
@@ -426,6 +426,7 @@
       ? `<li><button type="button" class="fitem v-${x.r.verdict}" data-open="${i}">${svg(x.r.verdict)}<span><b>${esc(t("vw_" + x.r.verdict))}</b><span class="fname">${esc(x.name)}</span></span></button></li>`
       : `<li class="fitem v-skip">${svg("info")}<span><b>${esc(t("vw_skip"))}</b><span class="fname">${esc(x.name)}</span><span class="why">${esc(skipText(x))}</span>${x.detail && !x.http ? `<span class="muted" lang="en">${esc(t("sk_det"))} ${esc(x.detail)}</span>` : ""}</span></li>`);
     pages = [{ id: "sum", say: () => [line, state.lang] }];
+    $("#result").classList.remove("split");
     $("#result").innerHTML = `${rbar("again", "r_again")}
       <p class="eyebrow">${esc(t("sm_h"))}</p>
       <h1 id="vHead" tabindex="-1" class="bigsum">${esc(line)}</h1>
@@ -543,6 +544,7 @@
     autoSay();
   }
   function backToChecker() {
+    freeBlob(); $("#result").classList.remove("split");
     stopSpeak(); state.step = 0; state.batch = null;
     $("#result").hidden = true; $("#checker").hidden = false;
     window.scrollTo(0, 0); $("#checker h1").focus();
@@ -570,7 +572,42 @@
 
   /* bodies shared by the step view and the one-page view */
   const reasonText = (x) => (x.text === null ? t("info_default") : tr(clean(x.text)));
-  const reasonLi = (x) => `<li class="r-${x.k}">${svg(x.k)}<div><span class="rk">${esc(t("rk_" + x.k))}</span>${esc(reasonText(x))}</div></li>`;
+  const reasonLi = (x) => `<li class="r-${x.k}">${svg(x.k)}<div><span class="rk">${esc(t("rk_" + x.k))}</span>${esc(reasonText(x))}${x.ev && x.ev.length && state.result && state.result.redacted ? ` <button type="button" class="btn btn-quiet seeit" data-ri="${x.i}">${esc(t("doc_see"))}</button>` : ""}</div></li>`;
+
+  /* ---------- the message beside the result: evidence highlighted in the text, original file on its own tab ---------- */
+  function docHtml(r) {
+    const text = r.redacted, low = text.toLowerCase(), found = [];
+    for (const k of ["risk", "ok", "info"]) {
+      r.reasons.filter((x) => x.k === k).forEach((x) => (x.ev || []).forEach((sn) => {
+        const q = sn.toLowerCase(); if (!q) return;
+        for (let a = low.indexOf(q); a >= 0; a = low.indexOf(q, a + q.length)) {
+          const b = a + q.length;
+          if (!found.some((f) => a < f.b && b > f.a)) found.push({ a, b, k, i: x.i });   // risk is placed first, so it wins an overlap
+        }
+      }));
+    }
+    found.sort((x, y) => x.a - y.a);
+    let out = "", at = 0;
+    for (const f of found) { out += esc(text.slice(at, f.a)) + `<mark class="hl hl-${f.k}" data-ri="${f.i}">${esc(text.slice(f.a, f.b))}</mark>`; at = f.b; }
+    return out + esc(text.slice(at));
+  }
+  const docBody = (r) => `
+    ${r.blob ? `<div class="seg"><button type="button" class="chip" data-doc="text" aria-pressed="true">${esc(t("doc_text"))}</button><button type="button" class="chip" data-doc="orig" aria-pressed="false">${esc(t("doc_orig"))}</button></div>` : ""}
+    <div id="docTextBox">
+      <p class="muted">${esc(t("doc_hint"))}</p>
+      <div class="doclegend" aria-hidden="true"><span class="hl hl-risk">${esc(t("rk_risk"))}</span><span class="hl hl-ok">${esc(t("rk_ok"))}</span><span class="hl hl-info">${esc(t("rk_info"))}</span></div>
+      <pre class="doctext" tabindex="0" aria-label="${esc(t("doc_text"))}">${docHtml(r)}</pre>
+    </div>
+    <div id="docOrigBox" hidden><p class="muted">${esc(t("doc_orig_note"))}</p></div>`;
+  function showOrig(r, on) {
+    $$("[data-doc]").forEach((b) => b.setAttribute("aria-pressed", (b.dataset.doc === "orig") === on));
+    $("#docTextBox").hidden = on; $("#docOrigBox").hidden = !on;
+    if (on && !document.querySelector("#docOrigBox .orig")) {
+      r.blobUrl = r.blobUrl || URL.createObjectURL(r.blob);
+      $("#docOrigBox").insertAdjacentHTML("beforeend", r.blob.type.startsWith("image/") ? `<img class="orig" src="${r.blobUrl}" alt="${esc(r.file.name)}">` : `<iframe class="orig" src="${r.blobUrl}" title="${esc(r.file.name)}"></iframe>`);
+    }
+  }
+  const freeBlob = () => { const r = state.result; if (r && r.blobUrl) { URL.revokeObjectURL(r.blobUrl); r.blobUrl = null; } };
   const HDR = /\b(headers?|spf|dkim|dmarc|reply-to|return-path|display name|received)\b/i;
   const whyHtml = (r, n = 99) => {
     const em = r.file && r.file.kind === "eml" && r.reasons.some((x) => HDR.test(x.text || "")) ? `<p class="note">${esc(t("em_note"))}</p>` : "";
@@ -674,7 +711,10 @@
       ${allBtn}
       ${last ? `<button class="btn btn-quiet" type="button" data-act="sum"><span>${esc(t("r_copy_sum"))}</span></button>${tail}` : ""}`;
     }
-    $("#result").innerHTML = `${head}${body}<p class="muted">${esc(t("disc"))}</p>`;
+    const main = `${head}${body}<p class="muted">${esc(t("disc"))}</p>`;
+    const split = !!r.redacted && !r.sample;
+    $("#result").classList.toggle("split", split);
+    $("#result").innerHTML = split ? `<div class="rmain">${main}</div><aside class="docpane">${grp("doc", t("doc_h"), docBody(r))}</aside>` : main;
   }
   $("#result").addEventListener("click", (e) => {
     const r = state.result;
@@ -685,6 +725,15 @@
       state.route = rt.dataset.route;
       $$("[data-route]").forEach((b) => b.setAttribute("aria-pressed", b === rt));
       $("#routePanel").innerHTML = routeHtml(r); return;
+    }
+    const dt = e.target.closest("[data-doc]"); if (dt && r) { showOrig(r, dt.dataset.doc === "orig"); return; }
+    const mk = e.target.closest("button[data-ri]");
+    if (mk && r) {
+      if (r.blob) showOrig(r, false);
+      const g = $(".docpane details"); if (g) g.open = true;
+      const m = document.querySelector(`.doctext mark[data-ri="${mk.dataset.ri}"]`); if (!m) return;
+      m.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      m.classList.remove("pulse"); void m.offsetWidth; m.classList.add("pulse"); return;
     }
     const a = e.target.closest("[data-act]"); if (!a) return;
     const act = a.dataset.act;
@@ -916,7 +965,10 @@
 
   /* ---------- API status ---------- */
   function renderMode() {
-    $("#mode").textContent = t("mode_" + state.mode); $("#mode").dataset.s = state.mode;
+    const pill = (txt, st) => `<span class="pill" data-s="${st}"><i aria-hidden="true"></i>${esc(txt)}</span>`;
+    $("#mode").dataset.s = state.mode;
+    $("#mode").innerHTML = pill(t("mode_" + state.mode), state.mode) +
+      (state.mode === "on" ? pill(t(state.llm ? "st_ai_on" : "st_ai_off"), state.llm ? "on" : "off") + pill(t(state.tts.available ? "st_tts_srv" : "st_tts_br"), state.tts.available ? "on" : "off") : "");
   }
   function setMode(online) {
     state.api = online; state.mode = online ? "on" : "off"; renderMode();
@@ -934,6 +986,7 @@
       if (r.ok) {
         const h = await r.json().catch(() => ({}));
         state.tts = { available: h.tts_available === true, langs: Array.isArray(h.tts_languages) ? h.tts_languages : [] };
+        state.llm = h.llm_configured === true; renderMode();
         const u = h.upload || {};
         state.up.max_mb = +u.max_mb > 0 ? +u.max_mb : 25;
         state.channels = h.channels && typeof h.channels === "object" ? h.channels : {};
@@ -942,6 +995,15 @@
     } catch (e) { setMode(false); }
     if (state.api) newRound();
   }
+
+  // keep the header status honest if the API stops or comes back while the page is open
+  setInterval(async () => {
+    try {
+      const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 2500);
+      const r = await fetch(CFG.API_BASE + "/api/health", { signal: ctrl.signal });
+      if (r.ok !== state.api) checkApi();
+    } catch (e) { if (state.api) setMode(false); }
+  }, 30000);
 
   /* ---------- init ---------- */
   renderChips(); setTheme(); setVoice(); applyI18n(); syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();

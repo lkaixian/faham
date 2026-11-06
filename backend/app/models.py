@@ -49,6 +49,7 @@ class Reason(BaseModel):
     kind: Literal["risk", "ok", "info"]
     text: str
     code: Optional[str] = None  # stable key, e.g. "urgency"; same in every language
+    evidence: list[str] = []  # exact snippets of the checked text behind this reason, for highlighting
 
 
 class ScamVerdict(BaseModel):
