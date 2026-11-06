@@ -8,13 +8,13 @@ import binascii
 import json
 import random
 
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import config, tts
 from .agent import orchestrator
 from .agent.tools import TOOLS, classify_issuer, redact, scam_check
-from .models import AnalyzeRequest, AnalyzeResponse, PracticeItem, TTSRequest
+from .models import AnalyzeRequest, AnalyzeResponse, Language, PracticeItem, TTSRequest
 
 app = FastAPI(
     title="FAHAM Agent API",
@@ -71,11 +71,13 @@ def analyze(req: AnalyzeRequest):
 
 
 @app.get("/api/practice", response_model=list[PracticeItem])
-def practice(n: int = 5):
-    """A round of clearly fictional messages for Spot-the-scam."""
+def practice(n: int = 5, lang: Language = Query("bm")):
+    """A round of clearly fictional messages for Spot-the-scam. Clues and the agent verdict come back in `lang`."""
     items = random.sample(PRACTICE, k=min(n, len(PRACTICE)))
     out = []
     for i in items:
         red, _ = redact(i["text"])
-        out.append(PracticeItem(**i, agent=scam_check(red, classify_issuer(red)[0])))
+        clues = i.get("clues_i18n", {}).get(lang, i["clues"])
+        out.append(PracticeItem(**{k: v for k, v in i.items() if k != "clues_i18n"} | {"clues": clues},
+                                agent=scam_check(red, classify_issuer(red)[0], lang)))
     return out

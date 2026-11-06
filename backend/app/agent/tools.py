@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 
 from .. import llm
 from ..config import DATA_DIR
+from .i18n import render
 
 SOURCES: dict = {k: v for k, v in json.loads((DATA_DIR / "official_sources.json").read_text(encoding="utf-8")).items() if not k.startswith("_")}
 OFFICES: dict = json.loads((DATA_DIR / "offices.json").read_text(encoding="utf-8"))
@@ -147,17 +148,17 @@ URL_RE = re.compile(r"\b((?:https?://)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:/[^\s]*)?)",
 SHORTENERS = {"bit.ly", "tinyurl.com", "t.co", "goo.gl", "s.id", "cutt.ly", "shorturl.at", "rb.gy"}
 
 RED_FLAGS: list[tuple[str, str]] = [
-    (r"akaun\s+(?:peribadi|maybank|cimb|public bank|rhb|bank islam)|personal account|(?:bayar|transfer|pindah)\w*[^.\n]{0,40}akaun[^.\n]{0,40}atas nama", "Asks you to transfer money to a personal or company account"),
-    (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only", "Creates fake urgency"),
-    (r"waran\s+tangkap|arrest|ditangkap", "Threatens arrest"),
-    (r"\btac\b|\botp\b|kata laluan|password", "Asks for a TAC, OTP or password"),
-    (r"whatsapp|telegram|wasap", "Moves you to a chat app"),
-    (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret", "Asks you to keep it secret"),
-    (r"gambar\s+ic|ic\s+depan|photo of (?:your )?ic", "Asks for photos of your IC"),
-    (r"diskaun\s+\d+%", "Offers an unusual discount"),
-    (r"akaun\s+(?:bank\s+)?(?:baharu|baru)|new (?:bank )?account|(?:changed|updated) (?:bank )?account|(?:tukar|bertukar|ditukar)\w*\s+akaun|akaun[^.\n]{0,30}(?:telah|sudah)\s+(?:berubah|ditukar)", "Says to pay into a new or changed account"),
-    (r"https?://(?:[^\s/]*@|\[email\])|https?://\d{1,3}(?:\.\d{1,3}){3}", "Link uses an '@' or an IP address to hide where it really goes"),
-    (r"verify your account|confirm your details|sahkan (?:akaun|maklumat)|akaun anda (?:akan )?(?:di)?(?:gantung|sekat|bekukan|tutup)|your account (?:will be|has been) (?:suspended|blocked|closed)", "Wants you to 'verify' your account or details"),
+    (r"akaun\s+(?:peribadi|maybank|cimb|public bank|rhb|bank islam)|personal account|(?:bayar|transfer|pindah)\w*[^.\n]{0,40}akaun[^.\n]{0,40}atas nama", "transfer_account"),
+    (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only", "urgency"),
+    (r"waran\s+tangkap|arrest|ditangkap", "arrest"),
+    (r"\btac\b|\botp\b|kata laluan|password", "tac_otp"),
+    (r"whatsapp|telegram|wasap", "chat_app"),
+    (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret", "secret"),
+    (r"gambar\s+ic|ic\s+depan|photo of (?:your )?ic", "ic_photo"),
+    (r"diskaun\s+\d+%", "discount"),
+    (r"akaun\s+(?:bank\s+)?(?:baharu|baru)|new (?:bank )?account|(?:changed|updated) (?:bank )?account|(?:tukar|bertukar|ditukar)\w*\s+akaun|akaun[^.\n]{0,30}(?:telah|sudah)\s+(?:berubah|ditukar)", "new_account"),
+    (r"https?://(?:[^\s/]*@|\[email\])|https?://\d{1,3}(?:\.\d{1,3}){3}", "hidden_link"),
+    (r"verify your account|confirm your details|sahkan (?:akaun|maklumat)|akaun anda (?:akan )?(?:di)?(?:gantung|sekat|bekukan|tutup)|your account (?:will be|has been) (?:suspended|blocked|closed)", "credential_harvest"),
 ]
 
 
@@ -192,40 +193,39 @@ def _domains(text: str) -> list[str]:
 
 
 @tool("scam.check", "Domain allowlist + red-flag rules. Returns verdict and evidence.")
-def scam_check(text: str, issuer: str) -> dict:
+def scam_check(text: str, issuer: str, language: str = "en") -> dict:
+    """Verdict plus reasons. Sentences come from i18n.TEXT in `language`; each reason carries its stable `code`."""
     low = text.lower()
-    flags = [msg for pat, msg in RED_FLAGS if re.search(pat, low)]
-    good: list[str] = []
+    r = lambda code, **kw: render(code, language, **kw)
+    flags: list[tuple[str, str]] = [(k, r(k)) for pat, k in RED_FLAGS if re.search(pat, low)]  # (code, text)
+    good: list[tuple[str, str]] = []
     official = SOURCES.get(issuer, {}).get("domains", [])
     for d in _domains(text):
         if d in SHORTENERS:
-            flags.append(f"Shortened link ({d}) instead of an official site")
+            flags.append(("shortener", r("shortener", d=d)))
         elif d.endswith(".gov.my") or any(d == o or d.endswith("." + o) for o in official if o != ".gov.my"):
-            good.append(f"Link text shows an official domain {d} (check the real destination yourself)")
+            good.append(("official_domain", r("official_domain", d=d)))
         else:
-            flags.append(f"Unofficial domain {d}")
+            flags.append(("unofficial_domain", r("unofficial_domain", d=d)))
             if _lookalike(d):
-                flags.append(f"Looks like an official site but is not ({d})")
+                flags.append(("lookalike", r("lookalike", d=d)))
     if issuer != "UNKNOWN" and not flags:
-        good.append(f"Wording matches typical {issuer} letters (scammers copy this too)")
+        good.append(("known_pattern", r("known_pattern", issuer=issuer)))
     if REF_RE.search(text):
-        good.append("Reference number in an official-looking format")
+        good.append(("ref_format", r("ref_format")))
     score = max(0, min(100, 80 + 5 * len(good) - 22 * len(flags)))
     # Three levels: rules can rule a scam in, never prove a letter genuine.
     verdict = "likely_scam" if score < 60 else "no_signals" if issuer != "UNKNOWN" and not flags and score >= 80 else "caution"
-    reasons = ([{"kind": "risk", "text": f} for f in flags] + [{"kind": "ok", "text": g} for g in good]
-               + [{"kind": "info", "text": "We only read the text you gave us. We cannot see who really sent it, the real link behind a button, or the email headers."}])
+    reasons = ([{"kind": "risk", "code": c, "text": t} for c, t in flags] + [{"kind": "ok", "code": c, "text": t} for c, t in good]
+               + [{"kind": "info", "code": "cannot_see", "text": r("cannot_see")}])
     if re.search(r"payment|account|akaun|bayar", low):
-        reasons.append({"kind": "info", "text": "Pay only to an account you have confirmed on the agency's own website or by phone."})
+        reasons.append({"kind": "info", "code": "pay_confirmed", "text": r("pay_confirmed")})
     src = SOURCES.get(issuer, {})
-    site = src.get("source_url") or "https://www.malaysia.gov.my"
-    who = src.get("name", "the agency")
-    verify = [f"Type the website address yourself ({site}). Do not click links in the message.",
-              f"Find the phone number on {who}'s official site and call it to ask about this letter.",
-              "Check the reference number on that site or in the official app (for example MyTax or MyJPJ).",
-              "Do not pay or share any TAC/OTP until you have done these steps."]
+    verify = [r("type_url", site=src.get("source_url") or "https://www.malaysia.gov.my"),
+              r("call_official", who=src.get("name") or r("the_agency")),
+              r("check_ref"), r("no_pay_tac")]
     return {"genuine": verdict != "likely_scam",  # means 'not flagged', not 'proven genuine'
-            "verdict": verdict, "score": score, "red_flags": flags, "good_signs": good,
+            "verdict": verdict, "score": score, "red_flags": [t for _, t in flags], "good_signs": [t for _, t in good],
             "reasons": reasons, "verify_yourself": verify}
 
 

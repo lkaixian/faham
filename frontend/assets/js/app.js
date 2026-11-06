@@ -416,8 +416,8 @@
         <button class="btn btn-secondary" type="button" data-act="sum"><span>${esc(t("r_copy_sum"))}</span></button>
       </section>
 
-      ${grp("why", t("h_why"), `<ul class="reasons">${r.reasons.map((x) => `<li class="r-${x.k}">${svg(x.k)}<div><span class="rk">${esc(t("rk_" + x.k))}</span>${esc(x.text === null ? t("info_default") : tr(clean(x.text)))}</div></li>`).join("")}</ul>`, true)}
-      ${grp("verify", t("h_verify"), `<ol class="steps">${steps.map((x) => `<li>${esc(clean(x))}</li>`).join("")}</ol>`, true)}
+      ${grp("why", t("h_why"), `<ul class="reasons" lang="${HTML_LANG[r.sample ? state.lang : r.lang]}">${r.reasons.map((x) => `<li class="r-${x.k}">${svg(x.k)}<div><span class="rk">${esc(t("rk_" + x.k))}</span>${esc(x.text === null ? t("info_default") : tr(clean(x.text)))}</div></li>`).join("")}</ul>`, true)}
+      ${grp("verify", t("h_verify"), `<ol class="steps" lang="${HTML_LANG[r.sample ? state.lang : r.lang]}">${steps.map((x) => `<li>${esc(clean(x))}</li>`).join("")}</ol>`, true)}
       ${grp("says", t("h_says"), `<div lang="${HTML_LANG[lg]}">${ps.map((p) => `<p>${esc(clean(p))}</p>`).join("")}</div>
         ${reexplain ? `<p class="muted">${esc(t("x_note", { a: langName(r.lang) }))}</p><button class="btn btn-secondary" type="button" data-act="reexplain"><span>${esc(t("x_btn", { b: langName(state.xl) }))}</span></button>` : ""}
         <div class="facts">${chip("f_from", f.issuer)}${chip("f_amount", f.amount)}${chip("f_deadline", f.deadline)}${chip("f_ref", f.reference)}</div>`)}
@@ -500,7 +500,7 @@
       $("#pCard").innerHTML = skel; $("#pChoices").hidden = true; $("#pCount").textContent = t("p_loading");
       try {
         const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 6000);
-        const res = await fetch(CFG.API_BASE + "/api/practice?n=6", { signal: ctrl.signal });
+        const res = await fetch(CFG.API_BASE + "/api/practice?n=6&lang=" + state.lang, { signal: ctrl.signal });
         if (!res.ok) throw new Error(res.status);
         const got = await res.json(); if (!got.length) throw new Error("empty");
         items = got.map((x) => ({ from: x.sender, kind: x.channel, text: x.text, scam: x.is_scam, clues: x.clues, agent: x.agent }));

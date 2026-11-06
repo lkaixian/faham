@@ -48,6 +48,7 @@ class Fields(BaseModel):
 class Reason(BaseModel):
     kind: Literal["risk", "ok", "info"]
     text: str
+    code: Optional[str] = None  # stable key, e.g. "urgency"; same in every language
 
 
 class ScamVerdict(BaseModel):

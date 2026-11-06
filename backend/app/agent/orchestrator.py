@@ -47,11 +47,12 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None) -> AnalyzeRespons
 
     # ---- VERIFY
     tr.think("verify", "Before explaining anything, I must check this is not a scam.")
-    verdict = T.TOOLS["scam.check"].fn(redacted, issuer)
+    verdict = T.TOOLS["scam.check"].fn(redacted, issuer, req.language)
+    en = verdict if req.language == "en" else T.TOOLS["scam.check"].fn(redacted, issuer)  # trace stays English
     tr.call("verify", "scam.check", "domain allowlist · red-flag rules · reference pattern")
-    for g in verdict["good_signs"]:
+    for g in en["good_signs"]:
         tr.note("verify", "ok", "✓ " + g)
-    for r in verdict["red_flags"]:
+    for r in en["red_flags"]:
         tr.note("verify", "bad", "✗ " + r)
     genuine = verdict["genuine"]
     if verdict["verdict"] == "no_signals":
