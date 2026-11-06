@@ -1,0 +1,7 @@
+{
+  "_note": "DEMO DATA ONLY. Replace with an official office directory. Hours must be confirmed on the official site.",
+  "LHDN": [{"name": "LHDN branch (demo)", "postcode_prefix": "84", "hours": "Verify on hasil.gov.my", "booking": "Check official appointment system"}],
+  "JPJ": [{"name": "JPJ office (demo)", "postcode_prefix": "84", "hours": "Verify on jpj.gov.my", "booking": "Check official queue app"}],
+  "PTPTN": [{"name": "PTPTN counter (demo)", "postcode_prefix": "84", "hours": "Verify on ptptn.gov.my", "booking": "Walk-in"}],
+  "PDRM": [{"name": "Police station (demo)", "postcode_prefix": "84", "hours": "24 hours (verify)", "booking": "Walk-in"}]
+}

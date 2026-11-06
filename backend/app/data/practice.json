@@ -1,0 +1,8 @@
+[
+  {"sender": "noreply@hasil-refund-my.com", "channel": "Email", "text": "Tahniah! Anda layak menerima bayaran balik cukai RM 870. Log masuk akaun bank anda di pautan ini dalam 2 jam.", "is_scam": true, "clues": ["Domain is not hasil.gov.my", "Asks for bank login", "2-hour pressure"]},
+  {"sender": "MyJPJ (official app)", "channel": "App", "text": "Anda mempunyai 1 saman baharu. Sila semak dan bayar di dalam aplikasi MyJPJ.", "is_scam": false, "clues": ["Inside the official app", "No link", "No transfer to an account"]},
+  {"sender": "+60 11-XXXX XXXX", "channel": "SMS", "text": "PTPTN: DISKAUN 50% HARI INI SAHAJA! Pindahkan RM 300 ke akaun peribadi pegawai kami.", "is_scam": true, "clues": ["Today-only discount", "Personal account", "Mobile number sender"]},
+  {"sender": "Majlis Perbandaran (post)", "channel": "Letter", "text": "Bil Cukai Taksiran Penggal 2/2026 RM 98.00. Bayar di portal rasmi majlis atau di kaunter.", "is_scam": false, "clues": ["Regular bill", "Official portal or counter", "Reasonable deadline"]},
+  {"sender": "+60 3-XXXX XXXX (Bank)", "channel": "SMS", "text": "Akaun anda DIBEKUKAN. Berikan nombor TAC kepada pegawai kami untuk aktifkan semula.", "is_scam": true, "clues": ["Banks never ask for TAC", "Fear of frozen account", "Asks to share a code"]},
+  {"sender": "WhatsApp: Pegawai LHDN", "channel": "Chat", "text": "Hantar gambar IC depan & belakang serta nombor akaun bank untuk bayaran balik cukai.", "is_scam": true, "clues": ["IC photos on WhatsApp", "Asks bank details", "Unverified officer"]}
+]
