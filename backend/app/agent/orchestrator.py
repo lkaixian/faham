@@ -29,7 +29,7 @@ class Trace:
         self.steps.append(TraceStep(stage=stage, kind=kind, message=msg, flag=flag))
 
 
-def run(req: AnalyzeRequest, image_bytes: bytes | None = None) -> AnalyzeResponse:
+def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tuple | list = ()) -> AnalyzeResponse:
     tr = Trace()
     tr.think("read", "Goal: help the user understand this letter, confirm it is real, and decide the next action.")
 
@@ -47,8 +47,8 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None) -> AnalyzeRespons
 
     # ---- VERIFY
     tr.think("verify", "Before explaining anything, I must check this is not a scam.")
-    verdict = T.TOOLS["scam.check"].fn(redacted, issuer, req.language)
-    en = verdict if req.language == "en" else T.TOOLS["scam.check"].fn(redacted, issuer)  # trace stays English
+    verdict = T.TOOLS["scam.check"].fn(redacted, issuer, req.language, extra_signals)
+    en = verdict if req.language == "en" else T.TOOLS["scam.check"].fn(redacted, issuer, "en", extra_signals)  # trace stays English
     tr.call("verify", "scam.check", "domain allowlist · red-flag rules · reference pattern")
     for g in en["good_signs"]:
         tr.note("verify", "ok", "✓ " + g)

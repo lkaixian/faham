@@ -152,6 +152,31 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "完成这些步骤之前，不要付款，也不要透露任何 TAC/OTP。",
         "ta": "இந்தப் படிகளைச் செய்து முடிக்கும் வரை பணம் செலுத்தவோ TAC/OTP பகிரவோ வேண்டாம்.",
     },
+    # ---- email signals (from ingest.py)
+    "mail_spf_fail": {
+        "en": "The email failed its sender checks (SPF, DKIM or DMARC), so the sender may be faked",
+        "bm": "Emel ini gagal semakan penghantar (SPF, DKIM atau DMARC), jadi penghantar mungkin palsu",
+        "zh": "这封电邮没有通过发件人验证（SPF、DKIM 或 DMARC），发件人可能是假冒的",
+        "ta": "இந்த மின்னஞ்சல் அனுப்புநர் சோதனையில் (SPF, DKIM அல்லது DMARC) தோல்வியடைந்தது, அனுப்புநர் போலியாக இருக்கலாம்",
+    },
+    "mail_replyto_mismatch": {
+        "en": "Replies go to a different address than the sender",
+        "bm": "Balasan akan dihantar ke alamat lain, bukan alamat penghantar",
+        "zh": "回复会被发送到与发件人不同的地址",
+        "ta": "பதில்கள் அனுப்புநரின் முகவரிக்குப் பதிலாக வேறு முகவரிக்குச் செல்லும்",
+    },
+    "mail_link_mismatch": {
+        "en": "A link shows one website but opens a different one",
+        "bm": "Satu pautan menunjukkan satu laman web tetapi membuka laman lain",
+        "zh": "链接显示的是一个网站，实际打开的却是另一个网站",
+        "ta": "ஒரு இணைப்பு ஒரு இணையதளத்தைக் காட்டுகிறது, ஆனால் வேறொன்றைத் திறக்கிறது",
+    },
+    "mail_display_spoof": {
+        "en": "The sender name shows a different website than the real sender address",
+        "bm": "Nama penghantar menunjukkan laman web yang berbeza daripada alamat sebenar penghantar",
+        "zh": "发件人名称显示的网站与真实发件地址不同",
+        "ta": "அனுப்புநர் பெயர் உண்மையான முகவரியிலிருந்து வேறுபட்ட இணையதளத்தைக் காட்டுகிறது",
+    },
     # ---- fallback agency name
     "the_agency": {
         "en": "the agency",

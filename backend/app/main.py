@@ -8,13 +8,16 @@ import binascii
 import json
 import random
 
-from fastapi import FastAPI, HTTPException, Query, Response
+from urllib.parse import unquote
+
+from fastapi import FastAPI, HTTPException, Query, Request, Response
+from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import config, tts
+from . import channels, config, ingest, tts
 from .agent import orchestrator
 from .agent.tools import TOOLS, classify_issuer, redact, scam_check
-from .models import AnalyzeRequest, AnalyzeResponse, Language, PracticeItem, TTSRequest
+from .models import AnalyzeRequest, AnalyzeResponse, BatchResponse, Language, PracticeItem, TTSRequest
 
 app = FastAPI(
     title="FAHAM Agent API",
@@ -25,8 +28,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=config.ALLOWED_ORIGINS + (["null"] if config.ALLOW_NULL_ORIGIN else []),
     allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
+    allow_headers=["Content-Type", "X-Filename"],
 )
+app.include_router(channels.router)
 
 PRACTICE = json.loads((config.DATA_DIR / "practice.json").read_text(encoding="utf-8"))
 
@@ -35,7 +39,10 @@ PRACTICE = json.loads((config.DATA_DIR / "practice.json").read_text(encoding="ut
 def health():
     return {"status": "ok", "llm_provider": config.LLM_PROVIDER,
             "llm_configured": config.llm_ready(), "tools": list(TOOLS),
-            "tts_available": tts.available(), "tts_languages": list(tts.LANGS)}
+            "tts_available": tts.available(), "tts_languages": list(tts.LANGS),
+            "upload": {"max_mb": ingest.MAX_BODY // 1024 // 1024,
+                       "types": ["pdf", "docx", "txt", "md", "eml", "png", "jpg"]},
+            "channels": channels.status()}
 
 
 @app.post("/api/tts")
@@ -68,6 +75,28 @@ def analyze(req: AnalyzeRequest):
         return orchestrator.run(req, image)
     except orchestrator.OCRUnavailable as e:
         raise HTTPException(422, str(e))
+
+
+@app.post("/api/analyze-file", response_model=BatchResponse)
+async def analyze_file(request: Request, language: Language = Query("bm"),
+                       postcode: str | None = Query(None, pattern=r"^\d{1,5}$")):
+    """Raw file bytes as the body (no multipart). Headers: X-Filename, Content-Type. Nothing is stored."""
+    cl = request.headers.get("content-length", "")
+    if cl.isdigit() and int(cl) > ingest.MAX_BODY:
+        raise HTTPException(413, "File is larger than 25 MB")
+    buf = bytearray()
+    async for chunk in request.stream():
+        buf += chunk
+        if len(buf) > ingest.MAX_BODY:
+            raise HTTPException(413, "File is larger than 25 MB")
+    try:
+        def work():
+            docs = ingest.extract(unquote(request.headers.get("x-filename", "")) or None,
+                                  request.headers.get("content-type"), bytes(buf))
+            return ingest.analyze_files(docs, language, postcode)
+        return await run_in_threadpool(work)
+    except ingest.IngestError as e:
+        raise HTTPException(e.status, e.detail)
 
 
 @app.get("/api/practice", response_model=list[PracticeItem])

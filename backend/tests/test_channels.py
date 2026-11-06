@@ -1,0 +1,203 @@
+import hashlib
+import hmac
+import json
+from types import SimpleNamespace as NS
+
+import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+from app import channels, ingest, reply
+
+SECRET = "appsecret"
+ENV = dict(MESSENGER_VERIFY_TOKEN="mv", MESSENGER_APP_SECRET=SECRET,
+           MESSENGER_PAGE_TOKEN="pagetok", MESSENGER_PAGE_USERNAME="faham", FAHAM_PUBLIC_URL="https://faham.example")
+
+
+def batch(verdict="likely_scam"):
+    r = NS(scam=NS(verdict=verdict, verify_yourself=["Taip alamat rasmi sendiri", "Telefon talian rasmi", "tiga"],
+                   reasons=[NS(kind="risk", text=f"sebab {i} http://evil.example/x") for i in range(4)]),
+           route=NS(source_url="https://www.hasil.gov.my"))
+    return NS(files=[NS(name="a", result=r)])
+
+
+@pytest.fixture
+def env(monkeypatch):
+    for k, v in ENV.items():
+        monkeypatch.setenv(k, v)
+    for d in (channels._seen, channels._consent, channels._hits):
+        d.clear()
+    sent, calls = [], []
+
+    def fake_json(url, payload):
+        sent.append(payload)
+        return {}
+    monkeypatch.setattr(channels, "_json_req", fake_json)
+    monkeypatch.setattr(channels, "_download", lambda url: calls.append(url) or (b"data", "image/png"))
+    monkeypatch.setattr(ingest, "extract", lambda n, c, d, **k: [ingest.Doc(name=n, kind="image", text="x")])
+    monkeypatch.setattr(ingest, "analyze_files", lambda docs, lang, pc: batch())
+    app = FastAPI()
+    app.include_router(channels.router)
+    return TestClient(app), sent, calls
+
+
+def post(client, path, payload, secret=SECRET, sign=True):
+    raw = json.dumps(payload).encode()
+    h = {"X-Hub-Signature-256": "sha256=" + hmac.new(secret.encode(), raw, hashlib.sha256).hexdigest()} if sign else {}
+    return client.post(path, content=raw, headers=h)
+
+
+def ms(text, mid="m1", atts=None):
+    m = {"mid": mid, "text": text}
+    if atts:
+        m["attachments"] = atts
+    return {"entry": [{"messaging": [{"sender": {"id": "9"}, "message": m}]}]}
+
+
+def body(sent, i=-1):
+    return sent[i]["message"]["text"]
+
+
+URL = "/api/channels/messenger"
+
+
+def test_handshake_and_unconfigured(env, monkeypatch):
+    c, _, _ = env
+    q = "?hub.mode=subscribe&hub.challenge=777&hub.verify_token="
+    assert c.get(URL + q + "mv").text == "777"
+    assert c.get(URL + q + "bad").status_code == 403
+    monkeypatch.delenv("MESSENGER_APP_SECRET")
+    assert c.get(URL + q + "mv").status_code == 404
+
+
+def test_signature_enforced(env):
+    c, sent, _ = env
+    assert post(c, URL, ms("hi"), sign=False).status_code == 403
+    assert post(c, URL, ms("hi"), secret="wrong").status_code == 403
+    assert post(c, URL, ms("hi")).status_code == 200
+
+
+def test_consent_gate_then_analysis_no_genuine_wording(env):
+    c, sent, _ = env
+    post(c, URL, ms("Sila bayar segera akaun anda", "a1"))
+    assert len(sent) == 1 and "ILMU" in body(sent) and "OK" in body(sent)
+    assert "Kemungkinan penipuan" not in body(sent)  # not analysed before consent
+    post(c, URL, ms("OK", "a2"))
+    post(c, URL, ms("Sila bayar segera akaun anda", "a3"))
+    out = body(sent)
+    assert out.startswith("Kemungkinan penipuan") and "997" in out and "bukan nasihat undang-undang" in out
+    assert out.count("- sebab") == 3 and "Taip alamat" in out and "Telefon talian" in out and "tiga" not in out
+    assert "evil.example" not in out and "https://www.hasil.gov.my" in out and len(out) <= 900
+    assert not any(w in out.lower() for w in ("genuine", "sahih", "real", "—"))
+    post(c, URL, ms("STOP", "a4"))
+    post(c, URL, ms("hello again", "a5"))
+    assert "ILMU" in body(sent, -1) or "OK" in body(sent)  # consent forgotten: asks again, no analysis
+    assert "Kemungkinan" not in body(sent)
+
+
+def test_english_reply_and_media_and_dedup(env):
+    c, sent, calls = env
+    img = [{"type": "image", "payload": {"url": "https://lookaside.fbsbx.com/m/1.png"}}]
+    post(c, URL, ms("OK", "b0"))
+    post(c, URL, ms("", "b1", img))
+    n = len(sent)
+    post(c, URL, ms("", "b1", img))  # same id: Meta retry
+    assert len(sent) == n and len(calls) == 1
+    post(c, URL, ms("Please pay your account now, this is urgent", "b2"))
+    assert body(sent).startswith("Likely a scam")
+
+
+def test_audio_attachment_gets_short_reply(env):
+    c, sent, calls = env
+    post(c, URL, ms("", "v1", [{"type": "audio", "payload": {"url": "https://lookaside.fbsbx.com/v.mp4"}}]))
+    assert body(sent) == "I can read text, PDF, Word, email and photos." and not calls
+
+
+def test_status_updates_ignored(env):
+    c, sent, _ = env
+    p = {"entry": [{"messaging": [{"sender": {"id": "9"}, "delivery": {"mids": ["x"]}}]}]}
+    assert post(c, URL, p).status_code == 200 and not sent
+
+
+def test_messenger_ssrf_and_echo(env, monkeypatch):
+    c, sent, _ = env
+    assert channels._media_host_ok("https://scontent.xx.fbcdn.net/a.png")
+    assert channels._media_host_ok("https://lookaside.fbsbx.com/a")
+    for bad in ("http://scontent.fbcdn.net/a", "https://evil.example/fbcdn.net", "https://fbcdn.net.evil.example/a",
+                "https://169.254.169.254/x", "file:///etc/passwd"):
+        assert not channels._media_host_ok(bad)
+    ev = lambda m: {"entry": [{"messaging": [{"sender": {"id": "9"}, "message": m}]}]}
+    post(c, "/api/channels/messenger", ev({"mid": "e1", "text": "hi", "is_echo": True}))
+    assert not sent
+    post(c, "/api/channels/messenger", ev({"mid": "e2", "text": "OK"}))
+    post(c, "/api/channels/messenger", ev({"mid": "e3", "text": "Sila bayar akaun segera"}))
+    assert sent[-1]["messaging_type"] == "RESPONSE" and sent[-1]["recipient"] == {"id": "9"}
+
+
+def test_download_rejects_bad_host_and_oversize(monkeypatch):
+    with pytest.raises(ValueError):
+        channels._download("https://evil.example/a.png")
+
+    class R:
+        headers = {"Content-Type": "image/png"}
+        def read(self, n): return b"x" * n
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+    monkeypatch.setattr(channels, "_open", lambda req: R())
+    with pytest.raises(ValueError):
+        channels._download("https://x.fbcdn.net/a")
+
+
+def test_rate_limit(env):
+    c, sent, _ = env
+    post(c, URL, ms("OK", "r0"))
+    for i in range(14):
+        post(c, URL, ms("Sila bayar akaun segera", f"r{i + 1}"))
+    assert len(sent) == 11  # ok-ack + 9 replies, 1 rate notice, rest silent
+
+
+def test_status_hides_secrets(env, monkeypatch):
+    s = channels.status()
+    dump = json.dumps(s)
+    for v in ("mv", "appsecret", "pagetok"):
+        assert f'"{v}"' not in dump
+    assert "whatsapp" not in s
+    assert s["messenger"]["link"] == "https://m.me/faham" and s["embed"] is True
+
+
+def test_whatsapp_route_gone(env):
+    c, _, _ = env
+    assert c.get("/api/channels/whatsapp").status_code == 404
+    assert c.post("/api/channels/whatsapp", content=b"{}").status_code == 404
+
+
+def test_email_failed_spf_gets_no_reply(env, monkeypatch):
+    out = []
+    monkeypatch.setattr(channels, "_smtp_send", lambda *a: out.append(a))
+    mk = lambda auth, frm="a@b.my": (f"From: {frm}\r\nSubject: Fwd\r\nAuthentication-Results: mx; {auth}\r\n\r\nhello".encode())
+    assert channels.process_email(mk("spf=fail smtp.mailfrom=b.my", "x@b.my")) is False
+    assert channels.process_email(mk("dkim=fail", "y@b.my")) is False
+    assert channels.process_email(mk("dmarc=fail", "z@b.my")) is False
+    assert not out
+    assert channels.process_email(mk("spf=pass")) is True
+    assert out[0][0] == "a@b.my" and out[0][1] == "Re: Fwd"
+    assert channels.process_email(mk("spf=pass")) is False  # 1 reply per sender per hour
+
+
+def test_email_webhook_secret(env, monkeypatch):
+    c, _, _ = env
+    assert c.post("/api/channels/email", content=b"x").status_code == 404
+    monkeypatch.setenv("EMAIL_WEBHOOK_SECRET", "s3")
+    assert c.post("/api/channels/email", content=b"x", headers={"X-FAHAM-Secret": "no"}).status_code == 403
+
+
+def test_reply_languages_and_multi(monkeypatch):
+    assert reply.detect("நீங்கள் பணம் செலுத்த") == "ta" and reply.detect("请付款") == "zh"
+    assert reply.detect("Please pay your account") == "en" and reply.detect("Sila bayar akaun anda") == "bm"
+    b = batch("no_signals")
+    b.files.append(batch("caution").files[0])
+    out = reply.summary(b, "bm", "messenger")
+    assert out.splitlines()[0] == "Berhati-hati" and "Fail 1" in out and "genuine" not in out.lower()
+    assert reply.summary(batch("no_signals"), "bm", "x").startswith("Tiada tanda penipuan ditemui (ini bukan bukti)")
+    monkeypatch.setenv("FAHAM_PUBLIC_URL", "https://faham.example")
+    assert "https://faham.example/terms" in reply.notice("en") and len(reply.notice("en").splitlines()) == 3

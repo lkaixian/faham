@@ -102,3 +102,26 @@ class PracticeItem(BaseModel):
     is_scam: bool
     clues: list[str]
     agent: Optional[ScamVerdict] = None  # what the real agent says about this text
+
+
+class FileResult(BaseModel):
+    name: str
+    kind: str
+    status: Literal["ok", "skipped", "error"]
+    detail: Optional[str] = None
+    warnings: list[str] = []
+    result: Optional[AnalyzeResponse] = None
+
+
+class BatchSummary(BaseModel):
+    total: int = 0
+    analysed: int = 0
+    likely_scam: int = 0
+    caution: int = 0
+    no_signals: int = 0
+    skipped: int = 0
+
+
+class BatchResponse(BaseModel):
+    files: list[FileResult]
+    summary: BatchSummary

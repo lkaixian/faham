@@ -31,6 +31,7 @@
       <a href="#practice" data-i18n="nav_practice"></a>
       <a href="#dictionary" data-i18n="nav_dict"></a>
       <a href="#family" data-i18n="nav_family"></a>
+      <a href="#connect" data-i18n="nav_connect"></a>
       <a href="#about" data-i18n="nav_about"></a>
     </nav>
   </header>
@@ -57,8 +58,20 @@
           <div class="meta"><span class="vh" id="vhint" role="status"></span><span class="cnt" id="cnt"></span></div>
           <p class="muted priv"><span data-i18n="f_priv"></span> <a href="#about" data-i18n="f_priv_a"></a></p>
 
-          <label for="fileBox" data-i18n="f_file"></label>
-          <input type="file" id="fileBox" accept="image/png,image/jpeg" />
+          <!-- UPLOAD_START -->
+          <span class="label" id="upLbl" data-i18n="f_file"></span>
+          <div class="drop" id="drop" role="group" aria-labelledby="upLbl">
+            <div class="upbtns">
+              <button class="btn btn-secondary" id="chooseBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 15v5h16v-5"/></svg><span data-i18n="u_choose"></span></button>
+              <button class="btn btn-secondary photo-btn" id="photoBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span data-i18n="u_photo"></span></button>
+            </div>
+            <p class="muted dropnote" data-i18n="u_drop"></p>
+            <p class="muted" id="upTypes"></p>
+            <input type="file" id="fileBox" multiple hidden />
+            <input type="file" id="photoBox" accept="image/*" capture="environment" hidden />
+          </div>
+          <ul class="files" id="fileList"></ul>
+          <!-- UPLOAD_END -->
 
           <details class="ex" id="exBox">
           <summary data-i18n="ex_sum"></summary>
@@ -160,6 +173,13 @@
       </div>
     </section>
 
+    <!-- ===== CONNECT ===== -->
+    <section class="view" id="view-connect" hidden>
+      <h1 tabindex="-1" data-i18n="cn_h1"></h1>
+      <p class="lead" data-i18n="cn_lead"></p>
+      <div id="connectBody"></div>
+    </section>
+
     <!-- ===== ABOUT ===== -->
     <section class="view" id="view-about" hidden>
       <h1 tabindex="-1" data-i18n="a_h1"></h1>
@@ -196,6 +216,8 @@
         <li data-i18n="a_dt2"></li>
         <li data-i18n="a_dt3"></li>
         <li data-i18n="a_dt4"></li>
+        <li data-i18n="a_dt5"></li>
+        <li data-i18n="a_dt7"></li>
       </ul>
       <button class="btn btn-secondary" id="clearData" type="button" data-i18n="a_clear"></button>
       <button class="btn btn-quiet" id="obAgain" type="button" data-i18n="ob_again"></button>

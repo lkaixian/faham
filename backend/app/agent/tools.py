@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 
 from .. import llm
 from ..config import DATA_DIR
-from .i18n import render
+from .i18n import TEXT, render
 
 SOURCES: dict = {k: v for k, v in json.loads((DATA_DIR / "official_sources.json").read_text(encoding="utf-8")).items() if not k.startswith("_")}
 OFFICES: dict = json.loads((DATA_DIR / "offices.json").read_text(encoding="utf-8"))
@@ -193,11 +193,12 @@ def _domains(text: str) -> list[str]:
 
 
 @tool("scam.check", "Domain allowlist + red-flag rules. Returns verdict and evidence.")
-def scam_check(text: str, issuer: str, language: str = "en") -> dict:
+def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list = ()) -> dict:
     """Verdict plus reasons. Sentences come from i18n.TEXT in `language`; each reason carries its stable `code`."""
     low = text.lower()
     r = lambda code, **kw: render(code, language, **kw)
     flags: list[tuple[str, str]] = [(k, r(k)) for pat, k in RED_FLAGS if re.search(pat, low)]  # (code, text)
+    flags += [(c, r(c)) for c in extra if c in TEXT]  # extra risk codes, e.g. email header signals
     good: list[tuple[str, str]] = []
     official = SOURCES.get(issuer, {}).get("domains", [])
     for d in _domains(text):

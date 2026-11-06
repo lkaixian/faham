@@ -253,3 +253,43 @@ details.grp[open]::details-content { height: auto; }
 @media (max-width: 420px) { .ob .chip { min-width: 48px; padding: 0 12px; } }
 .step h2 { margin: 0 0 .6rem; font-size: 1.3rem; }
 .ob .snav { position: sticky; bottom: 0; background: var(--bg); padding: 10px 0; margin: 0; border-top: 1px solid var(--line); }
+
+/* files, summary list and Connect page: same tokens, same 48px targets */
+.drop { border: 2px dashed var(--line); border-radius: var(--r); padding: 12px 14px; background: var(--bg); transition: border-color .15s, background-color .15s; }
+.drop.over { border-color: var(--accent); background: var(--surface); }
+.upbtns { display: flex; flex-wrap: wrap; gap: 4px; }
+.upbtns .btn { flex: 1 1 200px; margin: 4px 0; }
+.dropnote { margin: 4px 0 0; }
+.drop .muted { margin: 4px 0; }
+@media (pointer: coarse) { .dropnote { display: none; } }
+@media (pointer: fine) { .photo-btn { display: none; } }
+.files, .flist { list-style: none; padding: 0; margin: 10px 0 0; }
+.file { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin: 8px 0; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); flex-wrap: wrap; }
+.file.bad { border-color: var(--bad); }
+.fico { flex: none; color: var(--accent); }
+.fico svg, .fitem > svg { width: 36px; height: 36px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.finfo { flex: 1 1 100px; min-width: 0; display: grid; gap: 2px; }
+.finfo b, .fname { overflow-wrap: anywhere; }
+.finfo .err { margin: 2px 0 0; font-size: .95rem; }
+.file .btn { margin: 0; flex: none; padding: 0 12px; min-height: 48px; }
+.file .btn svg { width: 18px; height: 18px; }
+progress { width: 100%; height: 10px; accent-color: var(--accent); }
+.eyebrow { margin: 14px 0 0; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-size: .85rem; }
+.bigsum { font-size: 1.6rem; margin: 4px 0 8px; }
+.flist li { margin: 10px 0; }
+.fitem { display: flex; gap: 14px; align-items: center; width: 100%; min-height: 64px; padding: 12px 14px; text-align: left; font: inherit; color: var(--c); background: var(--cb); border: 2px solid var(--c); border-left-width: 10px; border-radius: var(--r); }
+button.fitem { cursor: pointer; }
+.fitem > span { display: grid; gap: 2px; min-width: 0; color: var(--text); }
+.fitem b { color: var(--c); }
+.fitem .why { margin-top: 4px; }
+.v-skip { --c: var(--muted); --cb: var(--surface); }
+.fname { font-weight: 400; }
+.na { margin: 8px 0 0; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); }
+.copybox { display: block; width: 100%; font: inherit; color: var(--text); background: var(--bg); border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 48px; }
+.code { font: .85rem/1.5 ui-monospace, Consolas, monospace; resize: vertical; }
+#connectBody .btn-big { display: flex; text-decoration: none; margin: 12px 0 8px; }
+#connectBody .card .btn { margin-top: 10px; }
+.embed-note { margin: 8px 0 0; }
+body[data-embed] main { padding-bottom: 8px; }
+body[data-embed] h1 { margin-top: .6rem; }
+.na b { display: block; }

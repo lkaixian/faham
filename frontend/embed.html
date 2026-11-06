@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ms" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <title>FAHAM</title>
+  <meta name="theme-color" content="#0b5c63" />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body data-embed="1">
+  <!-- Embeddable checker for partner sites (<iframe src=".../embed.html">).
+       Same CSS and JS as index.html. No nav, no welcome dialog. The page tells its parent its height with
+       postMessage({type:"faham:height", height}) and follows the visitor's light or dark setting.
+       Keep the markup between UPLOAD_START and UPLOAD_END in step with index.html. -->
+  <header class="top">
+    <div class="wrap bar">
+      <a class="brand" href="embed.html">FAHAM</a>
+      <button class="btn btn-quiet" id="voiceBtn" type="button" aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+        <span id="voiceLbl"></span>
+      </button>
+      <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
+    </div>
+  </header>
+
+  <main class="wrap" id="main" tabindex="-1">
+    <section class="view" id="view-check">
+    <p class="muted embed-note"><span data-i18n="emb_note"></span> <a href="index.html#about" target="_blank" rel="noopener" data-i18n="emb_link"></a></p>
+      <div id="checker">
+        <h1 tabindex="-1" data-i18n="c_h1"></h1>
+        <p class="lead" data-i18n="c_lead"></p>
+
+        <div class="note warn" id="offlineNote" hidden><b data-i18n="off_b"></b> <span data-i18n="off_t"></span></div>
+
+        <ol class="hint" id="hint">
+          <li data-i18n="hint1"></li>
+          <li data-i18n="hint2"></li>
+          <li data-i18n="hint3"></li>
+        </ol>
+
+        <form id="form" class="card" novalidate>
+          <label for="pasteBox" data-i18n="f_paste"></label>
+          <textarea id="pasteBox" rows="7" maxlength="20000" aria-describedby="vhint cnt" data-i18n-ph="f_ph"></textarea>
+          <div class="meta"><span class="vh" id="vhint" role="status"></span><span class="cnt" id="cnt"></span></div>
+          <p class="muted priv"><span data-i18n="f_priv"></span> <a href="index.html#about" target="_blank" rel="noopener" data-i18n="f_priv_a"></a></p>
+
+          <!-- UPLOAD_START -->
+          <span class="label" id="upLbl" data-i18n="f_file"></span>
+          <div class="drop" id="drop" role="group" aria-labelledby="upLbl">
+            <div class="upbtns">
+              <button class="btn btn-secondary" id="chooseBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 15v5h16v-5"/></svg><span data-i18n="u_choose"></span></button>
+              <button class="btn btn-secondary photo-btn" id="photoBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span data-i18n="u_photo"></span></button>
+            </div>
+            <p class="muted dropnote" data-i18n="u_drop"></p>
+            <p class="muted" id="upTypes"></p>
+            <input type="file" id="fileBox" multiple hidden />
+            <input type="file" id="photoBox" accept="image/*" capture="environment" hidden />
+          </div>
+          <ul class="files" id="fileList"></ul>
+          <!-- UPLOAD_END -->
+
+          <details class="ex" id="exBox">
+          <summary data-i18n="ex_sum"></summary>
+          <div class="row2">
+            <div>
+              <span class="label" id="langLbl" data-i18n="f_explain"></span>
+              <div class="chips" id="langChips" role="group" aria-labelledby="langLbl"></div>
+              <p class="muted" id="detectNote" role="status"></p>
+            </div>
+            <div>
+              <label for="postBox" data-i18n="f_post"></label>
+              <input type="text" id="postBox" inputmode="numeric" pattern="[0-9]{1,5}" maxlength="5" autocomplete="postal-code" />
+            </div>
+          </div>
+          <span class="label" data-i18n="ex_h"></span>
+          <p class="muted" data-i18n="ex_note"></p>
+          <div class="examples" id="examples"></div>
+          </details>
+
+          <div class="consent" id="consentBlock" hidden>
+            <label class="tick"><input type="checkbox" id="consentBox" /><span data-i18n="consent_t"></span></label>
+            <details class="more">
+              <summary data-i18n="priv_sum"></summary>
+              <p data-i18n="priv_p"></p>
+            </details>
+          </div>
+
+          <div class="errbox">
+            <p class="err" id="formErr" role="alert"></p>
+            <button class="btn btn-secondary" id="retryBtn" type="button" hidden data-i18n="btn_retry"></button>
+          </div>
+          <button class="btn btn-primary btn-big" id="checkBtn" type="submit" data-i18n="btn_check"></button>
+          <button class="btn btn-quiet" id="clearInput" type="button" data-i18n="btn_clear"></button>
+        </form>
+
+        <div class="busy" id="busy" hidden>
+          <p id="busyTxt" role="status"></p>
+          <ol class="stages" id="stages" aria-hidden="true"></ol>
+          <div class="skel" aria-hidden="true"></div><div class="skel s2" aria-hidden="true"></div><div class="skel s3" aria-hidden="true"></div>
+        </div>
+
+      </div>
+
+      <!-- result -->
+      <div id="result" hidden></div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <p><span data-i18n="foot_scam"></span> <a href="tel:997">NSRC 997</a>.</p>
+    <p data-i18n="foot_disc"></p>
+  </footer>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

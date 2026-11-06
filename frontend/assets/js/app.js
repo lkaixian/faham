@@ -5,7 +5,9 @@
   const D = window.FAHAM_DATA;
   const T = window.FAHAM_T;
   const CFG = window.FAHAM_CONFIG || {};
-  const $ = (s, r = document) => r.querySelector(s);
+  const EMBED = !!document.body.dataset.embed;   // embed.html: checker only, no nav, other pages or welcome dialog
+  // a missing element (embed.html leaves many out) gets a spare hidden div, so writes to it do nothing instead of throwing
+  const $ = (s, r = document) => r.querySelector(s) || Object.assign(document.createElement("div"), { hidden: true });
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   // the product never calls a message "genuine"; scrub it from any text that comes back from outside
@@ -19,16 +21,17 @@
   const state = {
     lang: LANGS.includes(store.get("lang", "bm")) ? store.get("lang", "bm") : "bm",
     xl: "bm", xlManual: false,           // xl = language of the explanation; follows the UI language unless detected or chosen
-    theme: store.get("theme", "light"),
+    theme: EMBED ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : store.get("theme", "light"),
     learned: new Set(store.get("learned", [])),
     xp: store.get("xp", 0),
     voice: store.get("voice", true), all: store.get("all", false), step: 0,   // voice: auto-read on by default; all: whole result on one page
     api: false, mode: "wait", busy: false, tts: { available: false, langs: [] },
+    up: { max_mb: 25 }, channels: {}, batch: null, view: "res",   // up/channels come from /api/health
     result: null, last: null, route: "online", retry: null,
     practice: { items: D.practice, order: [], i: 0, score: 0, answered: false, results: [] }
   };
   state.xl = state.lang;
-  const CONSENT_V = 1;
+  const CONSENT_V = 2;                                 // 2: consent text now covers files as well as text and photos
   const consented = () => (store.get("consent", null) || {}).v === CONSENT_V;
   const save = () => { store.set("lang", state.lang); store.set("learned", [...state.learned]); store.set("xp", state.xp); store.set("theme", state.theme); };
   const HTML_LANG = { bm: "ms", en: "en", zh: "zh", ta: "ta" };
@@ -59,6 +62,13 @@
     risk: '<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4m0 3h.01"/>',
     ok: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
     info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/>',
+    f_pdf: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 14h2a1.5 1.5 0 0 0 0-3H9v6"/>',
+    f_docx: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5m-10 6 1 3 1.5-4L13 17l1-3"/>',
+    f_text: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 15h7M9 18h4"/>',
+    f_eml: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+    f_image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m4 18 5-5 4 4 3-3 4 4"/>',
+    f_file: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>',
+    close: '<path d="m6 6 12 12M18 6 6 18"/>',
     speaker: '<path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>',
     doc: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',
     device: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
@@ -224,7 +234,6 @@
       return { data: await res.json() };
     } catch (e) { return { error: t("e_net"), retry: true }; }
   }
-  const readB64 = (f) => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = () => no(r.error); r.readAsDataURL(f); });
 
   /* staged progress: the API answers in one go, so the four stages (Read, Check, Explain, Route) are paced on the client */
   const STAGES = ["s_read", "s_verify", "s_explain", "s_route"];
@@ -248,10 +257,9 @@
 
   async function checkOwn(inp) {
     state.last = inp; formErr(""); stopSpeak();
-    setBusy(true, { photo: !!inp.file });
-    const body = { language: state.xl };
+    setBusy(true);
+    const body = { language: state.xl, text: inp.text };
     const pc = $("#postBox").value.trim(); if (/^\d{1,5}$/.test(pc)) body.postcode = pc;
-    try { if (inp.text) body.text = inp.text; else body.image_b64 = await readB64(inp.file); } catch (e) { setBusy(false); formErr(t("e_read")); return; }
     const x = await post(body, 30000);
     setBusy(false);
     if (x.error) { formErr(x.error, x.retry ? () => checkOwn(inp) : null); return; }
@@ -275,7 +283,7 @@
   const MIN = 10, MAX = 20000;
   let hintKey = "";
   function updateCount(force) {
-    const box = $("#pasteBox"), n = box.value.trim().length, file = $("#fileBox").files[0];
+    const box = $("#pasteBox"), n = box.value.trim().length, file = queue.length;
     $("#cnt").textContent = t("f_count", { n: box.value.length.toLocaleString("en-US"), m: MAX.toLocaleString("en-US") });
     const key = n === 0 ? (file ? "f_file_sel" : "f_min") : n < MIN ? "f_short" : box.value.length >= MAX ? "f_full" : "f_ok";
     if (force || key !== hintKey) {
@@ -305,33 +313,174 @@
     $("#detectNote").textContent = d === state.lang ? "" : t("f_detect", { n: langName(d) });
   }
   function onInput() {
-    if ($("#pasteBox").value) $("#fileBox").value = "";
+    if ($("#pasteBox").value && queue.length) { queue = []; renderQueue(); }   // text and files are either/or
     formErr(""); updateCount(); autoDetect();
   }
   $("#pasteBox").addEventListener("input", onInput);
   $("#pasteBox").addEventListener("paste", () => setTimeout(() => $("#checkBtn").scrollIntoView({ block: "nearest" }), 0));
-  $("#fileBox").addEventListener("change", () => {
-    const f = $("#fileBox").files[0]; formErr("");
-    if (f) {
-      if (!/^image\/(png|jpeg)$/.test(f.type)) { $("#fileBox").value = ""; formErr(t("e_type")); }
-      else if (f.size > 4 * 1024 * 1024) { $("#fileBox").value = ""; formErr(t("e_big")); }
-      else $("#pasteBox").value = "";
+  /* ---------- files: up to 10, one request each (POST /api/analyze-file, raw bytes) ---------- */
+  const MAX_FILES = 10, MB = 1048576;
+  const EXT = { pdf: "pdf", docx: "docx", txt: "text", md: "text", eml: "eml", png: "image", jpg: "image", jpeg: "image", webp: "image", gif: "image" };
+  const MACRO = /^(doc|dot|docm|dotm|xlsm|xlsb|pptm|xlam)$/;          // old Word and macro files get their own message
+  let queue = [], qid = 0;                                            // { id, file, ext, kind, st: wait|send|read|done|fail, pct, msg }
+  const kb = (n) => (n < MB ? Math.max(1, Math.round(n / 1024)) + " KB" : (n / MB).toFixed(1) + " MB");
+  function renderUp() {
+    $("#upTypes").textContent = t("u_types", { n: MAX_FILES, m: state.up.max_mb });
+    $("#fileBox").accept = ["image/*", ...Object.keys(EXT).map((e) => "." + e)].join(",");
+    $("#chooseBtn").disabled = $("#photoBtn").disabled = !state.api || state.busy;
+  }
+  function renderQueue() {
+    $("#fileList").innerHTML = queue.map((q) => {
+      const st = q.st === "send" ? t("u_s", { p: q.pct }) : q.st === "read" ? t("u_r") : q.st === "done" ? t("u_d") : q.st === "fail" ? t("u_f") : t("u_w");
+      const prog = q.st === "send" ? `<progress max="100" value="${q.pct}"></progress>` : q.st === "read" ? "<progress max=\"100\"></progress>" : "";
+      return `<li class="file${q.st === "fail" ? " bad" : ""}"><span class="fico">${svg("f_" + q.kind)}</span>
+        <div class="finfo"><b>${esc(q.file.name)}</b><span class="muted">${esc(q.ext.toUpperCase())} &middot; ${kb(q.file.size)} &middot; ${esc(st)}</span>${prog}${q.msg ? `<span class="err">${esc(q.msg)}</span>` : ""}</div>
+        <button class="btn btn-quiet" type="button" data-rm="${q.id}" aria-label="${esc(t("u_remove_a", { n: q.file.name }))}"${state.busy ? " disabled" : ""}>${svg("close")}<span>${esc(t("u_remove"))}</span></button></li>`;
+    }).join("");
+  }
+  function addFiles(list) {
+    const errs = [];
+    for (const f of list) {
+      if (queue.some((q) => q.file.name === f.name && q.file.size === f.size && q.file.lastModified === f.lastModified)) continue;
+      if (queue.length >= MAX_FILES) { errs.push(t("u_e_many", { n: MAX_FILES })); break; }
+      const ext = (f.name.split(".").pop() || "").toLowerCase(), kind = EXT[ext];
+      if (!kind) errs.push(MACRO.test(ext) ? t("u_e_doc") : t("u_e_type", { n: f.name }));
+      else if (!f.size) errs.push(t("u_e_empty", { n: f.name }));
+      else if (f.size > state.up.max_mb * MB) errs.push(t("u_e_big", { n: f.name, m: state.up.max_mb }));
+      else queue.push({ id: ++qid, file: f, ext, kind, st: "wait", pct: 0, msg: "" });
     }
-    updateCount();
+    if (queue.length) $("#pasteBox").value = "";
+    formErr(errs.join(" ")); renderQueue(); updateCount(true);
+  }
+  $("#chooseBtn").addEventListener("click", () => $("#fileBox").click());
+  $("#photoBtn").addEventListener("click", () => $("#photoBox").click());
+  ["fileBox", "photoBox"].forEach((id) => $("#" + id).addEventListener("change", (e) => { addFiles([...e.target.files]); e.target.value = ""; }));
+  $("#fileList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-rm]"); if (!b || state.busy) return;
+    queue = queue.filter((q) => q.id !== +b.dataset.rm); renderQueue(); updateCount(true); $("#chooseBtn").focus();
   });
+  const dropEl = $("#drop");
+  ["dragenter", "dragover"].forEach((ev) => dropEl.addEventListener(ev, (e) => { e.preventDefault(); if (state.api) dropEl.classList.add("over"); }));
+  ["dragleave", "drop"].forEach((ev) => dropEl.addEventListener(ev, (e) => { e.preventDefault(); dropEl.classList.remove("over"); }));
+  dropEl.addEventListener("drop", (e) => { if (state.api && !state.busy) addFiles([...e.dataTransfer.files]); });
+  ["dragover", "drop"].forEach((ev) => window.addEventListener(ev, (e) => e.preventDefault()));   // a file dropped beside the box must not replace the page
+
+  // XMLHttpRequest, not fetch, because only XHR reports upload progress
+  const sendFile = (q) => new Promise((done) => {
+    const qs = new URLSearchParams({ language: state.xl }), pc = $("#postBox").value.trim();
+    if (/^\d{1,5}$/.test(pc)) qs.set("postcode", pc);
+    const x = new XMLHttpRequest();
+    x.open("POST", `${CFG.API_BASE}/api/analyze-file?${qs}`);
+    x.timeout = 120000;
+    x.setRequestHeader("X-Filename", encodeURIComponent(q.file.name));
+    x.setRequestHeader("Content-Type", q.file.type || "application/octet-stream");
+    x.upload.onprogress = (e) => { if (e.lengthComputable) { q.pct = Math.round((100 * e.loaded) / e.total); renderQueue(); } };
+    x.upload.onload = () => { q.st = "read"; renderQueue(); };
+    x.onload = () => { let j = null; try { j = JSON.parse(x.responseText); } catch (e) {} done({ status: x.status, json: j }); };
+    x.onerror = x.ontimeout = () => done({ status: 0 });
+    x.send(q.file);
+  });
+  const httpMsg = (s, name) => (s === 0 ? t("e_net") : [413, 415, 422, 429].includes(s) ? t("h_" + s, { n: name }) : t("e_server", { n: s }));
+  function toItem(f, lang) {
+    const it = { name: f.name, kind: f.kind, status: f.status, detail: f.detail, warnings: f.warnings || [], r: null };
+    if (f.status === "ok" && f.result) {
+      try { it.r = Object.assign(fromApi(f.result, lang), { file: { name: f.name, kind: f.kind }, warnings: it.warnings, fromBatch: true }); } catch (e) { it.detail = "unreadable result"; }
+    }
+    return it;
+  }
+  async function checkFiles() {
+    state.last = null; formErr(""); stopSpeak();
+    const lang = state.xl, todo = queue.filter((q) => q.st !== "done");
+    setBusy(true, { sample: true }); renderUp();
+    let items = [], firstErr = "";
+    for (const [i, q] of todo.entries()) {
+      $("#busyTxt").textContent = t("u_busy", { i: i + 1, n: todo.length });
+      q.st = "send"; q.pct = 0; q.msg = ""; renderQueue();
+      const res = await sendFile(q);
+      if (res.status === 200 && res.json && Array.isArray(res.json.files)) { q.st = "done"; items.push(...res.json.files.map((f) => toItem(f, lang))); }
+      else { q.st = "fail"; q.msg = httpMsg(res.status, q.file.name); firstErr = firstErr || q.msg; items.push({ name: q.file.name, kind: q.kind, status: "error", http: q.msg, warnings: [], r: null }); }
+      renderQueue();
+    }
+    setBusy(false); renderUp(); renderQueue();
+    if (!items.some((x) => x.status !== "error" || !x.http)) { formErr(firstErr, checkFiles); return; }   // every request failed: stay on the form, rows show why
+    queue = []; renderQueue(); updateCount(true);
+    if (items.length === 1 && items[0].r) { state.batch = null; items[0].r.fromBatch = false; show(items[0].r); return; }
+    state.batch = { items }; showSummary();
+  }
+
+  /* ---------- summary of several files: worst first, each opens its normal step-by-step result ---------- */
+  const skipText = (x) => x.http || (/encrypt|password|protect/i.test(x.detail || "") ? t("sk_enc") : /ocr|scan/i.test(x.detail || "") ? t("sk_ocr") : t("sk_gen"));
+  function showSummary() {
+    stopSpeak(); state.view = "sum"; state.step = 0; renderSummary();
+    $("#checker").hidden = true; $("#result").hidden = false;
+    $("#result").scrollIntoView(); const h = $("#vHead"); if (h) h.focus({ preventScroll: true });
+    autoSay();
+  }
+  function renderSummary() {
+    const its = state.batch.items, ok = its.filter((x) => x.r), bad = its.filter((x) => !x.r);
+    const n = (v) => ok.filter((x) => x.r.verdict === v).length;
+    const line = [t(ok.length === 1 ? "sm_an1" : "sm_an", { n: ok.length }), n("likely_scam") && t("sm_scam", { n: n("likely_scam") }), n("caution") && t("sm_caut", { n: n("caution") }),
+      n("no_signals") && t("sm_none", { n: n("no_signals") }), bad.length && t("sm_skip", { n: bad.length })].filter(Boolean).join(", ");
+    const rank = (x) => (x.r ? VERDICTS.indexOf(x.r.verdict) : 3);
+    const li = ({ x, i }) => (x.r
+      ? `<li><button type="button" class="fitem v-${x.r.verdict}" data-open="${i}">${svg(x.r.verdict)}<span><b>${esc(t("vw_" + x.r.verdict))}</b><span class="fname">${esc(x.name)}</span></span></button></li>`
+      : `<li class="fitem v-skip">${svg("info")}<span><b>${esc(t("vw_skip"))}</b><span class="fname">${esc(x.name)}</span><span class="why">${esc(skipText(x))}</span>${x.detail && !x.http ? `<span class="muted" lang="en">${esc(t("sk_det"))} ${esc(x.detail)}</span>` : ""}</span></li>`);
+    pages = [{ id: "sum", say: () => [line, state.lang] }];
+    $("#result").innerHTML = `${rbar("again", "r_again")}
+      <p class="eyebrow">${esc(t("sm_h"))}</p>
+      <h1 id="vHead" tabindex="-1" class="bigsum">${esc(line)}</h1>
+      ${ok.length ? `<p class="muted">${esc(t("sm_tap"))}</p>` : ""}
+      <h2 class="h3">${esc(t("sm_list"))}</h2>
+      <ul class="flist">${its.map((x, i) => ({ x, i })).sort((a, b) => rank(a.x) - rank(b.x)).map(li).join("")}</ul>
+      <div class="snav"><button class="btn btn-primary" type="button" data-act="again">${esc(t("r_again"))}</button></div>
+      <p class="muted">${esc(t("disc"))}</p>`;
+  }
+
+  /* ---------- Connect page: only channels the server says are configured; nothing else gets a button or link ---------- */
+  const safeUrl = (u) => /^https:\/\/[^\s"<>]+$/.test(String(u || ""));
+  function renderConnect() {
+    const ch = state.channels || {}, ms = ch.messenger || {}, em = ch.email || {};
+    const na = `<p class="na"><b>${esc(t("cn_na_h"))}</b> ${esc(t("cn_na"))}</p>`;
+    const steps = (a) => `<ol class="steps">${a.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>`;
+    const card = (h, body) => `<section class="card"><h2 class="h3">${esc(h)}</h2>${body}</section>`;
+    const origin = /^https?:/.test(location.origin) ? location.origin : "https://your-faham-site.example";   // labelled placeholder when opened from a file
+    const code = `<iframe id="faham" src="${origin}/embed.html" title="FAHAM" width="100%" height="700" style="border:0"></iframe>\n<script>\naddEventListener("message", function (e) {\n  if (e.origin === "${origin}" && e.data && e.data.type === "faham:height") document.getElementById("faham").style.height = e.data.height + "px";\n});\n</script>`;
+    const say = [t("cn_lead")];
+    const parts = [];
+    if (ms.configured && safeUrl(ms.link)) {
+      const s = t("cn_app_s").map((x) => x.replace("{app}", "Messenger")); say.push("Messenger", ...s);
+      parts.push(card("Messenger", steps(s) + `<a class="btn btn-primary btn-big" href="${esc(ms.link)}" target="_blank" rel="noopener noreferrer">${esc(t("cn_btn"))}</a><p class="muted">${esc(t("cn_app_p").replace("{app}", "Messenger"))}</p>`));
+    } else parts.push(card("Messenger", na));
+    if (em.configured && /^[^\s@<>"]+@[^\s@<>"]+$/.test(em.address || "")) {
+      const s = t("cn_em_s"); say.push(t("cn_em_h"), ...s);
+      parts.push(card(t("cn_em_h"), steps(s) + `<label for="cnAddr">${esc(t("cn_em_addr"))}</label><input type="text" id="cnAddr" class="copybox" readonly value="${esc(em.address)}" /><button class="btn btn-secondary" type="button" data-copy="cnAddr"><span>${esc(t("copy"))}</span></button><p class="muted">${esc(t("cn_em_p"))}</p>`));
+    } else parts.push(card(t("cn_em_h"), na));
+    if (ch.embed === true) {
+      const s = t("cn_web_s"); say.push(t("cn_web_h"), ...s);
+      parts.push(card(t("cn_web_h"), steps(s) + `<label for="cnCode">${esc(t("cn_web_code"))}</label><textarea id="cnCode" class="copybox code" rows="8" readonly spellcheck="false">${esc(code)}</textarea><button class="btn btn-secondary" type="button" data-copy="cnCode"><span>${esc(t("copy"))}</span></button><p class="muted">${esc(t("cn_web_note"))}</p><p class="muted">${esc(t("cn_web_p"))}</p>`));
+    } else parts.push(card(t("cn_web_h"), na));
+    renderConnect.say = say.join(" ");
+    $("#connectBody").innerHTML = `<button class="btn btn-secondary speak" id="cnSpeak" type="button">${svg("speaker")}<span>${esc(t("listen"))}</span></button><p class="muted vnote" id="cnNote" role="status"></p>${parts.join("")}`;
+  }
+  $("#connectBody").addEventListener("click", (e) => {
+    const c = e.target.closest("[data-copy]"), sp = e.target.closest("#cnSpeak");
+    if (c) copyText($("#" + c.dataset.copy).value);
+    else if (sp) readAloud(renderConnect.say, state.lang, sp, $("#cnNote"));
+  });
+
   $("#clearInput").addEventListener("click", () => {
-    $("#pasteBox").value = ""; $("#fileBox").value = ""; $("#postBox").value = ""; formErr("");
+    $("#pasteBox").value = ""; queue = []; renderQueue(); $("#postBox").value = ""; formErr("");
     state.xl = state.lang; state.xlManual = false; $("#detectNote").textContent = ""; syncChips(); updateCount();
   });
   $("#retryBtn").addEventListener("click", () => { const f = state.retry; if (f) { formErr(""); f(); } });
   $("#form").addEventListener("submit", (e) => {
     e.preventDefault(); if (state.busy) return;
-    const text = $("#pasteBox").value.trim(), file = $("#fileBox").files[0];
+    const text = $("#pasteBox").value.trim();
     if (!state.api) { formErr(t("e_offline")); return; }
-    if (!text && !file) { formErr(t("e_empty")); $("#pasteBox").focus(); return; }
-    if (text && text.length < MIN) { formErr(t("e_short")); $("#pasteBox").focus(); return; }
+    if (!text && !queue.length) { formErr(t("e_empty")); $("#pasteBox").focus(); return; }
+    if (!queue.length && text.length < MIN) { formErr(t("e_short")); $("#pasteBox").focus(); return; }
     if (!consented()) { $("#consentBlock").hidden = false; formErr(t("consent_need")); $("#consentBox").focus(); return; }
-    checkOwn(text ? { text } : { file });
+    if (queue.length) checkFiles(); else checkOwn({ text });
   });
   $("#consentBox").checked = consented();
   $("#consentBlock").hidden = true;
@@ -359,7 +508,8 @@
   function refreshLang() {
     stopSpeak(); $("#fLang").value = state.lang; applyI18n(); syncChips(); renderMode(); renderExamples(); setTheme(); setVoice();
     if (!$("#ob").hidden) renderOb(); updateCount(true); renderLevel();
-    if (state.result && !$("#result").hidden) renderResult(state.result, true);
+    renderUp(); renderQueue();
+    if (!$("#result").hidden) { if (state.view === "sum") renderSummary(); else if (state.result) renderResult(state.result, true); }
     if (!state.practice.answered) renderPractice();
     route(true);
   }
@@ -384,7 +534,7 @@
     if (state.voice) speakStep(false);
   }
   function show(r) {
-    state.result = r; state.route = "online"; state.step = 0;
+    state.result = r; state.route = "online"; state.step = 0; state.view = "res";
     renderResult(r);
     $("#checker").hidden = true; $("#result").hidden = false;
     store.set("checked", true); $("#hint").hidden = true;
@@ -393,7 +543,7 @@
     autoSay();
   }
   function backToChecker() {
-    stopSpeak(); state.step = 0;
+    stopSpeak(); state.step = 0; state.batch = null;
     $("#result").hidden = true; $("#checker").hidden = false;
     window.scrollTo(0, 0); $("#checker h1").focus();
   }
@@ -421,9 +571,11 @@
   /* bodies shared by the step view and the one-page view */
   const reasonText = (x) => (x.text === null ? t("info_default") : tr(clean(x.text)));
   const reasonLi = (x) => `<li class="r-${x.k}">${svg(x.k)}<div><span class="rk">${esc(t("rk_" + x.k))}</span>${esc(reasonText(x))}</div></li>`;
+  const HDR = /\b(headers?|spf|dkim|dmarc|reply-to|return-path|display name|received)\b/i;
   const whyHtml = (r, n = 99) => {
+    const em = r.file && r.file.kind === "eml" && r.reasons.some((x) => HDR.test(x.text || "")) ? `<p class="note">${esc(t("em_note"))}</p>` : "";
     const ul = (a) => `<ul class="reasons" lang="${HTML_LANG[rl(r)]}">${a.map(reasonLi).join("")}</ul>`;
-    return ul(r.reasons.slice(0, n)) + (r.reasons.length > n ? more(ul(r.reasons.slice(n))) : "");
+    return em + ul(r.reasons.slice(0, n)) + (r.reasons.length > n ? more(ul(r.reasons.slice(n))) : "");
   };
   const stepsOl = (r, a, n) => `<ol class="steps" start="${n}" lang="${HTML_LANG[rl(r)]}">${a.map((x) => `<li>${esc(clean(x))}</li>`).join("")}</ol>`;
   const verifyHtml = (r) => stepsOl(r, verifyOf(r), 1);
@@ -472,6 +624,14 @@
     out.push({ id: "learn", h: "h_learn", html: learnHtml(r), say: () => [clean(r.kenapa.a), "en"] });
     return out;
   }
+  const rbar = (act, lbl) => `
+      <div class="rbar">
+        <button class="btn btn-secondary" type="button" data-act="${act}">&larr; <span>${esc(t(lbl))}</span></button>
+        <button class="btn btn-secondary speak" type="button" data-act="speak">${svg("speaker")}<span>${esc(t("listen"))}</span></button>
+      </div>
+      <p class="muted vnote" id="vnote" role="status"></p>
+      <button class="btn btn-primary btn-big tap" type="button" id="tapListen" data-act="speak" hidden>${svg("speaker")}<span>${esc(t("tap"))}</span></button>`;
+  const warnHtml = (r) => { const w = [...new Set((r.warnings || []).map((x) => (/ocr|scan/i.test(x) ? t("w_ocr") : String(x))))]; return w.length ? `<div class="note"><b>${esc(t("w_h"))}</b> ${w.map(esc).join(" ")}</div>` : ""; };
   function renderResult(r, keep) {
     const open = {};
     if (keep) $$("#result details[data-g]").forEach((d) => { open[d.dataset.g] = d.open; });
@@ -484,18 +644,13 @@
         <ol class="trace-list" lang="en">${(r.trace || []).map((x) => `<li class="${x.flag ? "flag" : ""}"><span class="tag">${esc(STATUS[x.k] ? t(STATUS[x.k]) : t("st_step"))}${x.t ? " " + esc(x.t) : ""}</span>${esc(clean(x.m))}</li>`).join("") || `<li>${esc(t("tr_none"))}</li>`}</ol>
       </details>`;
     pages = buildPages(r);
-    const head = `
-      <div class="rbar">
-        <button class="btn btn-secondary" type="button" data-act="again">&larr; <span>${esc(t("r_again"))}</span></button>
-        <button class="btn btn-secondary speak" type="button" data-act="speak">${svg("speaker")}<span>${esc(t("listen"))}</span></button>
-      </div>
-      <p class="muted vnote" id="vnote" role="status"></p>
-      <button class="btn btn-primary btn-big tap" type="button" id="tapListen" data-act="speak" hidden>${svg("speaker")}<span>${esc(t("tap"))}</span></button>
-      ${r.sample ? `<p class="note">${esc(t("sample_note"))}${state.lang !== "en" ? " " + esc(t("sample_lang")) : ""}</p>` : ""}`;
+    const head = rbar(r.fromBatch ? "list" : "again", r.fromBatch ? "sm_back" : "r_again") +
+      (r.sample ? `<p class="note">${esc(t("sample_note"))}${state.lang !== "en" ? " " + esc(t("sample_lang")) : ""}</p>` : "") +
+      (r.file ? `<p class="muted fname">${esc(t("f_name", { n: r.file.name }))}</p>` : "");
     const allBtn = `<button class="btn btn-quiet alink" type="button" data-act="all">${esc(t(state.all ? "all_off" : "all_on"))}</button>`;
     let body;
     if (state.all) {
-      body = `${allBtn}${verdict}
+      body = `${allBtn}${verdict}${warnHtml(r)}
       <section class="card next" aria-labelledby="nextH">
         <h2 class="h3" id="nextH">${esc(t("next_h"))}</h2>
         <p class="next-step">${esc(clean(verifyOf(r)[0]))}</p>
@@ -511,10 +666,10 @@
     } else {
       const i = (state.step = Math.min(state.step, pages.length - 1)), p = pages[i], last = i === pages.length - 1;
       body = `<div class="stepbar"><p>${esc(t("st_of", { n: i + 1, m: pages.length }))}</p><ol class="dots" aria-hidden="true">${pages.map((_, j) => `<li${j <= i ? ' class="on"' : ""}></li>`).join("")}</ol></div>
-      ${p.id === "verdict" ? verdict : `<section class="card step"><h2 id="stepH" tabindex="-1">${esc(t(p.h))}</h2>${p.html}</section>`}
+      ${p.id === "verdict" ? verdict : `<section class="card step"><h2 id="stepH" tabindex="-1">${esc(t(p.h))}</h2>${p.html}</section>`}${i === 0 ? warnHtml(r) : ""}
       <div class="snav">
         <button class="btn btn-secondary" type="button" data-act="prev"${i === 0 ? " disabled" : ""}>&larr; ${esc(t("bk"))}</button>
-        ${last ? `<button class="btn btn-primary" type="button" data-act="again">${esc(t("st_done"))}</button>` : `<button class="btn btn-primary" type="button" data-act="next">${esc(t(p.id === "now" ? "st_got" : "nx"))}</button>`}
+        ${last ? `<button class="btn btn-primary" type="button" data-act="${r.fromBatch ? "list" : "again"}">${esc(t(r.fromBatch ? "sm_back" : "st_done"))}</button>` : `<button class="btn btn-primary" type="button" data-act="next">${esc(t(p.id === "now" ? "st_got" : "nx"))}</button>`}
       </div>
       ${allBtn}
       ${last ? `<button class="btn btn-quiet" type="button" data-act="sum"><span>${esc(t("r_copy_sum"))}</span></button>${tail}` : ""}`;
@@ -522,9 +677,11 @@
     $("#result").innerHTML = `${head}${body}<p class="muted">${esc(t("disc"))}</p>`;
   }
   $("#result").addEventListener("click", (e) => {
-    const r = state.result; if (!r) return;
+    const r = state.result;
+    const op = e.target.closest("[data-open]");
+    if (op) { const it = state.batch && state.batch.items[+op.dataset.open]; if (it && it.r) show(it.r); return; }
     const rt = e.target.closest("[data-route]");
-    if (rt) {
+    if (rt && r) {
       state.route = rt.dataset.route;
       $$("[data-route]").forEach((b) => b.setAttribute("aria-pressed", b === rt));
       $("#routePanel").innerHTML = routeHtml(r); return;
@@ -532,9 +689,11 @@
     const a = e.target.closest("[data-act]"); if (!a) return;
     const act = a.dataset.act;
     if (act === "again") backToChecker();
+    else if (act === "list") showSummary();
+    else if (act === "speak") { $("#tapListen").hidden = true; speakStep(true); }
+    else if (!r) return;
     else if (act === "copy") copyText(r.draft, t("draft_copied"));
     else if (act === "sum") copyText(summaryText(r), t("sum_copied"));
-    else if (act === "speak") { $("#tapListen").hidden = true; speakStep(true); }
     else if (act === "next" || act === "prev") {
       state.step += act === "next" ? 1 : -1; renderResult(r, true); $("#result").scrollIntoView();
       const h = $("#vHead, #stepH"); if (h) h.focus({ preventScroll: true });
@@ -723,15 +882,16 @@
   $("#fSpeak").addEventListener("click", (e) => readAloud(famText, famLang, e.currentTarget, $("#fVnote")));
 
   /* ---------- pages, theme, data ---------- */
-  const VIEWS = ["check", "practice", "dictionary", "family", "about"];
+  const VIEWS = ["check", "practice", "dictionary", "family", "connect", "about"];
   function route(first) {
-    const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
+    const v = EMBED ? "check" : VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
     VIEWS.forEach((n) => ($("#view-" + n).hidden = n !== v));
     $$(".top nav a").forEach((a) => (a.getAttribute("href") === "#" + v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
     document.title = "FAHAM: " + t("ti_" + v);
     if (!first) stopSpeak();
     if (v === "dictionary") { renderGlossary(); renderLevel(); }
     if (v === "family") renderFamily();
+    if (v === "connect") renderConnect();
     if (!first) { window.scrollTo(0, 0); const h = $("h1", $("#view-" + v)); if (h) h.focus(); }
   }
   window.addEventListener("hashchange", () => route(false));
@@ -747,7 +907,7 @@
     try { Object.keys(localStorage).filter((k) => k.startsWith("faham_")).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
     forgetOb();
     Object.assign(state, { lang: "bm", xl: "bm", xlManual: false, theme: "light", learned: new Set(), xp: 0, voice: true, all: false, step: 0, result: null, last: null });
-    $("#consentBox").checked = false; $("#consentBlock").hidden = true; $("#pasteBox").value = ""; $("#fileBox").value = ""; $("#postBox").value = ""; formErr("");
+    $("#consentBox").checked = false; $("#consentBlock").hidden = true; $("#pasteBox").value = ""; queue = []; state.batch = null; renderQueue(); $("#postBox").value = ""; formErr("");
     $("#detectNote").textContent = ""; $("#hint").hidden = false;
     $("#result").hidden = true; $("#result").innerHTML = ""; $("#checker").hidden = false;
     fillFamily(); refreshLang(); newRound();
@@ -762,7 +922,7 @@
     state.api = online; state.mode = online ? "on" : "off"; renderMode();
     $("#offlineNote").hidden = online;
     if (!online) $("#exBox").open = true;
-    ["pasteBox", "fileBox", "postBox", "clearInput"].forEach((id) => ($("#" + id).disabled = !online));
+    ["pasteBox", "postBox", "clearInput"].forEach((id) => ($("#" + id).disabled = !online)); renderUp();
     $("#checkBtn").disabled = !online || state.busy;
   }
   async function checkApi() {
@@ -774,6 +934,10 @@
       if (r.ok) {
         const h = await r.json().catch(() => ({}));
         state.tts = { available: h.tts_available === true, langs: Array.isArray(h.tts_languages) ? h.tts_languages : [] };
+        const u = h.upload || {};
+        state.up.max_mb = +u.max_mb > 0 ? +u.max_mb : 25;
+        state.channels = h.channels && typeof h.channels === "object" ? h.channels : {};
+        renderUp(); renderConnect();
       }
     } catch (e) { setMode(false); }
     if (state.api) newRound();
@@ -783,6 +947,10 @@
   renderChips(); setTheme(); setVoice(); applyI18n(); syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();
   $("#hint").hidden = !!store.get("checked", false);
   state.practice.order = D.practice.map((_, i) => i).sort(() => Math.random() - 0.5).slice(0, 6);
-  renderPractice(); route(true); checkApi();
-  if (!onboarded()) showOb();
+  renderPractice(); route(true); renderUp(); checkApi();
+  if (EMBED) {                                   // tell the page that holds the iframe how tall we are
+    const tell = () => parent !== window && parent.postMessage({ type: "faham:height", height: Math.ceil(document.body.getBoundingClientRect().height) }, "*");
+    new ResizeObserver(tell).observe(document.body); tell();
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => { state.theme = e.matches ? "dark" : "light"; setTheme(); });
+  } else if (!onboarded()) showOb();
 })();
