@@ -2,7 +2,7 @@ FROM python:3.12-slim
 WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-msa && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt pytesseract pillow
+RUN pip install --no-cache-dir -r requirements.txt pytesseract pillow anthropic
 COPY app ./app
 RUN useradd -r -u 10001 faham
 USER faham
