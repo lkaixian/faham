@@ -200,3 +200,15 @@ def test_redact_keeps_letter_content():
     assert c["plate"] == 0 and c["address"] == 0
     out, c = T.redact(SCAM)
     assert "011-2345 6789" not in out and "RM 2,150.00" in out and c["plate"] == 0
+
+
+def test_genuine_footer_links_are_not_scam_signs():
+    """A real survey email: social footer, Google Form, WhatsApp only as a social-media name."""
+    t = ("Jemputan kajian kepuasan pelanggan DOSM. Pautan: https://forms.gle/abc123xyz "
+         "Portal: https://www.dosm.gov.my Facebook: https://www.facebook.com/StatsMalaysia "
+         "TikTok: https://www.tiktok.com/@x YouTube: https://www.youtube.com/@x Instagram: https://www.instagram.com/x "
+         "Media sosial: WhatsApp, Telegram. Soalan: perhubunganawam@dosm.gov.my")
+    v = T.scam_check(t, "UNKNOWN", "en")
+    assert v["verdict"] == "caution" and not v["red_flags"]
+    assert {r["code"] for r in v["reasons"]} >= {"form_link", "social_links"}
+    assert T.scam_check("Hubungi kami di WhatsApp 012 untuk sahkan akaun", "UNKNOWN", "en")["red_flags"]

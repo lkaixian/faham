@@ -83,6 +83,18 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "使用短链接（{d}），不是官方网站",
         "ta": "அதிகாரப்பூர்வ இணையதளத்துக்குப் பதிலாக சுருக்கிய இணைப்பு ({d})",
     },
+    "social_links": {
+        "en": "Social media links appear. Check they are the agency's real accounts from its own website",
+        "bm": "Terdapat pautan media sosial. Semak ia akaun sebenar agensi daripada laman web rasminya",
+        "zh": "信中有社交媒体链接。请到该机构官方网站核对这些是否为其真实账号",
+        "ta": "சமூக ஊடக இணைப்புகள் உள்ளன. அவை நிறுவனத்தின் உண்மையான கணக்குகளா என அதன் அதிகாரப்பூர்வ இணையதளத்தில் சரிபார்க்கவும்",
+    },
+    "form_link": {
+        "en": "Asks you to fill an online form ({d}). Confirm the survey is listed on the agency's own website before entering personal details",
+        "bm": "Meminta anda mengisi borang dalam talian ({d}). Sahkan kaji selidik itu ada di laman web rasmi agensi sebelum mengisi butiran peribadi",
+        "zh": "要求您填写在线表格（{d}）。填写个人资料前，请先在该机构官方网站确认有此调查",
+        "ta": "இணையப் படிவத்தை ({d}) நிரப்பக் கேட்கிறது. தனிப்பட்ட விவரங்களை உள்ளிடும் முன் அந்த ஆய்வு நிறுவனத்தின் இணையதளத்தில் உள்ளதா என உறுதிசெய்யவும்",
+    },
     "unofficial_domain": {
         "en": "Unofficial domain {d}",
         "bm": "Domain tidak rasmi {d}",

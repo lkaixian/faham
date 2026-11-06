@@ -145,6 +145,10 @@ def extract_fields(text: str) -> dict:
 
 # ---------------------------------------------------------------- verify
 URL_RE = re.compile(r"\b((?:https?://)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:/[^\s]*)?)", re.IGNORECASE)
+# Social/mail/form hosts: seen in genuine footers and email print-outs, so they are noted, not scored as scam signs.
+SOCIAL = ("facebook.com", "x.com", "twitter.com", "instagram.com", "tiktok.com", "youtube.com", "youtu.be",
+          "linkedin.com", "whatsapp.com", "telegram.org", "mail.google.com")
+FORMS = ("forms.gle", "docs.google.com", "forms.office.com", "typeform.com")
 SHORTENERS = {"bit.ly", "tinyurl.com", "t.co", "goo.gl", "s.id", "cutt.ly", "shorturl.at", "rb.gy"}
 
 RED_FLAGS: list[tuple[str, str]] = [
@@ -152,7 +156,7 @@ RED_FLAGS: list[tuple[str, str]] = [
     (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only", "urgency"),
     (r"waran\s+tangkap|arrest|ditangkap", "arrest"),
     (r"\btac\b|\botp\b|kata laluan|password", "tac_otp"),
-    (r"whatsapp|telegram|wasap", "chat_app"),
+    (r"(?:hubungi|contact|mesej|message|klik|click|tambah|add|sertai|join|chat)\W+(?:\w+\W+){0,4}(?:whatsapp|telegram|wasap)|wa\.me/|t\.me/", "chat_app"),
     (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret", "secret"),
     (r"gambar\s+ic|ic\s+depan|photo of (?:your )?ic", "ic_photo"),
     (r"diskaun\s+\d+%", "discount"),
@@ -201,11 +205,18 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     flags += [(c, r(c)) for c in extra if c in TEXT]  # extra risk codes, e.g. email header signals
     good: list[tuple[str, str]] = []
     official = SOURCES.get(issuer, {}).get("domains", [])
-    for d in _domains(text):
+    info: list[tuple[str, str]] = []
+    for d in dict.fromkeys(_domains(text)):  # each host once
+        hit = lambda names: any(d == n or d.endswith("." + n) for n in names)
         if d in SHORTENERS:
             flags.append(("shortener", r("shortener", d=d)))
         elif d.endswith(".gov.my") or any(d == o or d.endswith("." + o) for o in official if o != ".gov.my"):
             good.append(("official_domain", r("official_domain", d=d)))
+        elif hit(SOCIAL):
+            if not any(c == "social_links" for c, _ in info):
+                info.append(("social_links", r("social_links")))
+        elif hit(FORMS):
+            info.append(("form_link", r("form_link", d=d)))
         else:
             flags.append(("unofficial_domain", r("unofficial_domain", d=d)))
             if _lookalike(d):
@@ -218,6 +229,7 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     # Three levels: rules can rule a scam in, never prove a letter genuine.
     verdict = "likely_scam" if score < 60 else "no_signals" if issuer != "UNKNOWN" and not flags and score >= 80 else "caution"
     reasons = ([{"kind": "risk", "code": c, "text": t} for c, t in flags] + [{"kind": "ok", "code": c, "text": t} for c, t in good]
+               + [{"kind": "info", "code": c, "text": t} for c, t in info]
                + [{"kind": "info", "code": "cannot_see", "text": r("cannot_see")}])
     if re.search(r"payment|account|akaun|bayar", low):
         reasons.append({"kind": "info", "code": "pay_confirmed", "text": r("pay_confirmed")})
