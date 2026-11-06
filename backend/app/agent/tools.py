@@ -209,12 +209,18 @@ PIECES = {
 }
 
 
+def _only_known_domains(generated: str, letter: str) -> bool:
+    """Reject model text that names a website not in the letter or the official registry (e.g. hasil -> results)."""
+    known = set(_domains(letter)) | {d for s in SOURCES.values() for d in s["domains"]}
+    return all(any(d == k or d.endswith("." + k) for k in known) for d in _domains(generated))
+
+
 @tool("llm.explain", "Plain-language explanation in the user's language (LLM optional).")
 def explain(redacted_text: str, issuer: str, fields: dict, genuine: bool, language: str) -> str:
     if not genuine:
         return SCAM_TEMPLATES[language]
     generated = llm.complete(f"Explain this official letter:\n\n{redacted_text}", language)
-    if generated:
+    if generated and _only_known_domains(generated, redacted_text):
         return generated
     src = SOURCES.get(issuer, {})
     a, d = PIECES[language]

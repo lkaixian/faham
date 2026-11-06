@@ -85,8 +85,8 @@
     "› agent online ✓"
   ];
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  async function type(text, speed = 55) { for (const ch of text) { typed.textContent += ch; await sleep(speed); } }
-  async function erase(speed = 25) { while (typed.textContent.length) { typed.textContent = typed.textContent.slice(0, -1); await sleep(speed); } }
+  async function type(text, speed = 55) { for (const ch of text) { if (finished) return; typed.textContent += ch; await sleep(speed); } }
+  async function erase(speed = 25) { while (!finished && typed.textContent.length) { typed.textContent = typed.textContent.slice(0, -1); await sleep(speed); } }
 
   let finished = false;
   async function sequence() {
@@ -95,9 +95,10 @@
     await sleep(900);
     await erase();
     await type(phrases[1], 65);
+    if (finished) return; // intro was closed while typing; its elements are gone
     document.getElementById("introSub").classList.add("show");
     for (const l of bootLines) { if (finished) return; boot.textContent = l; await sleep(650); }
-    document.getElementById("introActions").classList.add("show");
+    if (!finished) document.getElementById("introActions").classList.add("show");
   }
 
   function close(goto) {
