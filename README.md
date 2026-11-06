@@ -126,7 +126,32 @@ Only **masked** text is sent to a model or the voice service, and the call is sk
 Add an entry to `backend/app/data/official_sources.json`: `keywords`, `domains`, `source_url`, steps, lesson, terms, and optionally `social` (the agency's official accounts, copied from its own website, for example `"facebook.com/handle"`). Steps must come from the agency's own site.
 
 ## Deploying
-**GitHub Pages:** in *Settings → Pages* choose *GitHub Actions*. `pages.yml` publishes `frontend/` on every push to `main` in demo mode. To use a hosted API, set `API_BASE` in `frontend/assets/js/config.js`, add the site origin to `FAHAM_ALLOWED_ORIGINS`, and update `connect-src` in `frontend/nginx.conf` if you use it.
+**GitHub Pages:** in *Settings → Pages* choose *GitHub Actions*. `pages.yml` publishes `frontend/` on every push to `main` in demo mode. Pages has no API. For a live demo use the Cloudflare Tunnel below, which serves both the page and the API.
+
+## Public access with Cloudflare Tunnel
+A tunnel puts your local Docker site on a public https address with no open port and no router changes. The `cloudflared` image is pinned to `2026.10.7` in `docker-compose.yml` (check [the releases](https://github.com/cloudflare/cloudflared/releases) before the demo and bump the tag if there is a newer one).
+
+How the traffic flows: `browser -> Cloudflare -> cloudflared -> web (nginx) -> /api/ -> api`. The page and the API share one address, so there is no CORS setup and the API port stays local (`127.0.0.1:8000`).
+
+**Quick tunnel (no account, random `https://....trycloudflare.com` address, for a short demo):**
+```bash
+docker compose up -d
+docker compose --profile quick up -d quicktunnel
+docker compose logs quicktunnel      # the https address is printed here
+```
+The address changes every time the container restarts. Stop it with `docker compose --profile quick stop quicktunnel`.
+
+**Named tunnel (your own hostname, stable):**
+1. In the Cloudflare Zero Trust dashboard create a tunnel and copy its token.
+2. Add a public hostname for it, for example `faham.example.com`, with the service `http://web:80`.
+3. Put the token in the root `.env` (see `.env.example`): `CLOUDFLARE_TUNNEL_TOKEN=...`
+4. Start it: `docker compose --profile tunnel up -d`
+
+**Before you share the address:**
+- The API calls paid LLM and voice services with your keys. nginx limits each client to about 30 API calls a minute, but anyone with the link can still use your quota. For a judging session put the hostname behind **Cloudflare Access** (email one-time code) or share the link only briefly.
+- Only masked text goes to the LLM and voice services, but anything a visitor types or uploads reaches your machine. Keep the consent and privacy notice on.
+- Messenger needs a public https webhook: give Meta the callback `https://<address>/api/channels/messenger` (and set `FAHAM_PUBLIC_URL` so the privacy notice links to your Terms page) (see [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md)).
+- Uploads over 25 MB are refused, and a tunnel adds a little delay to large files.
 
 ## Important
 - All sample letters, names, IC numbers and accounts here are **fictional** (marked SAMPEL · FIKTIF). Never commit real people's letters.
