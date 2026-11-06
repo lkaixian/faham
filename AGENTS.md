@@ -8,7 +8,7 @@ FAHAM: an agent that reads official Malaysian letters (LHDN, JPJ, PDRM, PTPTN, c
 - `backend/app/agent/orchestrator.py`: the pipeline read, verify, (agent loop), explain, teach, route, act, plus a `Trace`. `loop.py`: the agent (goal, plan, tools, observations, finish) and its guard rails. `backend/evals/run_suite.py` measures it on the 12 real documents.
 - `backend/app/agent/tools.py`: `@tool`-registered functions in the `TOOLS` dict (12 tools), plus the official source registry (`SOURCES`) and the office directory (`OFFICES`), both loaded from JSON.
 - `backend/app/models.py`: Pydantic contracts. `llm.py`: optional Anthropic call. `config.py`: env vars.
-- `backend/app/data/*.json`: `official_sources.json`, `offices.json` (demo), `practice.json`.
+- `backend/app/data/*.json`: `official_sources.json`, `official_directory.json` (domains only, see `docs/DIRECTORY.md`), `offices.json` (demo), `practice.json`.
 - `frontend/`: static HTML/CSS/JS, no build step. Falls back to a fully in-browser demo mode when the API is unreachable (`assets/js/data.js` holds the sample letters).
 - `docs/`: ARCHITECTURE, AGENT_FLOW, API, PRIVACY_SAFETY, PITCH_PLAN, NOTES.
 

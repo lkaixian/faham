@@ -205,11 +205,12 @@ def t_inspect_links(d: Dossier) -> str:
 
 def t_lookup_registry(d: Dossier, issuer: str | None = None) -> str:
     _need_issuer(d)
-    r = T.TOOLS["registry.lookup"].fn((issuer or d.issuer or "").upper())
+    key = (issuer or "").strip()
+    r = T.TOOLS["registry.lookup"].fn(key.upper() if key.upper() in T.SOURCES else key or (d.issuer if d.issuer != "UNKNOWN" else "") or (T._dir_find(d.letter) or {}).get("id", ""))
     d.facts = {"known": r["known"], "name": r.get("name")}
     if not r["known"]:
         return "that agency is not in the registry"
-    return f"{r['name']}: official sites {', '.join(r['domains'])}; official source {r['source_url']}; official online steps: {' / '.join(r['online_steps'])}"
+    return f"{r['name']}: official sites {', '.join(r['domains'])}; official source {r['source_url']}" + (f"; official online steps: {' / '.join(r['online_steps'])}" if r["online_steps"] else "; the directory lists its website only, it has no steps for this body")
 
 
 def _http_get(url: str) -> tuple[bytes, int, str]:
@@ -421,9 +422,9 @@ def run(letter: str, language: str, postcode: str | None, tr) -> Dossier:
             tr.note("agent", "warn", "The model gave no usable answer; going on with what is known")
             break
         d.mode, d.rounds = "ai", rnd
-        thought = str(out.get("thought", ""))[:300]
+        thought = str(out.get("thought", ""))[:1200]
         tr.think("plan" if rnd == 1 else "agent", f"Round {rnd}: {thought}")
-        plan = [str(x)[:120] for x in (out.get("plan") if isinstance(out.get("plan"), list) else [])[:6]]
+        plan = [str(x)[:300] for x in (out.get("plan") if isinstance(out.get("plan"), list) else [])[:6]]
         if plan and plan != d.plan:
             d.plan = plan
             tr.note("plan", "think", "Plan: " + " → ".join(plan))

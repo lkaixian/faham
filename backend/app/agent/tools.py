@@ -20,6 +20,39 @@ from .i18n import TEXT, render
 SOURCES: dict = {k: v for k, v in json.loads((DATA_DIR / "official_sources.json").read_text(encoding="utf-8")).items() if not k.startswith("_")}
 OFFICES: dict = json.loads((DATA_DIR / "offices.json").read_text(encoding="utf-8"))
 
+# Domain-only directory of real banks, councils, states, universities and companies (see docs/DIRECTORY.md). It says who a
+# website belongs to; it carries no procedures, so steps still come from SOURCES only.
+_dir_file = DATA_DIR / "official_directory.json"
+DIRECTORY: list[dict] = json.loads(_dir_file.read_text(encoding="utf-8")) if _dir_file.exists() else []
+# Suffixes only registered to government and accredited education bodies, so a whole suffix is safe to trust (like .gov.my).
+TRUSTED_SUFFIXES = (".gov.my", ".edu.my")
+_DIR_DOMAINS = {d: e for e in DIRECTORY for d in e["domains"]}
+_GENERIC = {"bank", "islam", "islamic", "malaysia", "universiti", "university", "college", "kolej", "majlis", "negeri", "jabatan", "institut",
+            "group", "online", "digital", "mobile", "life", "care", "health", "insurance", "takaful", "finance", "capital", "credit", "media",
+            "star", "post", "fast", "smart", "asia", "global", "world", "first", "royal", "golden", "prima", "perdana", "utama", "jaya",
+            "bandar", "taman", "city", "town", "state", "holdings", "berhad", "services", "time", "grab", "yes", "unifi", "tune", "mydin", "wise", "sains", "boost", "business", "apac", "guardian"}
+
+
+def _dir_entry(host: str) -> dict | None:
+    """The directory entry whose domain is this host or a parent of it."""
+    parts = host.lower().split(".")
+    return next((_DIR_DOMAINS[".".join(parts[i:])] for i in range(len(parts) - 1) if ".".join(parts[i:]) in _DIR_DOMAINS), None)
+
+
+def _dir_find(name: str) -> dict | None:
+    """Find an entry by id, name, alias or domain; whole-word match, longest alias first (so 'maybank islamic' beats 'maybank')."""
+    low = " " + re.sub(r"[^a-z0-9.]+", " ", name.lower()).strip() + " "
+    best, blen = None, 0
+    for e in DIRECTORY:
+        for a in [e["id"], e["name"], *e.get("aliases", [])]:
+            a = re.sub(r"[^a-z0-9.]+", " ", a.lower()).strip()
+            if len(a) >= 3 and len(a) > blen and f" {a} " in low:
+                best, blen = e, len(a)
+        for d in e["domains"]:
+            if len(d) > blen and d in low:
+                best, blen = e, len(d)
+    return best
+
 
 @dataclass
 class Tool:
@@ -186,11 +219,21 @@ def _brands() -> set[str]:
     return {lab for s in SOURCES.values() for d in s["domains"] for lab in d.split(".") if len(lab) >= 3 and lab not in ("gov", "my", "com", "net", "org", "www")}
 
 
+# Look-alike names come from companies and federal bodies only. Places and campuses (selangor, perak, a university's short name) also
+# appear in innocent site names, so a name match there would wrongly condemn an ordinary link. Those links still count as "unofficial".
+_BRAND_CATS = {"bank", "insurer", "payment", "regulator", "investment", "credit", "telco", "utility", "courier", "ecommerce", "toll", "airline", "retail", "service", "federal"}
+_BRAND_MIN = {"bank": 4, "insurer": 5, "payment": 5, "investment": 5}
+_DIR_BRANDS = {lab for d, e in _DIR_DOMAINS.items() if e["category"] in _BRAND_CATS and not d.endswith(TRUSTED_SUFFIXES)
+               for lab in [d.split(".")[0]] if len(lab) >= _BRAND_MIN.get(e["category"], 6) and lab not in _GENERIC and not lab.isdigit()}
+
+
 def _lookalike(domain: str) -> bool:
     """Unofficial domain that contains or nearly spells an agency name (hasil-gov.my.com, mytax-login.xyz)."""
     tokens = re.split(r"[-.]", domain)
+    # directory names are stricter (a whole token, a long name inside, or one typo in a long name) because there are hundreds of them
     return any(b in tokens or (len(b) >= 4 and b in domain) or (len(b) >= 5 and any(len(t) >= 4 and _lev(t, b) <= 2 for t in tokens))
-               for b in _brands())
+               for b in _brands()) or any(b in tokens or (len(b) >= 6 and b in domain) or (len(b) >= 7 and any(len(t) >= 6 and _lev(t, b) <= 1 for t in tokens))
+                                          for b in _DIR_BRANDS)
 
 
 def _domains(text: str) -> list[str]:
@@ -259,7 +302,7 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
         links = [u for u, h in _urls(text) if h == d]
         if d in SHORTENERS:
             flags.append(("shortener", r("shortener", d=d))); ev[flags[-1]] = links
-        elif d.endswith(".gov.my") or any(d == o or d.endswith("." + o) for o in official if o != ".gov.my"):
+        elif d.endswith(TRUSTED_SUFFIXES) or _dir_entry(d) or any(d == o or d.endswith("." + o) for o in official if o != ".gov.my"):
             good.append(("official_domain", r("official_domain", d=d))); ev[good[-1]] = links
         elif hit(SOCIAL):
             if not SOURCES.get(issuer, {}).get("social"):
@@ -310,7 +353,7 @@ ASK_WORDS = ("login", "log-in", "verify", "secure", "pay", "bayar", "akaun", "ac
 
 
 def _is_official(host: str) -> bool:
-    return host.endswith(".gov.my") or any(host == d or host.endswith("." + d) for s in SOURCES.values() for d in s["domains"] if d != ".gov.my")
+    return host.endswith(TRUSTED_SUFFIXES) or _dir_entry(host) is not None or any(host == d or host.endswith("." + d) for s in SOURCES.values() for d in s["domains"] if d != ".gov.my")
 
 
 @tool("link.inspect", "Inspect every link in the message for tricks: bare IP, punycode, @ trick, look-alike name, odd ending, shortener.")
@@ -349,7 +392,11 @@ def inspect_links(text: str) -> list[dict]:
 def registry_lookup(issuer: str) -> dict:
     s = SOURCES.get(issuer)
     if not s:
-        return {"known": False}
+        e = _dir_find(issuer) if issuer else None  # a name, alias or domain from the directory (no steps: those come from SOURCES only)
+        if not e:
+            return {"known": False}
+        return {"known": True, "name": e["name"], "domains": e["domains"], "source_url": "https://" + e["domains"][0] if e["domains"] else "https://www.malaysia.gov.my",
+                "online_steps": [], "category": e["category"]}
     return {"known": True, "name": s["name"], "domains": s["domains"], "source_url": s["source_url"],
             "online_steps": s.get("online_steps", [])[:3]}
 
@@ -383,7 +430,7 @@ PIECES = {
 
 def _only_known_domains(generated: str, letter: str) -> bool:
     """Reject model text that names a website not in the letter or the official registry (e.g. hasil -> results)."""
-    known = set(_domains(letter)) | {d for s in SOURCES.values() for d in s["domains"]}
+    known = set(_domains(letter)) | {d for s in SOURCES.values() for d in s["domains"]} | set(_DIR_DOMAINS)
     return all(any(d == k or d.endswith("." + k) for k in known) for d in _domains(generated))
 
 
