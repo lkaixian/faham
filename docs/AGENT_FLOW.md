@@ -21,7 +21,7 @@ stateDiagram-v2
 |---|---|---|
 | Read | `ocr.read` | Raw text (Tesseract `msa+eng` if installed) |
 | Read | `privacy.redact` | Text with `[IC]`, `[PHONE]`, `[ACCOUNT]`, `[NAME]` masked, plus counts |
-| Read | `classify.issuer` | `LHDN · JPJ · PTPTN · PDRM · COURT · COUNCIL · BANK · UNKNOWN` with confidence |
+| Read | `classify.issuer` | `LHDN · JPJ · PTPTN · PDRM · COURT · COUNCIL · UTILITY · KWSP_PERKESO · BANK · UNKNOWN` with confidence |
 | Read | `extract.fields` | Amount, deadline, reference |
 | Verify | `scam.check` | `verdict` (`likely_scam / caution / no_signals`), `genuine` (= not flagged), `score` 0–100, `red_flags[]`, `good_signs[]`, `reasons[]`, `verify_yourself[]` |
 | Explain | `llm.explain` | Plain-language explanation in `bm / en / zh / ta` |

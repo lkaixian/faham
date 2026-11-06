@@ -12,7 +12,7 @@ A fixed six-stage pipeline, not a planner. `orchestrator.run()` calls tools in a
 | `orchestrator.py` | 1 function | builds `Trace`, assembles `AnalyzeResponse` |
 | `llm.py` | 1 function | Anthropic only, returns `None` on any failure |
 | Frontend | `app.js` 519, `data.js` 359, `index.html` 411, `styles.css` 578 lines | state in `localStorage` (`faham_*`), read-aloud via `speechSynthesis`, local demo trace if the API is down |
-| Data | 7 issuers (LHDN JPJ PTPTN PDRM COURT COUNCIL BANK), 6 practice items | offices are demo data |
+| Data | 9 issuers (LHDN JPJ PTPTN PDRM COURT COUNCIL UTILITY KWSP_PERKESO BANK), 6 practice items | offices are demo data |
 
 ## Findings (ranked)
 

@@ -84,6 +84,34 @@
     "lesson": {"q": "Kenapa saya dapat surat ini?", "a": "Councils charge property assessment tax twice a year to fund local services."},
     "terms": ["Notis"]
   },
+  "UTILITY": {
+    "name": "Tenaga Nasional Berhad (TNB) / Suruhanjaya Tenaga",
+    "retrieved_at": "2026-11-06",
+    "keywords": ["tenaga nasional", "tnb", "mytnb", "bekalan elektrik", "pemotongan bekalan", "suruhanjaya tenaga", "akta 447", "kedai tenaga"],
+    "domains": ["mytnb.com.my", "tnb.com.my", "st.gov.my"],
+    "source_url": "https://www.mytnb.com.my",
+    "letter_type": "Electricity disconnection notice (Borang A)",
+    "online_steps": ["Open the official myTNB app or mytnb.com.my yourself.", "Check the arrears amount on your account.", "Pay through the app or portal.", "Save the receipt."],
+    "walkin_steps": ["Go to the nearest Kedai Tenaga TNB counter.", "Bring the notice and pay the arrears."],
+    "prepare_online": ["Contract account no.", "Online banking"],
+    "prepare_walkin": ["IC (original)", "This notice", "Latest electricity bill"],
+    "lesson": {"q": "Kenapa saya dapat surat ini?", "a": "Under the Electricity Supply Act 1990 (section 38), a licensee may cut supply if a bill stays unpaid after the notice period. Borang A is the formal warning before that."},
+    "terms": ["Tunggakan", "Borang A", "Notis"]
+  },
+  "KWSP_PERKESO": {
+    "name": "Kumpulan Wang Simpanan Pekerja (KWSP) / PERKESO",
+    "retrieved_at": "2026-11-06",
+    "keywords": ["kwsp", "kumpulan wang simpanan pekerja", "i-akaun", "caruman", "perkeso", "socso", "akta 452", "faedah caruman lewat bayar"],
+    "domains": ["kwsp.gov.my", "perkeso.gov.my"],
+    "source_url": "https://www.kwsp.gov.my",
+    "letter_type": "EPF contribution arrears",
+    "online_steps": ["Log in to i-Akaun on kwsp.gov.my or the official KWSP app yourself.", "Check the arrears amount.", "Pay through the official channel.", "Save the receipt."],
+    "walkin_steps": ["Go to the nearest KWSP branch counter.", "Bring the notice and IC."],
+    "prepare_online": ["IC number", "i-Akaun login", "Online banking"],
+    "prepare_walkin": ["IC (original)", "This notice"],
+    "lesson": {"q": "Kenapa saya dapat surat ini?", "a": "Employers must pay EPF contributions by the 15th of each month (section 43, Act 452). Late payment adds a late-payment charge. KWSP never uses WhatsApp or Telegram agents and charges no commission."},
+    "terms": ["Caruman", "FCLB", "Tunggakan"]
+  },
   "BANK": {
     "name": "Bank / Insurance",
     "retrieved_at": "2026-11-06",

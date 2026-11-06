@@ -13,6 +13,21 @@
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
+  <div id="intro" role="dialog" aria-modal="true" aria-label="FAHAM">
+    <canvas id="neural" aria-hidden="true"></canvas>
+    <div class="intro-inner">
+      <img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="" width="76" height="98" />
+      <img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="" width="76" height="98" />
+      <div class="intro-kicker">Agentic AI · Festival Idea Putrajaya 2026</div>
+      <h1 class="intro-title" aria-live="polite"><span id="typed"></span><span class="caret" aria-hidden="true"></span></h1>
+      <p class="intro-sub" id="introSub"><b>Faham surat. Faham langkah. Faham hak anda.</b><br />Understand any official letter, spot scams, and know what to do next.</p>
+      <div class="intro-boot" id="boot" aria-hidden="true"></div>
+      <div class="intro-actions" id="introActions">
+        <button class="btn btn-primary btn-big" id="enterBtn" type="button">Masuk / Enter</button>
+      </div>
+    </div>
+    <button class="btn btn-quiet skip-link" id="skipIntro" type="button">Langkau / Skip</button>
+  </div>
   <a class="skip" href="#main" data-i18n="skip"></a>
 
   <header class="top">
@@ -247,5 +262,6 @@
   <script src="assets/js/data.js"></script>
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/app.js"></script>
+  <script src="assets/js/intro.js"></script>
 </body>
 </html>

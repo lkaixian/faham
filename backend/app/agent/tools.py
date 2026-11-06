@@ -124,7 +124,7 @@ def classify_issuer(text: str) -> tuple[str, float]:
 AMOUNT_RE = re.compile(r"RM\s?([\d,]+(?:\.\d{2})?)", re.IGNORECASE)
 MONTHS = "januari|februari|mac|april|mei|jun|julai|ogos|september|oktober|november|disember|january|february|march|may|june|july|august|october|december"
 DATE_RE = re.compile(rf"\b(\d{{1,2}}\s+(?:{MONTHS})\s+\d{{4}})\b", re.IGNORECASE)
-REF_RE = re.compile(r"\b([A-Z]{2,6}(?:/[A-Z0-9]+){2,})\b")
+REF_RE = re.compile(r"\b([A-Z]{2,6}(?:/[A-Z0-9]+(?:-[A-Z0-9]+)*){2,})\b")
 
 
 @tool("extract.fields", "Extract amount, deadline and reference number.")
@@ -133,9 +133,10 @@ def extract_fields(text: str) -> dict:
     dates = DATE_RE.findall(text)
     ref = REF_RE.search(text)
     deadline = None
-    m = re.search(rf"(?:sebelum|before|selewat-lewatnya)\s+({DATE_RE.pattern})", text, re.IGNORECASE)
-    if m:
-        deadline = m.group(1)
+    # Last "sebelum <date>" wins: a notice may cite the original due date first and the new deadline after.
+    ms = list(re.finditer(rf"(?:sebelum|before|selewat-lewatnya)\s+({DATE_RE.pattern})", text, re.IGNORECASE))
+    if ms:
+        deadline = ms[-1].group(1)
     elif dates:
         deadline = dates[-1]
     if not deadline and re.search(r"24\s*jam|24\s*hours", text, re.IGNORECASE):
@@ -181,7 +182,7 @@ def _lev(a: str, b: str) -> int:
 
 
 def _brands() -> set[str]:
-    return {lab for s in SOURCES.values() for d in s["domains"] for lab in d.split(".") if len(lab) >= 3 and lab not in ("gov", "my")}
+    return {lab for s in SOURCES.values() for d in s["domains"] for lab in d.split(".") if len(lab) >= 3 and lab not in ("gov", "my", "com", "net", "org", "www")}
 
 
 def _lookalike(domain: str) -> bool:
