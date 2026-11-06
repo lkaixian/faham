@@ -101,6 +101,7 @@ Copy `backend/.env.example` to `backend/.env`.
 | `FAHAM_LLM_PROVIDER` | `none` | One or more of `ilmu`, `anthropic`, tried in order (for example `ilmu,anthropic`). A provider without a key is skipped |
 | `ILMU_API_KEY` / `ILMU_BASE_URL` | empty / `https://api.ilmu.ai/v1` | Needed when the provider is `ilmu` |
 | `ANTHROPIC_API_KEY` | empty | Needed when the provider is `anthropic` |
+| `FAHAM_TTS_MODEL` / `FAHAM_TTS_VOICE` | `ilmu-tts-v2.1` / `voice_1` | ILMU read-aloud (`POST /api/tts`) for BM, EN and 中文. Uses `ILMU_API_KEY`; Tamil falls back to the browser voice. About RM 0.08 per 1,000 characters |
 | `FAHAM_LLM_MODEL_ILMU` / `FAHAM_LLM_MODEL_ANTHROPIC` | `ilmu-mini-v3.3` / `claude-sonnet-5-5` | Model per provider. Check ILMU `GET /v1/models` for current names |
 
 Only **redacted** text is sent to the model, and the call is skipped if long digit runs remain. For image OCR install `pytesseract` and `pillow` (the Docker image already includes Tesseract).

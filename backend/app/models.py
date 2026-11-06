@@ -10,6 +10,11 @@ Stage = Literal["read", "verify", "explain", "teach", "route", "act"]
 TraceKind = Literal["think", "tool", "ok", "bad", "warn"]
 
 
+class TTSRequest(BaseModel):
+    text: str = Field(..., min_length=1, max_length=3000)
+    language: Language = "bm"
+
+
 class AnalyzeRequest(BaseModel):
     text: str = Field("", max_length=20000, description="Letter text (pasted). Optional if image_b64 is given.")
     image_b64: Optional[str] = Field(None, max_length=6_000_000, description="Base64 PNG/JPEG of the letter (max ~6 MB).")

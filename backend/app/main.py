@@ -8,13 +8,13 @@ import binascii
 import json
 import random
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import config
+from . import config, tts
 from .agent import orchestrator
 from .agent.tools import TOOLS, classify_issuer, redact, scam_check
-from .models import AnalyzeRequest, AnalyzeResponse, PracticeItem
+from .models import AnalyzeRequest, AnalyzeResponse, PracticeItem, TTSRequest
 
 app = FastAPI(
     title="FAHAM Agent API",
@@ -34,7 +34,18 @@ PRACTICE = json.loads((config.DATA_DIR / "practice.json").read_text(encoding="ut
 @app.get("/api/health")
 def health():
     return {"status": "ok", "llm_provider": config.LLM_PROVIDER,
-            "llm_configured": config.llm_ready(), "tools": list(TOOLS)}
+            "llm_configured": config.llm_ready(), "tools": list(TOOLS),
+            "tts_available": tts.available(), "tts_languages": list(tts.LANGS)}
+
+
+@app.post("/api/tts")
+def speak(req: TTSRequest):
+    """Read-aloud audio (mp3) for text the client got from /api/analyze."""
+    try:
+        return Response(tts.speak(req.text, req.language), media_type="audio/mpeg",
+                        headers={"Cache-Control": "no-store"})
+    except tts.TTSError as e:
+        raise HTTPException(e.status, e.detail)
 
 
 @app.get("/api/tools")

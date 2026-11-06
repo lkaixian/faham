@@ -19,6 +19,8 @@ LLM_PROVIDER = os.getenv("FAHAM_LLM_PROVIDER", "none").lower()
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 ILMU_API_KEY = os.getenv("ILMU_API_KEY", "")
 ILMU_BASE_URL = os.getenv("ILMU_BASE_URL", "https://api.ilmu.ai/v1").rstrip("/")
+ILMU_TTS_MODEL = os.getenv("FAHAM_TTS_MODEL", "ilmu-tts-v2.1")
+ILMU_TTS_VOICE = os.getenv("FAHAM_TTS_VOICE", "voice_1")
 # FAHAM_LLM_PROVIDER may list several, tried in order, e.g. "ilmu,anthropic".
 MODELS = {"ilmu": os.getenv("FAHAM_LLM_MODEL_ILMU", "ilmu-mini-v3.3"),
           "anthropic": os.getenv("FAHAM_LLM_MODEL_ANTHROPIC") or os.getenv("FAHAM_LLM_MODEL", "claude-sonnet-5-5")}
