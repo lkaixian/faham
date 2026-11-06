@@ -1,3 +1,5 @@
+import base64
+
 from fastapi.testclient import TestClient
 
 from app.agent import tools as T
@@ -100,3 +102,52 @@ def test_route_is_honest_and_decision_traced():
     s = client.post("/api/analyze", json={"text": SCAM, "language": "en"}).json()
     route = [x for x in s["trace"] if x["stage"] == "route"]
     assert "walk-in" in route[0]["message"] and route[1]["tool"] == "office.locate"
+
+
+def test_practice_agent_agrees_with_label():
+    items = client.get("/api/practice?n=99").json()
+    assert len(items) >= 8
+    for i in items:
+        assert i["agent"]["genuine"] == (not i["is_scam"]), i["text"]
+        assert set(i["agent"]) == {"genuine", "score", "red_flags", "good_signs"}
+
+
+PNG = base64.b64encode(b"\x89PNG\r\n\x1a\n" + b"0" * 20).decode()
+
+
+def test_ocr_paths(monkeypatch):
+    assert client.post("/api/analyze", json={"text": LHDN}).status_code == 200
+    assert client.post("/api/analyze", json={}).status_code == 422
+    assert client.post("/api/analyze", json={"text": "short"}).status_code == 422
+    monkeypatch.setitem(T.TOOLS, "ocr.read", T.Tool("ocr.read", "", lambda text=None, image_bytes=None: ""))
+    r = client.post("/api/analyze", json={"image_b64": PNG})
+    assert r.status_code == 422 and "OCR unavailable" in r.json()["detail"]
+    bad = base64.b64encode(b"GIF89a" + b"0" * 20).decode()
+    assert client.post("/api/analyze", json={"image_b64": bad}).status_code == 422
+    assert client.post("/api/analyze", json={"image_b64": "***"}).status_code == 422
+    monkeypatch.setitem(T.TOOLS, "ocr.read", T.Tool("ocr.read", "", lambda text=None, image_bytes=None: LHDN))
+    assert client.post("/api/analyze", json={"image_b64": PNG}).json()["fields"]["issuer"] == "LHDN"
+
+
+def test_redact_widened():
+    r = lambda s: T.redact(s)
+    out, c = r("Tel 03-8888 1234 atau +60 3-8888 1234 atau 07-1234567")
+    assert out.count("[PHONE]") == 3 and c["phone"] == 3
+    out, c = r("Emel: ali.contoh@contoh.example")
+    assert "@" not in out and c["email"] == 1
+    out, c = r("Kereta WXY 1234 dan ABC1234 disaman")
+    assert "WXY" not in out and "ABC1234" not in out and c["plate"] == 2
+    out, c = r("Alamat:\nNo. 12, Jalan Contoh 3, Taman Fiktif\n50000 Kuala Lumpur\nSekian")
+    assert "Jalan" not in out and "50000" not in out and c["address"] == 1 and "Sekian" in out
+    assert r("Rumah di Jalan Contoh 3, 43000 Kajang.")[1]["address"] == 1
+    out, c = r("Nama: SITI BINTI CONTOH\nDitujukan kepada Puan NUR AINA BINTI FIKTIF dan Encik LIM AH CONTOH.")
+    assert "SITI" not in out and "AINA" not in out and "LIM" not in out and c["name"] == 3
+    assert set(c) == {"ic", "phone", "account", "name", "email", "address", "plate"}
+
+
+def test_redact_keeps_letter_content():
+    out, c = T.redact(LHDN)
+    assert "RM 1,240.00" in out and "LHDN/SAMPEL/TT2025/0001" in out and "15 Disember 2026" in out
+    assert c["plate"] == 0 and c["address"] == 0
+    out, c = T.redact(SCAM)
+    assert "011-2345 6789" not in out and "RM 2,150.00" in out and c["plate"] == 0

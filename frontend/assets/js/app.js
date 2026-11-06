@@ -27,8 +27,12 @@
     ran: false,
     route: "online",
     api: false,
-    practice: { order: [], i: 0, score: 0, answered: false, results: [] }
+    custom: null,
+    practice: { items: D.practice, order: [], i: 0, score: 0, answered: false, results: [] }
   };
+  const CONSENT_V = 1;
+  const consented = () => (store.get("consent", null) || {}).v === CONSENT_V;
+  const syncRun = () => { $("#runBtn").disabled = state.running || !consented(); };
   const save = () => {
     store.set("lang", state.lang); store.set("learned", [...state.learned]);
     store.set("cleared", [...state.cleared]); store.set("xp", state.xp); store.set("todo", state.todo);
@@ -49,7 +53,7 @@
     if (v) u.voice = v; else toast(`No ${D.languages[lang].name} voice on this device — using the default voice.`);
     speechSynthesis.speak(u);
   }
-  const letterById = (id) => D.letters.find((l) => l.id === id);
+  const letterById = (id) => (id === "custom" && state.custom) || D.letters.find((l) => l.id === id);
 
   /* ---------- navigation ---------- */
   function go(view) {
@@ -87,6 +91,7 @@
     $$("#langSwitch button").forEach((b) => (b.onclick = () => {
       state.lang = b.dataset.l; save(); renderLang();
       if (state.ran) renderExplain();
+      if (state.ran && state.letter === "custom") { toast("Your own letter was explained in " + D.languages[state.custom.lang].name + ". Run again to get this language."); return; }
       toast(`Explanations now in <b>${D.languages[state.lang].name}</b>`);
     }));
   }
@@ -164,7 +169,7 @@
       </button>`).join("");
     $$(".letter-opt").forEach((b) => (b.onclick = () => {
       if (state.running) return;
-      state.letter = b.dataset.id; state.ran = false;
+      state.letter = b.dataset.id; state.ran = false; clearInput();
       renderPicker(); renderLetter(); resetPipeline();
       $("#results").classList.add("empty");
       $("#console").innerHTML = `<div class="ln"><span class="t">[idle]</span> Letter loaded: ${esc(letterById(state.letter).title)}. Press Run agent.<span class="cursor"></span></div>`;
@@ -173,6 +178,10 @@
 
   function renderLetter(redacted) {
     const l = letterById(state.letter);
+    if (l.id === "custom") {
+      $("#letterDoc").innerHTML = `<div class="lh"><div><b>Your letter</b><br/><span>${l.redacted ? "Redacted text" : "Text as entered"}</span></div></div><p style="white-space:pre-wrap">${esc(l.text)}</p>`;
+      return;
+    }
     const to = redacted ? `<span class="redact">${esc(l.to)}</span>` : esc(l.to);
     $("#letterDoc").innerHTML = `
       <div class="wm">SAMPEL · FIKTIF</div>
@@ -210,6 +219,71 @@
     return T;
   }
 
+  const STAGE = { read: 0, verify: 1, explain: 2, teach: 3, route: 4, act: 5 };
+  const mapTrace = (tr) => tr.map((t) => ({ s: STAGE[t.stage] ?? 0, k: t.kind, t: t.tool, m: t.message, flag: t.flag, fx: t.tool === "privacy.redact" ? "redact" : undefined }));
+
+  /* ---------- own letter (paste or upload), API only ---------- */
+  const MAX_IMG = 4 * 1024 * 1024;
+  function inputMsg(html, busy) {
+    const m = $("#inputMsg"); m.innerHTML = html || ""; m.className = "input-msg" + (html ? " show" : "") + (busy ? " busy" : "");
+  }
+  function clearInput() { $("#pasteBox").value = ""; $("#fileBox").value = ""; inputMsg(""); }
+  function renderInput() {
+    const off = !state.api;
+    $("#ownInput").classList.toggle("offline", off);
+    $("#pasteBox").disabled = off; $("#fileBox").disabled = off; $("#clearInput").disabled = off;
+    $("#pasteBox").title = off ? "Needs the API" : "";
+  }
+  $("#pasteBox").oninput = () => { if ($("#pasteBox").value) $("#fileBox").value = ""; inputMsg(""); };
+  $("#fileBox").onchange = () => {
+    const f = $("#fileBox").files[0]; inputMsg("");
+    if (!f) return;
+    if (!/^image\/(png|jpeg)$/.test(f.type)) { $("#fileBox").value = ""; inputMsg("Only PNG or JPEG images are accepted. You can paste the letter text instead."); return; }
+    if (f.size > MAX_IMG) { $("#fileBox").value = ""; inputMsg("That image is over 4 MB. Use a smaller photo or paste the letter text instead."); return; }
+    $("#pasteBox").value = "";
+  };
+  $("#clearInput").onclick = clearInput;
+  const readB64 = (f) => new Promise((ok, no) => {
+    const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = () => no(r.error); r.readAsDataURL(f);
+  });
+  // what the user entered, or null when a sample letter should run
+  function ownInput() {
+    if (!state.api) return null;
+    const text = $("#pasteBox").value.trim(), file = $("#fileBox").files[0];
+    return text ? { text } : file ? { file } : null;
+  }
+  // POST own text/image. Returns {data} or {error}. A 422 detail is shown with a paste hint.
+  async function analyzeOwn(inp) {
+    try {
+      const body = { language: state.lang };
+      if (inp.text) body.text = inp.text; else body.image_b64 = await readB64(inp.file);
+      const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 30000);
+      const res = await fetch(CFG.API_BASE + "/api/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, signal: ctrl.signal, body: JSON.stringify(body) });
+      clearTimeout(to);
+      if (res.status === 422) {
+        const d = await res.json().catch(() => ({}));
+        return { error: (typeof d.detail === "string" ? d.detail : "The API could not read this input.") + " Try pasting the letter text instead." };
+      }
+      if (!res.ok) return { error: "The API returned an error (" + res.status + "). Try again, or use a sample letter." };
+      return { data: await res.json() };
+    } catch (e) { return { error: "Could not reach the API. Check your connection or use a sample letter." }; }
+  }
+  // map the API response to the bundled-sample shape so the existing renderers work
+  function mapApi(d) {
+    const f = d.fields, s = d.scam, r = d.route, lang = state.lang;
+    return {
+      id: "custom", lang, text: d.redacted_text, redacted: true, title: "Your letter",
+      fields: { Issuer: f.issuer, Type: f.letter_type, Amount: f.amount || "Not found", Deadline: f.deadline || "Not found", Reference: f.reference || "Not found" },
+      scam: { genuine: s.genuine, score: s.score, checks: [...s.good_signs, ...s.red_flags.map((x) => "x|" + x)] },
+      explain: { [lang]: d.explanation.split(/\n+/).filter(Boolean) },
+      terms: d.lesson.terms.filter((t) => D.glossary[t]),
+      kenapa: { q: d.lesson.question, a: d.lesson.answer, rule: d.disclaimer },
+      route: { source: r.source_url + " (" + r.retrieved_at + ")", confidence: r.confidence,
+        online: { steps: r.online_steps, prepare: r.prepare_online }, walkin: { steps: r.walkin_steps, prepare: r.prepare_walkin } },
+      reminder: d.action.reminder || "No reminder suggested", draft: d.action.draft
+    };
+  }
+
   async function fetchServerTrace(l) {
     if (!state.api) return null;
     try {
@@ -220,23 +294,38 @@
       });
       if (!res.ok) return null;
       const data = await res.json();
-      const map = { read: 0, verify: 1, explain: 2, teach: 3, route: 4, act: 5 };
       state.serverScore = data.scam.score;
-      return data.trace.map((t) => ({ s: map[t.stage] ?? 0, k: t.kind, t: t.tool, m: t.message, flag: t.flag, fx: t.tool === "privacy.redact" ? "redact" : undefined }));
+      return mapTrace(data.trace);
     } catch (e) { return null; }
   }
 
   async function runAgent() {
     if (state.running) return;
+    if (!consented()) { go("agent"); toast("Tick “Saya faham / I understand” first."); $("#consentBox").focus(); return; }
     state.running = true; state.ran = false;
-    const l = letterById(state.letter);
-    $("#runBtn").disabled = true;
+    const inp = ownInput();
     $("#results").classList.add("empty");
-    resetPipeline(); renderLetter();
+    resetPipeline();
     const con = $("#console"); con.innerHTML = "";
-    $("#letterDoc").classList.add("scanning");
     state.serverScore = null;
-    const trace = (await fetchServerTrace(l)) || localTrace(l);
+    let trace;
+    if (inp) {
+      // loading state, then error state or the mapped result
+      syncRun(); inputMsg("Sending to the agent API. Reading a photo can take a few seconds.", true);
+      con.innerHTML = `<div class="ln"><span class="t">[wait]</span> Waiting for the API...<span class="cursor"></span></div>`;
+      const r = await analyzeOwn(inp);
+      if (r.error) {
+        inputMsg(esc(r.error)); con.innerHTML = `<div class="ln"><span class="bad">${esc(r.error)}</span></div>`;
+        state.running = false; syncRun(); return;
+      }
+      inputMsg("");
+      state.custom = mapApi(r.data); state.letter = "custom"; state.serverScore = r.data.scam.score;
+      renderPicker(); con.innerHTML = ""; trace = mapTrace(r.data.trace);
+    }
+    const l = letterById(state.letter);
+    syncRun(); renderLetter();
+    $("#letterDoc").classList.add("scanning");
+    trace = trace || (await fetchServerTrace(l)) || localTrace(l);
     const t0 = performance.now();
     let cur = -1;
     for (const line of trace) {
@@ -264,11 +353,11 @@
     // learning effects
     const newTerms = l.terms.filter((t) => !state.learned.has(t));
     newTerms.forEach((t) => { state.learned.add(t); state.fresh.add(t); });
-    if (!state.cleared.has(l.id)) { state.cleared.add(l.id); addXP(20, "Letter cleared"); }
+    if (l.id !== "custom" && !state.cleared.has(l.id)) { state.cleared.add(l.id); addXP(20, "Letter cleared"); }
     save(); updateGlossCount(); renderPicker();
     if (newTerms.length) setTimeout(() => toast(`📘 +${newTerms.length} new in <b>Kamus Surat</b>: ${newTerms.join(", ")}`), 600);
 
-    state.ran = true; state.running = false; $("#runBtn").disabled = false;
+    state.ran = true; state.running = false; syncRun();
     renderResults();
     $("#results").classList.remove("empty");
     setTimeout(() => $("#results").scrollIntoView({ behavior: "smooth", block: "start" }), 250);
@@ -313,16 +402,16 @@
 
   function renderExplain() {
     const l = letterById(state.letter);
-    $("#explain").innerHTML = l.explain[state.lang].map((p) => `<p>${esc(p)}</p>`).join("") + `
+    $("#explain").innerHTML = (l.explain[state.lang] || l.explain[l.lang]).map((p) => `<p>${esc(p)}</p>`).join("") + `
       <div class="facts">
         <div class="fact"><span>From</span><b>${esc(l.fields.Issuer)}</b></div>
         <div class="fact"><span>How much</span><b>${esc(l.fields.Amount)}</b></div>
         <div class="fact"><span>By when</span><b>${esc(l.fields.Deadline)}</b></div>
         <div class="fact ${l.scam.genuine ? "good" : "bad"}"><span>Real?</span><b>${l.scam.genuine ? "Yes ✓" : "Scam ✗"}</b></div>
       </div>`;
-    $("#explainLang").textContent = D.languages[state.lang].name;
+    $("#explainLang").textContent = D.languages[l.explain[state.lang] ? state.lang : l.lang].name;
   }
-  $("#speakBtn").onclick = () => { const l = letterById(state.letter); speak(l.explain[state.lang].join(" "), state.lang); };
+  $("#speakBtn").onclick = () => { const l = letterById(state.letter), k = l.explain[state.lang] ? state.lang : l.lang; speak(l.explain[k].join(" "), k); };
 
   function renderRoute() {
     const l = letterById(state.letter), r = l.route[state.route];
@@ -378,9 +467,23 @@
   }
 
   /* ---------- practice ---------- */
-  function newRound() {
-    const idx = D.practice.map((_, i) => i).sort(() => Math.random() - 0.5).slice(0, 6);
-    state.practice = { order: idx, i: 0, score: 0, answered: false, results: [] };
+  async function newRound() {
+    const my = (newRound.n = (newRound.n || 0) + 1);
+    let items = D.practice;
+    if (state.api) {
+      $("#pCard").textContent = "Loading messages from the agent..."; $("#pChoices").style.display = "none"; $("#pFeedback").className = "feedback";
+      try {
+        const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 6000);
+        const res = await fetch(CFG.API_BASE + "/api/practice?n=6", { signal: ctrl.signal });
+        if (!res.ok) throw new Error(res.status);
+        const got = await res.json();
+        if (!got.length) throw new Error("empty");
+        items = got.map((x) => ({ from: x.sender, kind: x.channel, text: x.text, scam: x.is_scam, clues: x.clues, agent: x.agent }));
+      } catch (e) { toast("Could not load messages from the API. Using the bundled ones."); }
+      if (my !== newRound.n) return;
+    }
+    const idx = items.map((_, i) => i).sort(() => Math.random() - 0.5).slice(0, 6);
+    state.practice = { items, order: idx, i: 0, score: 0, answered: false, results: [] };
     renderPractice();
   }
   function renderPractice() {
@@ -390,7 +493,7 @@
       $("#pChoices").style.display = "none"; $("#pFeedback").className = "feedback";
       $("#pCount").textContent = "Done";
     } else {
-      const it = D.practice[p.order[p.i]];
+      const it = p.items[p.order[p.i]];
       $("#pCard").innerHTML = `<div class="from"><span>From: <b>${esc(it.from)}</b></span><span class="kind">${esc(it.kind)} · FICTIONAL</span></div>${esc(it.text)}`;
       $("#pChoices").style.display = "flex"; $("#pFeedback").className = "feedback";
       $("#pCount").textContent = `Message ${p.i + 1} of ${p.order.length}`;
@@ -399,19 +502,25 @@
     $("#pScore").textContent = `${p.score} / ${p.results.length}`;
     $("#pDots").innerHTML = p.order.map((_, i) => `<i class="${p.results[i] === true ? "r" : p.results[i] === false ? "w" : i === p.i ? "c" : ""}"></i>`).join("");
   }
+  function agentLine(a) {
+    if (!a) return "";
+    const list = (x) => (x && x.length ? x.map(esc).join("; ") : "none");
+    return `<div class="small" style="margin-top:10px"><b>Agent verdict:</b> ${a.genuine ? "likely genuine" : "likely scam"}, score ${esc(a.score)}, flags: ${list(a.red_flags)}${a.good_signs && a.good_signs.length ? ", good signs: " + list(a.good_signs) : ""}</div>`;
+  }
   $$("#pChoices .choice").forEach((b) => (b.onclick = () => {
     const p = state.practice; if (p.answered) return; p.answered = true;
-    const it = D.practice[p.order[p.i]];
+    const it = p.items[p.order[p.i]];
     const right = (b.dataset.a === "scam") === it.scam;
     p.results.push(right); if (right) { p.score++; addXP(10, "Correct answer"); }
     const fb = $("#pFeedback");
     fb.className = "feedback show " + (right ? "right" : "wrong");
     fb.innerHTML = `<h4>${right ? "✓ Correct!" : "✗ Not quite."} This is ${it.scam ? "a SCAM" : "REAL"}.</h4>
       <div class="small">Clues the agent looks for:</div>
-      <ul class="checks">${it.clues.map((c) => `<li class="${it.scam ? "x" : ""}">${esc(c)}</li>`).join("")}</ul>
+      <ul class="checks">${it.clues.map((c) => `<li class="${it.scam ? "x" : ""}">${esc(c)}</li>`).join("")}</ul>${agentLine(it.agent)}
       <button class="btn btn-primary btn-sm" style="margin-top:12px" id="pNext">Next →</button>`;
     $("#pChoices").style.display = "none";
     $("#pNext").onclick = () => { p.i++; renderPractice(); };
+    $("#pNext").focus();
     $("#pScore").textContent = `${p.score} / ${p.results.length}`;
     $("#pDots").innerHTML = p.order.map((_, i) => `<i class="${p.results[i] === true ? "r" : p.results[i] === false ? "w" : ""}"></i>`).join("");
   }));
@@ -500,13 +609,32 @@
         state.api = true;
         $("#apiDot").classList.remove("demo"); $("#apiText").textContent = "Agent API online";
         $("#apiSub").textContent = CFG.API_BASE.replace(/^https?:\/\//, "");
+        renderInput();
+        if (!state.practice.results.length) newRound();
       }
     } catch (e) { /* stay in demo mode */ }
   }
 
+  /* ---------- consent and clear my data ---------- */
+  $("#consentBox").checked = consented();
+  $("#consentBox").onchange = (e) => {
+    if (e.target.checked) store.set("consent", { v: CONSENT_V }); else { try { localStorage.removeItem("faham_consent"); } catch (x) {} }
+    syncRun();
+  };
+  $("#clearData").onclick = () => {
+    if (state.running) { toast("Wait for the agent to finish, then clear your data."); return; }
+    try { Object.keys(localStorage).filter((k) => k.startsWith("faham_")).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
+    Object.assign(state, { lang: "bm", letter: "lhdn", learned: new Set(), fresh: new Set(), cleared: new Set(), xp: 0, todo: [], ran: false, custom: null, route: "online" });
+    $("#consentBox").checked = false; clearInput(); syncRun();
+    renderLang(); renderPicker(); renderLetter(); resetPipeline(); renderLevel(); updateGlossCount(); renderGlossary(); renderPlan(); newRound();
+    $("#results").classList.add("empty");
+    $("#console").innerHTML = `<div class="ln"><span class="t">[idle]</span> Data cleared. Choose a letter and press Run agent.<span class="cursor"></span></div>`;
+    toast("Your data on this device was cleared.");
+  };
+
   /* ---------- init ---------- */
   renderLang(); renderOverview(); renderPicker(); renderLetter(); resetPipeline();
-  renderLevel(); updateGlossCount(); fillSelects(); renderArch(); renderTrust(); renderPlan(); newRound();
+  renderLevel(); updateGlossCount(); renderInput(); syncRun(); fillSelects(); renderArch(); renderTrust(); renderPlan(); newRound();
   tick(); setInterval(tick, 30000); checkApi();
 
   window.addEventListener("faham:enter", (e) => {

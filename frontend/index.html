@@ -99,6 +99,7 @@
           <div class="nav-label" style="padding:0 2px 6px">Explanation language</div>
           <div class="lang-switch" id="langSwitch"></div>
         </div>
+        <button class="btn btn-ghost btn-sm" id="clearData" type="button">Clear my data</button>
         <div class="agent-status">
           <span class="dot demo" id="apiDot"></span>
           <div><span id="apiText">Demo mode</span><small id="apiSub">Runs fully in your browser</small></div>
@@ -198,7 +199,22 @@
       <!-- ===== LIVE AGENT ===== -->
       <section class="view" id="view-agent" data-title="Live Agent">
         <p class="view-intro">Pick a sample letter and press <b>Run agent</b>. Watch FAHAM reason step by step, call its tools, and turn the letter into an action plan and a lesson. All letters here are fictional.</p>
+        <div class="card consent" id="consent">
+          <h3>Privacy notice / Notis privasi</h3>
+          <p lang="en"><b>EN:</b> FAHAM reads the text of your letter after personal details such as IC, phone and account numbers are masked (redacted). The letter is not stored. If the optional AI service is switched on, it receives only the redacted text. If you are helping a parent or someone else, you confirm you have their permission to use their letter.</p>
+          <p lang="ms"><b>BM:</b> FAHAM membaca teks surat anda selepas butiran peribadi seperti no. IC, telefon dan akaun ditutup (redact). Surat tidak disimpan. Jika perkhidmatan AI pilihan dihidupkan, ia hanya menerima teks yang telah ditutup. Jika anda membantu ibu bapa atau orang lain, anda mengesahkan anda mendapat kebenaran mereka untuk menggunakan surat itu.</p>
+          <label class="check"><input type="checkbox" id="consentBox" /> <span>Saya faham / I understand</span></label>
+        </div>
         <div class="letter-picker" id="letterPicker"></div>
+        <div class="card own" id="ownInput">
+          <div class="card-head"><h3>Or use your own letter</h3><span class="needapi" id="needApi">Needs the API</span></div>
+          <label for="pasteBox" class="small muted">Paste letter text</label>
+          <textarea id="pasteBox" class="select" rows="5" maxlength="20000" placeholder="Paste the text of your letter here"></textarea>
+          <label for="fileBox" class="small muted">Or upload a photo of the letter (PNG or JPEG, max 4 MB)</label>
+          <input type="file" id="fileBox" accept="image/png,image/jpeg" />
+          <div class="input-msg" id="inputMsg" role="alert"></div>
+          <button class="btn btn-ghost btn-sm" id="clearInput" type="button">Clear input</button>
+        </div>
         <div class="bento">
           <div class="span-4">
             <div class="letter-doc" id="letterDoc"></div>

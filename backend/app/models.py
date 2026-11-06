@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 Language = Literal["bm", "en", "zh", "ta"]
 Stage = Literal["read", "verify", "explain", "teach", "route", "act"]
@@ -11,10 +11,17 @@ TraceKind = Literal["think", "tool", "ok", "bad", "warn"]
 
 
 class AnalyzeRequest(BaseModel):
-    text: str = Field(..., min_length=10, max_length=20000, description="Letter text (from OCR or pasted).")
+    text: str = Field("", max_length=20000, description="Letter text (pasted). Optional if image_b64 is given.")
+    image_b64: Optional[str] = Field(None, max_length=6_000_000, description="Base64 PNG/JPEG of the letter (max ~6 MB).")
     language: Language = "bm"
     postcode: Optional[str] = Field(None, pattern=r"^\d{1,5}$", description="Used to find the nearest office.")
     sample_id: Optional[str] = Field(None, description="ID of a bundled fictional sample, if used.")
+
+    @model_validator(mode="after")
+    def _need_input(self):
+        if len(self.text) < 10 and not self.image_b64:
+            raise ValueError("Provide text of at least 10 characters or image_b64")
+        return self
 
 
 class TraceStep(BaseModel):
@@ -80,3 +87,4 @@ class PracticeItem(BaseModel):
     text: str
     is_scam: bool
     clues: list[str]
+    agent: Optional[ScamVerdict] = None  # what the real agent says about this text

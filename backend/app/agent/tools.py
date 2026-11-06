@@ -55,13 +55,21 @@ def ocr_read(text: str | None = None, image_bytes: bytes | None = None) -> str:
 
 IC_RE = re.compile(r"\b\d{6}-?\d{2}-?\d{4}\b")
 PHONE_RE = re.compile(r"(?<!\w)(?:\+?60|0)1\d[-\s]?\d{3,4}[-\s]?\d{4}\b")
+LANDLINE_RE = re.compile(r"(?<!\w)(?:\+60[-\s]?|0)[3-9][-\s]?\d{3,4}[-\s]?\d{4}\b")
 ACCOUNT_RE = re.compile(r"\b\d{4}[-\s]?\d{4}[-\s]?\d{4}(?:[-\s]?\d{1,4})?\b")
-NAME_RE = re.compile(r"(Kepada\s*:\s*)([^,\n\[]+)", re.IGNORECASE)
+EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
+# Whole line is masked: starts with "No." or has Jalan/Lorong/Taman, plus a 5-digit postcode on it or the next line.
+ADDRESS_RE = re.compile(r"^[ \t]*(?:No\.|[^\n]*?\b(?:Jalan|Lorong|Taman)\b)[^\n]*?(?:\b\d{5}\b|\n[ \t]*\d{5}\b)[^\n]*", re.IGNORECASE | re.MULTILINE)
+# ponytail: 1-3 letters + 1-4 digits; may over-mask odd uppercase tokens (RM excluded). Tighten with a state-prefix list if it bites.
+PLATE_RE = re.compile(r"(?<![\w/-])(?!RM\b)[A-Z]{1,3} ?[1-9]\d{0,3}(?: ?[A-Z])?(?![\w/-])")
+NAME_RE = re.compile(r"((?:Kepada|Nama)\s*:\s*)([^,\n\[]+)", re.IGNORECASE)
+TITLE_NAME_RE = re.compile(r"\b((?:Encik|Puan|Cik|Tuan|Dato['’]?)[ \t]+)([A-Z][A-Z'.@]+(?:[ \t]+[A-Z][A-Z'.@/]+)+)")
 
 
-@tool("privacy.redact", "Mask IC numbers, phones, account numbers and the addressee before processing.")
+@tool("privacy.redact", "Mask IC numbers, phones, account numbers, emails, addresses, plates and names before processing.")
 def redact(text: str) -> tuple[str, dict[str, int]]:
-    counts = {"ic": 0, "phone": 0, "account": 0, "name": 0}
+    # Decision: all phone numbers are masked, including official agency lines.
+    counts = {"ic": 0, "phone": 0, "account": 0, "name": 0, "email": 0, "address": 0, "plate": 0}
 
     def sub(pattern, label, key, s):
         def repl(_):
@@ -70,14 +78,19 @@ def redact(text: str) -> tuple[str, dict[str, int]]:
         return pattern.sub(repl, s)
 
     out = sub(IC_RE, "IC", "ic", text)
+    out = sub(EMAIL_RE, "EMAIL", "email", out)
     out = sub(PHONE_RE, "PHONE", "phone", out)
+    out = sub(LANDLINE_RE, "PHONE", "phone", out)
     out = sub(ACCOUNT_RE, "ACCOUNT", "account", out)
+    out = sub(ADDRESS_RE, "ADDRESS", "address", out)
+    out = sub(PLATE_RE, "PLATE", "plate", out)
 
     def name_repl(m):
         counts["name"] += 1
         return m.group(1) + "[NAME]"
 
     out = NAME_RE.sub(name_repl, out)
+    out = TITLE_NAME_RE.sub(name_repl, out)
     return out, counts
 
 
@@ -125,7 +138,7 @@ SHORTENERS = {"bit.ly", "tinyurl.com", "t.co", "goo.gl", "s.id", "cutt.ly", "sho
 
 RED_FLAGS: list[tuple[str, str]] = [
     (r"akaun\s+(?:peribadi|maybank|cimb|public bank|rhb|bank islam)|personal account|(?:bayar|transfer|pindah)\w*[^.\n]{0,40}akaun[^.\n]{0,40}atas nama", "Asks you to transfer money to a personal or company account"),
-    (r"24\s*jam|24\s*hours|dalam\s+masa\s+\d+\s*jam|hari ini sahaja|today only", "Creates fake urgency"),
+    (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only", "Creates fake urgency"),
     (r"waran\s+tangkap|arrest|ditangkap", "Threatens arrest"),
     (r"\btac\b|\botp\b|kata laluan|password", "Asks for a TAC, OTP or password"),
     (r"whatsapp|telegram|wasap", "Moves you to a chat app"),

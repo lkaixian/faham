@@ -3,15 +3,17 @@
 Run:  uvicorn app.main:app --reload --port 8000
 Docs: http://localhost:8000/docs
 """
+import base64
+import binascii
 import json
 import random
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import config
 from .agent import orchestrator
-from .agent.tools import TOOLS
+from .agent.tools import TOOLS, classify_issuer, redact, scam_check
 from .models import AnalyzeRequest, AnalyzeResponse, PracticeItem
 
 app = FastAPI(
@@ -43,11 +45,26 @@ def list_tools():
 @app.post("/api/analyze", response_model=AnalyzeResponse)
 def analyze(req: AnalyzeRequest):
     """Run the full agent. The letter is processed in memory and not stored."""
-    return orchestrator.run(req)
+    image = None
+    if req.image_b64:
+        try:
+            image = base64.b64decode(req.image_b64, validate=True)
+        except (binascii.Error, ValueError):
+            raise HTTPException(422, "image_b64 is not valid base64")
+        if not image.startswith((b"\x89PNG\r\n\x1a\n", b"\xff\xd8\xff")):
+            raise HTTPException(422, "image must be PNG or JPEG")
+    try:
+        return orchestrator.run(req, image)
+    except orchestrator.OCRUnavailable as e:
+        raise HTTPException(422, str(e))
 
 
 @app.get("/api/practice", response_model=list[PracticeItem])
 def practice(n: int = 5):
     """A round of clearly fictional messages for Spot-the-scam."""
     items = random.sample(PRACTICE, k=min(n, len(PRACTICE)))
-    return [PracticeItem(**i) for i in items]
+    out = []
+    for i in items:
+        red, _ = redact(i["text"])
+        out.append(PracticeItem(**i, agent=scam_check(red, classify_issuer(red)[0])))
+    return out

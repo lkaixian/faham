@@ -11,6 +11,10 @@ from ..models import (Action, AnalyzeRequest, AnalyzeResponse, Fields, Lesson,
 from . import tools as T
 
 
+class OCRUnavailable(Exception):
+    pass
+
+
 class Trace:
     def __init__(self) -> None:
         self.steps: list[TraceStep] = []
@@ -25,12 +29,14 @@ class Trace:
         self.steps.append(TraceStep(stage=stage, kind=kind, message=msg, flag=flag))
 
 
-def run(req: AnalyzeRequest) -> AnalyzeResponse:
+def run(req: AnalyzeRequest, image_bytes: bytes | None = None) -> AnalyzeResponse:
     tr = Trace()
     tr.think("read", "Goal: help the user understand this letter, confirm it is real, and decide the next action.")
 
     # ---- READ
-    raw = T.TOOLS["ocr.read"].fn(text=req.text)
+    raw = T.TOOLS["ocr.read"].fn(text=req.text, image_bytes=image_bytes)
+    if not raw.strip():
+        raise OCRUnavailable("OCR unavailable, paste the text instead")
     tr.call("read", "ocr.read", f"{len(raw.split())} words read")
     redacted, counts = T.TOOLS["privacy.redact"].fn(raw)
     tr.call("read", "privacy.redact", "masked: " + ", ".join(f"{k} ×{v}" for k, v in counts.items()) + " — only redacted text is processed")

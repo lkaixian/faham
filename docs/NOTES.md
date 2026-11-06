@@ -76,3 +76,7 @@ Source: the Claude Doc "FAHAM – Agentic AI Challenge 2026 Plan" (read 2026-11-
 | Demo: 3 letter types | LHDN, JPJ, PTPTN samples are the natural pick | Not yet confirmed by the team |
 
 Priority for the 13 days left: (1) make the online/walk-in decision explicit in the orchestrator and trace, since it is what makes the demo look like an agent; (2) make the practice mode reuse `scam.check` on its items so it is the same agent; (3) fix findings 1, 4, 5; (4) add a paste-or-upload path that actually reaches `ocr.read`, or change the video wording from "scan" to "paste".
+
+## Status update 2026-11-06 (after first fix round)
+Done: scam-check boundaries and lookalike domains, deadline logic, honest `retrieved_at`/confidence, explicit route decision in the trace, input caps, CORS null off by default, LLM prompt guards, non-root Docker, nginx headers. Practice items now carry the real `scam.check` verdict (`agent` field). `/api/analyze` accepts `image_b64` (422 if OCR is unavailable). Redaction now covers names after titles and `Nama:`, landlines, emails, address lines and plates. Frontend has a consent gate, "Clear my data", a paste-or-upload box and the agent verdict in practice. 20 tests pass; the API was smoke-tested live. Not done: browser click-through of the frontend, real Malay OCR accuracy test, Docker build, post-redaction digit guard in the redactor itself, fixing the generic offline explanation for UNKNOWN issuers ("an unknown sender (notice)").
+Findings 1, 2 (partly), 3, 4, 5, 9 (partly), 11, 14 above are addressed; 6, 7, 8, 10, 12, 13 remain.
