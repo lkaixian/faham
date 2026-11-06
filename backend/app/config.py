@@ -16,5 +16,12 @@ ALLOWED_ORIGINS = [
 ALLOW_NULL_ORIGIN = os.getenv("FAHAM_ALLOW_NULL_ORIGIN") == "1"  # file:// dev only
 
 LLM_PROVIDER = os.getenv("FAHAM_LLM_PROVIDER", "none").lower()
-LLM_MODEL = os.getenv("FAHAM_LLM_MODEL", "claude-sonnet-5-5")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+ILMU_API_KEY = os.getenv("ILMU_API_KEY", "")
+ILMU_BASE_URL = os.getenv("ILMU_BASE_URL", "https://api.ilmu.ai/v1").rstrip("/")
+LLM_MODEL = os.getenv("FAHAM_LLM_MODEL") or ("ilmu-mini-v3.3" if LLM_PROVIDER == "ilmu" else "claude-sonnet-5-5")
+
+
+def llm_ready() -> bool:
+    """True when the selected provider has a key. Never exposes the key."""
+    return bool({"anthropic": ANTHROPIC_API_KEY, "ilmu": ILMU_API_KEY}.get(LLM_PROVIDER))

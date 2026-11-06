@@ -30,3 +30,20 @@ def test_llm_skips_on_residual_digits(monkeypatch):
     monkeypatch.setattr(config, "LLM_PROVIDER", "anthropic")
     monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "x")
     assert llm.complete("ref 1234567890", "en") is None
+
+
+def test_ilmu_provider_calls_chat_completions(monkeypatch):
+    import io, json, urllib.request
+    seen = {}
+
+    def fake(req, timeout=0):
+        seen["url"], seen["auth"] = req.full_url, req.headers["Authorization"]
+        seen["body"] = json.loads(req.data)
+        return io.BytesIO(b'{"choices":[{"message":{"content":" ok "}}]}')
+
+    monkeypatch.setattr(config, "LLM_PROVIDER", "ilmu")
+    monkeypatch.setattr(config, "ILMU_API_KEY", "sk-test")
+    monkeypatch.setattr(urllib.request, "urlopen", fake)
+    assert llm.complete("Notis cukai", "bm") == "ok"
+    assert seen["url"].endswith("/chat/completions") and seen["auth"] == "Bearer sk-test"
+    assert "<letter>" in seen["body"]["messages"][1]["content"]

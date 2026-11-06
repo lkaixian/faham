@@ -34,7 +34,7 @@ PRACTICE = json.loads((config.DATA_DIR / "practice.json").read_text(encoding="ut
 @app.get("/api/health")
 def health():
     return {"status": "ok", "llm_provider": config.LLM_PROVIDER,
-            "llm_configured": config.LLM_PROVIDER != "none" and bool(config.ANTHROPIC_API_KEY), "tools": list(TOOLS)}
+            "llm_configured": config.llm_ready(), "tools": list(TOOLS)}
 
 
 @app.get("/api/tools")
