@@ -23,7 +23,7 @@ stateDiagram-v2
 | Read | `privacy.redact` | Text with `[IC]`, `[PHONE]`, `[ACCOUNT]`, `[NAME]` masked, plus counts |
 | Read | `classify.issuer` | `LHDN · JPJ · PTPTN · PDRM · COURT · COUNCIL · BANK · UNKNOWN` with confidence |
 | Read | `extract.fields` | Amount, deadline, reference |
-| Verify | `scam.check` | `genuine`, `score` 0–100, `red_flags[]`, `good_signs[]` |
+| Verify | `scam.check` | `verdict` (`likely_scam / caution / no_signals`), `genuine` (= not flagged), `score` 0–100, `red_flags[]`, `good_signs[]`, `reasons[]`, `verify_yourself[]` |
 | Explain | `llm.explain` | Plain-language explanation in `bm / en / zh / ta` |
 | Teach | `teach.lesson` | "Kenapa?" question and answer, plus glossary terms |
 | Route | `gov.retrieve` | Online and walk-in steps, things to prepare, source URL, confidence |
@@ -39,11 +39,15 @@ stateDiagram-v2
 - Asking the user to keep it secret
 - Asking for photos of the user's IC
 - Unusual discounts
+- Payment to a new or changed account
+- Links with `@` or an IP address
+- "Verify your account" wording
+- Lookalike of an official domain (contains or nearly spells an agency name)
 - Shortened links, or domains that are not official
 
 Positive signals include official `.gov.my` or issuer domains, reference numbers in an official format, and content that matches a known issuer.
 
-Score: `80 + 5 × good − 22 × red`, clamped to 0–100. The letter counts as genuine if the score is ≥ 60.
+Score: `80 + 5 × good − 22 × red`, clamped to 0–100. Verdict: `likely_scam` below 60; `no_signals` if the issuer is known, there are no red flags and score ≥ 80; otherwise `caution`. Rules cannot prove a letter genuine (scammers copy real letters), so `reasons` always lists what the check cannot see and `verify_yourself` gives steps independent of the letter.
 
 ## Trace format
 Each step is `{stage, kind, tool?, message, flag}`, where `kind ∈ think | tool | ok | bad | warn`. The dashboard streams the steps into the reasoning console, so judges can see the agent reason and use its tools.

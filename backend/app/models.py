@@ -40,11 +40,19 @@ class Fields(BaseModel):
     reference: Optional[str] = None
 
 
+class Reason(BaseModel):
+    kind: Literal["risk", "ok", "info"]
+    text: str
+
+
 class ScamVerdict(BaseModel):
-    genuine: bool
+    genuine: bool  # = (verdict != "likely_scam"): means 'not flagged', not 'proven genuine'
+    verdict: Literal["likely_scam", "caution", "no_signals"] = "caution"
     score: int = Field(..., ge=0, le=100)
     red_flags: list[str] = []
     good_signs: list[str] = []
+    reasons: list[Reason] = []
+    verify_yourself: list[str] = []
 
 
 class Route(BaseModel):

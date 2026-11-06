@@ -155,7 +155,31 @@ RED_FLAGS: list[tuple[str, str]] = [
     (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret", "Asks you to keep it secret"),
     (r"gambar\s+ic|ic\s+depan|photo of (?:your )?ic", "Asks for photos of your IC"),
     (r"diskaun\s+\d+%", "Offers an unusual discount"),
+    (r"akaun\s+(?:bank\s+)?(?:baharu|baru)|new (?:bank )?account|(?:changed|updated) (?:bank )?account|(?:tukar|bertukar|ditukar)\w*\s+akaun|akaun[^.\n]{0,30}(?:telah|sudah)\s+(?:berubah|ditukar)", "Says to pay into a new or changed account"),
+    (r"https?://(?:[^\s/]*@|\[email\])|https?://\d{1,3}(?:\.\d{1,3}){3}", "Link uses an '@' or an IP address to hide where it really goes"),
+    (r"verify your account|confirm your details|sahkan (?:akaun|maklumat)|akaun anda (?:akan )?(?:di)?(?:gantung|sekat|bekukan|tutup)|your account (?:will be|has been) (?:suspended|blocked|closed)", "Wants you to 'verify' your account or details"),
 ]
+
+
+def _lev(a: str, b: str) -> int:
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
+
+
+def _brands() -> set[str]:
+    return {lab for s in SOURCES.values() for d in s["domains"] for lab in d.split(".") if len(lab) >= 3 and lab not in ("gov", "my")}
+
+
+def _lookalike(domain: str) -> bool:
+    """Unofficial domain that contains or nearly spells an agency name (hasil-gov.my.com, mytax-login.xyz)."""
+    tokens = re.split(r"[-.]", domain)
+    return any(b in tokens or (len(b) >= 4 and b in domain) or (len(b) >= 5 and any(len(t) >= 4 and _lev(t, b) <= 2 for t in tokens))
+               for b in _brands())
 
 
 def _domains(text: str) -> list[str]:
@@ -177,15 +201,32 @@ def scam_check(text: str, issuer: str) -> dict:
         if d in SHORTENERS:
             flags.append(f"Shortened link ({d}) instead of an official site")
         elif d.endswith(".gov.my") or any(d == o or d.endswith("." + o) for o in official if o != ".gov.my"):
-            good.append(f"Link points to official domain {d}")
+            good.append(f"Link text shows an official domain {d} (check the real destination yourself)")
         else:
             flags.append(f"Unofficial domain {d}")
+            if _lookalike(d):
+                flags.append(f"Looks like an official site but is not ({d})")
     if issuer != "UNKNOWN" and not flags:
-        good.append(f"Content matches a known {issuer} letter pattern")
+        good.append(f"Wording matches typical {issuer} letters (scammers copy this too)")
     if REF_RE.search(text):
         good.append("Reference number in an official-looking format")
     score = max(0, min(100, 80 + 5 * len(good) - 22 * len(flags)))
-    return {"genuine": score >= 60, "score": score, "red_flags": flags, "good_signs": good}
+    # Three levels: rules can rule a scam in, never prove a letter genuine.
+    verdict = "likely_scam" if score < 60 else "no_signals" if issuer != "UNKNOWN" and not flags and score >= 80 else "caution"
+    reasons = ([{"kind": "risk", "text": f} for f in flags] + [{"kind": "ok", "text": g} for g in good]
+               + [{"kind": "info", "text": "We only read the text you gave us. We cannot see who really sent it, the real link behind a button, or the email headers."}])
+    if re.search(r"payment|account|akaun|bayar", low):
+        reasons.append({"kind": "info", "text": "Pay only to an account you have confirmed on the agency's own website or by phone."})
+    src = SOURCES.get(issuer, {})
+    site = src.get("source_url") or "https://www.malaysia.gov.my"
+    who = src.get("name", "the agency")
+    verify = [f"Type the website address yourself ({site}). Do not click links in the message.",
+              f"Find the phone number on {who}'s official site and call it to ask about this letter.",
+              "Check the reference number on that site or in the official app (for example MyTax or MyJPJ).",
+              "Do not pay or share any TAC/OTP until you have done these steps."]
+    return {"genuine": verdict != "likely_scam",  # means 'not flagged', not 'proven genuine'
+            "verdict": verdict, "score": score, "red_flags": flags, "good_signs": good,
+            "reasons": reasons, "verify_yourself": verify}
 
 
 # ---------------------------------------------------------------- explain / teach
@@ -200,6 +241,12 @@ SCAM_TEMPLATES = {
     "en": "This message looks like a SCAM. Do not click links or pay. Check yourself through official channels and call NSRC 997 if you have already been tricked.",
     "zh": "这条信息看起来是诈骗。不要点击链接或付款。请通过官方渠道自行查证；如已受骗，请拨打 NSRC 997。",
     "ta": "இந்தச் செய்தி மோசடி போலத் தெரிகிறது. இணைப்பைக் கிளிக் செய்யவோ பணம் செலுத்தவோ வேண்டாம். அதிகாரப்பூர்வ வழிகளில் சரிபார்க்கவும்; ஏமாற்றப்பட்டிருந்தால் NSRC 997-ஐ அழைக்கவும்.",
+}
+CHECK_SENTENCE = {
+    "bm": "Semak sendiri sebelum membayar: lihat langkah di bawah.",
+    "en": "Check it yourself before paying: see the steps below.",
+    "zh": "付款前请自行核实：见下方步骤。",
+    "ta": "பணம் செலுத்தும் முன் நீங்களே சரிபார்க்கவும்: கீழே உள்ள படிகளைப் பார்க்கவும்.",
 }
 PIECES = {
     "bm": (" Jumlah: {a}.", " Tarikh akhir: {d}."),
@@ -221,7 +268,7 @@ def explain(redacted_text: str, issuer: str, fields: dict, genuine: bool, langua
         return SCAM_TEMPLATES[language]
     generated = llm.complete(f"Explain this official letter:\n\n{redacted_text}", language)
     if generated and _only_known_domains(generated, redacted_text):
-        return generated
+        return generated + " " + CHECK_SENTENCE[language]
     src = SOURCES.get(issuer, {})
     a, d = PIECES[language]
     return TEMPLATES[language].format(
@@ -229,7 +276,7 @@ def explain(redacted_text: str, issuer: str, fields: dict, genuine: bool, langua
         ltype=src.get("letter_type", "notice"),
         amount=a.format(a=fields["amount"]) if fields.get("amount") else "",
         deadline=d.format(d=fields["deadline"]) if fields.get("deadline") else "",
-    )
+    ) + " " + CHECK_SENTENCE[language]
 
 
 @tool("teach.lesson", "Create the 'Kenapa saya dapat surat ini?' card and glossary terms.")

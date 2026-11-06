@@ -109,7 +109,56 @@ def test_practice_agent_agrees_with_label():
     assert len(items) >= 8
     for i in items:
         assert i["agent"]["genuine"] == (not i["is_scam"]), i["text"]
-        assert set(i["agent"]) == {"genuine", "score", "red_flags", "good_signs"}
+        assert i["agent"]["verdict"] in (("likely_scam", "caution") if i["is_scam"] else ("no_signals", "caution")), i["text"]
+        assert set(i["agent"]) == {"genuine", "verdict", "score", "red_flags", "good_signs", "reasons", "verify_yourself"}
+
+
+def test_verdict_levels_reasons_and_verify():
+    ok = T.scam_check(LHDN, "LHDN")
+    assert ok["verdict"] == "no_signals" and ok["genuine"]
+    assert any("scammers copy this too" in g for g in ok["good_signs"])
+    assert any("check the real destination" in g for g in ok["good_signs"])
+    kinds = {r["kind"] for r in ok["reasons"]}
+    assert kinds == {"ok", "info"} and any("email headers" in r["text"] for r in ok["reasons"])
+    assert any("confirmed on the agency" in r["text"] for r in ok["reasons"])  # LHDN text mentions bayar
+    assert 3 <= len(ok["verify_yourself"]) <= 4 and "https://www.hasil.gov.my" in ok["verify_yourself"][0]
+    unk = T.scam_check("Hello there, please read this", "UNKNOWN")
+    assert unk["verdict"] == "caution" and unk["genuine"]
+    assert not any("confirmed on the agency" in r["text"] for r in unk["reasons"])
+    assert "malaysia.gov.my" in unk["verify_yourself"][0]
+    flagged = T.scam_check(LHDN + "\nSila sahkan akaun anda.", "LHDN")
+    assert flagged["verdict"] == "caution" and flagged["score"] >= 60
+    assert any(r["kind"] == "risk" for r in flagged["reasons"])
+    bad = T.scam_check(SCAM, "PDRM")
+    assert bad["verdict"] == "likely_scam" and not bad["genuine"]
+
+
+def test_new_phishing_signals():
+    flags = lambda s, i="LHDN": T.scam_check(s, i)["red_flags"]
+    assert any("Looks like an official site" in f for f in flags("Log masuk hasil-gov.my.com"))
+    assert any("Looks like an official site" in f for f in flags("Buka mytax-login.xyz"))
+    assert any("Looks like an official site" in f for f in flags("Buka hasl.com"))
+    assert not any("Looks like" in f for f in flags("Buka example.com"))
+    assert not any("Looks like" in f for f in flags(LHDN))
+    assert any("new or changed account" in f for f in flags("Sila bayar ke akaun baharu kami"))
+    assert any("new or changed account" in f for f in flags("Our bank account has changed, use the new account"))
+    assert any("'@' or an IP" in f for f in flags("Klik http://203.0.113.5/bayar"))
+    assert any("'@' or an IP" in f for f in T.scam_check(T.redact("Klik https://hasil.gov.my@evil.example/x")[0], "LHDN")["red_flags"])
+    assert any("verify" in f for f in flags("Please verify your account now"))
+    assert any("verify" in f for f in flags("Akaun anda akan digantung"))
+    assert not flags(LHDN)
+
+
+def test_explain_adds_check_sentence_and_trace():
+    for lang, s in T.CHECK_SENTENCE.items():
+        assert T.explain("Notis LHDN", "LHDN", {}, True, lang).endswith(s)
+    d = client.post("/api/analyze", json={"text": LHDN, "language": "en"}).json()
+    assert d["scam"]["verdict"] == "no_signals" and d["scam"]["verify_yourself"]
+    assert any(s["message"] == "verdict: NO SCAM SIGNALS FOUND (not proof, verify yourself)" for s in d["trace"])
+    sc = client.post("/api/analyze", json={"text": SCAM, "language": "en"}).json()
+    assert any(s["message"].startswith("verdict: LIKELY SCAM (") and s["flag"] for s in sc["trace"])
+    ca = client.post("/api/analyze", json={"text": "Hello there, please read this letter", "language": "en"}).json()
+    assert ca["scam"]["verdict"] == "caution" and any(s["message"] == "verdict: CAUTION" for s in ca["trace"])
 
 
 PNG = base64.b64encode(b"\x89PNG\r\n\x1a\n" + b"0" * 20).decode()

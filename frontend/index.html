@@ -1,427 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAHAM — Agentic AI Letter Companion</title>
-  <meta name="description" content="FAHAM turns confusing official letters into an action plan and a 60-second lesson. Agentic AI Challenge · Festival Idea Putrajaya 2026." />
-  <meta name="theme-color" content="#0E0B1D" />
+  <title>FAHAM: check a letter or message</title>
+  <meta name="description" content="Paste a worrying letter, SMS or WhatsApp message. FAHAM looks for scam signs, explains it in BM, English, Chinese or Tamil, and shows what to do next." />
+  <meta name="theme-color" content="#0b5c63" />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
+  <a class="skip" href="#main">Skip to content</a>
 
-  <!-- Ambient background -->
-  <div class="ambient" aria-hidden="true">
-    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
-    <div class="grid"></div>
-  </div>
-
-  <!-- ============ WELCOME / INTRO ============ -->
-  <div id="intro" role="dialog" aria-label="Welcome to FAHAM">
-    <canvas id="neural"></canvas>
-    <div class="intro-inner">
-      <div class="core" aria-hidden="true">
-        <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
-        <div class="nucleus"></div>
-      </div>
-      <div class="intro-kicker">Agentic AI · Festival Idea Putrajaya 2026</div>
-      <h1 class="intro-title"><span id="typed"></span><span class="caret"></span></h1>
-      <p class="intro-sub" id="introSub">Faham surat. Faham langkah. Faham hak anda.<br/>An AI agent that reads your official letters, checks for scams, shows you what to do — and teaches you, so you need help less each time.</p>
-      <div class="intro-boot" id="boot"></div>
-      <div class="intro-actions" id="introActions">
-        <button class="btn btn-primary" id="enterBtn">
-          Enter dashboard
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </button>
-        <button class="btn btn-ghost" id="enterDemo">Watch the agent work</button>
-      </div>
+  <header class="top">
+    <div class="wrap bar">
+      <a class="brand" href="#check">FAHAM</a>
+      <span class="mode" id="mode" role="status">Connecting...</span>
+      <button class="btn btn-quiet" id="themeBtn" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>
+        <span id="themeLbl">Dark</span>
+      </button>
     </div>
-    <button class="skip-link" id="skipIntro">SKIP INTRO →</button>
-  </div>
+    <nav class="wrap" aria-label="Main">
+      <a href="#check" data-t="nav_check">Check</a>
+      <a href="#practice" data-t="nav_practice">Practice</a>
+      <a href="#dictionary" data-t="nav_dict">My dictionary</a>
+      <a href="#family" data-t="nav_family">Family</a>
+      <a href="#about" data-t="nav_about">About and privacy</a>
+    </nav>
+  </header>
 
-  <!-- ============ APP ============ -->
-  <div class="app">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="brand-mark">F</div>
-        <div>
-          <div class="brand-name">FAHAM</div>
-          <div class="brand-tag">Agentic letter companion</div>
+  <main class="wrap" id="main" tabindex="-1">
+
+    <!-- ===== CHECK ===== -->
+    <section class="view" id="view-check" data-title="Check a letter or message">
+      <div id="checker">
+        <h1 tabindex="-1"><span lang="ms">Semak surat atau mesej</span><span class="alt" lang="en">Check a letter or message</span></h1>
+        <p class="lead">Got a letter, SMS or WhatsApp that worries you? Paste it or take a photo. We look for scam signs and tell you what to do. / Ada surat atau mesej yang merunsingkan? Tampal atau muat naik gambar.</p>
+
+        <div class="note warn" id="offlineNote" hidden>
+          <b>Sample mode.</b> The checker is offline right now, so only the examples below work. / Penyemak tidak dapat dihubungi. Hanya contoh di bawah boleh digunakan.
         </div>
-      </div>
 
-      <nav class="nav" id="nav">
-        <div class="nav-label">Explore</div>
-        <button data-view="overview" class="active">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>
-          Overview
-        </button>
-        <button data-view="agent">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3h1V6a4 4 0 0 1 4-4z"/><circle cx="9" cy="13" r="1.2"/><circle cx="15" cy="13" r="1.2"/></svg>
-          Live Agent
-          <span class="badge">Try</span>
-        </button>
-        <button data-view="learn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
-          Kamus Surat
-          <span class="badge" id="glossCount">0</span>
-        </button>
-        <button data-view="practice">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3z"/><path d="m9 12 2 2 4-4"/></svg>
-          Spot the Scam
-        </button>
-        <button data-view="family">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-1a6 6 0 0 1 12 0v1M15 21v-.5a4.5 4.5 0 0 1 6-4.2"/></svg>
-          Family Mode
-        </button>
+        <form id="form" class="card" novalidate>
+          <label for="pasteBox">Paste the letter or message / Tampal surat atau mesej</label>
+          <textarea id="pasteBox" rows="7" maxlength="20000" placeholder="Paste the text here / Tampal teks di sini"></textarea>
 
-        <div class="nav-label">Behind FAHAM</div>
-        <button data-view="architecture">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-3h14v3"/></svg>
-          Architecture
-        </button>
-        <button data-view="trust">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-          Trust &amp; Safety
-        </button>
-        <button data-view="plan">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          Pitch &amp; Plan
-        </button>
-      </nav>
-
-      <div class="sidebar-foot">
-        <div>
-          <div class="nav-label" style="padding:0 2px 6px">Explanation language</div>
-          <div class="lang-switch" id="langSwitch"></div>
-        </div>
-        <button class="btn btn-ghost btn-sm" id="clearData" type="button">Clear my data</button>
-        <div class="agent-status">
-          <span class="dot demo" id="apiDot"></span>
-          <div><span id="apiText">Demo mode</span><small id="apiSub">Runs fully in your browser</small></div>
-        </div>
-      </div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <button class="menu-btn" id="menuBtn" aria-label="Open menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
-        <div>
-          <div class="crumb" id="crumb">FAHAM / Overview</div>
-          <h1 id="viewTitle">Overview</h1>
-        </div>
-        <div class="spacer"></div>
-        <span class="chip hide-sm"><span class="dot"></span> Theme: <strong>Edutainment &amp; Innovation</strong></span>
-        <span class="chip"><strong id="topDays">–</strong> days to 19 Nov</span>
-      </header>
-
-      <!-- ===== OVERVIEW ===== -->
-      <section class="view active" id="view-overview" data-title="Overview">
-        <div class="bento">
-          <div class="card hero span-8 row-2">
-            <div>
-              <span class="eyebrow">What is FAHAM?</span>
-              <h2>Every scary letter becomes a <em>60-second lesson</em>.</h2>
-              <p>LHDN, JPJ, PDRM, PTPTN, court, council, bank or insurance — FAHAM's agent reads the letter, checks it is real, explains it in your language, picks the online or walk-in route and prepares the follow-up. Then it teaches you the rule behind it, so next time you need less help.</p>
-            </div>
-            <div class="hero-actions">
-              <button class="btn btn-primary" data-goto="agent">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Run the agent on a sample letter
-              </button>
-              <button class="btn btn-ghost" data-goto="practice">Play “Spot the scam”</button>
-            </div>
-            <div class="hero-visual" aria-hidden="true">
-              <div class="morph">
-                <div class="paper"><span class="stamp">NOTIS</span><div class="ln w60"></div><div class="ln"></div><div class="ln w80"></div><div class="ln"></div><div class="ln w40"></div><div class="ln w80"></div><div class="ln"></div><div class="ln w60"></div></div>
-                <div class="lesson"><span class="pill">Lesson · 60s</span><b>Kenapa saya dapat surat ini?</b><span>Your PCB didn't cover all your 2025 tax. Pay RM 1,240 before 15 Dec.</span><span class="pill">+1 Kamus Surat: Taksiran</span></div>
-                <div class="scanline"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card span-4">
-            <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Countdown to the challenge</h3></div>
-            <div class="countdown" id="countdown">
-              <div class="cd-unit"><b id="cdD">00</b><span>Days</span></div>
-              <div class="cd-unit"><b id="cdH">00</b><span>Hours</span></div>
-              <div class="cd-unit"><b id="cdM">00</b><span>Min</span></div>
-            </div>
-            <div class="track-row"><span>Agentic AI · 19 Nov</span><span class="tag">Our track</span></div>
-            <div class="track-row"><span>Creative Tech &amp; Innovation · 18 Nov</span><span class="tag alt">Not entered</span></div>
-          </div>
-
-          <div class="card span-4">
-            <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div><h3>The agent loop</h3><span class="sub">read → decide → act</span></div>
-            <div class="loop" id="loop"></div>
-          </div>
-
-          <div class="card span-3 kpi"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 12h10M5 16h6"/></svg></div><div class="val" data-count="4">0</div><div class="lbl">Languages · BM, EN, 中文, தமிழ் + read-aloud</div></div>
-          <div class="card span-3 kpi"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></div><div class="val" data-count="8">0</div><div class="lbl">Agent tools · OCR to reply draft</div></div>
-          <div class="card span-3 kpi"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><div class="val" data-count="3">0</div><div class="lbl">Demo letter types · LHDN, JPJ, PTPTN</div></div>
-          <div class="card span-3 kpi"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m16 10 6-3v10l-6-3"/></svg></div><div class="val" data-count="5">0<small>min</small></div><div class="lbl">Video pitch · max length</div></div>
-
-          <div class="card span-7">
-            <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c3 2 9 2 12 0v-5.5"/></svg></div><h3>How FAHAM fits Edutainment &amp; Innovation</h3></div>
-            <div class="theme-grid" id="themeGrid"></div>
-          </div>
-
-          <div class="card span-5">
-            <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div><h3>Who it teaches</h3></div>
-            <div id="personas"></div>
-          </div>
-
-          <div class="card span-6 slate">
-            <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg></div><h3>Target metric</h3><span class="sub">what success looks like</span></div>
-            <p style="font-size:15px">Most apps count usage. FAHAM counts how often a <b>returning user still needs full help</b> on a letter type they've seen before. If that falls, the teaching worked.</p>
-            <svg class="spark" viewBox="0 0 400 110" preserveAspectRatio="none" id="spark"></svg>
-            <div class="legend"><span><i style="background:#c9c2e3"></i>Full-help rate on repeat letters (target ↓)</span><span><i style="background:#5a3b8c"></i>Letters handled (↑)</span></div>
-            <div class="note">Illustrative target trend only — no figure is claimed until FAHAM is tested with real users.</div>
-          </div>
-
-          <div class="card span-6">
-            <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><h3>An agent, not a chatbot</h3></div>
-            <div class="layer-items grid-2">
-              <div class="node"><b>Reasons</b><span>Classifies issuer, weighs scam signals, scores confidence.</span></div>
-              <div class="node"><b>Uses tools</b><span>OCR, redaction, official-site retrieval, office locator.</span></div>
-              <div class="node"><b>Acts</b><span>Plans the route, sets a reminder, drafts the reply.</span></div>
-              <div class="node"><b>Asks first</b><span>Nothing is sent or paid until <b>you approve</b>.</span></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===== LIVE AGENT ===== -->
-      <section class="view" id="view-agent" data-title="Live Agent">
-        <p class="view-intro">Pick a sample letter and press <b>Run agent</b>. Watch FAHAM reason step by step, call its tools, and turn the letter into an action plan and a lesson. All letters here are fictional.</p>
-        <div class="card consent" id="consent">
-          <h3>Privacy notice / Notis privasi</h3>
-          <p lang="en"><b>EN:</b> FAHAM reads the text of your letter after personal details such as IC, phone and account numbers are masked (redacted). The letter is not stored. If the optional AI service is switched on, it receives only the redacted text. If you are helping a parent or someone else, you confirm you have their permission to use their letter.</p>
-          <p lang="ms"><b>BM:</b> FAHAM membaca teks surat anda selepas butiran peribadi seperti no. IC, telefon dan akaun ditutup (redact). Surat tidak disimpan. Jika perkhidmatan AI pilihan dihidupkan, ia hanya menerima teks yang telah ditutup. Jika anda membantu ibu bapa atau orang lain, anda mengesahkan anda mendapat kebenaran mereka untuk menggunakan surat itu.</p>
-          <label class="check"><input type="checkbox" id="consentBox" /> <span>Saya faham / I understand <small>(needed only for your own letter; sample demos run without it)</small></span></label>
-        </div>
-        <div class="letter-picker" id="letterPicker"></div>
-        <div class="card own" id="ownInput">
-          <div class="card-head"><h3>Or use your own letter</h3><span class="needapi" id="needApi">Needs the API</span></div>
-          <label for="pasteBox" class="small muted">Paste letter text</label>
-          <textarea id="pasteBox" class="select" rows="5" maxlength="20000" placeholder="Paste the text of your letter here"></textarea>
-          <label for="fileBox" class="small muted">Or upload a photo of the letter (PNG or JPEG, max 4 MB)</label>
+          <label for="fileBox">Or upload a photo (PNG or JPEG, up to 4 MB)</label>
           <input type="file" id="fileBox" accept="image/png,image/jpeg" />
-          <div class="input-msg" id="inputMsg" role="alert"></div>
-          <button class="btn btn-ghost btn-sm" id="clearInput" type="button">Clear input</button>
-        </div>
-        <div class="bento">
-          <div class="span-4">
-            <div class="letter-doc" id="letterDoc"></div>
-          </div>
-          <div class="card span-8">
-            <div class="pipeline" id="pipeline"></div>
-            <div class="console-bar">
-              <div class="lights"><i></i><i></i><i></i></div>
-              <span class="small muted" style="font-family:var(--mono)">faham-agent · reasoning trace</span>
-              <span class="spacer" style="flex:1"></span>
-              <button class="btn btn-primary btn-sm" id="runBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Run agent</button>
-            </div>
-            <div class="console" id="console"><div class="ln"><span class="t">[idle]</span> Choose a letter and press Run agent.<span class="cursor"></span></div></div>
-          </div>
-        </div>
 
-        <div class="results empty" id="results">
-          <div class="bento">
-            <div class="card span-5">
-              <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></div><h3>1 · Read — extracted fields</h3></div>
-              <div class="field-list" id="fields"></div>
+          <div class="row2">
+            <div>
+              <span class="label" id="langLbl">Explain it in / Terangkan dalam</span>
+              <div class="chips" id="langChips" role="group" aria-labelledby="langLbl"></div>
             </div>
-            <div class="card span-7">
-              <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3z"/></svg></div><h3>2 · Verify — scam check</h3></div>
-              <div id="verdict"></div>
-            </div>
-            <div class="card span-7">
-              <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>3 · Explain — in plain words</h3><span class="sub" id="explainLang"></span></div>
-              <div class="explain-text" id="explain"></div>
-              <div class="speak-row">
-                <button class="btn btn-ghost btn-sm" id="speakBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg> Read aloud</button>
-                <span class="small muted" style="align-self:center">Change language in the sidebar — the explanation updates instantly.</span>
-              </div>
-            </div>
-            <div class="card kenapa span-5" id="kenapa"></div>
-            <div class="card span-7">
-              <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3l9 9-9 9"/></svg></div><h3>5 · Route — what to do next</h3></div>
-              <div class="tabs" id="routeTabs"><button data-r="online" class="active">Online</button><button data-r="walkin">Walk-in</button></div>
-              <div id="route"></div>
-            </div>
-            <div class="card span-5">
-              <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div><h3>6 · Act — draft &amp; reminder</h3></div>
-              <div class="small muted" id="reminder" style="margin-bottom:10px"></div>
-              <div class="draft" id="draft"></div>
-              <div class="approve-row" id="approveRow"></div>
+            <div>
+              <label for="postBox">Postcode (optional, to find your nearest office)</label>
+              <input type="text" id="postBox" inputmode="numeric" pattern="[0-9]{1,5}" maxlength="5" autocomplete="postal-code" />
             </div>
           </div>
-          <div class="disclaimer">ⓘ FAHAM gives guidance, not legal advice. Steps are retrieved from official sources at the time of use and shown with a confidence level. Demo procedures here are illustrative.</div>
-        </div>
-      </section>
 
-      <!-- ===== LEARN ===== -->
-      <section class="view" id="view-learn" data-title="Kamus Surat">
-        <p class="view-intro">Your personal letter dictionary. Every letter FAHAM explains unlocks the terms inside it — so the next notice with <i>taksiran</i> or <i>kompaun</i> is no longer scary. Run the agent to unlock more.</p>
-        <div class="bento" style="margin-bottom:16px">
-          <div class="card span-4 kpi"><div class="val" id="gLearned">0</div><div class="lbl">Terms learned</div></div>
-          <div class="card span-4 kpi"><div class="val" id="gTotal">0</div><div class="lbl">Terms available in demo</div></div>
-          <div class="card span-4"><div class="small muted">Progress</div><div class="progress" style="margin-top:10px"><i id="gBar"></i></div><div class="small muted" style="margin-top:8px">Unlock by running letters in <a href="#" data-goto="agent">Live Agent</a>.</div></div>
-        </div>
-        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="glossSearch" placeholder="Search a term — e.g. kompaun" /></div>
-        <div class="gloss-grid" id="glossGrid"></div>
-      </section>
+          <div class="consent">
+            <label class="tick"><input type="checkbox" id="consentBox" />
+              <span>Saya setuju FAHAM membaca teks atau gambar ini. Butiran peribadi ditutup dahulu dan surat tidak disimpan.<br />I agree FAHAM reads this text or photo. Personal details are hidden first and the letter is not saved.</span>
+            </label>
+            <details class="more">
+              <summary>Privacy / Privasi</summary>
+              <p lang="en"><b>EN:</b> FAHAM reads the text of your letter after personal details such as IC, phone and account numbers are masked (redacted). The letter is not stored. If the optional AI service is switched on, it receives only the redacted text. If you are helping a parent or someone else, you confirm you have their permission to use their letter. Tick is needed only for your own text or photo, not for the examples.</p>
+              <p lang="ms"><b>BM:</b> FAHAM membaca teks surat anda selepas butiran peribadi seperti no. IC, telefon dan akaun ditutup (redact). Surat tidak disimpan. Jika perkhidmatan AI pilihan dihidupkan, ia hanya menerima teks yang telah ditutup. Jika anda membantu ibu bapa atau orang lain, anda mengesahkan anda mendapat kebenaran mereka untuk menggunakan surat itu. Tanda ini hanya perlu untuk teks atau gambar anda sendiri, bukan untuk contoh.</p>
+            </details>
+          </div>
 
-      <!-- ===== PRACTICE ===== -->
-      <section class="view" id="view-practice" data-title="Spot the Scam">
-        <p class="view-intro">Practice mode reuses the same agent: it generates clearly fictional messages — some real, some scams. Decide, get instant feedback with the clues, and build your readiness level.</p>
-        <div class="practice-wrap">
-          <div class="card">
-            <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Is this real or a scam?</h3><span class="sub" id="pCount"></span></div>
-            <div class="sms" id="pCard"></div>
-            <div class="choice-row" id="pChoices">
-              <button class="choice legit" data-a="legit">✓ Real — follow it</button>
-              <button class="choice scam" data-a="scam">⚠ Scam — ignore &amp; report</button>
-            </div>
-            <div class="feedback" id="pFeedback"></div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <div class="card strong">
-              <div class="eyebrow">Readiness level</div>
-              <div class="level-name" id="lvlName">🌱 Pemula</div>
-              <div class="progress"><i id="lvlBar"></i></div>
-              <div class="small muted" style="margin-top:8px" id="lvlNext"></div>
-            </div>
-            <div class="card">
-              <div class="card-head"><h3>This round</h3><span class="sub" id="pScore">0 / 0</span></div>
-              <div class="dots" id="pDots"></div>
-              <p class="small muted" style="margin-top:12px">Earn XP: +10 per correct answer, +20 per letter cleared in Live Agent. Light on purpose — no leaderboard.</p>
-              <button class="btn btn-ghost btn-sm" id="pRestart" style="margin-top:12px">↻ New round</button>
-            </div>
-          </div>
-        </div>
-      </section>
+          <p class="err" id="formErr" role="alert"></p>
+          <button class="btn btn-primary btn-big" id="checkBtn" type="submit"><span data-t="btn_check">Check now</span></button>
+          <button class="btn btn-quiet" id="clearInput" type="button">Clear</button>
+        </form>
 
-      <!-- ===== FAMILY ===== -->
-      <section class="view" id="view-family" data-title="Family Mode">
-        <p class="view-intro">“Help my parents” mode: a child scans the letter once, and FAHAM sends the explanation to the parent in <b>their</b> language — with read-aloud. The child approves before it is sent.</p>
-        <div class="card" style="margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-          <span class="small muted">Letter</span><select class="select" id="fLetter"></select>
-          <span class="small muted">Child reads in</span><select class="select" id="fChild"></select>
-          <span class="small muted">Parent reads in</span><select class="select" id="fParent"></select>
-        </div>
-        <div class="family-grid">
-          <div class="card"><div class="card-head"><div class="avatar">🧑</div><h3>You (scanned)</h3><span class="sub" id="fChildLbl"></span></div><div class="explain-text" id="fChildText"></div></div>
-          <div class="flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-          <div class="card">
-            <div class="card-head"><div class="avatar">👵</div><h3>Mak / Ayah receives</h3><span class="sub" id="fParentLbl"></span></div>
-            <div class="phone">
-              <div class="ph-top">FAHAM · Family</div>
-              <div class="bubble" id="fBubble"></div>
-              <div class="bubble" style="font-size:12px">🔊 Tap to listen · ✅ Already handled by your child</div>
-            </div>
-            <div class="approve-row" style="justify-content:center">
-              <button class="btn btn-ghost btn-sm" id="fSpeak">🔊 Preview read-aloud</button>
-              <button class="btn btn-primary btn-sm" id="fSend">Approve &amp; send</button>
-            </div>
-          </div>
-        </div>
-      </section>
+        <div class="busy" id="busy" role="status" hidden><span class="spin" aria-hidden="true"></span><span id="busyTxt">Checking...</span></div>
 
-      <!-- ===== ARCHITECTURE ===== -->
-      <section class="view" id="view-architecture" data-title="Architecture">
-        <p class="view-intro">How a letter flows through FAHAM. The orchestrator is a planner that decides which tool to call next, keeps a reasoning trace, and stops at a human-approval gate before any outward action.</p>
-        <div class="card" style="margin-bottom:16px">
-          <div class="arch" id="arch"></div>
-        </div>
-        <div class="bento">
-          <div class="card span-6">
-            <div class="card-head"><h3>Request lifecycle</h3><span class="sub">POST /api/analyze</span></div>
-            <ol class="seq">
-              <li><b>Capture</b> — camera / PDF upload in the PWA; image never leaves memory unredacted.</li>
-              <li><b>Redact</b> — IC, phone, account and address masked before any model sees the text.</li>
-              <li><b>Plan</b> — orchestrator builds a plan: classify → extract → verify → explain → teach → route → act.</li>
-              <li><b>Tool calls</b> — each step calls a typed tool; results are added to the agent state.</li>
-              <li><b>Ground</b> — procedures retrieved from the official source registry, cited with timestamp + confidence.</li>
-              <li><b>Teach</b> — lesson card + glossary terms written to the user's local profile.</li>
-              <li><b>Approve</b> — drafts, reminders and messages wait for the user's explicit approval.</li>
-              <li><b>Discard</b> — letter content is dropped after the session; only learned terms remain.</li>
-            </ol>
-          </div>
-          <div class="card span-6">
-            <div class="card-head"><h3>Tech stack</h3></div>
-            <table class="tbl">
-              <thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead>
-              <tbody>
-                <tr><td>Frontend</td><td>HTML/CSS/JS PWA</td><td>Zero install, works on low-end phones, GitHub Pages hosting.</td></tr>
-                <tr><td>API</td><td>FastAPI (Python)</td><td>Typed models, async, auto OpenAPI docs.</td></tr>
-                <tr><td>Agent</td><td>Planner + tool registry</td><td>Visible reasoning trace; easy to add tools.</td></tr>
-                <tr><td>LLM</td><td>Pluggable provider</td><td>Template fallback runs offline for demos.</td></tr>
-                <tr><td>OCR</td><td>Tesseract (msa+eng)</td><td>Free, on-prem, Malay language pack.</td></tr>
-                <tr><td>Speech</td><td>Web Speech API</td><td>Read-aloud in the browser, no cost.</td></tr>
-                <tr><td>Deploy</td><td>Docker + GitHub Actions</td><td>CI tests, one-command run.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+        <h2>Try an example / Cuba contoh</h2>
+        <p class="muted">Fictional letters and messages. They work without ticking the box.</p>
+        <div class="examples" id="examples"></div>
+      </div>
 
-      <!-- ===== TRUST ===== -->
-      <section class="view" id="view-trust" data-title="Trust & Safety">
-        <p class="view-intro">The three questions judges will ask — can it be wrong, what happens to my letter, why not a general chatbot — answered by design.</p>
-        <div class="bento" id="risks"></div>
-        <div class="card" style="margin-top:16px">
-          <div class="card-head"><h3>Privacy by design</h3><span class="sub">PDPA compliance as a design goal</span></div>
-          <div class="privacy-flow">
-            <div class="pf"><div class="n">01</div><b>Scan</b><span>Photo stays on device until redacted</span></div>
-            <div class="pf"><div class="n">02</div><b>Redact</b><span>IC · phone · account · address masked</span></div>
-            <div class="pf"><div class="n">03</div><b>Process</b><span>Agent works on redacted text only</span></div>
-            <div class="pf"><div class="n">04</div><b>Discard</b><span>Letter not stored; only learned terms kept</span></div>
-          </div>
-        </div>
-        <div class="disclaimer">ⓘ Practice mode and the demo use clearly fictional letters only — never real people's letters or IC numbers.</div>
-      </section>
+      <!-- result -->
+      <div id="result" hidden></div>
+    </section>
 
-      <!-- ===== PLAN ===== -->
-      <section class="view" id="view-plan" data-title="Pitch & Plan">
-        <div class="bento">
-          <div class="card span-12">
-            <div class="card-head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m16 10 6-3v10l-6-3"/></svg></div><h3>5-minute video outline</h3><span class="sub">Lead with the lesson, end on practice mode</span></div>
-            <div class="timeline" id="timeline"></div>
-            <div class="scene-detail" id="sceneDetail"></div>
-          </div>
-          <div class="card span-7">
-            <div class="card-head"><h3>Next steps</h3><span class="sub" id="todoProg"></span></div>
-            <div class="progress" style="margin-bottom:12px"><i id="todoBar"></i></div>
-            <ul class="todo" id="todo"></ul>
-          </div>
-          <div class="card span-5">
-            <div class="card-head"><h3>Team</h3><span class="sub">max 4 + advisor</span></div>
-            <div class="team" id="team"></div>
-            <div class="note">Roles are proposals — edit them in <code>frontend/assets/js/data.js</code>.</div>
-          </div>
-          <div class="card span-12 kenapa">
-            <span class="eyebrow">Pitch line</span>
-            <h3 style="font-size:26px;margin-top:8px" id="pitchLine"></h3>
-          </div>
+    <!-- ===== PRACTICE ===== -->
+    <section class="view" id="view-practice" data-title="Practice: spot the scam" hidden>
+      <h1 tabindex="-1">Practice: spot the scam</h1>
+      <p class="lead">Read each fictional message and decide. You get the clues, and what FAHAM's check says, beside the answer.</p>
+      <div class="card">
+        <p class="muted" id="pCount" role="status"></p>
+        <div class="sms" id="pCard"></div>
+        <div class="choices" id="pChoices">
+          <button class="btn btn-secondary btn-big" type="button" data-a="legit">Looks real</button>
+          <button class="btn btn-secondary btn-big" type="button" data-a="scam">It is a scam</button>
         </div>
-      </section>
-    </main>
-  </div>
+        <div id="pFeedback" aria-live="polite"></div>
+      </div>
+      <div class="card">
+        <p><b id="pScore">0 / 0</b> this round</p>
+        <button class="btn btn-quiet" id="pRestart" type="button">New round</button>
+      </div>
+    </section>
 
-  <div id="toast"></div>
-  <div class="modal" id="levelModal"><div class="card strong"><div class="big" id="lmEmoji">🏅</div><h3 style="font-family:var(--display);font-size:24px;margin:8px 0" id="lmTitle">Level up!</h3><p class="muted" id="lmText"></p><button class="btn btn-primary" style="margin-top:18px" id="lmClose">Continue</button></div></div>
-  <canvas id="confetti"></canvas>
+    <!-- ===== DICTIONARY ===== -->
+    <section class="view" id="view-dictionary" data-title="My dictionary" hidden>
+      <h1 tabindex="-1">My dictionary (Kamus Surat)</h1>
+      <p class="lead">Words from official letters, explained simply. After you check a letter, press "Add to my dictionary" to keep its words here.</p>
+      <div class="card">
+        <h2 class="h3">Your level: <span id="lvlName"></span></h2>
+        <div class="bar-track" aria-hidden="true"><i id="lvlBar"></i></div>
+        <p class="muted" id="lvlNext"></p>
+        <p class="muted">You earn points for right answers in Practice and for words you add. Points stay on this device.</p>
+      </div>
+      <label for="glossSearch">Search a word</label>
+      <input type="search" id="glossSearch" placeholder="for example: kompaun" />
+      <p class="muted" id="glossCount" role="status"></p>
+      <div id="glossGrid" class="gloss"></div>
+    </section>
+
+    <!-- ===== FAMILY ===== -->
+    <section class="view" id="view-family" data-title="Family: help a parent" hidden>
+      <h1 tabindex="-1">Family: help a parent</h1>
+      <p class="lead">Pick a letter and the language your parent reads best. Copy the message and send it yourself by WhatsApp or SMS.</p>
+      <div class="note"><b>FAHAM sends nothing.</b> It only prepares the words. You copy them and decide whether to send.</div>
+      <div class="card">
+        <label for="fLetter">Letter</label>
+        <select id="fLetter"></select>
+        <label for="fLang">Language for your parent</label>
+        <select id="fLang"></select>
+        <p class="muted" id="fNote"></p>
+        <h2 class="h3">Message to share</h2>
+        <div class="msg" id="fMsg" lang="ms"></div>
+        <button class="btn btn-primary" id="fCopy" type="button">Copy message</button>
+        <button class="btn btn-secondary" id="fSpeak" type="button">Read aloud</button>
+      </div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section class="view" id="view-about" data-title="About and privacy" hidden>
+      <h1 tabindex="-1">About and privacy</h1>
+
+      <h2>What FAHAM does</h2>
+      <p>FAHAM reads a letter or message you give it, looks for signs of a scam, explains it in plain words in BM, English, Chinese or Tamil, and shows the usual steps to deal with it online or at an office. It can write a reminder and a draft reply for you to copy.</p>
+
+      <h2>What it cannot do</h2>
+      <ul>
+        <li>It cannot see who really sent the message, open a link or call a number.</li>
+        <li>It cannot prove a letter is real. "No scam signs found" is not a promise.</li>
+        <li>It cannot send, pay or contact anyone for you. Nothing is sent automatically.</li>
+        <li>It can miss new tricks. When unsure, ask the agency yourself using a number or website you looked up.</li>
+      </ul>
+
+      <h2>How a verdict is decided</h2>
+      <p>A fixed set of rules checks the text. An optional AI service may only reword the explanation. It does not decide the verdict.</p>
+      <p><b>Signs of a scam we look for:</b></p>
+      <ul>
+        <li>Asks you to transfer money to a personal or company account</li>
+        <li>Shortened links or web addresses that are not .gov.my</li>
+        <li>Threats of arrest or "pay in 24 hours" pressure</li>
+        <li>Asks for your TAC or OTP, bank login, or a photo of your IC</li>
+        <li>Asks you to keep it secret or to use WhatsApp</li>
+        <li>A reference number that does not match the agency's format</li>
+      </ul>
+      <p><b>Three possible answers:</b> "Likely a scam" when strong signs are found. "Be careful" when we are not sure. "No scam signs found" when none of the above appears, which still does not prove the message is real.</p>
+      <p><b>Limits:</b> the rules read words only. A well-written scam can pass, and a real letter can look odd after a photo is misread.</p>
+
+      <h2>Your data</h2>
+      <ul>
+        <li>Personal details (IC, phone, account numbers) are masked before anything else happens.</li>
+        <li>Letters are not stored on our side. Your dictionary, points, language and tick are saved only in this browser.</li>
+        <li>Examples are fictional.</li>
+      </ul>
+      <button class="btn btn-secondary" id="clearData" type="button">Clear my data</button>
+      <p class="muted" id="clearMsg" role="status"></p>
+
+      <h2>Guidance, not legal advice</h2>
+      <p>Steps come from a cached copy of official sources, shown with the date and a confidence level. Check the official site before you act. Chinese and Tamil text still needs review by native speakers.</p>
+
+      <div class="note bad">
+        <b>Already paid or shared your bank details?</b> Call your bank now, then the National Scam Response Centre on <a href="tel:997">997</a>.
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">FAHAM gives guidance, not legal advice. Examples are fictional (SAMPEL / FIKTIF).</footer>
+  <div id="toast" role="status" aria-live="polite"></div>
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/data.js"></script>
-  <script src="assets/js/intro.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

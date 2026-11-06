@@ -54,10 +54,12 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None) -> AnalyzeRespons
     for r in verdict["red_flags"]:
         tr.note("verify", "bad", "✗ " + r)
     genuine = verdict["genuine"]
-    if genuine:
-        tr.note("verify", "ok", f"verdict: LIKELY GENUINE ({verdict['score']}/100)")
+    if verdict["verdict"] == "no_signals":
+        tr.note("verify", "ok", "verdict: NO SCAM SIGNALS FOUND (not proof, verify yourself)")
+    elif genuine:
+        tr.note("verify", "warn", "verdict: CAUTION")
     else:
-        tr.note("verify", "bad", f"verdict: LIKELY SCAM ({verdict['score']}/100) → switch plan: protect the user, do not pay", flag=True)
+        tr.note("verify", "bad", f"verdict: LIKELY SCAM ({verdict['score']}/100) -> switch plan: protect the user, do not pay", flag=True)
 
     # ---- EXPLAIN
     tr.think("explain", f"Explaining in '{req.language}', short sentences, amount and deadline first.")

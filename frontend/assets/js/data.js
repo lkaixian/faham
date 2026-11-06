@@ -1,5 +1,5 @@
 /* =========================================================
-   FAHAM — demo content
+   FAHAM: example content
    ALL LETTERS BELOW ARE FICTIONAL SAMPLES. No real names,
    IC numbers, accounts or cases. Procedures are illustrative
    and must be retrieved from official sites at runtime.
@@ -7,16 +7,6 @@
    ========================================================= */
 
 window.FAHAM_DATA = {
-  event: {
-    name: "Festival Idea Putrajaya 2026",
-    track: "Agentic AI Challenge",
-    date: "2026-11-19T09:00:00+08:00",
-    theme: "Edutainment & Innovation",
-    team: "Up to 4 members",
-    video: "Max 5 minutes",
-    pitch: "Every scary letter becomes a 60-second lesson, so people need help less each time."
-  },
-
   languages: {
     bm: { label: "BM", name: "Bahasa Melayu", speech: "ms-MY" },
     en: { label: "EN", name: "English", speech: "en-GB" },
@@ -24,16 +14,15 @@ window.FAHAM_DATA = {
     ta: { label: "தமிழ்", name: "தமிழ்", speech: "ta-IN" }
   },
 
-  /* ---------- Sample letters for the live agent ---------- */
+  /* ---------- Fictional example letters for the checker ---------- */
   letters: [
     {
       id: "lhdn",
-      icon: "🧾",
       short: "LHDN",
       kind: "Notis Taksiran",
       issuer: "Lembaga Hasil Dalam Negeri Malaysia (LHDN)",
       issuerShort: "LHDN · hasil.gov.my",
-      title: "NOTIS TAKSIRAN CUKAI PENDAPATAN — TAHUN TAKSIRAN 2025",
+      title: "NOTIS TAKSIRAN CUKAI PENDAPATAN - TAHUN TAKSIRAN 2025",
       ref: "LHDN/SAMPEL/TT2025/0001",
       date: "1 November 2026",
       to: "AHMAD BIN CONTOH",
@@ -55,10 +44,10 @@ window.FAHAM_DATA = {
         ]
       },
       explain: {
-        bm: ["Ini surat rasmi LHDN. Selepas anda isi e-Filing, LHDN dapati cukai yang dipotong dari gaji anda (PCB) belum cukup untuk tahun 2025.", "Anda perlu bayar baki RM 1,240 sebelum 15 Disember 2026. Jika tidak setuju dengan jumlah ini, anda boleh buat rayuan."],
-        en: ["This is a genuine LHDN letter. After you filed your e-Filing, LHDN found that the tax deducted from your salary (PCB) did not cover all of your 2025 tax.", "You need to pay the balance of RM 1,240 before 15 December 2026. If you disagree with the amount, you can file an appeal."],
-        zh: ["这是内陆税收局（LHDN）的正式信件。您提交报税后，税局发现2025年从薪水中扣除的税款（PCB）不足。", "您需要在2026年12月15日之前缴付余额 RM 1,240。如果不同意此金额，可以提出上诉。"],
-        ta: ["இது LHDN அனுப்பிய அதிகாரப்பூர்வ கடிதம். நீங்கள் e-Filing செய்த பிறகு, 2025-க்கு உங்கள் சம்பளத்திலிருந்து பிடிக்கப்பட்ட வரி (PCB) போதவில்லை என்று LHDN கண்டறிந்தது.", "மீதமுள்ள RM 1,240-ஐ 15 டிசம்பர் 2026-க்கு முன் செலுத்த வேண்டும். தொகையில் உடன்பாடு இல்லையெனில் மேல்முறையீடு செய்யலாம்."]
+        bm: ["Surat ini kelihatan seperti surat LHDN. Selepas anda isi e-Filing, LHDN dapati cukai yang dipotong dari gaji anda (PCB) belum cukup untuk tahun 2025.", "Anda perlu bayar baki RM 1,240 sebelum 15 Disember 2026. Jika tidak setuju dengan jumlah ini, anda boleh buat rayuan."],
+        en: ["This looks like a normal LHDN letter. After you filed your e-Filing, LHDN found that the tax deducted from your salary (PCB) did not cover all of your 2025 tax.", "You need to pay the balance of RM 1,240 before 15 December 2026. If you disagree with the amount, you can file an appeal."],
+        zh: ["这看起来像内陆税收局（LHDN）的信件。您提交报税后，税局发现2025年从薪水中扣除的税款（PCB）不足。", "您需要在2026年12月15日之前缴付余额 RM 1,240。如果不同意此金额，可以提出上诉。"],
+        ta: ["இது LHDN கடிதம் போலத் தெரிகிறது. நீங்கள் e-Filing செய்த பிறகு, 2025-க்கு உங்கள் சம்பளத்திலிருந்து பிடிக்கப்பட்ட வரி (PCB) போதவில்லை என்று LHDN கண்டறிந்தது.", "மீதமுள்ள RM 1,240-ஐ 15 டிசம்பர் 2026-க்கு முன் செலுத்த வேண்டும். தொகையில் உடன்பாடு இல்லையெனில் மேல்முறையீடு செய்யலாம்."]
       },
       kenapa: {
         q: "Kenapa saya dapat surat ini?",
@@ -72,23 +61,22 @@ window.FAHAM_DATA = {
           prepare: ["IC number", "Income tax number", "Reference no.", "Online banking"]
         },
         walkin: {
-          steps: ["Nearest LHDN branch is located from your postcode (demo data).", "Check opening hours and whether an appointment is needed on hasil.gov.my before going.", "Bring the documents below; ask the counter about instalment if the amount is hard to pay at once."],
+          steps: ["Nearest LHDN branch is located from your postcode (example data).", "Check opening hours and whether an appointment is needed on hasil.gov.my before going.", "Bring the documents below; ask the counter about instalment if the amount is hard to pay at once."],
           prepare: ["IC (original)", "This notice", "Income tax number", "Latest payslip"]
         },
         source: "hasil.gov.my · MyTax", confidence: "High"
       },
-      draft: "Kepada: Pengarah, LHDN Cawangan [auto]\nPerkara: Permohonan Bayaran Secara Ansuran — Tahun Taksiran 2025\nRujukan: LHDN/SAMPEL/TT2025/0001\n\nTuan/Puan,\nSaya merujuk kepada notis taksiran bertarikh 1 November 2026 berjumlah RM 1,240.00.\nSaya memohon agar bayaran ini dibenarkan secara ansuran selama 4 bulan atas sebab kekangan kewangan semasa.\n\nSekian, terima kasih.\n[Nama penuh]\n[No. cukai pendapatan]",
+      draft: "Kepada: Pengarah, LHDN Cawangan [auto]\nPerkara: Permohonan Bayaran Secara Ansuran - Tahun Taksiran 2025\nRujukan: LHDN/SAMPEL/TT2025/0001\n\nTuan/Puan,\nSaya merujuk kepada notis taksiran bertarikh 1 November 2026 berjumlah RM 1,240.00.\nSaya memohon agar bayaran ini dibenarkan secara ansuran selama 4 bulan atas sebab kekangan kewangan semasa.\n\nSekian, terima kasih.\n[Nama penuh]\n[No. cukai pendapatan]",
       reminder: "8 Dec 2026 · 7 days before deadline"
     },
 
     {
       id: "jpj",
-      icon: "🚗",
       short: "JPJ",
       kind: "Notis Saman",
       issuer: "Jabatan Pengangkutan Jalan Malaysia (JPJ)",
       issuerShort: "JPJ · jpj.gov.my",
-      title: "NOTIS SAMAN — KESALAHAN MELEBIHI HAD LAJU (KAMERA AwAS)",
+      title: "NOTIS SAMAN - KESALAHAN MELEBIHI HAD LAJU (KAMERA AwAS)",
       ref: "JPJ/SAMPEL/AWAS/2026/0042",
       date: "28 Oktober 2026",
       to: "PEMILIK BERDAFTAR KENDERAAN JXX 0000 (SAMPEL)",
@@ -110,10 +98,10 @@ window.FAHAM_DATA = {
         ]
       },
       explain: {
-        bm: ["Ini notis saman sebenar dari JPJ. Kamera AwAS merakam kereta anda memandu lebih laju daripada had pada 12 Oktober.", "Bayar kompaun RM 300 sebelum 20 Disember 2026. Jika orang lain yang memandu, anda boleh namakan pemandu itu."],
-        en: ["This is a genuine JPJ summons. An AwAS camera recorded your car above the speed limit on 12 October.", "Pay the RM 300 compound before 20 December 2026. If someone else was driving, you can name that driver."],
-        zh: ["这是陆路交通局（JPJ）的真实罚单。AwAS 测速摄像头记录到您的车辆于10月12日超速。", "请在2026年12月20日之前缴付 RM 300 罚款。如果当时是其他人驾驶，您可以申报该司机。"],
-        ta: ["இது JPJ அனுப்பிய உண்மையான அபராத அறிவிப்பு. அக்டோபர் 12 அன்று உங்கள் கார் வேக வரம்பை மீறியதாக AwAS கேமரா பதிவு செய்தது.", "RM 300 அபராதத்தை 20 டிசம்பர் 2026-க்கு முன் செலுத்தவும். வேறு ஒருவர் ஓட்டியிருந்தால், அந்த ஓட்டுநரின் பெயரைத் தெரிவிக்கலாம்."]
+        bm: ["Ini kelihatan seperti notis saman JPJ. Kamera AwAS merakam kereta anda memandu lebih laju daripada had pada 12 Oktober.", "Bayar kompaun RM 300 sebelum 20 Disember 2026. Jika orang lain yang memandu, anda boleh namakan pemandu itu."],
+        en: ["This looks like a normal JPJ summons. An AwAS camera recorded your car above the speed limit on 12 October.", "Pay the RM 300 compound before 20 December 2026. If someone else was driving, you can name that driver."],
+        zh: ["这看起来像陆路交通局（JPJ）的罚单。AwAS 测速摄像头记录到您的车辆于10月12日超速。", "请在2026年12月20日之前缴付 RM 300 罚款。如果当时是其他人驾驶，您可以申报该司机。"],
+        ta: ["இது JPJ அபராத அறிவிப்பு போலத் தெரிகிறது. அக்டோபர் 12 அன்று உங்கள் கார் வேக வரம்பை மீறியதாக AwAS கேமரா பதிவு செய்தது.", "RM 300 அபராதத்தை 20 டிசம்பர் 2026-க்கு முன் செலுத்தவும். வேறு ஒருவர் ஓட்டியிருந்தால், அந்த ஓட்டுநரின் பெயரைத் தெரிவிக்கலாம்."]
       },
       kenapa: {
         q: "Kenapa saya dapat surat ini?",
@@ -127,7 +115,7 @@ window.FAHAM_DATA = {
           prepare: ["IC number", "Vehicle no.", "Reference no.", "Online banking"]
         },
         walkin: {
-          steps: ["Nearest JPJ office is located from your postcode (demo data).", "Check counter hours and any queue app on the official site first.", "Bring the documents below; ask how to nominate the driver if it was not you."],
+          steps: ["Nearest JPJ office is located from your postcode (example data).", "Check counter hours and any queue app on the official site first.", "Bring the documents below; ask how to nominate the driver if it was not you."],
           prepare: ["IC (original)", "This notice", "Vehicle grant / ownership"]
         },
         source: "jpj.gov.my · MyJPJ", confidence: "High"
@@ -138,12 +126,11 @@ window.FAHAM_DATA = {
 
     {
       id: "ptptn",
-      icon: "🎓",
       short: "PTPTN",
       kind: "Notis Peringatan",
       issuer: "Perbadanan Tabung Pendidikan Tinggi Nasional (PTPTN)",
       issuerShort: "PTPTN · ptptn.gov.my",
-      title: "NOTIS PERINGATAN — TUNGGAKAN BAYARAN BALIK PINJAMAN",
+      title: "NOTIS PERINGATAN - TUNGGAKAN BAYARAN BALIK PINJAMAN",
       ref: "PTPTN/SAMPEL/BB/2026/7781",
       date: "3 November 2026",
       to: "NUR CONTOH BINTI SAMPEL",
@@ -164,10 +151,10 @@ window.FAHAM_DATA = {
         ]
       },
       explain: {
-        bm: ["Ini peringatan sebenar dari PTPTN. Anda terlepas bayaran pinjaman selama tiga bulan, jumlahnya RM 450.", "Bayar sebelum 31 Disember 2026 melalui myPTPTN, atau minta jadual bayaran baru jika gaji anda belum stabil."],
-        en: ["This is a genuine PTPTN reminder. You missed three months of loan repayments, totalling RM 450.", "Pay before 31 December 2026 through myPTPTN, or ask for a new repayment schedule if your income is not stable yet."],
-        zh: ["这是国家高等教育基金（PTPTN）的真实提醒。您已拖欠三个月的贷款还款，共 RM 450。", "请在2026年12月31日之前通过 myPTPTN 缴付，或者如果收入尚未稳定，可申请新的还款计划。"],
-        ta: ["இது PTPTN அனுப்பிய உண்மையான நினைவூட்டல். மூன்று மாத கடன் தவணைகள், மொத்தம் RM 450, செலுத்தப்படவில்லை.", "31 டிசம்பர் 2026-க்கு முன் myPTPTN மூலம் செலுத்தவும், அல்லது வருமானம் நிலையாக இல்லையெனில் புதிய தவணை அட்டவணையைக் கேட்கவும்."]
+        bm: ["Ini kelihatan seperti peringatan PTPTN. Anda terlepas bayaran pinjaman selama tiga bulan, jumlahnya RM 450.", "Bayar sebelum 31 Disember 2026 melalui myPTPTN, atau minta jadual bayaran baru jika gaji anda belum stabil."],
+        en: ["This looks like a normal PTPTN reminder. You missed three months of loan repayments, totalling RM 450.", "Pay before 31 December 2026 through myPTPTN, or ask for a new repayment schedule if your income is not stable yet."],
+        zh: ["这看起来像国家高等教育基金（PTPTN）的提醒。您已拖欠三个月的贷款还款，共 RM 450。", "请在2026年12月31日之前通过 myPTPTN 缴付，或者如果收入尚未稳定，可申请新的还款计划。"],
+        ta: ["இது PTPTN நினைவூட்டல் போலத் தெரிகிறது. மூன்று மாத கடன் தவணைகள், மொத்தம் RM 450, செலுத்தப்படவில்லை.", "31 டிசம்பர் 2026-க்கு முன் myPTPTN மூலம் செலுத்தவும், அல்லது வருமானம் நிலையாக இல்லையெனில் புதிய தவணை அட்டவணையைக் கேட்கவும்."]
       },
       kenapa: {
         q: "Kenapa saya dapat surat ini?",
@@ -181,7 +168,7 @@ window.FAHAM_DATA = {
           prepare: ["IC number", "Loan account no.", "Online banking"]
         },
         walkin: {
-          steps: ["Nearest PTPTN counter is located from your postcode (demo data).", "Check hours on ptptn.gov.my first.", "Bring the documents below and ask about a restructured schedule."],
+          steps: ["Nearest PTPTN counter is located from your postcode (example data).", "Check hours on ptptn.gov.my first.", "Bring the documents below and ask about a restructured schedule."],
           prepare: ["IC (original)", "This notice", "Latest payslip / offer letter"]
         },
         source: "ptptn.gov.my · myPTPTN", confidence: "High"
@@ -192,12 +179,11 @@ window.FAHAM_DATA = {
 
     {
       id: "scam",
-      icon: "⚠️",
       short: "\"PDRM\"",
       kind: "Suspicious notice",
       issuer: "Claims to be: PDRM (Polis Diraja Malaysia)",
       issuerShort: "Unverified sender",
-      title: "NOTIS SEGERA — SAMAN TERTUNGGAK & WARAN TANGKAP",
+      title: "NOTIS SEGERA - SAMAN TERTUNGGAK & WARAN TANGKAP",
       ref: "PDRM-99X-SEGERA",
       date: "Hari ini",
       to: "PEMILIK AKAUN",
@@ -237,34 +223,34 @@ window.FAHAM_DATA = {
           prepare: ["Screenshot of message", "Sender number", "Bank (if you paid)"]
         },
         walkin: {
-          steps: ["Nearest police station is located from your postcode (demo data).", "Make a police report if money was lost.", "Bring the evidence below."],
+          steps: ["Nearest police station is located from your postcode (example data).", "Make a police report if money was lost.", "Bring the evidence below."],
           prepare: ["IC (original)", "Screenshots", "Bank transaction slip"]
         },
         source: "rmp.gov.my · NSRC 997", confidence: "High"
       },
       draft: "LAPORAN SCAM (draf untuk NSRC / balai polis)\n\nTarikh terima: [auto]\nSaluran: SMS / WhatsApp\nNombor penghantar: 011-XXXX XXXX\nKandungan: Mendakwa dari PDRM, minta pindahan RM 2,150 ke akaun \"Syarikat Penyelesaian Saman\" dalam 24 jam dan ugut waran tangkap. Pautan: bit.ly/saman-pdrm-bayar\nTindakan saya: Tidak membuat bayaran. Tidak klik pautan.\n\n[Nama penuh]",
-      reminder: "No deadline — this is not a real demand"
+      reminder: "No deadline - this is not a real demand"
     }
   ],
 
   /* ---------- Glossary (Kamus Surat) ---------- */
   glossary: {
-    "Taksiran": { src: "LHDN", def: "Assessment — the official calculation of how much tax you owe for a year." },
-    "PCB": { src: "LHDN", def: "Potongan Cukai Bulanan — monthly tax your employer deducts from your salary in advance." },
-    "Tahun Taksiran": { src: "LHDN", def: "Year of assessment — the year of income being taxed (YA 2025 = income earned in 2025)." },
+    "Taksiran": { src: "LHDN", def: "Assessment - the official calculation of how much tax you owe for a year." },
+    "PCB": { src: "LHDN", def: "Potongan Cukai Bulanan - monthly tax your employer deducts from your salary in advance." },
+    "Tahun Taksiran": { src: "LHDN", def: "Year of assessment - the year of income being taxed (YA 2025 = income earned in 2025)." },
     "Kenaikan": { src: "LHDN", def: "An increase (penalty) added when tax is not paid by the due date." },
-    "Rayuan": { src: "General", def: "Appeal — a formal request to review a decision you disagree with, within a set time." },
-    "Saman": { src: "JPJ / PDRM", def: "Summons — an official notice of an offence that requires action." },
-    "Kompaun": { src: "JPJ / PDRM", def: "Compound — a fine you can pay to settle an offence without going to court." },
-    "Pemilik berdaftar": { src: "JPJ", def: "Registered owner — the person whose name the vehicle is registered under." },
+    "Rayuan": { src: "General", def: "Appeal - a formal request to review a decision you disagree with, within a set time." },
+    "Saman": { src: "JPJ / PDRM", def: "Summons - an official notice of an offence that requires action." },
+    "Kompaun": { src: "JPJ / PDRM", def: "Compound - a fine you can pay to settle an offence without going to court." },
+    "Pemilik berdaftar": { src: "JPJ", def: "Registered owner - the person whose name the vehicle is registered under." },
     "AwAS": { src: "JPJ", def: "Automated speed and red-light camera system that records the vehicle plate." },
-    "Tunggakan": { src: "PTPTN / Bank", def: "Arrears — payments that are overdue." },
-    "Bayaran balik": { src: "PTPTN", def: "Repayment — paying back a loan by instalments." },
-    "Penstrukturan semula": { src: "PTPTN / Bank", def: "Restructuring — formally changing your repayment schedule." },
-    "Waran tangkap": { src: "Court / PDRM", def: "Arrest warrant — issued by a court, never 'cancelled' by paying a stranger." },
-    "NSRC 997": { src: "Scam", def: "National Scam Response Centre hotline — call quickly if money was taken by a scam." },
-    "Domain rasmi": { src: "Scam", def: "Official domain — Malaysian government sites end in .gov.my." },
-    "Notis": { src: "General", def: "Notice — an official written message telling you something you must know or do." }
+    "Tunggakan": { src: "PTPTN / Bank", def: "Arrears - payments that are overdue." },
+    "Bayaran balik": { src: "PTPTN", def: "Repayment - paying back a loan by instalments." },
+    "Penstrukturan semula": { src: "PTPTN / Bank", def: "Restructuring - formally changing your repayment schedule." },
+    "Waran tangkap": { src: "Court / PDRM", def: "Arrest warrant - issued by a court, never 'cancelled' by paying a stranger." },
+    "NSRC 997": { src: "Scam", def: "National Scam Response Centre hotline - call quickly if money was taken by a scam." },
+    "Domain rasmi": { src: "Scam", def: "Official domain - Malaysian government sites end in .gov.my." },
+    "Notis": { src: "General", def: "Notice - an official written message telling you something you must know or do." }
   },
 
   /* ---------- Practice: Spot the scam (all fictional) ---------- */
@@ -288,72 +274,9 @@ window.FAHAM_DATA = {
   ],
 
   levels: [
-    { name: "Pemula", min: 0, emoji: "🌱" },
-    { name: "Celik Surat", min: 60, emoji: "📄" },
-    { name: "Bijak Surat", min: 140, emoji: "🧠" },
-    { name: "Pakar FAHAM", min: 240, emoji: "🏅" }
-  ],
-
-  /* ---------- Overview content ---------- */
-  themeFit: [
-    { t: "Education", d: "\"Kenapa saya dapat surat ini?\" lesson card after every action plan." },
-    { t: "Education", d: "Personal Kamus Surat that grows with every letter." },
-    { t: "Entertainment", d: "Spot-the-scam practice with fictional letters and a score." },
-    { t: "Entertainment", d: "A light readiness level — not a leaderboard." },
-    { t: "Inclusion", d: "Read-aloud + BM, English, 中文, தமிழ்." },
-    { t: "Family", d: "Help-my-parents mode: one scan, two languages." },
-    { t: "Innovation", d: "Plans the route, checks scams, drafts the reply." }
-  ],
-
-  personas: [
-    { e: "🎓", t: "Fresh graduates & first-time workers", d: "First LHDN, PTPTN and EPF letters." },
-    { e: "👵", t: "Elderly & low-literacy users", d: "Today rely on children or neighbours to read letters." },
-    { e: "📚", t: "Students aged 17–22", d: "A life-skills module — a clear reason for the education sector to adopt it." }
-  ],
-
-  risks: [
-    { q: "Can it be wrong?", r: "Wrong or outdated procedure", m: "Steps are retrieved from official sites at the time of use, shown with the source link and a confidence level, and labelled \"not legal advice\"." },
-    { q: "What happens to my letter?", r: "Privacy of IC numbers & addresses", m: "Sensitive fields are redacted before processing, the letter is not stored, and PDPA compliance is a design goal." },
-    { q: "Why not a general chatbot?", r: "\"ChatGPT can do this\"", m: "Malaysia-specific procedures, nearest office with queue/booking details, scam checks, and a practice mode on the same agent." },
-    { q: "Could the agent do harm?", r: "Harmful autonomous action", m: "The agent drafts and pre-fills only. The user approves before anything is sent or paid." }
-  ],
-
-  video: [
-    { t: "0:00", e: "0:40", s: 40, name: "The problem", shows: "A worried person with a letter they cannot understand, and a family member who is not around to help." },
-    { t: "0:40", e: "1:30", s: 50, name: "Read & verify", shows: "Scan, classify the issuer, extract amount and deadline, run the scam check — agent reasoning on screen." },
-    { t: "1:30", e: "2:30", s: 60, name: "Explain & learn", shows: "Explanation in the user's language, then the \"Kenapa?\" lesson card and a new glossary entry." },
-    { t: "2:30", e: "3:30", s: 60, name: "Act", shows: "Online click-by-click steps, the walk-in checklist (nearest office, queue/booking, documents), reminder and draft reply — approved by the user." },
-    { t: "3:30", e: "4:30", s: 60, name: "Practice mode", shows: "A \"Spot the scam\" round with fictional letters and a score." },
-    { t: "4:30", e: "5:00", s: 30, name: "Impact", shows: "Who it helps, the metric (less help needed on repeat letters) and future scope." }
-  ],
-
-  nextSteps: [
-    "Confirm the video submission deadline with the organisers (not stated on the page).",
-    "Choose 3 letter types for the demo (e.g. LHDN, JPJ, PTPTN) and write clearly fictional samples.",
-    "Decide the agent's tools: OCR, issuer classifier, scam check, official-site retrieval, office locator, reminder, drafting.",
-    "Build the lesson card, glossary and practice mode on top of the same agent.",
-    "Decide the demo languages (at least BM and English, plus one more).",
-    "Draft the pitch script and record the 5-minute video.",
-    "Agree roles in the team (maximum 4 people)."
-  ],
-
-  /* Edit names and roles here — roles are proposals until the team agrees */
-  team: [
-    { n: "Yb", r: "Lead · pitch & product (proposed)" },
-    { n: "Kevinraj", r: "Agent & backend (proposed)" },
-    { n: "Muhammad Aqil", r: "Frontend & UX (proposed)" },
-    { n: "Larm Kai Xian", r: "Data, samples & video (proposed)" },
-    { n: "Dr. Ramhuzaini bin Abd Rahman", r: "Advisor" }
-  ],
-
-  tools: [
-    { name: "OCR Reader", id: "ocr.read", d: "Image/PDF → text, layout-aware" },
-    { name: "PII Redactor", id: "privacy.redact", d: "Masks IC, phone, account, address" },
-    { name: "Issuer Classifier", id: "classify.issuer", d: "LHDN · JPJ · PDRM · PTPTN · court · council · bank" },
-    { name: "Field Extractor", id: "extract.fields", d: "Amount, deadline, reference, action" },
-    { name: "Scam Check", id: "scam.check", d: "Domain allowlist + red-flag rules + LLM judge" },
-    { name: "Official Retrieval", id: "gov.retrieve", d: "Fetches current steps from .gov.my sources" },
-    { name: "Office Locator", id: "office.locate", d: "Nearest office, hours, booking/queue app" },
-    { name: "Reminder & Draft", id: "act.draft", d: "Calendar reminder + reply draft (user approves)" }
+    { name: "Pemula", min: 0 },
+    { name: "Celik Surat", min: 60 },
+    { name: "Bijak Surat", min: 140 },
+    { name: "Pakar FAHAM", min: 240 }
   ]
 };

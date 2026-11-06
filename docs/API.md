@@ -19,12 +19,14 @@ Request:
   "postcode": "84000"
 }
 ```
+`scam.verdict` is `likely_scam` (score < 60), `no_signals` (known issuer, no red flags, score >= 80; not proof) or `caution` (everything else). `genuine` is kept and means "not flagged", not "proven". `reasons[].kind` is `risk | ok | info`.
+
 Response (abridged):
 ```json
 {
   "redacted_text": "... Kepada: [NAME] ...",
   "fields": { "issuer": "LHDN", "letter_type": "Tax assessment", "amount": "RM 1,240.00", "deadline": "15 Disember 2026", "reference": "LHDN/SAMPEL/TT2025/0001" },
-  "scam": { "genuine": true, "score": 95, "red_flags": [], "good_signs": ["..."] },
+  "scam": { "verdict": "no_signals", "genuine": true, "score": 95, "red_flags": [], "good_signs": ["..."], "reasons": [{ "kind": "ok", "text": "..." }, { "kind": "info", "text": "We only read the text you gave us. ..." }], "verify_yourself": ["Type the website address yourself ...", "..."] },
   "explanation": "Surat ini daripada Lembaga Hasil Dalam Negeri Malaysia ...",
   "lesson": { "question": "Kenapa saya dapat surat ini?", "answer": "...", "terms": ["Taksiran", "PCB"] },
   "route": { "online_steps": ["..."], "walkin_steps": ["..."], "source_url": "https://www.hasil.gov.my", "retrieved_at": "2026-11-06T05:00:00+00:00", "confidence": "High" },

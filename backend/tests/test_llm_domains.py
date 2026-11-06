@@ -15,8 +15,9 @@ def test_model_text_with_wrong_domain_is_dropped(monkeypatch):
 
 
 def test_model_text_with_letter_domain_is_kept(monkeypatch):
-    assert explain_with(monkeypatch, "Pay via hasil.gov.my before 15 December.") == "Pay via hasil.gov.my before 15 December."
+    assert explain_with(monkeypatch, "Pay via hasil.gov.my before 15 December.").startswith("Pay via hasil.gov.my before 15 December.")
 
 
 def test_model_text_without_domain_is_kept(monkeypatch):
-    assert explain_with(monkeypatch, "Pay RM 50 by 15 December 2026.") == "Pay RM 50 by 15 December 2026."
+    out = explain_with(monkeypatch, "Pay RM 50 by 15 December 2026.")
+    assert out.startswith("Pay RM 50 by 15 December 2026.") and out.endswith("see the steps below.")
