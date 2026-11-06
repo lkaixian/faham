@@ -407,3 +407,26 @@ html.mode-pop .top { animation: modePop .45s ease-out both !important; }
 html.mode-pop #main { animation: modePop .55s ease-out .08s both !important; }
 html.mode-pop #seniorBtn { animation: modeRing .8s ease-out !important; }
 @media (prefers-reduced-motion: reduce) { html.mode-pop .top, html.mode-pop #main, html.mode-pop #seniorBtn { animation: none !important; } }
+
+/* ---------- DEMO watermark ----------
+   The Agentic AI Challenge (rule 4.2) requires every displayed or submitted web app to carry a clear "DEMO" or "SAMPLE" watermark.
+   A tiled diagonal mark plus a corner badge, on every page, under clicks and aria-hidden by the empty alt text. To remove it
+   after the competition, delete this block (and the matching line in docs/COMPETITION.md). */
+body::after { content: ""; position: fixed; inset: 0; z-index: 9998; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='240'%3E%3Ctext x='170' y='120' text-anchor='middle' dominant-baseline='middle' transform='rotate(-24 170 120)' font-family='Arial,Helvetica,sans-serif' font-weight='800' font-size='68' letter-spacing='8' fill='%235a3b8c' fill-opacity='.13'%3EDEMO%3C/text%3E%3C/svg%3E"); background-repeat: repeat; }
+[data-theme="dark"] body::after { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='240'%3E%3Ctext x='170' y='120' text-anchor='middle' dominant-baseline='middle' transform='rotate(-24 170 120)' font-family='Arial,Helvetica,sans-serif' font-weight='800' font-size='68' letter-spacing='8' fill='%23c9c2e3' fill-opacity='.13'%3EDEMO%3C/text%3E%3C/svg%3E"); }
+body::before { content: "DEMO"; content: "DEMO" / ""; position: fixed; right: 12px; bottom: 12px; z-index: 9999; pointer-events: none;
+  padding: 5px 14px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-weight: 800; font-size: .8rem; letter-spacing: .18em; box-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
+
+/* the one-line account of what the AI agent did, under the verdict */
+.agent-line { margin: 8px 0 0; font-size: .95rem; font-weight: 600; color: var(--accent); }
+
+/* the agent working, live: its thoughts, tool calls and findings as they happen */
+.live { list-style: none; margin: 10px 0 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: .85rem; line-height: 1.5; max-height: 14rem; overflow: auto; }
+.live li { padding: 4px 0; border-bottom: 1px dashed var(--line); animation: liveIn .25s ease-out; }
+.live li:last-child { border: 0; }
+.live .tag { display: inline-block; margin-right: 6px; padding: 0 8px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); font-weight: 700; font-size: .75rem; }
+.live .k-bad, .live .flag { color: var(--bad); }
+.live .k-ok { color: var(--ok); }
+.live .k-warn { color: var(--warn); }
+@keyframes liveIn { from { opacity: 0; transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { .live li { animation: none; } }

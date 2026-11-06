@@ -36,7 +36,8 @@ flowchart LR
   FE -. "API down" .-> DEMO["In-browser demo mode"]
   API --> ING["Ingest<br/>PDF, DOCX, TXT, MD, EML, image"]
   ING --> O["Orchestrator<br/>read, verify, explain, teach, route, act"]
-  O --> T["10 tools<br/>rules and regex"]
+  O --> AG["Agent loop<br/>plan, use tools, observe, decide"]
+  AG --> T["Tools: rules, links, official pages,<br/>domain records, drafts"]
   T --> K[("Source registry<br/>and offices JSON")]
   O -. "masked text only, optional" .-> L[("LLM: ILMU or Anthropic")]
   FE -- "masked result text" --> TTS["/api/tts<br/>ILMU voice"]
@@ -47,12 +48,12 @@ flowchart LR
   P --> A
 ```
 
-- **Deterministic first, LLM second.** Classification, extraction and scam checks are testable rules. The LLM only rewrites the explanation and is optional, so the demo works offline.
+- **A real agent, with a safety floor.** An LLM works toward a goal in rounds of think, act and observe: it writes and revises a plan, chooses tools (including downloading an agency's real web page and checking when a website was registered), and decides when it has enough evidence. The scam rules are one of its tools and always re-run last; the agent can raise concern, never lower it, and every signal must quote the message. With no model the rules run alone, so the demo works offline.
 - **Mask before anything else.** IC, phone, account, email, address, plate, names and long numbers are masked before any LLM or voice call. This is regex-based, best effort. The API is stateless and stores no letters.
 - **The plan changes on evidence.** A scam verdict switches the agent from "help comply" to "protect and report".
 - **Human in the loop.** Every action is a draft with `requires_approval: true`.
 
-More detail: [Architecture](docs/ARCHITECTURE.md) · [Agent flow](docs/AGENT_FLOW.md) · [API](docs/API.md) · [Integrations](docs/INTEGRATIONS.md) · [Privacy and safety](docs/PRIVACY_SAFETY.md) · [Research](docs/RESEARCH.md) · [Terms and privacy](docs/TERMS_AND_PRIVACY.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Terms review notes](docs/TERMS_REVIEW.md) · [Notes](docs/NOTES.md)
+More detail: [Architecture](docs/ARCHITECTURE.md) · [Agent flow](docs/AGENT_FLOW.md) · [API](docs/API.md) · [Integrations](docs/INTEGRATIONS.md) · [Privacy and safety](docs/PRIVACY_SAFETY.md) · [Research](docs/RESEARCH.md) · [Terms and privacy](docs/TERMS_AND_PRIVACY.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Terms review notes](docs/TERMS_REVIEW.md) · [Competition notes](docs/COMPETITION.md) · [Notes](docs/NOTES.md)
 
 ## Repository layout
 

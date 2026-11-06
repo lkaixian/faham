@@ -6,7 +6,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field, model_validator
 
 Language = Literal["bm", "en", "zh", "ta"]
-Stage = Literal["read", "verify", "explain", "teach", "route", "act"]
+Stage = Literal["read", "plan", "agent", "verify", "explain", "teach", "route", "act"]
 TraceKind = Literal["think", "tool", "ok", "bad", "warn"]
 
 
@@ -78,10 +78,38 @@ class Lesson(BaseModel):
     terms: list[str]
 
 
+class ExtraDraft(BaseModel):
+    kind: str
+    title: str
+    text: str
+
+
+class Attachment(BaseModel):
+    filename: str
+    mime: str
+    content: str  # text, for example a calendar file the user may download
+
+
 class Action(BaseModel):
     draft: str
     reminder: Optional[str] = None
     requires_approval: bool = True
+    extra: list[ExtraDraft] = []  # drafts the agent chose to prepare (always need approval)
+    attachments: list[Attachment] = []  # files the agent made for the user to download
+
+
+class AgentInfo(BaseModel):
+    mode: Literal["ai", "rules"] = "rules"  # "ai": the agent loop ran; "rules": plain rule pipeline (no model available)
+    rounds: int = 0  # rounds of think, act, observe
+    plan: list[str] = []  # the agent's final plan
+    tools: list[str] = []  # tools it used, in order
+    network: int = 0  # calls it made to the outside world (official pages, domain records)
+    signals: int = 0  # extra scam signals it found that passed the quote check
+    refused: int = 0  # proposals the guard rails rejected
+    assessment: Optional[str] = None  # what the agent itself concluded
+    summary: Optional[str] = None  # its reasoning in one or two sentences
+    doubts: list[str] = []  # what could make it wrong
+    filled: list[str] = []  # steps the agent skipped that the harness had to do for it
 
 
 class AnalyzeResponse(BaseModel):
@@ -93,6 +121,7 @@ class AnalyzeResponse(BaseModel):
     route: Route
     action: Action
     trace: list[TraceStep]
+    agent: AgentInfo = AgentInfo()
     disclaimer: str = "FAHAM gives guidance, not legal advice. Verify on the official source shown."
 
 

@@ -6,13 +6,16 @@ Docs: http://localhost:8000/docs
 import base64
 import binascii
 import json
+import queue
 import random
+import threading
 
 from urllib.parse import unquote
 
 from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 
 from . import channels, config, ingest, tts
 from .agent import orchestrator
@@ -75,6 +78,43 @@ def analyze(req: AnalyzeRequest):
         return orchestrator.run(req, image)
     except orchestrator.OCRUnavailable as e:
         raise HTTPException(422, str(e))
+
+
+def _decode_image(req: AnalyzeRequest) -> bytes | None:
+    if not req.image_b64:
+        return None
+    try:
+        image = base64.b64decode(req.image_b64, validate=True)
+    except (binascii.Error, ValueError):
+        raise HTTPException(422, "image_b64 is not valid base64")
+    if not image.startswith((b"\x89PNG\r\n\x1a\n", b"\xff\xd8\xff")):
+        raise HTTPException(422, "image must be PNG or JPEG")
+    return image
+
+
+@app.post("/api/analyze/stream")
+def analyze_stream(req: AnalyzeRequest):
+    """Same agent run as /api/analyze, as server-sent events: one `step` per thought, tool call and finding as it happens,
+    then `result` (the full response) or `error`. Lets the page show the agent working instead of a spinner."""
+    image = _decode_image(req)
+    q: queue.Queue = queue.Queue()
+
+    def work():
+        try:
+            q.put(("result", orchestrator.run(req, image, sink=lambda s: q.put(("step", s))).model_dump_json()))
+        except orchestrator.OCRUnavailable as e:
+            q.put(("error", json.dumps({"status": 422, "detail": str(e)})))
+        except Exception:
+            q.put(("error", json.dumps({"status": 500, "detail": "analysis failed"})))
+        q.put(None)
+
+    threading.Thread(target=work, daemon=True).start()
+
+    def events():
+        while (item := q.get()) is not None:
+            kind, payload = item
+            yield f"event: {kind}\ndata: {payload.model_dump_json() if kind == 'step' else payload}\n\n"
+    return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 
 @app.post("/api/analyze-file", response_model=BatchResponse)

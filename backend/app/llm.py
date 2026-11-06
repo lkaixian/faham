@@ -32,21 +32,21 @@ LANG_NAMES = {"bm": "Bahasa Melayu", "en": "English", "zh": "Simplified Chinese"
 RESIDUAL_PII = re.compile(r"[\w.+-]+@[\w-]+\.\w|\b\d{6}-?\d{2}-?\d{4}\b|(?:\d[ -]?){8,}")
 
 
-def _ilmu(system: str, user: str) -> str | None:
+def _ilmu(system: str, user: str, max_tokens: int = 400) -> str | None:
     req = urllib.request.Request(
         config.ILMU_BASE_URL + "/chat/completions",
-        data=json.dumps({"model": config.MODELS["ilmu"], "max_tokens": 400, "messages": [
+        data=json.dumps({"model": config.MODELS["ilmu"], "max_tokens": max_tokens, "messages": [
             {"role": "system", "content": system}, {"role": "user", "content": user}]}).encode(),
         headers={"Content-Type": "application/json", "Authorization": "Bearer " + config.ILMU_API_KEY})
     with urllib.request.urlopen(req, timeout=30) as r:
         return (json.load(r)["choices"][0]["message"]["content"] or "").strip() or None
 
 
-def _anthropic(system: str, user: str) -> str | None:
+def _anthropic(system: str, user: str, max_tokens: int = 400) -> str | None:
     import anthropic  # optional dependency
 
     msg = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY).messages.create(
-        model=config.MODELS["anthropic"], max_tokens=400, system=system,
+        model=config.MODELS["anthropic"], max_tokens=max_tokens, system=system,
         messages=[{"role": "user", "content": user}])
     return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip() or None
 
@@ -66,4 +66,19 @@ def complete(prompt: str, language: str) -> str | None:
                 return out
         except Exception as exc:  # network, auth, missing package
             log.warning("LLM %s failed, trying next: %s", name, type(exc).__name__)
+    return None
+
+
+def chat(system: str, user: str, max_tokens: int = 500) -> str | None:
+    """One raw call for the agent planner. Same rules as complete(): redacted text only, residual PII blocks the call,
+    providers tried in order, None means no model answered."""
+    chain = config.llm_chain()
+    if not chain or RESIDUAL_PII.search(user):
+        return None
+    for name in chain:
+        try:
+            if out := PROVIDERS[name](system, user, max_tokens):
+                return out
+        except Exception as exc:
+            log.warning("LLM %s failed in agent loop, trying next: %s", name, type(exc).__name__)
     return None

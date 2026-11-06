@@ -54,7 +54,7 @@ def test_api_analyze_genuine():
     assert d["scam"]["genuine"] is True
     assert d["action"]["requires_approval"] is True
     assert "900101" not in d["redacted_text"]
-    assert {s["stage"] for s in d["trace"]} == {"read", "verify", "explain", "teach", "route", "act"}
+    assert {s["stage"] for s in d["trace"]} >= {"read", "verify", "explain", "teach", "route", "act"}  # plus "plan" when the agent loop is off or on
 
 
 def test_api_analyze_scam_switches_plan():

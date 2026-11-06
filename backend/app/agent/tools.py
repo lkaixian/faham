@@ -167,6 +167,7 @@ RED_FLAGS: list[tuple[str, str]] = [
     (r"diskaun\s+\d+%", "discount"),
     (r"akaun\s+(?:bank\s+)?(?:baharu|baru)|new (?:bank )?account|(?:changed|updated) (?:bank )?account|(?:tukar|bertukar|ditukar)\w*\s+akaun|akaun[^.\n]{0,30}(?:telah|sudah)\s+(?:berubah|ditukar)", "new_account"),
     (r"https?://(?:[^\s/]*@|\[email\])|https?://\d{1,3}(?:\.\d{1,3}){3}", "hidden_link"),
+    (r"ignore (?:all |any )?(?:the )?(?:previous|prior|above) instructions|abaikan (?:semua )?arahan|system prompt|(?:you are|anda ialah) (?:an? )?(?:ai|language model|assistant)|(?:say|state|report|nyatakan|laporkan) (?:that )?(?:this|it|ini)(?: is| sebagai| adalah)? (?:genuine|safe|legit|sah|selamat)", "prompt_injection"),
     (r"verify your account|confirm your details|sahkan (?:akaun|maklumat)|akaun anda (?:akan )?(?:di)?(?:gantung|sekat|bekukan|tutup)|your account (?:will be|has been) (?:suspended|blocked|closed)", "credential_harvest"),
 ]
 
@@ -222,8 +223,19 @@ def _social_handles(text: str) -> list[str]:
     return list(dict.fromkeys(out))
 
 
+AI_SIGNALS = ("ai_payment_demand", "ai_threat", "ai_credential", "ai_remote_access", "ai_impersonation",
+              "ai_too_good", "ai_secrecy", "ai_chat_move", "ai_inconsistent", "ai_new_domain", "ai_official_mismatch")
+# What the agent's evidence can do. A quote proves the words exist, not that the agent's JUDGEMENT of them is right, so:
+#  - hard signals are objective and checkable (an unusual way to pay, a request for credentials or remote access, a website the
+#    agent verified was registered days ago). They weigh more than a rule flag (30 against 22) and can make a likely scam on their own, even on a letter with a valid reference number.
+#  - soft signals are judgement calls (impersonation, a mismatch with the agency's site, pressure, "too good", secrecy, a chat move,
+#    inconsistency). They raise caution but can never alone say "scam": a real survey sent through a Google Form looks "unusual" to a model.
+AI_HARD = {"ai_payment_demand", "ai_credential", "ai_remote_access", "ai_new_domain"}
+AI_SOFT = set(AI_SIGNALS) - AI_HARD
+
+
 @tool("scam.check", "Domain allowlist + red-flag rules. Returns verdict and evidence.")
-def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list = ()) -> dict:
+def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list = (), ai: tuple | list = ()) -> dict:
     """Verdict plus reasons. Sentences come from i18n.TEXT in `language`; each reason carries its stable `code`."""
     low = text.lower()
     r = lambda code, **kw: render(code, language, **kw)
@@ -235,6 +247,10 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
             flags.append((k, r(k)))
             ev[flags[-1]] = [text[m.start():m.end()][:80]]
     flags += [(c, r(c)) for c in extra if c in TEXT]  # extra risk codes, e.g. email header signals
+    for c, quote in ai:  # signals the AI planner found; the planner already checked each quote against the letter
+        if c in AI_SIGNALS and (c, r(c)) not in flags:
+            flags.append((c, r(c)))
+            ev[flags[-1]] = [quote]
     good: list[tuple[str, str]] = []
     official = SOURCES.get(issuer, {}).get("domains", [])
     info: list[tuple[str, str]] = []
@@ -269,9 +285,11 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     ref = REF_RE.search(text)
     if ref:
         good.append(("ref_format", r("ref_format"))); ev[good[-1]] = [ref.group(1)]
-    score = max(0, min(100, 80 + 5 * len(good) - 22 * len(flags)))
+    score = max(0, min(100, 80 + 5 * len(good) - sum(12 if c in AI_SOFT else 30 if c in AI_HARD else 22 for c, _ in flags)))
     # Three levels: rules can rule a scam in, never prove a letter genuine.
     verdict = "likely_scam" if score < 60 else "no_signals" if issuer != "UNKNOWN" and not flags and score >= 80 else "caution"
+    if verdict == "likely_scam" and flags and all(c in AI_SOFT for c, _ in flags):
+        verdict, score = "caution", 60  # judgement calls alone never condemn a message; the rules or hard evidence must agree
     R = lambda kind, c, t: {"kind": kind, "code": c, "text": t, "evidence": list(dict.fromkeys(ev.get((c, t), [])))}
     reasons = ([R("risk", c, t) for c, t in flags] + [R("ok", c, t) for c, t in good]
                + [R("info", c, t) for c, t in info]
@@ -285,6 +303,55 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     return {"genuine": verdict != "likely_scam",  # means 'not flagged', not 'proven genuine'
             "verdict": verdict, "score": score, "red_flags": [t for _, t in flags], "good_signs": [t for _, t in good],
             "reasons": reasons, "verify_yourself": verify}
+
+
+ODD_TLDS = (".top", ".xyz", ".icu", ".click", ".buzz", ".cfd", ".sbs", ".cyou", ".rest", ".monster", ".cam")
+ASK_WORDS = ("login", "log-in", "verify", "secure", "pay", "bayar", "akaun", "account", "update", "refund", "claim")
+
+
+def _is_official(host: str) -> bool:
+    return host.endswith(".gov.my") or any(host == d or host.endswith("." + d) for s in SOURCES.values() for d in s["domains"] if d != ".gov.my")
+
+
+@tool("link.inspect", "Inspect every link in the message for tricks: bare IP, punycode, @ trick, look-alike name, odd ending, shortener.")
+def inspect_links(text: str) -> list[dict]:
+    out, seen = [], set()
+    for u, host in _urls(text):
+        if not host or host in seen:
+            continue
+        seen.add(host)
+        p = urlparse(u if "://" in u else "http://" + u)
+        official, f = _is_official(host), []
+        if host.replace(".", "").isdigit():
+            f.append("the address is a bare IP number")
+        if "xn--" in host:
+            f.append("uses punycode, which can imitate letters")
+        if "@" in (p.netloc or ""):
+            f.append("has an @ in the address, which hides the real site")
+        if host in SHORTENERS:
+            f.append("is a link shortener that hides the destination")
+        if host.endswith(ODD_TLDS):
+            f.append("uses an ending common on scam sites")
+        if not official and host.count(".") >= 3:
+            f.append("has many subdomain parts")
+        known_platform = any(host == n or host.endswith("." + n) for n in SOCIAL + FORMS)
+        if not official and not known_platform and _lookalike(host):
+            f.append("looks like an agency name but is not its website")
+        if p.scheme == "http":
+            f.append("is not encrypted (http)")
+        if any(w in (p.path or "").lower() for w in ASK_WORDS):
+            f.append("the path asks you to log in, verify or pay")
+        out.append({"host": host, "official": official, "findings": f})
+    return out
+
+
+@tool("registry.lookup", "Look up the claimed agency in the official registry: its real websites and how it takes payment.")
+def registry_lookup(issuer: str) -> dict:
+    s = SOURCES.get(issuer)
+    if not s:
+        return {"known": False}
+    return {"known": True, "name": s["name"], "domains": s["domains"], "source_url": s["source_url"],
+            "online_steps": s.get("online_steps", [])[:3]}
 
 
 # ---------------------------------------------------------------- explain / teach

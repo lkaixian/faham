@@ -191,7 +191,7 @@
       kenapa: { q: d.lesson.question, a: d.lesson.answer }, terms: d.lesson.terms || [],
       route: { url: r.source_url, label: String(r.source_url).replace(/^https?:\/\//, ""), date: r.retrieved_at, confidence: r.confidence,
         online: { steps: r.online_steps, prepare: r.prepare_online }, walkin: { steps: r.walkin_steps, prepare: r.prepare_walkin } },
-      reminder: d.action.reminder, draft: d.action.draft, trace: mapTrace(d.trace)
+      reminder: d.action.reminder, draft: d.action.draft, extra: d.action.extra || [], files: d.action.attachments || [], agent: d.agent || null, trace: mapTrace(d.trace)
     }, d.scam);
   }
   function fromSample(l) {
@@ -235,6 +235,39 @@
       return { data: await res.json() };
     } catch (e) { return { error: t("e_net"), retry: true }; }
   }
+  // The agent's steps arrive one by one (server-sent events) so the page can show it working. null = no stream here, use post().
+  async function postStream(body, ms, onStep) {
+    const ctrl = new AbortController(), to = setTimeout(() => ctrl.abort(), ms);
+    try {
+      const res = await fetch(CFG.API_BASE + "/api/analyze/stream", { method: "POST", headers: { "Content-Type": "application/json" }, signal: ctrl.signal, body: JSON.stringify(body) });
+      if (res.status === 422) return { error: t("e_422") };
+      if (!res.ok || !res.body) return null;
+      const rd = res.body.getReader(), dec = new TextDecoder();
+      let buf = "", result = null;
+      for (;;) {
+        const { value, done } = await rd.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        for (let i = buf.indexOf("\n\n"); i >= 0; i = buf.indexOf("\n\n")) {
+          const block = buf.slice(0, i); buf = buf.slice(i + 2);
+          const nl = block.indexOf("\n"), ev = block.slice(7, nl), j = JSON.parse(block.slice(nl + 7));
+          if (ev === "step") onStep(j); else if (ev === "result") result = j;
+          else if (ev === "error") { clearTimeout(to); return { error: j.status === 422 ? t("e_422") : t("e_server", { n: j.status }), retry: j.status !== 422 }; }
+        }
+      }
+      clearTimeout(to);
+      return result ? { data: result } : { error: t("e_net"), retry: true };
+    } catch (e) { clearTimeout(to); return { error: t("e_net"), retry: true }; }
+  }
+  const LIVE_TAG = { think: "st_think", tool: "st_tool", ok: "st_ok", bad: "st_bad", warn: "st_warn" };
+  function addLive(s) {
+    const ol = $("#live"); if (!s.message) return;
+    const li = document.createElement("li");
+    li.className = "k-" + s.kind + (s.flag ? " flag" : "");
+    li.innerHTML = `<span class="tag">${esc(t(LIVE_TAG[s.kind] || "st_step"))}${s.tool ? " " + esc(s.tool) : ""}</span> ${esc(clean(s.message))}`;
+    ol.appendChild(li);
+    while (ol.children.length > 9) ol.removeChild(ol.firstChild);
+  }
 
   /* staged progress: the API answers in one go, so the four stages (Read, Check, Explain, Route) are paced on the client */
   const STAGES = ["s_read", "s_verify", "s_explain", "s_route"];
@@ -246,9 +279,10 @@
   function setBusy(on, o = {}) {
     state.busy = on; clearInterval(stageTimer);
     $("#busy").hidden = !on;
-    $("#stages").hidden = !!o.sample;
+    $("#stages").hidden = !!o.sample || !!o.live; $("#live").hidden = !o.live;
+    if (on && o.live) { $("#live").innerHTML = ""; $("#busyTxt").textContent = t("ag_live"); }
     if (on && o.sample) $("#busyTxt").textContent = t("busy_ex");
-    if (on && !o.sample) { let i = 0; drawStage(0, o.photo); stageTimer = setInterval(() => { if (i < STAGES.length - 1) drawStage(++i, o.photo); }, 1500); }
+    if (on && !o.sample && !o.live) { let i = 0; drawStage(0, o.photo); stageTimer = setInterval(() => { if (i < STAGES.length - 1) drawStage(++i, o.photo); }, 1500); }
     $("#checkBtn").disabled = on || !state.api; $$(".example").forEach((b) => (b.disabled = on));
   }
   function formErr(m, retry) {
@@ -258,10 +292,11 @@
 
   async function checkOwn(inp) {
     state.last = inp; formErr(""); stopSpeak();
-    setBusy(true);
+    setBusy(true, { live: true });
     const body = { language: state.xl, text: inp.text };
     const pc = $("#postBox").value.trim(); if (/^\d{1,5}$/.test(pc)) body.postcode = pc;
-    const x = await post(body, 30000);
+    let x = await postStream(body, 120000, addLive);
+    if (x === null) { setBusy(true); x = await post(body, 90000); }   // an older server without the stream
     setBusy(false);
     if (x.error) { formErr(x.error, x.retry ? () => checkOwn(inp) : null); return; }
     show(fromApi(x.data, body.language));
@@ -639,7 +674,7 @@
     <p class="muted">${esc(t("draft_hint"))}</p>
     <pre class="draft" lang="ms">${esc(r.draft)}</pre>
     <button class="btn btn-primary" type="button" data-act="copy"><span>${esc(t("copy"))}</span></button>
-    <p class="note"><b>${esc(t("draft_note_b"))}</b> ${esc(t("draft_note"))}</p>`;
+    <p class="note"><b>${esc(t("draft_note_b"))}</b> ${esc(t("draft_note"))}</p>${(r.extra || []).map((x, i) => `<h3>${esc(x.title)}</h3><p class="muted">${esc(t("ag_chosen"))}</p><pre class="draft">${esc(x.text)}</pre><button class="btn btn-secondary" type="button" data-act="copyx" data-i="${i}"><span>${esc(t("copy"))}</span></button>`).join("")}${(r.files || []).map((x, i) => `<p><button class="btn btn-secondary" type="button" data-act="dl" data-i="${i}"><span>${esc(t("ag_dl"))}</span></button></p>`).join("")}`;
   function learnHtml(r) {
     const learnable = r.terms.filter((x) => D.glossary[x]), allIn = learnable.length && learnable.every((x) => state.learned.has(x));
     return `<h3 class="h3">${esc(tr(r.kenapa.q))}</h3><p>${esc(clean(r.kenapa.a))}</p>
@@ -656,6 +691,7 @@
       { id: "now", h: "next_h", html: nowHtml(r), say: () => [vs.slice(0, 2).join(" "), rl(r)] },
       { id: "why", h: "h_why", html: whyHtml(r, 3), say: () => [r.reasons.slice(0, 3).map(reasonText).join(" "), rl(r)] }
     ];
+    if (r.agent && r.agent.mode === "ai") out.push({ id: "agent", h: "h_agent", html: agentHtml(r), say: () => [r.agent.summary || "", "en"] });
     if (ps.length || f.amount || f.deadline) out.push({ id: "says", h: "h_says", html: saysHtml(r, true), say: () => [sentences(ps).slice(0, 3).join(" "), paraLang(r)] });
     if (["online", "walkin"].some((k) => (r.route[k].steps || []).length)) out.push({ id: "todo", h: "h_todo", html: todoHtml(r), say: () => [route().slice(0, 4).join(" "), "en"] });
     out.push({ id: "draft", h: "h_draft", html: draftHtml(r), say: () => [`${t("rem_label")} ${reminderText(r)}`, state.lang] });
@@ -670,13 +706,26 @@
       <p class="muted vnote" id="vnote" role="status"></p>
       <button class="btn btn-primary btn-big tap" type="button" id="tapListen" data-act="speak" hidden>${svg("speaker")}<span>${esc(t("tap"))}</span></button>`;
   const warnHtml = (r) => { const w = [...new Set((r.warnings || []).map((x) => (/ocr|scan/i.test(x) ? t("w_ocr") : String(x))))]; return w.length ? `<div class="note"><b>${esc(t("w_h"))}</b> ${w.map(esc).join(" ")}</div>` : ""; };
+  // the agent's own account: what it concluded, the plan it followed, what it used, and what could make it wrong
+  const agentHtml = (r) => {
+    const a = r.agent, li = (x) => `<li>${esc(clean(x))}</li>`;
+    return `<p lang="en">${esc(clean(a.summary || ""))}</p>` +
+      (a.plan.length ? `<h3>${esc(t("ag_plan"))}</h3><ol class="steps" lang="en">${a.plan.map(li).join("")}</ol>` : "") +
+      `<p class="muted">${esc(t("ag_stats", { r: a.rounds, n: a.tools.length, w: a.network }))}</p>` +
+      (a.doubts.length ? `<h3>${esc(t("ag_doubts"))}</h3><ul lang="en">${a.doubts.map(li).join("")}</ul>` : "") +
+      `<p class="muted">${esc(t("ag_trace"))}</p>`;
+  };
+  // what the agent did, in one line: the AI chose tools and added signals, or only the rules ran
+  const agentNote = (r) => (r.agent && r.agent.mode === "ai"
+    ? `<p class="agent-line">${esc(t("ag_ai", { n: (r.agent.tools || []).length, s: r.agent.signals || 0 }))}</p>`
+    : r.agent ? `<p class="agent-line muted">${esc(t("ag_rules"))}</p>` : "");
   function renderResult(r, keep) {
     const open = {};
     if (keep) $$("#result details[data-g]").forEach((d) => { open[d.dataset.g] = d.open; });
     const wide = matchMedia("(min-width: 700px)").matches;
     const grp = (id, title, body, dflt) => `<details class="grp" data-g="${id}"${(id in open ? open[id] : dflt || wide) ? " open" : ""}><summary><h2>${esc(title)}</h2></summary><div class="gbody">${body}</div></details>`;
     const v = r.verdict;
-    const verdict = `<div class="verdict v-${v}${keep ? "" : " fresh"}">${svg(v)}<div><h1 id="vHead" tabindex="-1">${esc(t("v_" + v))}</h1><p>${esc(t("vs_" + v))}</p></div></div>`;
+    const verdict = `<div class="verdict v-${v}${keep ? "" : " fresh"}">${svg(v)}<div><h1 id="vHead" tabindex="-1">${esc(t("v_" + v))}</h1><p>${esc(t("vs_" + v))}</p></div></div>${agentNote(r)}`;
     const tail = `<details class="trace"><summary>${esc(t("tr_sum"))}</summary>
         <p class="muted">${esc(t("tr_note"))}</p>
         <ol class="trace-list" lang="en">${(r.trace || []).map((x) => `<li class="${x.flag ? "flag" : ""}"><span class="tag">${esc(STATUS[x.k] ? t(STATUS[x.k]) : t("st_step"))}${x.t ? " " + esc(x.t) : ""}</span>${esc(clean(x.m))}</li>`).join("") || `<li>${esc(t("tr_none"))}</li>`}</ol>
@@ -695,6 +744,7 @@
         <button class="btn btn-secondary" type="button" data-act="sum"><span>${esc(t("r_copy_sum"))}</span></button>
       </section>
       ${grp("why", t("h_why"), whyHtml(r), true)}
+      ${r.agent && r.agent.mode === "ai" ? grp("agent", t("h_agent"), agentHtml(r)) : ""}
       ${grp("verify", t("h_verify"), verifyHtml(r), true)}
       ${grp("says", t("h_says"), saysHtml(r, false))}
       ${grp("todo", t("h_todo"), todoHtml(r))}
@@ -744,6 +794,12 @@
     else if (act === "speak") { $("#tapListen").hidden = true; speakStep(true); }
     else if (!r) return;
     else if (act === "copy") copyText(r.draft, t("draft_copied"));
+    else if (act === "dl") {
+      const f = (r.files || [])[+a.dataset.i]; if (!f) return;
+      const url = URL.createObjectURL(new Blob([f.content], { type: f.mime })), el = document.createElement("a");
+      el.href = url; el.download = f.filename; document.body.appendChild(el); el.click(); el.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+    else if (act === "copyx") copyText(((r.extra || [])[+a.dataset.i] || {}).text || "", t("draft_copied"));
     else if (act === "sum") copyText(summaryText(r), t("sum_copied"));
     else if (act === "next" || act === "prev") {
       state.step += act === "next" ? 1 : -1; renderResult(r, true); $("#result").scrollIntoView();
