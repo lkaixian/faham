@@ -18,7 +18,9 @@ def stamp(write: bool = False) -> list[str]:
 
         def fix(m):
             f = FRONT / m.group(1).split('"', 1)[1]
-            return f'{m.group(1)}?v={hashlib.md5(f.read_bytes()).hexdigest()[:8]}{m.group(2)}'
+            # CRLF and LF must give one answer: git stores LF, a Windows checkout may hold CRLF
+            digest = hashlib.md5(f.read_bytes().replace(b"\r\n", b"\n")).hexdigest()[:8]
+            return f'{m.group(1)}?v={digest}{m.group(2)}'
         new = LINK.sub(fix, s)
         if new != s:
             stale.append(page.name)
