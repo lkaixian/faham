@@ -16,7 +16,7 @@ FAHAM: an agent that reads official Malaysian letters (LHDN, JPJ, PDRM, PTPTN, c
 
 ```bash
 cd backend && pip install -r requirements-dev.txt
-pytest -q                                   # 20 tests, must pass
+pytest -q                                   # all tests must pass (incl. tests/test_real_documents.py, 12-document suite)
 uvicorn app.main:app --reload --port 8000   # docs at /docs
 python -m http.server 5500 -d frontend      # dashboard
 docker compose up --build                   # web :8080, api :8000

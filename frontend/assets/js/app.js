@@ -1014,5 +1014,8 @@
     const tell = () => parent !== window && parent.postMessage({ type: "faham:height", height: Math.ceil(document.body.getBoundingClientRect().height) }, "*");
     new ResizeObserver(tell).observe(document.body); tell();
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => { state.theme = e.matches ? "dark" : "light"; setTheme(); });
-  } else if (!onboarded()) showOb();
+  } else if (!onboarded()) {
+    // The welcome intro (intro.js) plays first on a new session; the terms dialog follows it.
+    if ($("#intro")) addEventListener("faham:intro-done", showOb, { once: true }); else showOb();
+  }
 })();

@@ -1,0 +1,183 @@
+[
+  {
+    "document_id": "01_LHDN_Notis_Taksiran_Seksyen90_ACP1967.txt",
+    "category": "genuine_statutory_notice",
+    "request_payload": {
+      "text": "LEMBAGA HASIL DALAM NEGERI MALAYSIA\nIbu Pejabat Lembaga Hasil Dalam Negeri Malaysia\nMenara Hasil, Persiaran Rimba Permai, Cyber 8, 63000 Cyberjaya, Selangor\nTalian Hasil Care Line: 03-8911 1000 | Portal Rasmi: https://www.hasil.gov.my\n\nRujukan: LHDN/CBJ/ACP1967/TT2025/88412\nNombor Cukai Pendapatan (TIN): IG 10492837460\nNombor Bil: 2026-0918273645\nTarikh Notis: 1 November 2026\nKepada: AHMAD BIN CONTOH, No. KP 900101-01-1234\n\nNOTIS TAKSIRAN CUKAI PENDAPATAN (BORANG J) — TAHUN TAKSIRAN 2025\n(Dikeluarkan di bawah Seksyen 90(3) Akta Cukai Pendapatan 1967 [Akta 53])\n\nTuan/Puan,\n\n1. Dimaklumkan bahawa Ketua Pengarah Hasil Dalam Negeri telah membuat taksiran cukai pendapatan bagi Tahun Taksiran 2025 ke atas tuan/puan seperti berikut:\n   Jumlah Pendapatan Bercukai: RM 78,500.00\n   Jumlah Cukai Kena Dibayar: RM 3,640.00\n   Tolak: Potongan Cukai Bulanan (PCB) / Ansuran CP500: RM 2,400.00\n   BAKI CUKAI KENA DIBAYAR: RM 1,240.00\n\n2. PERUNTUKAN BAYARAN (SEKSYEN 103 AKTA CUKAI PENDAPATAN 1967):\n   Baki cukai sebanyak RM 1,240.00 hendaklah dijelaskan dalam tempoh tiga puluh (30) hari dari tarikh notis taksiran ini diserahkan, iaitu sebelum 15 Disember 2026. Sekiranya apa-apa cukai yang kena dibayar tidak dijelaskan pada atau sebelum tarikh akhir tersebut, suatu kenaikan sebanyak sepuluh peratus (10%) daripada cukai yang belum dibayar itu akan ditambah kepada cukai tersebut tanpa notis selanjutnya.\n\n3. KAEDAH BAYARAN RASMI:\n   Bayaran hendaklah dibuat menggunakan Nombor Bil melalui perkhidmatan ByrHASIL di portal rasmi MyTax (https://mytax.hasil.gov.my) atau melalui perbankan internet FPX bank-bank ejen kutipan yang dilantik oleh LHDNM.\n\n4. HAK RAYUAN (SEKSYEN 99(1) AKTA CUKAI PENDAPATAN 1967 — BORANG Q [CP 14-Pin. 1/2025]):\n   Sekiranya tuan/puan terkilan atau tidak bersetuju dengan taksiran ini, tuan/puan boleh membuat rayuan kepada Pesuruhjaya Khas Cukai Pendapatan dengan mengemukakan Notis Rayuan (Borang Q) secara bertulis berserta alasan rayuan yang jelas dan terperinci kepada Ketua Pengarah Hasil Dalam Negeri dalam tempoh tiga puluh (30) hari selepas notis taksiran ini diserahkan.\n\nSumber Rasmi:\n- Navigasi HASiL 2026 (https://www.hasil.gov.my/wp-content/uploads/navigasi-hasil-2026.pdf)\n- Borang Q [CP 14-Pin. 1/2025] (https://www.hasil.gov.my/wp-content/uploads/cp-14-pin-1-2025-borang-q-acp.pdf)",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_issuer": "LHDN",
+      "expected_genuine": true,
+      "expected_amount": "RM 78,500.00",
+      "expected_balance": "RM 1,240.00",
+      "expected_deadline": "15 Disember 2026",
+      "expected_ref": "LHDN/CBJ/ACP1967/TT2025/88412"
+    }
+  },
+  {
+    "document_id": "02_JPJ_Notis_AwAS_Seksyen53A_APJ1987.txt",
+    "category": "genuine_statutory_notice",
+    "request_payload": {
+      "text": "JABATAN PENGANGKUTAN JALAN MALAYSIA\nBahagian Penguatkuasaan, Kementerian Pengangkutan Malaysia\nAras 3-5, No. 26, Jalan Tun Hussien, Presint 4, 62100 Wilayah Persekutuan Putrajaya\nPortal Rasmi: https://www.jpj.gov.my | Portal Awam: https://public.jpj.gov.my\n\nRujukan Notis: JPJ/AWAS/53A/2026/004291\nTarikh Notis: 28 Oktober 2026\nKepada: PEMILIK BERDAFTAR CONTOH, No. KP 880505-01-5678\nNo. Pendaftaran Kenderaan: JXX 0000\n\nNOTIS DI BAWAH SEKSYEN 53A AKTA PENGANGKUTAN JALAN 1987 [AKTA 333]\nKESALAHAN DIRAKAM MELALUI SISTEM KESELAMATAN KESEDARAN AUTOMATIK (AwAS)\n\nTuan/Puan,\n\n1. Adalah dimaklumkan bahawa kenderaan motor dengan nombor pendaftaran JXX 0000 yang didaftarkan atas nama tuan/puan selaku pemilik berdaftar telah dirakam melalui kamera Sistem Keselamatan Kesedaran Automatik (AwAS) melakukan kesalahan lalu lintas di bawah Seksyen 79(2) Akta Pengangkutan Jalan 1987 (memandu melebihi had laju 110 km/j yang ditetapkan / mengabaikan isyarat lalu lintas) pada 12 Oktober 2026.\n\n2. TAWARAN KOMPAUN & MATA DEMERIT KEJARA:\n   Kesalahan ini boleh dikompaun sebanyak RM 300.00 (atau kadar khas kompaun RM 150.00 tertakluk kepada tempoh penguatkuasaan semasa JPJ) dan tertakluk kepada pemberian Mata Demerit di bawah Sistem Pemberian Mata Demerit Kesalahan Jalan Raya (KEJARA). Bayaran kompaun hendaklah dijelaskan sebelum 20 Disember 2026 melalui aplikasi rasmi MyJPJ atau portal mySIKAP Awam di https://public.jpj.gov.my.\n\n3. KEWAJIPAN MEMBERI MAKLUMAT PEMANDU (SEKSYEN 115 AKTA PENGANGKUTAN JALAN 1987):\n   Sekiranya bukan tuan/puan yang memandu kenderaan tersebut pada masa kesalahan dilakukan, tuan/puan dikehendaki dalam tempoh empat belas (14) hari dari tarikh notis ini disampaikan untuk mengemukakan penyataan bertulis yang ditandatangani oleh tuan/puan yang menyatakan nama, nombor kad pengenalan, nombor lesen memandu, dan alamat pemandu tersebut kepada Pengarah Pengangkutan Jalan Negeri atau mana-mana pejabat JPJ.\n\n4. Kegagalan menjelaskan kompaun atau mengemukakan maklumat pemandu sebelum tarikh akhir akan menyebabkan saman mahkamah dikeluarkan dan tindakan senarai hitam (blacklist) dikenakan ke atas Lesen Kenderaan Motor (LKM) dan Lesen Memandu Malaysia (LMM) tuan/puan.\n\nSumber Rasmi:\n- Akta Pengangkutan Jalan 1987 [Akta 333] Seksyen 53A, 79 & 115 (https://www.jpj.gov.my/akta-333_15-okt-2023/)\n- Kenyataan Media Pelaksanaan Operasi AwAS dan Mata Demerit oleh JPJ (https://www.jpj.gov.my/wp-content/uploads/2022/11/KENYATAAN-MEDIA-PELAKSANAAN-OPERASI-AWAS-DAN-MATA-DEMERIT-OLEH-JPJ.pdf)\n- Perincian Kadar Khas Kompaun JPJ (https://www.jpj.gov.my/pr-perincian-kadar-khas-kompaun-jpj-02012025/)",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_issuer": "JPJ",
+      "expected_genuine": true,
+      "expected_amount": "RM 300.00",
+      "expected_deadline": "20 Disember 2026",
+      "expected_ref": "JPJ/AWAS/53A/2026/004291"
+    }
+  },
+  {
+    "document_id": "03_PDRM_Notis_Pol170A_Saman_Trafik.txt",
+    "category": "genuine_statutory_notice",
+    "request_payload": {
+      "text": "POLIS DIRAJA MALAYSIA (PDRM)\nCawangan Pengurusan Saman, Jabatan Siasatan dan Penguatkuasaan Trafik (JSPT)\nIbu Pejabat Polis Diraja Malaysia, Bukit Aman, 50560 Kuala Lumpur\nTalian Pusat Panggilan Setempat: 03-2266 3346 / 3347 | E-mel: mybayar@rmp.gov.my\nPortal Rasmi: https://www.rmp.gov.my | Portal Bayaran Saman: https://mybayar.rmp.gov.my\n\nRujukan Notis: PDRM/POL170A/JSPT/2026/918273\nTarikh: 30 Oktober 2026\nKepada: PEMILIK KENDERAAN CONTOH, No. KP 910202-01-3344\nNo. Pendaftaran Kenderaan: VXX 0000\n\nNOTIS POL. 170A — MAKLUMAN KESALAHAN LALU LINTAS (NON-STOPPED OFFENCE)\n(Dikeluarkan di bawah Seksyen 53(1) dan Seksyen 115 Akta Pengangkutan Jalan 1987 [Akta 333])\n\nTuan/Puan,\n\n1. Sila ambil perhatian bahawa kenderaan bernombor pendaftaran VXX 0000 yang didaftarkan atas nama tuan/puan telah direkodkan melakukan kesalahan lalu lintas (melebihi had laju / halangan lalu lintas) pada 18 Oktober 2026.\n\n2. TAWARAN KOMPAUN:\n   Tuan/puan ditawarkan untuk menjelaskan kompaun sebanyak RM 150.00 sebelum 18 Disember 2026. Semakan butiran saman dan pembayaran kompaun tanpa sebarang caj perkhidmatan tambahan hendaklah dibuat secara dalam talian melalui portal rasmi MyBayar PDRM (https://mybayar.rmp.gov.my), aplikasi mudah alih MyBayar PDRM, atau di mana-mana Kaunter Trafik Ibu Pejabat Polis Daerah (IPD).\n\n3. PENAFIAN / PERTANYAAN REKOD SAMAN:\n   Sekiranya nombor pendaftaran kenderaan pada rekod saman ini bukan milik kenderaan tuan/puan, sila hadir ke Cawangan Trafik IPD yang mengeluarkan saman atau hubungi Pusat Panggilan Setempat Cawangan Pengurusan Saman JSPT Bukit Aman di talian 03-2266 3346/47 atau e-mel ke mybayar@rmp.gov.my.\n\n4. Kegagalan menyelesaikan saman tertunggak boleh mengakibatkan tindakan senarai hitam (blacklist) dan pengeluaran waran tangkap oleh mahkamah.\n\nSumber Rasmi:\n- Portal Rasmi & FAQ MyBayar PDRM (https://mybayar.rmp.gov.my/en/page/faq)",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_issuer": "PDRM",
+      "expected_genuine": true,
+      "expected_amount": "RM 150.00",
+      "expected_deadline": "18 Disember 2026",
+      "expected_ref": "PDRM/POL170A/JSPT/2026/918273"
+    }
+  },
+  {
+    "document_id": "04_PTPTN_Notis_Peringatan_Terakhir_Tunggakan.txt",
+    "category": "genuine_statutory_notice",
+    "request_payload": {
+      "text": "PERBADANAN TABUNG PENDIDIKAN TINGGI NASIONAL (PTPTN)\nMenara PTPTN, Blok D, Megan Avenue II, No. 12, Jalan Yap Kwan Seng, 50450 Kuala Lumpur\nCareline PTPTN: 03-2193 3000 | Portal Rasmi: https://www.ptptn.gov.my\n\nRujukan: PTPTN/BPP/NOTIS-PERINGATAN/2026/77812\nTarikh: 3 November 2026\nKepada: NUR CONTOH BINTI SAMPEL, No. KP 990303-01-2345\n\nNOTIS PERINGATAN TERAKHIR — TUNGGAKAN BAYARAN BALIK PINJAMAN PENDIDIKAN (UJRAH)\n(Di bawah Akta Perbadanan Tabung Pendidikan Tinggi Nasional 1997 [Akta 566])\n\nTuan/Puan,\n\n1. Merujuk kepada Perjanjian Pinjaman Pendidikan PTPTN yang telah ditandatangani oleh tuan/puan, semakan rekod penyata pinjaman menunjukkan akaun tuan/puan mempunyai tunggakan bayaran balik berjumlah RM 450.00.\n\n2. Tuan/puan dikehendaki menjelaskan jumlah tunggakan sebanyak RM 450.00 sebelum 31 Disember 2026 melalui aplikasi mudah alih rasmi myPTPTN, perbankan internet FPX di portal rasmi https://www.ptptn.gov.my, atau melalui permohonan potongan gaji.\n\n3. RUNDINGAN PENSTRUKTURAN SEMULA / PENJADUALAN SEMULA (#BolehBincang):\n   Sekiranya tuan/puan menghadapi kekangan kewangan untuk menjelaskan tunggakan tersebut secara sekali gus, tuan/puan dinasihatkan hadir ke mana-mana Pejabat PTPTN Negeri (PPN) atau Pejabat PTPTN Cawangan (PPC) atau memohon secara dalam talian menerusi aplikasi myPTPTN sebelum 31 Disember 2026 bagi tujuan Penstrukturan Semula atau Penjadualan Semula jadual bayaran balik pinjaman.\n\n4. Kegagalan menjelaskan tunggakan atau berunding dalam tempoh yang ditetapkan akan menyebabkan Notis Tuntutan (Notice of Demand - NOD) dikeluarkan, rekod kredit CCRIS terjejas, dan kos guaman / tindakan penguatkuasaan dikenakan ke atas akaun pinjaman tuan/puan.\n\nSumber Rasmi:\n- Info Rasmi Penguatkuasaan & Notis Peringatan PTPTN (https://www.ptptn.gov.my/wp-content/uploads/2022/01/info_ptptn_2013.pdf)\n- Kempen Rundingan Bayaran Balik PTPTN (https://www.ptptn.gov.my/wp-content/uploads/2022/02/sm_blh_bncg_pluang_utk_pmnjm.pdf)",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_issuer": "PTPTN",
+      "expected_genuine": true,
+      "expected_amount": "RM 450.00",
+      "expected_deadline": "31 Disember 2026",
+      "expected_ref": "PTPTN/BPP/NOTIS-PERINGATAN/2026/77812"
+    }
+  },
+  {
+    "document_id": "05_MAHKAMAH_Writ_Saman_Borang2_KKM2012.txt",
+    "category": "genuine_statutory_notice",
+    "request_payload": {
+      "text": "DALAM MAHKAMAH MAJISTRET DI BATU PAHAT\nDALAM NEGERI JOHOR DARUL TA'ZIM, MALAYSIA\nGUAMAN SIVIL NO: JB-A72NCvC-104-11/2026\n\nPortal Pengesahan e-Filing: https://efs.kehakiman.gov.my | https://www.kehakiman.gov.my\nRujukan Dokumen: EFS/JB/WRIT/2026/00104\nTarikh: 4 November 2026\n\nANTARA\nSYARIKAT KREDIT CONTOH SDN. BHD. ... PLAINTIF\nDAN\nTAN CONTOH (No. KP: 850202-01-3344) ... DEFENDAN\n\nWRIT SAMAN (BORANG 2 — ATURAN 6 KAEDAH 1 KAEDAH-KAEDAH MAHKAMAH 2012)\n\nKepada: TAN CONTOH, No. 12, Jalan Zabedah, 83000 Batu Pahat, Johor.\n\nKAMI PERINTAHKAN kamu bahawa dalam tempoh empat belas (14) hari selepas penyampaian writ ini kepada kamu, termasuklah hari penyampaian itu, iaitu sebelum 18 November 2026, kamu hendaklah menyebabkan suatu kehadiran (Memorandum Kehadiran dalam Borang 11 di bawah Aturan 12 Kaedah 1 Kaedah-Kaedah Mahkamah 2012) dimasukkan untuk diri kamu dalam suatu kausa atas guaman Plaintif yang dinamakan di atas mengenai tuntutan berjumlah RM 4,850.00.\n\nDAN AMBIL PERHATIAN, bahawa sekiranya kamu ingkar berbuat demikian, Plaintif boleh meneruskan guaman itu, dan penghakiman ingkar kehadiran boleh diberikan semasa ketakhadiran kamu tanpa notis selanjutnya.\n\nPERINGATAN PENGESAHAN MAHKAMAH:\n1. Ketulenan Writ Saman ini dan Nombor Guaman Sivil boleh disemak secara dalam talian menerusi Sistem e-Filing Mahkamah Persekutuan Malaysia di https://efs.kehakiman.gov.my.\n2. Defendan boleh memfailkan Memorandum Kehadiran di Kaunter Pendaftaran Kompleks Mahkamah Batu Pahat atau mendapatkan khidmat nasihat guaman di Jabatan Bantuan Guaman (https://www.jbg.gov.my).\n3. Mahkamah Malaysia tidak pernah meminta sebarang pindahan wang ke akaun peribadi melalui panggilan telefon atau WhatsApp.\n\nSumber Rasmi:\n- Kaedah-Kaedah Mahkamah 2012 [P.U. (A) 205/2012] Aturan 6 Kaedah 1 (Borang 2) & Aturan 12 Kaedah 4\n- Arahan Amalan Kehakiman Malaysia (https://intranet.kehakiman.gov.my/EAA/arahanamalan/34.%20Arahan%20Amalan%20Bil%206%20Tahun%202013.pdf)",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_issuer": "COURT",
+      "expected_genuine": true,
+      "expected_amount": "RM 4,850.00",
+      "expected_deadline": "18 November 2026",
+      "expected_ref": "EFS/JB/WRIT/2026/00104"
+    }
+  },
+  {
+    "document_id": "06_PBT_Notis_Borang_E_Seksyen148_Akta171.txt",
+    "category": "genuine_statutory_notice",
+    "request_payload": {
+      "text": "MAJLIS PERBANDARAN BATU PAHAT (MPBP)\nMenara MPBP, Jalan Rugayah, 83000 Batu Pahat, Johor Darul Ta'zim\nTalian Rasmi: 07-439 6800 | Portal Rasmi: https://www.mpbp.gov.my\nPortal PBTPay KPKT: https://pbtpay.kpkt.gov.my\n\nRujukan: MPBP/JPPH/NBE/2026/01924\nTarikh: 2 November 2026\nKepada: PEMILIK HARTA CONTOH, No. KP 790808-01-9988\n\nAKTA KERAJAAN TEMPATAN 1976 [AKTA 171]\nBORANG E — NOTIS SUPAYA MENJELASKAN TUNGGAKAN KADAR (CUKAI TAKSIRAN)\n(Dikeluarkan di bawah Seksyen 148 Akta Kerajaan Tempatan 1976)\n\nTuan/Puan,\n\n1. Bahawasanya jumlah sebanyak RM 148.00 yang kena dibayar bagi kadar Cukai Taksiran (Cukai Pintu) Penggal Kedua Tahun 2026 di bawah Seksyen 127 dan Seksyen 147 Akta Kerajaan Tempatan 1976 (yang sepatutnya dijelaskan pada atau sebelum 31 Ogos 2026) masih belum dijelaskan bersama Fi Notis Borang E.\n\n2. Sila ambil perhatian bahawa tuan/puan dengan ini dikehendaki menjelaskan jumlah tunggakan sebanyak RM 148.00 tersebut dalam tempoh lima belas (15) hari dari tarikh penyampaian notis ini, iaitu sebelum 17 November 2026.\n\n3. Sekiranya jumlah tersebut gagal dijelaskan dalam tempoh lima belas (15) hari yang ditetapkan, suatu Waran Tahanan (Borang F di bawah Seksyen 148 Akta Kerajaan Tempatan 1976) akan dikeluarkan untuk menahan dan menyita harta alih di dalam premis tuan/puan bagi mendapatkan kembali tunggakan kadar berserta kos tahanan.\n\n4. Bayaran boleh dibuat secara dalam talian melalui portal rasmi PBTPay Kementerian Perumahan dan Kerajaan Tempatan (https://pbtpay.kpkt.gov.my), Portal Semakan Cukai Harta MPBP (https://online.mpbp.gov.my/mycukai/), atau di Kaunter Bayaran Menara MPBP.\n\nSumber Rasmi:\n- Akta Kerajaan Tempatan 1976 [Akta 171] Seksyen 127, 147 & 148 (Borang E & Borang F) (https://www.dbkl.gov.my/files/senarai-perundangan/akta/4-akta-171.pdf)\n- Rujukan Ringkas Dasar-Dasar Berkaitan PBT — KPKT (https://jktgateway.kpkt.gov.my/downloads/29052023_RUJUKAN_RINGKAS_MENGENAI_DASAR_DASAR_BERKAITAN_PBT.pdf)",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_issuer": "COUNCIL",
+      "expected_genuine": true,
+      "expected_amount": "RM 148.00",
+      "expected_deadline": "17 November 2026",
+      "expected_ref": "MPBP/JPPH/NBE/2026/01924"
+    }
+  },
+  {
+    "document_id": "07_TNB_Notis_Pemotongan_BorangA_Seksyen38_Akta447.txt",
+    "category": "genuine_statutory_notice",
+    "request_payload": {
+      "text": "TENAGA NASIONAL BERHAD (TNB)\n(Di bawah kawal selia Suruhanjaya Tenaga Malaysia — https://www.st.gov.my)\nPortal Rasmi: https://www.mytnb.com.my | TNB CareLine: 1-300-88-5454\n\nRujukan Notis: TNB/AKTA447/BORANG-A/2026/5512\nNo. Akaun Kontrak: 2201-9988-7766\nTarikh Notis: 1 November 2026\nKepada: PENGGUNA BERDAFTAR CONTOH, No. KP 840707-01-4455\n\nAKTA BEKALAN ELEKTRIK 1990 [AKTA 447] — BORANG A\nNOTIS PEMOTONGAN BEKALAN ELEKTRIK DI BAWAH SUBSEKSYEN 38(1) AKTA BEKALAN ELEKTRIK 1990\n(Peraturan-Peraturan Bekalan Pemegang Lesen [Pindaan] 2025 — P.U. (A) 335/2025)\n\nTuan/Puan,\n\n1. Sila ambil perhatian bahawa akaun bekalan elektrik tuan/puan mempunyai tunggakan bil elektrik berjumlah RM 215.40 yang telah melebihi tempoh bayaran yang ditetapkan.\n\n2. Menurut kuasa yang diberikan di bawah Seksyen 38(1) Akta Bekalan Elektrik 1990 [Akta 447], pemegang lesen berhak memotong bekalan elektrik ke premis tuan/puan sekiranya jumlah tunggakan sebanyak RM 215.40 tersebut tidak dijelaskan sebelum 18 Disember 2026.\n\n3. Sila buat semakan bil dan jelaskan bayaran secara terus menerusi aplikasi rasmi myTNB, portal https://www.mytnb.com.my, atau di mana-mana kaunter Kedai Tenaga TNB yang berhampiran.\n\nSumber Rasmi:\n- Peraturan-Peraturan Bekalan Pemegang Lesen (Pindaan) 2025 [P.U. (A) 335/2025] — Suruhanjaya Tenaga (https://www.st.gov.my/sites/default/files/2026-02/PERATURAN-PERATURAN_BEKALAN_PEMEGANG_LESEN_PINDAAN_2025_PUA335-2025.pdf)\n- Panduan Prosedur Tuntutan di bawah Seksyen 38 Akta Bekalan Elektrik 1990 (https://www.st.gov.my/sites/default/files/2026-02/Panduan_Prosedur_Tuntutan_Kerugian_Hasil.pdf)",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_issuer": "UTILITY",
+      "expected_genuine": true,
+      "expected_amount": "RM 215.40",
+      "expected_deadline": "18 Disember 2026",
+      "expected_ref": "TNB/AKTA447/BORANG-A/2026/5512"
+    }
+  },
+  {
+    "document_id": "08_KWSP_Notis_Tunggakan_Caruman_Seksyen43_Akta452.txt",
+    "category": "genuine_statutory_notice",
+    "request_payload": {
+      "text": "KUMPULAN WANG SIMPANAN PEKERJA (KWSP)\nMenara KWSP, No. 1, Persiaran Kwasa Utama, Kwasa Damansara, 40150 Shah Alam, Selangor\nPusat Pengurusan Perhubungan KWSP: 03-8922 6000 | Portal Rasmi: https://www.kwsp.gov.my\n\nRujukan Notis: KWSP/PENGUATKUASAAN/S43/2026/3310\nTarikh: 5 November 2026\nKepada: MAJIKAN / AHLI CONTOH, No. KP 820909-01-6677\n\nNOTIS TUNGGAKAN CARUMAN WAJIB & FAEDAH CARUMAN LEWAT BAYAR (FCLB)\n(Dikeluarkan di bawah Seksyen 43(1), Seksyen 45 dan Seksyen 49 Akta Kumpulan Wang Simpanan Pekerja 1991 [Akta 452])\n\nTuan/Puan,\n\n1. Mengikut peruntukan Seksyen 43(1) Akta Kumpulan Wang Simpanan Pekerja 1991 [Akta 452], caruman bulanan hendaklah dibayar pada atau sebelum 15 hari bulan setiap bulan. Rekod KWSP mendapati terdapat tunggakan caruman dan caj Faedah Caruman Lewat Bayar (FCLB) / dividen di bawah Seksyen 45 dan Seksyen 49 Akta 452 berjumlah RM 680.00.\n\n2. Bayaran hendaklah dijelaskan sebelum 30 November 2026 melalui portal rasmi i-Akaun KWSP di https://www.kwsp.gov.my atau di kaunter cawangan KWSP.\n\n3. NOTA KESELAMATAN KWSP:\n   Semua urusan semakan penyata dan pengeluaran (termasuk Akaun Fleksibel / Akaun 3) adalah percuma melalui aplikasi rasmi KWSP i-Akaun. KWSP tidak pernah melantik sebarang ejen pihak ketiga di WhatsApp atau Telegram dan tidak mengenakan sebarang komisen.\n\nSumber Rasmi:\n- Portal Rasmi KWSP (https://www.kwsp.gov.my) & Akta KWSP 1991 [Akta 452] Seksyen 43 & 45",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_issuer": "KWSP_PERKESO",
+      "expected_genuine": true,
+      "expected_amount": "RM 680.00",
+      "expected_deadline": "30 November 2026",
+      "expected_ref": "KWSP/PENGUATKUASAAN/S43/2026/3310"
+    }
+  },
+  {
+    "document_id": "01_SCAM_PDRM_Mahkamah_Waran_Tangkap_AkaunSelamat.txt",
+    "category": "documented_scam_template",
+    "request_payload": {
+      "text": "NOTIS SEGERA PDRM & MAHKAMAH TINGGI MALAYSIA\nRujukan: PDRM-99X-SEGERA\nKepada: PEMILIK AKAUN, No. KP 900101-01-1234\n\nAMARAN TERAKHIR: WARAN TANGKAP & PEMBEKUAN AKAUN BANK\n1. Siasatan Jabatan Siasatan Jenayah Komersil (JSJK) mendapati kad pengenalan anda terlibat dalam kes pengubahan wang haram (AML) dan 3 saman tertunggak berjumlah RM 2,150.00.\n2. Bayar RM 2,150.00 dalam masa 24 JAM ke akaun Maybank 1234-5678-9012 atas nama Syarikat Penyelesaian Saman (Akaun Selamat Audit BNM) atau waran tangkap akan dilaksanakan serta-merta.\n3. Semak waran tangkap dan saman anda di pautan: bit.ly/saman-pdrm-bayar\n4. Hubungi Inspektor Rahman di WhatsApp 011-2345 6789 dan hantar gambar IC depan serta nombor TAC untuk pengesahan. Jangan beritahu sesiapa kerana kes ini di bawah Akta Rahsia Rasmi.\n\nSumber Amaran Rasmi:\n- Bank Negara Malaysia Financial Scams Alert & NSRC 997 (https://www.bnm.gov.my/faqs/scams)\n- PDRM CCID Semak Mule (https://semakmule.rmp.gov.my)",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_genuine": false,
+      "expected_plan_switch": "protect_and_report_nsrc_997"
+    }
+  },
+  {
+    "document_id": "02_SCAM_LHDN_Lebihan_Bayaran_Balik_Phishing.txt",
+    "category": "documented_scam_template",
+    "request_payload": {
+      "text": "LEMBAGA HASIL DALAM NEGERI (E-BAYARAN BALIK CUKAI)\nDaripada: noreply@hasil-refund-my.com\nKepada: PEMBAYAR CUKAI, No. KP 890404-01-5566\n\nNOTIS PEMULANGAN LEBIHAN CUKAI PENDAPATAN RM 1,870.00\nTahniah! Berdasarkan semakan e-Filing, anda layak menerima bayaran balik lebihan cukai pendapatan berjumlah RM 1,870.00.\nTuntutan ini hanya sah HARI INI SAHAJA dalam masa 2 jam.\nSila klik pautan http://mytax-hasil-refund.top/login dan masukkan nama pengguna, kata laluan perbankan internet serta nombor TAC/OTP anda untuk pengkreditan segera ke akaun peribadi anda.\nJika gagal, tuntutan akan dibatalkan. Hubungi pegawai kami di WhatsApp 017-889 9001.\n\nSumber Amaran Rasmi:\n- LHDNM Scam Alert Portal (https://www.hasil.gov.my) & BNM Scam Alert (https://www.bnm.gov.my/faqs/scams)",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_genuine": false,
+      "expected_plan_switch": "protect_and_report_nsrc_997"
+    }
+  },
+  {
+    "document_id": "03_SCAM_PTPTN_Diskaun_Palsu_Akaun_Peribadi.txt",
+    "category": "documented_scam_template",
+    "request_payload": {
+      "text": "NOTIS TAWARAN KHAS PTPTN — DISKAUN 50% HARI INI SAHAJA!\nDaripada: +60 11-3344 5566 (Pegawai Kutipan Khas)\nKepada: PEMINJAM PTPTN, No. KP 980101-01-7788\n\nTAWARAN PENYELESAIAN TUNGGAKAN PINJAMAN PTPTN DENGAN DISKAUN 50%\nRekod anda mempunyai tunggakan pinjaman. Pihak kami menawarkan diskaun 50% berakhir dalam masa 24 jam!\nSila pindahkan bayaran RM 300.00 terus ke akaun peribadi pegawai kami (Akaun CIMB 7012-3456-7890 atas nama Perunding kutipan) dan hantar resit serta gambar IC depan & belakang ke WhatsApp 011-3344 5566 untuk kemas kini penyata serta-merta. Jangan beritahu sesiapa kerana kuota diskaun ini adalah rahsia dalaman.\n\nSumber Amaran Rasmi:\n- Portal Rasmi PTPTN (https://www.ptptn.gov.my) — Semua bayaran hanya melalui saluran rasmi myPTPTN.",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_genuine": false,
+      "expected_plan_switch": "protect_and_report_nsrc_997"
+    }
+  },
+  {
+    "document_id": "04_SCAM_KWSP_Pengeluaran_Segera_Telegram_Komisen.txt",
+    "category": "documented_scam_template",
+    "request_payload": {
+      "text": "PENGELUARAN KHAS KWSP AKAUN 1 & 2 LULUS SEGERA TANPA SYARAT!\nSaluran: Telegram / WhatsApp Ejen Pengeluaran KWSP (+60 19-223 3445)\nKepada: Pencarum KWSP\n\nAdakah anda memerlukan wang tunai segera? Kami boleh meluluskan pengeluaran penuh Akaun Persaraan (Akaun 1) berjumlah RM 10,000.00 dalam masa 24 jam tanpa perlu melalui semakan KWSP!\nSila klik pautan bit.ly/kwsp-keluar-segera, hantar gambar IC depan & belakang, kata laluan i-Akaun, dan bayar wang pendahuluan komisen ejen RM 500.00 ke akaun peribadi Maybank 1140-2233-4455 atas nama Ejen Urusan KWSP.\n\nSumber Amaran Rasmi:\n- KWSP Official Scam Warning (https://www.kwsp.gov.my) — KWSP tidak pernah melantik ejen pihak ketiga untuk pengeluaran.",
+      "language": "bm",
+      "postcode": "83000"
+    },
+    "ground_truth": {
+      "expected_genuine": false,
+      "expected_plan_switch": "protect_and_report_nsrc_997"
+    }
+  }
+]
