@@ -444,6 +444,13 @@ body::before { content: "DEMO"; content: "DEMO" / ""; position: fixed; right: 12
 .prog-steps svg, .did svg { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
 .d-ok svg { color: var(--ok); } .d-warn svg { color: var(--warn); } .d-bad svg { color: var(--bad); } .d-info svg { color: var(--muted); }
 .d-bad { color: var(--bad); }
+.flow { list-style: none; margin: 10px 0 0; padding: 0; }
+.flow > li { position: relative; display: flex; gap: 12px; padding-bottom: 14px; }
+.flow > li:not(:last-child)::before { content: ""; position: absolute; left: 13px; top: 28px; bottom: 0; width: 2px; background: var(--line); }
+.fl-n { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .85rem; color: var(--on-accent); background: var(--accent); }
+.fl-warn .fl-n { background: var(--warn); } .fl-bad .fl-n { background: var(--bad); } .fl-ok .fl-n { background: var(--ok); }
+.flow b { display: block; margin-top: 3px; }
+.flow .did { margin-top: 2px; }
 .agent-tech { margin-bottom: 10px; padding: 10px 12px; border-left: 3px solid var(--lavender); background: var(--bg); border-radius: 6px; }
 html[data-senior] .prog-steps { display: none; }
 html[data-senior] .prog-pct { font-size: 1.1rem; }

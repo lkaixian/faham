@@ -298,7 +298,14 @@
   const didLi = (h) => `<li class="d-${h.k}">${svg(DID_ICON[h.k])}<span>${esc(h.x)}</span></li>`;
   const humanSteps = (trace) => (trace || []).map((s) => human({ stage: s.stage, kind: s.kind, tool: s.t, facts: s.facts })).filter(Boolean)
     .filter((h, i, a) => a.findIndex((y) => y.x === h.x) === i);
-  const didHtml = (r) => { const hs = humanSteps(r.trace); return `<p>${esc(t("did_intro"))}</p><ol class="did">${hs.map(didLi).join("")}</ol><p class="muted">${esc(t("did_tech"))}</p>`; };
+  // The agent's run as a vertical flow: Read -> Investigate -> Weigh -> Explain -> Plan, each step with the few things it did.
+  const FLOW = [["fl_read", ["read"]], ["fl_check", ["agent"]], ["fl_weigh", ["verify"]], ["fl_explain", ["explain", "teach"]], ["fl_act", ["route", "act"]]];
+  const didHtml = (r) => {
+    const seen = new Set(), hs = (r.trace || []).map((s) => ({ st: s.stage, h: human({ stage: s.stage, kind: s.kind, tool: s.t, facts: s.facts }) })).filter((x) => x.h);
+    const nodes = FLOW.map(([k, sts]) => ({ k, items: hs.filter((x) => sts.includes(x.st) && !seen.has(x.h.x) && seen.add(x.h.x)).map((x) => x.h) })).filter((n) => n.items.length);
+    const worst = (it) => (it.some((h) => h.k === "bad") ? "bad" : it.some((h) => h.k === "warn") ? "warn" : "ok");
+    return `<p>${esc(t("did_intro"))}</p><ol class="flow">${nodes.map((n, i) => `<li class="fl-${worst(n.items)}"><span class="fl-n" aria-hidden="true">${i + 1}</span><div><b>${esc(t(n.k))}</b><ul class="did">${n.items.map(didLi).join("")}</ul></div></li>`).join("")}</ol><p class="muted">${esc(t("did_tech"))}</p>`;
+  };
 
   // The progress bar: a percentage from what has finished (reading, each tool the agent chose, weighing, writing), plus one sentence about now.
   const prog = { n: 0, pct: 0, ceil: 8, timer: 0 };
@@ -464,17 +471,34 @@
   ["dragover", "drop"].forEach((ev) => window.addEventListener(ev, (e) => e.preventDefault()));   // a file dropped beside the box must not replace the page
 
   // XMLHttpRequest, not fetch, because only XHR reports upload progress
-  const sendFile = (q) => new Promise((done) => {
+  // The stream endpoint reports each agent step while the file is analysed; an older server falls back to the single-answer one.
+  const sendFile = (q, onStep, plain) => new Promise((done) => {
     const qs = new URLSearchParams({ language: state.xl }), pc = $("#postBox").value.trim();
     if (/^\d{1,5}$/.test(pc)) qs.set("postcode", pc);
     const x = new XMLHttpRequest();
-    x.open("POST", `${CFG.API_BASE}/api/analyze-file?${qs}`);
+    x.open("POST", `${CFG.API_BASE}/api/analyze-file${plain ? "" : "/stream"}?${qs}`);
     x.timeout = 120000;
     x.setRequestHeader("X-Filename", encodeURIComponent(q.file.name));
     x.setRequestHeader("Content-Type", q.file.type || "application/octet-stream");
+    let seen = 0, result = null, fail = 0;
+    const pump = () => {
+      const txt = x.responseText;
+      for (let i = txt.indexOf("\n\n", seen); i >= 0; i = txt.indexOf("\n\n", seen)) {
+        const block = txt.slice(seen, i), nl = block.indexOf("\n"); seen = i + 2;
+        let j = null; try { j = JSON.parse(block.slice(nl + 7)); } catch (e) { continue; }
+        const ev = block.slice(7, nl);
+        if (ev === "step") onStep(j); else if (ev === "result") result = j; else if (ev === "error") fail = j.status || 500;
+      }
+    };
     x.upload.onprogress = (e) => { if (e.lengthComputable) { q.pct = Math.round((100 * e.loaded) / e.total); renderQueue(); } };
     x.upload.onload = () => { q.st = "read"; renderQueue(); };
-    x.onload = () => { let j = null; try { j = JSON.parse(x.responseText); } catch (e) {} done({ status: x.status, json: j }); };
+    x.onprogress = () => { if (!plain && x.status === 200) pump(); };
+    x.onload = () => {
+      if (!plain && (x.status === 404 || x.status === 405)) { done(sendFile(q, onStep, true)); return; }
+      if (plain) { let j = null; try { j = JSON.parse(x.responseText); } catch (e) {} done({ status: x.status, json: j }); return; }
+      pump();
+      done(x.status !== 200 ? { status: x.status } : fail ? { status: fail } : result ? { status: 200, json: result } : { status: 0 });
+    };
     x.onerror = x.ontimeout = () => done({ status: 0 });
     x.send(q.file);
   });
@@ -489,12 +513,12 @@
   async function checkFiles() {
     state.last = null; formErr(""); stopSpeak();
     const lang = state.xl, todo = queue.filter((q) => q.st !== "done");
-    setBusy(true, { sample: true }); renderUp();
+    setBusy(true, { live: true }); renderUp();
     let items = [], firstErr = "";
     for (const [i, q] of todo.entries()) {
-      $("#busyTxt").textContent = t("u_busy", { i: i + 1, n: todo.length });
+      progReset(); $("#busyTxt").textContent = t("u_busy", { i: i + 1, n: todo.length });
       q.st = "send"; q.pct = 0; q.msg = ""; renderQueue();
-      const res = await sendFile(q);
+      const res = await sendFile(q, addLive);
       if (res.status === 200 && res.json && Array.isArray(res.json.files)) { q.st = "done"; items.push(...res.json.files.map((f) => toItem(f, lang, q.file))); }
       else { q.st = "fail"; q.msg = httpMsg(res.status, q.file.name); firstErr = firstErr || q.msg; items.push({ name: q.file.name, kind: q.kind, status: "error", http: q.msg, warnings: [], r: null }); }
       renderQueue();
@@ -1179,7 +1203,8 @@
 
   /* ---------- init ---------- */
   renderChips(); setTheme(); setVoice(); applyI18n(); renderSenior();
-  if (state.senior) { try { sessionStorage.setItem("faham_intro_seen", "1"); } catch (e) {} }   // easy mode skips the animated welcome (intro.js reads this flag after app.js) syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();
+  if (state.senior) { try { sessionStorage.setItem("faham_intro_seen", "1"); } catch (e) {} }   // easy mode skips the animated welcome (intro.js reads this flag after app.js)
+  syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();
   $("#hint").hidden = !!store.get("checked", false);
   state.practice.order = D.practice.map((_, i) => i).sort(() => Math.random() - 0.5).slice(0, 6);
   renderPractice(); route(true); renderUp(); checkApi();

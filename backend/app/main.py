@@ -117,10 +117,7 @@ def analyze_stream(req: AnalyzeRequest):
     return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 
-@app.post("/api/analyze-file", response_model=BatchResponse)
-async def analyze_file(request: Request, language: Language = Query("bm"),
-                       postcode: str | None = Query(None, pattern=r"^\d{1,5}$")):
-    """Raw file bytes as the body (no multipart). Headers: X-Filename, Content-Type. Nothing is stored."""
+async def _file_body(request: Request) -> bytearray:
     cl = request.headers.get("content-length", "")
     if cl.isdigit() and int(cl) > ingest.MAX_BODY:
         raise HTTPException(413, "File is larger than 25 MB")
@@ -129,14 +126,49 @@ async def analyze_file(request: Request, language: Language = Query("bm"),
         buf += chunk
         if len(buf) > ingest.MAX_BODY:
             raise HTTPException(413, "File is larger than 25 MB")
+    return buf
+
+
+def _file_run(request: Request, buf: bytearray, language: str, postcode: str | None, sink=None):
+    docs = ingest.extract(unquote(request.headers.get("x-filename", "")) or None,
+                          request.headers.get("content-type"), bytes(buf))
+    return ingest.analyze_files(docs, language, postcode, sink)
+
+
+@app.post("/api/analyze-file", response_model=BatchResponse)
+async def analyze_file(request: Request, language: Language = Query("bm"),
+                       postcode: str | None = Query(None, pattern=r"^\d{1,5}$")):
+    """Raw file bytes as the body (no multipart). Headers: X-Filename, Content-Type. Nothing is stored."""
+    buf = await _file_body(request)
     try:
-        def work():
-            docs = ingest.extract(unquote(request.headers.get("x-filename", "")) or None,
-                                  request.headers.get("content-type"), bytes(buf))
-            return ingest.analyze_files(docs, language, postcode)
-        return await run_in_threadpool(work)
+        return await run_in_threadpool(_file_run, request, buf, language, postcode)
     except ingest.IngestError as e:
         raise HTTPException(e.status, e.detail)
+
+
+@app.post("/api/analyze-file/stream")
+async def analyze_file_stream(request: Request, language: Language = Query("bm"),
+                              postcode: str | None = Query(None, pattern=r"^\d{1,5}$")):
+    """Same as /api/analyze-file, as server-sent events: `step` per agent step, then `result` (the BatchResponse) or `error`."""
+    buf = await _file_body(request)
+    q: queue.Queue = queue.Queue()
+
+    def work():
+        try:
+            q.put(("result", _file_run(request, buf, language, postcode, lambda s: q.put(("step", s))).model_dump_json()))
+        except ingest.IngestError as e:
+            q.put(("error", json.dumps({"status": e.status, "detail": e.detail})))
+        except Exception:
+            q.put(("error", json.dumps({"status": 500, "detail": "analysis failed"})))
+        q.put(None)
+
+    threading.Thread(target=work, daemon=True).start()
+
+    def events():
+        while (item := q.get()) is not None:
+            kind, payload = item
+            yield f"event: {kind}\ndata: {payload.model_dump_json() if kind == 'step' else payload}\n\n"
+    return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 
 @app.get("/api/practice", response_model=list[PracticeItem])

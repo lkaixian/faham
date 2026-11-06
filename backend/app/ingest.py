@@ -318,7 +318,7 @@ def extract(filename: str | None, content_type: str | None, data: bytes, *,
     return [Doc(name, "image", "", image=data)]
 
 
-def analyze_files(docs: list[Doc], language: str, postcode: str | None) -> BatchResponse:
+def analyze_files(docs: list[Doc], language: str, postcode: str | None, sink=None) -> BatchResponse:
     files: list[FileResult] = []
     for n, d in enumerate(docs):
         fr = FileResult(name=d.name, kind=d.kind, status="ok", warnings=list(d.warnings))
@@ -332,7 +332,7 @@ def analyze_files(docs: list[Doc], language: str, postcode: str | None) -> Batch
             req = AnalyzeRequest.model_construct(text=d.text[:20000], image_b64=None, language=language,
                                                  postcode=postcode, sample_id=None)
             try:
-                fr.result = orchestrator.run(req, d.image if not d.text.strip() else None, d.signals)
+                fr.result = orchestrator.run(req, d.image if not d.text.strip() else None, d.signals, sink=sink)
             except orchestrator.OCRUnavailable:
                 fr.status, fr.detail = "error", "Could not read text from this image. OCR is not available."
             except Exception as e:  # one bad file must not fail the batch

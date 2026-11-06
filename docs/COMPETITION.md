@@ -84,8 +84,8 @@ Say the English words with Malay subtitles, or speak Malay. Keep the watermark v
 | Time | Show | Say (idea) |
 |---|---|---|
 | 0:00 | A scary fictional letter | Scam letters copy real agencies. People who are older or less confident cannot tell. |
-| 0:20 | Paste a SAMPEL scam message; run it; show the reasoning trace | FAHAM reads it, masks personal details, runs its tools, and decides. |
-| 1:00 | The result beside the message with evidence highlighted | It says why: the marked words and links. It never says "genuine". |
+| 0:20 | Paste a SAMPEL scam message and press run. Stay on the live progress timeline: the goal, the plan, then each tool call appearing as it happens (look up the agency, inspect the link, check the domain) with what it found | Watch the agent work, not a spinner. It states a goal, makes a plan, picks a tool, reads the result and revises the plan. Personal details are masked before any step. |
+| 1:00 | The plan switching after a surprising finding, then the result beside the message with evidence highlighted | It changed its plan because of what it found. Then it says why: the marked words and links. The rules re-run last as a floor, so it can raise concern but never lower it. It never says "genuine". |
 | 1:40 | A letter that looks official | It shows no scam signs, but tells you how to check on your own. |
 | 2:10 | Upload a SAMPEL PDF or Word file | PDF, Word, email and photos all work. |
 | 2:40 | Forward a made-up email to the FAHAM address; show the reply arriving | This is the autonomous part: it answers on its own, in the sender's language. |
