@@ -18,7 +18,7 @@
   const canvas = document.getElementById("neural");
   const ctx = canvas.getContext("2d");
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
-  const accent = (getComputedStyle(document.documentElement).getPropertyValue("--accent") || "#0b5c63").trim();
+  const accent = (getComputedStyle(document.documentElement).getPropertyValue("--accent") || "#5a3b8c").trim();
   let W, H, nodes = [], raf, finished = false;
   const mouse = { x: -999, y: -999 };
   const pulses = [];

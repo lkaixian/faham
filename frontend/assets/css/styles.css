@@ -12,14 +12,14 @@
    - Dark theme is a swap of the color tokens below, not a second design.
 */
 :root {
-  --bg: #f6f8f8; --surface: #ffffff; --text: #14262a; --muted: #42555a; --line: #b9c6c9;
-  --accent: #0b5c63; --on-accent: #ffffff; --link: #0b5c63;
+  --bg: #f6f3fb; --surface: #ffffff; --text: #1b1433; --muted: #4d4768; --line: #a79ece;
+  --accent: #5a3b8c; --on-accent: #ffffff; --link: #5a3b8c; --plum: #2a1e4d; --lavender: #8b7cc7;
   --bad: #a3190f; --bad-bg: #fdecea; --warn: #7a4b00; --warn-bg: #fff3d1; --ok: #1d5a3a; --ok-bg: #e6f2ec;
   --r: 12px; --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Noto Sans Tamil", "Latha", "Nirmala UI", sans-serif;
 }
 [data-theme="dark"] {
-  --bg: #0e1719; --surface: #162326; --text: #e8f1f2; --muted: #a9bcc0; --line: #3a5156;
-  --accent: #5cc6ce; --on-accent: #06282b; --link: #8fdde2;
+  --bg: #0e0b1d; --surface: #1a1433; --text: #ece9f7; --muted: #b7b0d6; --line: #675c9c;
+  --accent: #a99be0; --on-accent: #150f2b; --link: #c9c2e3; --plum: #2a1e4d; --lavender: #8b7cc7;
   --bad: #ffb4ab; --bad-bg: #3b1a18; --warn: #ffd27a; --warn-bg: #3a2c0a; --ok: #8fdcb0; --ok-bg: #12301f;
 }
 * { box-sizing: border-box; }
@@ -50,7 +50,7 @@ main:focus { outline: none; }
 h1:focus, h2:focus { outline: none; }
 
 /* header */
-.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+.top { background: var(--surface); border-bottom: 3px solid var(--lavender); }
 .bar { display: flex; align-items: center; gap: 10px; min-height: 56px; flex-wrap: wrap; padding-block: 12px 8px; }
 .brand { font-weight: 800; font-size: 1.3rem; letter-spacing: .04em; color: var(--accent); text-decoration: none; min-height: 48px; display: inline-flex; align-items: center; }
 .brand { margin-right: auto; gap: 10px; }
@@ -343,12 +343,12 @@ img.orig { max-height: 70vh; object-fit: contain; }
 @keyframes introBlink { 50% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .intro-title .caret { animation: none; } .intro-sub, .intro-actions { transition: none; } }
 /* ---------- easy (senior) mode: html[data-senior]. Bigger type, one thing per screen, nothing that is not needed ---------- */
-.senior-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; justify-content: space-between; background: var(--ok-bg); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; margin: 0 0 14px; }
+.senior-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; justify-content: space-between; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; margin: 18px 0 18px; }
 .senior-banner p { margin: 0; flex: 1 1 260px; font-weight: 600; }
 .senior-banner .btn { margin: 0; }
 html[data-senior] { font-size: 22px; }
 html[data-senior] *, html[data-senior] *::before, html[data-senior] *::after { animation: none !important; transition: none !important; }
-html[data-senior] .top nav, html[data-senior] .mode, html[data-senior] #themeBtn, html[data-senior] .docpane,
+html[data-senior] .top nav, html[data-senior] .mode, html[data-senior] .docpane,
 html[data-senior] .trace, html[data-senior] [data-act="all"], html[data-senior] [data-act="sum"],
 html[data-senior] .hint, html[data-senior] .priv, html[data-senior] #exBox, html[data-senior] .meta,
 html[data-senior] .dropnote, html[data-senior] #upTypes, html[data-senior] #view-check .lead, html[data-senior] .foot p + p + p { display: none !important; }
@@ -367,7 +367,7 @@ html[data-senior] .next-step { font-size: 1.35rem; line-height: 1.5; }
 html[data-senior] .snav { display: flex; flex-direction: column-reverse; gap: 0; }
 html[data-senior] .rbar { display: flex; flex-direction: column; }
 html[data-senior] .stepbar p { font-size: 1.1rem; }
-html[data-senior] .senior-banner { background: var(--warn-bg); }
+html[data-senior] .senior-banner { background: color-mix(in srgb, var(--lavender) 22%, var(--surface)); }
 html[data-senior] .skip-link, html[data-senior] #intro .btn { width: auto; }
 html[data-senior] .upbtns .btn { flex: none; }
 html[data-senior] .rbar [data-act="again"], html[data-senior] .vnote { display: none; }
@@ -386,3 +386,24 @@ html.theme-fade, html.theme-fade * { transition: background-color .4s ease, colo
 .toc ol { padding-left: 1.2em; }
 .toc a { font-weight: 600; }
 .tools .btn { flex: 1 1 auto; }
+
+/* dialogs: message popup (easy mode) and the leave-easy-mode check */
+dialog { width: min(92vw, 640px); max-height: 88vh; overflow: auto; border: 2px solid var(--line); border-radius: 14px; padding: 20px; background: var(--surface); color: var(--text); }
+dialog::backdrop { background: rgba(0, 0, 0, .55); }
+dialog h2 { margin-top: 0; }
+dialog .btn { width: 100%; margin: 8px 0 0; }
+dialog .doctext { max-height: 50vh; }
+.hl.focus { outline: 3px solid var(--accent); outline-offset: 2px; font-weight: 700; }
+html[data-senior] #seniorBannerBtn { display: none; }
+html[data-senior] #seniorFootBox { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); }
+html[data-senior] #seniorFoot { width: auto; min-height: 48px; font-size: .95rem; margin: 0; }
+html[data-senior] #exitDlg .btn-quiet { margin-top: 24px; }
+
+/* easy mode switch: header and page ease in, the button gives one ring (app.js adds .mode-pop for under a second).
+   The ids make these win over the easy-mode rule that turns animations off. */
+@keyframes modePop { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes modeRing { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); } to { box-shadow: 0 0 0 16px transparent; } }
+html.mode-pop .top { animation: modePop .45s ease-out both !important; }
+html.mode-pop #main { animation: modePop .55s ease-out .08s both !important; }
+html.mode-pop #seniorBtn { animation: modeRing .8s ease-out !important; }
+@media (prefers-reduced-motion: reduce) { html.mode-pop .top, html.mode-pop #main, html.mode-pop #seniorBtn { animation: none !important; } }

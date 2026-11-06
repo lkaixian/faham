@@ -729,6 +729,7 @@
     }
     const dt = e.target.closest("[data-doc]"); if (dt && r) { showOrig(r, dt.dataset.doc === "orig"); return; }
     const mk = e.target.closest("button[data-ri]");
+    if (mk && r && state.senior) { showMsg(r, mk.dataset.ri); return; }   // easy mode hides the side panel, so show the message in a popup
     if (mk && r) {
       if (r.blob) showOrig(r, false);
       const g = $(".docpane details"); if (g) g.open = true;
@@ -813,7 +814,7 @@
     const a = b.dataset.ob, k = OB[obI][0];
     if (a === "next") obGo(1); else if (a === "back") obGo(-1);
     else if (a === "start" && obTick) endOb();
-    else if (a === "senior") setSenior(!state.senior);
+    else if (a === "senior") setSenior(!state.senior);   // welcome card: no confirmation needed
     else if (a === "hear") readAloud([t(k + "_h") + ".", ...t(k + "_b")].join(" "), state.lang, b, $("#obNote"));   // static text only, and only when asked
   });
   $("#ob").addEventListener("change", (e) => { if (e.target.id === "obTick") { obTick = e.target.checked; $("#obStart").disabled = !obTick; } });
@@ -951,7 +952,7 @@
     document.documentElement.dataset.theme = state.theme;
     $("#themeBtn").setAttribute("aria-pressed", state.theme === "dark");
     $("#themeLbl").textContent = t(state.theme === "dark" ? "th_light" : "th_dark");
-    $('meta[name="theme-color"]').setAttribute("content", state.theme === "dark" ? "#0e1719" : "#0b5c63");
+    $('meta[name="theme-color"]').setAttribute("content", state.theme === "dark" ? "#0e0b1d" : "#5a3b8c");
   }
   /* Theme switch: the new theme grows as a circle from the button (View Transitions API). Browsers without it get a short
      colour fade. No animation for reduced motion or easy mode. */
@@ -973,15 +974,37 @@
   function renderSenior() {
     if (state.senior) document.documentElement.dataset.senior = "1"; else delete document.documentElement.dataset.senior;
     $("#seniorBtn").setAttribute("aria-pressed", state.senior); $("#seniorLbl").textContent = t("sr_btn");
+    $("#seniorFootBox").hidden = !state.senior; $("#seniorFoot").textContent = t("sr_turn_off");
     $("#seniorMsg").textContent = t(state.senior ? "sr_ban_on" : "sr_ban"); $("#seniorBannerBtn").textContent = t(state.senior ? "sr_turn_off" : "sr_turn_on");
   }
   function setSenior(on) {
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {   // a short ease-in so the change of layout is not a jolt
+      const root = document.documentElement; root.classList.remove("mode-pop"); void root.offsetWidth; root.classList.add("mode-pop");
+      setTimeout(() => root.classList.remove("mode-pop"), 900);
+    }
     state.senior = on; store.set("senior", on); renderSenior(); stopSpeak(); state.step = 0;
     if (!$("#ob").hidden) renderOb();
     if (!$("#result").hidden && state.view !== "sum" && state.result) renderResult(state.result); else route(true);
     toast(t(on ? "sr_toast_on" : "sr_toast_off"));
   }
-  ["#seniorBtn", "#seniorBannerBtn"].forEach((id) => $(id).addEventListener("click", () => setSenior(!state.senior)));
+  // Turning easy mode on is one tap. Leaving it asks first, from a small button at the page bottom or from the header.
+  const exitDlg = $("#exitDlg"), msgDlg = $("#msgDlg");
+  function askExit() {
+    $("#exitDlgH").textContent = t("sr_exit_h"); $("#exitDlgP").textContent = t("sr_exit_p");
+    $("#exitStay").textContent = t("sr_exit_stay"); $("#exitGo").textContent = t("sr_exit_go");
+    exitDlg.showModal(); $("#exitStay").focus();
+  }
+  ["#seniorBtn", "#seniorBannerBtn", "#seniorFoot"].forEach((id) => $(id).addEventListener("click", () => (state.senior ? askExit() : setSenior(true))));
+  $("#exitStay").addEventListener("click", () => exitDlg.close());
+  $("#exitGo").addEventListener("click", () => { exitDlg.close(); setSenior(false); });
+  function showMsg(r, ri) {
+    $("#msgDlgH").textContent = t("doc_h"); $("#msgDlgClose").textContent = t("doc_close");
+    $("#msgDlgBody").innerHTML = `<p class="muted">${esc(t("doc_hint"))}</p><pre class="doctext">${docHtml(r)}</pre>`;
+    $$("#msgDlgBody mark").forEach((m) => m.classList.toggle("focus", m.dataset.ri === String(ri)));
+    msgDlg.showModal();
+    const m = document.querySelector("#msgDlgBody mark.focus"); if (m) m.scrollIntoView({ block: "center" });
+  }
+  $("#msgDlgClose").addEventListener("click", () => msgDlg.close());
   $("#clearData").addEventListener("click", () => {
     if (state.busy) { toast(t("wait_check")); return; }
     try { Object.keys(localStorage).filter((k) => k.startsWith("faham_")).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
