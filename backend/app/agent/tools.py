@@ -63,13 +63,19 @@ ADDRESS_RE = re.compile(r"^[ \t]*(?:No\.|[^\n]*?\b(?:Jalan|Lorong|Taman)\b)[^\n]
 # ponytail: 1-3 letters + 1-4 digits; may over-mask odd uppercase tokens (RM excluded). Tighten with a state-prefix list if it bites.
 PLATE_RE = re.compile(r"(?<![\w/-])(?!RM\b)[A-Z]{1,3} ?[1-9]\d{0,3}(?: ?[A-Z])?(?![\w/-])")
 NAME_RE = re.compile(r"((?:Kepada|Nama)\s*:\s*)([^,\n\[]+)", re.IGNORECASE)
+# Malay/Indian name forms anywhere in the text: ALI BIN ABU, SITI BINTI HASAN, RAJU A/L MUTHU.
+PATRONYM_RE = re.compile(r"\b(?:[A-Z][A-Z'.@]+[ \t]+){1,3}(?:BIN|BINTI|BT|B\.|A/L|A/P|S/O|D/O|ANAK)[ \t]+[A-Z][A-Z'.@]+(?:[ \t]+[A-Z][A-Z'.@]+){0,3}")
+PASSPORT_RE = re.compile(r"\b[A-Z]\d{7,8}\b")
+DOB_RE = re.compile(r"((?:Tarikh\s+lahir|Date\s+of\s+birth|DOB)\s*:\s*)[^\n]+", re.IGNORECASE)
+# Final sweep: any leftover run of 8+ digits (spaces/dashes allowed) is masked rather than trusted.
+SWEEP_RE = re.compile(r"(?<![\w/])(?:\d[ -]?){8,}\d(?![\w/])")
 TITLE_NAME_RE = re.compile(r"\b((?:Encik|Puan|Cik|Tuan|Dato['’]?)[ \t]+)([A-Z][A-Z'.@]+(?:[ \t]+[A-Z][A-Z'.@/]+)+)")
 
 
 @tool("privacy.redact", "Mask IC numbers, phones, account numbers, emails, addresses, plates and names before processing.")
 def redact(text: str) -> tuple[str, dict[str, int]]:
     # Decision: all phone numbers are masked, including official agency lines.
-    counts = {"ic": 0, "phone": 0, "account": 0, "name": 0, "email": 0, "address": 0, "plate": 0}
+    counts = {"ic": 0, "phone": 0, "account": 0, "name": 0, "email": 0, "address": 0, "plate": 0, "id": 0, "dob": 0, "other": 0}
 
     def sub(pattern, label, key, s):
         def repl(_):
@@ -91,6 +97,10 @@ def redact(text: str) -> tuple[str, dict[str, int]]:
 
     out = NAME_RE.sub(name_repl, out)
     out = TITLE_NAME_RE.sub(name_repl, out)
+    out = PATRONYM_RE.sub(lambda m: (counts.__setitem__("name", counts["name"] + 1), "[NAME]")[1], out)
+    out = sub(PASSPORT_RE, "ID", "id", out)
+    out = DOB_RE.sub(lambda m: (counts.__setitem__("dob", counts["dob"] + 1), m.group(1) + "[DOB]")[1], out)
+    out = sub(SWEEP_RE, "NUMBER", "other", out)
     return out, counts
 
 

@@ -98,10 +98,10 @@ Copy `backend/.env.example` to `backend/.env`.
 |---|---|---|
 | `FAHAM_ALLOWED_ORIGINS` | localhost :5500 and :8080 | Origins allowed by CORS. Add your site when hosting |
 | `FAHAM_ALLOW_NULL_ORIGIN` | `0` | Set `1` only to call the API from a `file://` page |
-| `FAHAM_LLM_PROVIDER` | `none` | `ilmu` (Malaysian, OpenAI-compatible) or `anthropic` to enable LLM explanations |
+| `FAHAM_LLM_PROVIDER` | `none` | One or more of `ilmu`, `anthropic`, tried in order (for example `ilmu,anthropic`). A provider without a key is skipped |
 | `ILMU_API_KEY` / `ILMU_BASE_URL` | empty / `https://api.ilmu.ai/v1` | Needed when the provider is `ilmu` |
 | `ANTHROPIC_API_KEY` | empty | Needed when the provider is `anthropic` |
-| `FAHAM_LLM_MODEL` | `ilmu-mini-v3.3` for ilmu, else `claude-sonnet-5-5` | Model for explanations. Check ILMU's `GET /v1/models` for current names |
+| `FAHAM_LLM_MODEL_ILMU` / `FAHAM_LLM_MODEL_ANTHROPIC` | `ilmu-mini-v3.3` / `claude-sonnet-5-5` | Model per provider. Check ILMU `GET /v1/models` for current names |
 
 Only **redacted** text is sent to the model, and the call is skipped if long digit runs remain. For image OCR install `pytesseract` and `pillow` (the Docker image already includes Tesseract).
 

@@ -19,9 +19,16 @@ LLM_PROVIDER = os.getenv("FAHAM_LLM_PROVIDER", "none").lower()
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 ILMU_API_KEY = os.getenv("ILMU_API_KEY", "")
 ILMU_BASE_URL = os.getenv("ILMU_BASE_URL", "https://api.ilmu.ai/v1").rstrip("/")
-LLM_MODEL = os.getenv("FAHAM_LLM_MODEL") or ("ilmu-mini-v3.3" if LLM_PROVIDER == "ilmu" else "claude-sonnet-5-5")
+# FAHAM_LLM_PROVIDER may list several, tried in order, e.g. "ilmu,anthropic".
+MODELS = {"ilmu": os.getenv("FAHAM_LLM_MODEL_ILMU", "ilmu-mini-v3.3"),
+          "anthropic": os.getenv("FAHAM_LLM_MODEL_ANTHROPIC") or os.getenv("FAHAM_LLM_MODEL", "claude-sonnet-5-5")}
+
+
+def llm_chain() -> list[str]:
+    """Providers that are selected AND have a key, in order. Never exposes keys."""
+    keys = {"anthropic": ANTHROPIC_API_KEY, "ilmu": ILMU_API_KEY}
+    return [p for p in (x.strip() for x in LLM_PROVIDER.split(",")) if keys.get(p)]
 
 
 def llm_ready() -> bool:
-    """True when the selected provider has a key. Never exposes the key."""
-    return bool({"anthropic": ANTHROPIC_API_KEY, "ilmu": ILMU_API_KEY}.get(LLM_PROVIDER))
+    return bool(llm_chain())

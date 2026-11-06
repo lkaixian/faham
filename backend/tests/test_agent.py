@@ -142,7 +142,7 @@ def test_redact_widened():
     assert r("Rumah di Jalan Contoh 3, 43000 Kajang.")[1]["address"] == 1
     out, c = r("Nama: SITI BINTI CONTOH\nDitujukan kepada Puan NUR AINA BINTI FIKTIF dan Encik LIM AH CONTOH.")
     assert "SITI" not in out and "AINA" not in out and "LIM" not in out and c["name"] == 3
-    assert set(c) == {"ic", "phone", "account", "name", "email", "address", "plate"}
+    assert set(c) == {"ic", "phone", "account", "name", "email", "address", "plate", "id", "dob", "other"}
 
 
 def test_redact_keeps_letter_content():

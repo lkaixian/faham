@@ -27,32 +27,42 @@ SYSTEM_PROMPT = (
 LANG_NAMES = {"bm": "Bahasa Melayu", "en": "English", "zh": "Simplified Chinese", "ta": "Tamil"}
 
 
+# Anything PII-like that survived redaction blocks the call: emails, IC-like or long digit runs.
+RESIDUAL_PII = re.compile(r"[\w.+-]+@[\w-]+\.\w|\b\d{6}-?\d{2}-?\d{4}\b|(?:\d[ -]?){8,}")
+
+
+def _ilmu(system: str, user: str) -> str | None:
+    req = urllib.request.Request(
+        config.ILMU_BASE_URL + "/chat/completions",
+        data=json.dumps({"model": config.MODELS["ilmu"], "max_tokens": 400, "messages": [
+            {"role": "system", "content": system}, {"role": "user", "content": user}]}).encode(),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer " + config.ILMU_API_KEY})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return (json.load(r)["choices"][0]["message"]["content"] or "").strip() or None
+
+
+def _anthropic(system: str, user: str) -> str | None:
+    import anthropic  # optional dependency
+
+    msg = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY).messages.create(
+        model=config.MODELS["anthropic"], max_tokens=400, system=system,
+        messages=[{"role": "user", "content": user}])
+    return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip() or None
+
+
+PROVIDERS = {"ilmu": _ilmu, "anthropic": _anthropic}
+
+
 def complete(prompt: str, language: str) -> str | None:
-    """Return model text, or None when no provider is configured or the call fails."""
-    if config.LLM_PROVIDER not in ("anthropic", "ilmu") or not config.llm_ready():
-        return None
-    if re.search(r"\d{9,}", prompt):  # residual PII after redaction: do not send
+    """Try each configured provider in order; None means use the offline template."""
+    chain = config.llm_chain()
+    if not chain or RESIDUAL_PII.search(prompt):  # residual PII after redaction: do not send
         return None
     user = f"Language: {LANG_NAMES.get(language, 'English')}\n\n<letter>\n{prompt}\n</letter>"
-    try:
-        if config.LLM_PROVIDER == "ilmu":  # OpenAI-compatible chat completions, stdlib only
-            req = urllib.request.Request(
-                config.ILMU_BASE_URL + "/chat/completions",
-                data=json.dumps({"model": config.LLM_MODEL, "max_tokens": 400, "messages": [
-                    {"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": user}]}).encode(),
-                headers={"Content-Type": "application/json", "Authorization": "Bearer " + config.ILMU_API_KEY})
-            with urllib.request.urlopen(req, timeout=30) as r:
-                return (json.load(r)["choices"][0]["message"]["content"] or "").strip() or None
-        import anthropic  # optional dependency
-
-        client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
-        msg = client.messages.create(
-            model=config.LLM_MODEL,
-            max_tokens=400,
-            system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": user}],
-        )
-        return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip() or None
-    except Exception as exc:  # network, auth, missing package
-        log.warning("LLM call failed, falling back to templates: %s", type(exc).__name__)
-        return None
+    for name in chain:
+        try:
+            if out := PROVIDERS[name](SYSTEM_PROMPT, user):
+                return out
+        except Exception as exc:  # network, auth, missing package
+            log.warning("LLM %s failed, trying next: %s", name, type(exc).__name__)
+    return None
