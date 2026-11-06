@@ -1,86 +1,100 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="ms" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAHAM: check a letter or message</title>
-  <meta name="description" content="Paste a worrying letter, SMS or WhatsApp message. FAHAM looks for scam signs, explains it in BM, English, Chinese or Tamil, and shows what to do next." />
+  <title>FAHAM</title>
+  <meta name="description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
   <meta name="theme-color" content="#0b5c63" />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
+  <a class="skip" href="#main" data-i18n="skip"></a>
 
   <header class="top">
     <div class="wrap bar">
       <a class="brand" href="#check">FAHAM</a>
-      <span class="mode" id="mode" role="status">Connecting...</span>
       <button class="btn btn-quiet" id="themeBtn" type="button" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>
-        <span id="themeLbl">Dark</span>
+        <span id="themeLbl"></span>
       </button>
+      <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
+      <span class="mode" id="mode" role="status"></span>
     </div>
-    <nav class="wrap" aria-label="Main">
-      <a href="#check" data-t="nav_check">Check</a>
-      <a href="#practice" data-t="nav_practice">Practice</a>
-      <a href="#dictionary" data-t="nav_dict">My dictionary</a>
-      <a href="#family" data-t="nav_family">Family</a>
-      <a href="#about" data-t="nav_about">About and privacy</a>
+    <nav class="wrap" data-i18n-aria="nav_label">
+      <a href="#check" data-i18n="nav_check"></a>
+      <a href="#practice" data-i18n="nav_practice"></a>
+      <a href="#dictionary" data-i18n="nav_dict"></a>
+      <a href="#family" data-i18n="nav_family"></a>
+      <a href="#about" data-i18n="nav_about"></a>
     </nav>
   </header>
 
   <main class="wrap" id="main" tabindex="-1">
 
     <!-- ===== CHECK ===== -->
-    <section class="view" id="view-check" data-title="Check a letter or message">
+    <section class="view" id="view-check">
       <div id="checker">
-        <h1 tabindex="-1"><span lang="ms">Semak surat atau mesej</span><span class="alt" lang="en">Check a letter or message</span></h1>
-        <p class="lead">Got a letter, SMS or WhatsApp that worries you? Paste it or take a photo. We look for scam signs and tell you what to do. / Ada surat atau mesej yang merunsingkan? Tampal atau muat naik gambar.</p>
+        <h1 tabindex="-1" data-i18n="c_h1"></h1>
+        <p class="lead" data-i18n="c_lead"></p>
 
-        <div class="note warn" id="offlineNote" hidden>
-          <b>Sample mode.</b> The checker is offline right now, so only the examples below work. / Penyemak tidak dapat dihubungi. Hanya contoh di bawah boleh digunakan.
-        </div>
+        <div class="note warn" id="offlineNote" hidden><b data-i18n="off_b"></b> <span data-i18n="off_t"></span></div>
+
+        <ol class="hint" id="hint">
+          <li data-i18n="hint1"></li>
+          <li data-i18n="hint2"></li>
+          <li data-i18n="hint3"></li>
+        </ol>
 
         <form id="form" class="card" novalidate>
-          <label for="pasteBox">Paste the letter or message / Tampal surat atau mesej</label>
-          <textarea id="pasteBox" rows="7" maxlength="20000" placeholder="Paste the text here / Tampal teks di sini"></textarea>
+          <label for="pasteBox" data-i18n="f_paste"></label>
+          <textarea id="pasteBox" rows="7" maxlength="20000" aria-describedby="vhint cnt" data-i18n-ph="f_ph"></textarea>
+          <div class="meta"><span class="vh" id="vhint" role="status"></span><span class="cnt" id="cnt"></span></div>
+          <p class="muted" data-i18n="f_priv"></p>
 
-          <label for="fileBox">Or upload a photo (PNG or JPEG, up to 4 MB)</label>
+          <label for="fileBox" data-i18n="f_file"></label>
           <input type="file" id="fileBox" accept="image/png,image/jpeg" />
 
           <div class="row2">
             <div>
-              <span class="label" id="langLbl">Explain it in / Terangkan dalam</span>
+              <span class="label" id="langLbl" data-i18n="f_explain"></span>
               <div class="chips" id="langChips" role="group" aria-labelledby="langLbl"></div>
+              <p class="muted" id="detectNote" role="status"></p>
             </div>
             <div>
-              <label for="postBox">Postcode (optional, to find your nearest office)</label>
+              <label for="postBox" data-i18n="f_post"></label>
               <input type="text" id="postBox" inputmode="numeric" pattern="[0-9]{1,5}" maxlength="5" autocomplete="postal-code" />
             </div>
           </div>
 
-          <div class="consent">
-            <label class="tick"><input type="checkbox" id="consentBox" />
-              <span>Saya setuju FAHAM membaca teks atau gambar ini. Butiran peribadi ditutup dahulu dan surat tidak disimpan.<br />I agree FAHAM reads this text or photo. Personal details are hidden first and the letter is not saved.</span>
-            </label>
+          <div class="consent" id="consentBlock" hidden>
+            <label class="tick"><input type="checkbox" id="consentBox" /><span data-i18n="consent_t"></span></label>
             <details class="more">
-              <summary>Privacy / Privasi</summary>
-              <p lang="en"><b>EN:</b> FAHAM reads the text of your letter after personal details such as IC, phone and account numbers are masked (redacted). The letter is not stored. If the optional AI service is switched on, it receives only the redacted text. If you are helping a parent or someone else, you confirm you have their permission to use their letter. Tick is needed only for your own text or photo, not for the examples.</p>
-              <p lang="ms"><b>BM:</b> FAHAM membaca teks surat anda selepas butiran peribadi seperti no. IC, telefon dan akaun ditutup (redact). Surat tidak disimpan. Jika perkhidmatan AI pilihan dihidupkan, ia hanya menerima teks yang telah ditutup. Jika anda membantu ibu bapa atau orang lain, anda mengesahkan anda mendapat kebenaran mereka untuk menggunakan surat itu. Tanda ini hanya perlu untuk teks atau gambar anda sendiri, bukan untuk contoh.</p>
+              <summary data-i18n="priv_sum"></summary>
+              <p data-i18n="priv_p"></p>
             </details>
           </div>
 
-          <p class="err" id="formErr" role="alert"></p>
-          <button class="btn btn-primary btn-big" id="checkBtn" type="submit"><span data-t="btn_check">Check now</span></button>
-          <button class="btn btn-quiet" id="clearInput" type="button">Clear</button>
+          <div class="errbox">
+            <p class="err" id="formErr" role="alert"></p>
+            <button class="btn btn-secondary" id="retryBtn" type="button" hidden data-i18n="btn_retry"></button>
+          </div>
+          <button class="btn btn-primary btn-big" id="checkBtn" type="submit" data-i18n="btn_check"></button>
+          <button class="btn btn-quiet" id="clearInput" type="button" data-i18n="btn_clear"></button>
         </form>
 
-        <div class="busy" id="busy" role="status" hidden><span class="spin" aria-hidden="true"></span><span id="busyTxt">Checking...</span></div>
+        <div class="busy" id="busy" hidden>
+          <p id="busyTxt" role="status"></p>
+          <ol class="stages" id="stages" aria-hidden="true"></ol>
+          <div class="skel" aria-hidden="true"></div><div class="skel s2" aria-hidden="true"></div><div class="skel s3" aria-hidden="true"></div>
+        </div>
 
-        <h2>Try an example / Cuba contoh</h2>
-        <p class="muted">Fictional letters and messages. They work without ticking the box.</p>
-        <div class="examples" id="examples"></div>
+        <details class="ex" id="exBox">
+          <summary data-i18n="ex_sum"></summary>
+          <p class="muted" data-i18n="ex_note"></p>
+          <div class="examples" id="examples"></div>
+        </details>
       </div>
 
       <!-- result -->
@@ -88,110 +102,116 @@
     </section>
 
     <!-- ===== PRACTICE ===== -->
-    <section class="view" id="view-practice" data-title="Practice: spot the scam" hidden>
-      <h1 tabindex="-1">Practice: spot the scam</h1>
-      <p class="lead">Read each fictional message and decide. You get the clues, and what FAHAM's check says, beside the answer.</p>
+    <section class="view" id="view-practice" hidden>
+      <h1 tabindex="-1" data-i18n="p_h1"></h1>
+      <p class="lead" data-i18n="p_lead"></p>
       <div class="card">
         <p class="muted" id="pCount" role="status"></p>
-        <div class="sms" id="pCard"></div>
+        <div class="sms" id="pCard" lang="ms"></div>
         <div class="choices" id="pChoices">
-          <button class="btn btn-secondary btn-big" type="button" data-a="legit">Looks real</button>
-          <button class="btn btn-secondary btn-big" type="button" data-a="scam">It is a scam</button>
+          <button class="btn btn-secondary btn-big" type="button" data-a="legit" data-i18n="p_real"></button>
+          <button class="btn btn-secondary btn-big" type="button" data-a="scam" data-i18n="p_scam"></button>
         </div>
         <div id="pFeedback" aria-live="polite"></div>
       </div>
       <div class="card">
-        <p><b id="pScore">0 / 0</b> this round</p>
-        <button class="btn btn-quiet" id="pRestart" type="button">New round</button>
+        <p><b id="pScore">0 / 0</b> <span data-i18n="p_round"></span></p>
+        <button class="btn btn-quiet" id="pRestart" type="button" data-i18n="p_new"></button>
       </div>
     </section>
 
     <!-- ===== DICTIONARY ===== -->
-    <section class="view" id="view-dictionary" data-title="My dictionary" hidden>
-      <h1 tabindex="-1">My dictionary (Kamus Surat)</h1>
-      <p class="lead">Words from official letters, explained simply. After you check a letter, press "Add to my dictionary" to keep its words here.</p>
+    <section class="view" id="view-dictionary" hidden>
+      <h1 tabindex="-1" data-i18n="d_h1"></h1>
+      <p class="lead" data-i18n="d_lead"></p>
       <div class="card">
-        <h2 class="h3">Your level: <span id="lvlName"></span></h2>
+        <h2 class="h3"><span data-i18n="d_level"></span> <span id="lvlName"></span></h2>
         <div class="bar-track" aria-hidden="true"><i id="lvlBar"></i></div>
         <p class="muted" id="lvlNext"></p>
-        <p class="muted">You earn points for right answers in Practice and for words you add. Points stay on this device.</p>
+        <p class="muted" data-i18n="d_earn"></p>
       </div>
-      <label for="glossSearch">Search a word</label>
-      <input type="search" id="glossSearch" placeholder="for example: kompaun" />
+      <label for="glossSearch" data-i18n="d_search"></label>
+      <input type="search" id="glossSearch" data-i18n-ph="d_ph" />
       <p class="muted" id="glossCount" role="status"></p>
       <div id="glossGrid" class="gloss"></div>
     </section>
 
     <!-- ===== FAMILY ===== -->
-    <section class="view" id="view-family" data-title="Family: help a parent" hidden>
-      <h1 tabindex="-1">Family: help a parent</h1>
-      <p class="lead">Pick a letter and the language your parent reads best. Copy the message and send it yourself by WhatsApp or SMS.</p>
-      <div class="note"><b>FAHAM sends nothing.</b> It only prepares the words. You copy them and decide whether to send.</div>
+    <section class="view" id="view-family" hidden>
+      <h1 tabindex="-1" data-i18n="fa_h1"></h1>
+      <p class="lead" data-i18n="fa_lead"></p>
+      <div class="note"><b data-i18n="fa_note_b"></b> <span data-i18n="fa_note"></span></div>
       <div class="card">
-        <label for="fLetter">Letter</label>
+        <label for="fLetter" data-i18n="fa_letter"></label>
         <select id="fLetter"></select>
-        <label for="fLang">Language for your parent</label>
+        <label for="fLang" data-i18n="fa_lang"></label>
         <select id="fLang"></select>
         <p class="muted" id="fNote"></p>
-        <h2 class="h3">Message to share</h2>
+        <h2 class="h3" data-i18n="fa_msg_h"></h2>
         <div class="msg" id="fMsg" lang="ms"></div>
-        <button class="btn btn-primary" id="fCopy" type="button">Copy message</button>
-        <button class="btn btn-secondary" id="fSpeak" type="button">Read aloud</button>
+        <button class="btn btn-primary" id="fCopy" type="button"><span data-i18n="fa_copy"></span></button>
+        <button class="btn btn-secondary speak" id="fSpeak" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg><span></span></button>
+        <p class="muted" id="fVnote" role="status"></p>
       </div>
     </section>
 
     <!-- ===== ABOUT ===== -->
-    <section class="view" id="view-about" data-title="About and privacy" hidden>
-      <h1 tabindex="-1">About and privacy</h1>
+    <section class="view" id="view-about" hidden>
+      <h1 tabindex="-1" data-i18n="a_h1"></h1>
+      <p class="note warn" id="aboutReview" hidden data-i18n="a_review"></p>
 
-      <h2>What FAHAM does</h2>
-      <p>FAHAM reads a letter or message you give it, looks for signs of a scam, explains it in plain words in BM, English, Chinese or Tamil, and shows the usual steps to deal with it online or at an office. It can write a reminder and a draft reply for you to copy.</p>
+      <h2 data-i18n="a_do_h"></h2>
+      <p data-i18n="a_do_p"></p>
 
-      <h2>What it cannot do</h2>
+      <h2 data-i18n="a_cant_h"></h2>
       <ul>
-        <li>It cannot see who really sent the message, open a link or call a number.</li>
-        <li>It cannot prove a letter is real. "No scam signs found" is not a promise.</li>
-        <li>It cannot send, pay or contact anyone for you. Nothing is sent automatically.</li>
-        <li>It can miss new tricks. When unsure, ask the agency yourself using a number or website you looked up.</li>
+        <li data-i18n="a_cant1"></li>
+        <li data-i18n="a_cant2"></li>
+        <li data-i18n="a_cant3"></li>
+        <li data-i18n="a_cant4"></li>
       </ul>
 
-      <h2>How a verdict is decided</h2>
-      <p>A fixed set of rules checks the text. An optional AI service may only reword the explanation. It does not decide the verdict.</p>
-      <p><b>Signs of a scam we look for:</b></p>
+      <h2 data-i18n="a_how_h"></h2>
+      <p data-i18n="a_how_p"></p>
+      <p><b data-i18n="a_signs_b"></b></p>
       <ul>
-        <li>Asks you to transfer money to a personal or company account</li>
-        <li>Shortened links or web addresses that are not .gov.my</li>
-        <li>Threats of arrest or "pay in 24 hours" pressure</li>
-        <li>Asks for your TAC or OTP, bank login, or a photo of your IC</li>
-        <li>Asks you to keep it secret or to use WhatsApp</li>
-        <li>A reference number that does not match the agency's format</li>
+        <li data-i18n="a_sg1"></li>
+        <li data-i18n="a_sg2"></li>
+        <li data-i18n="a_sg3"></li>
+        <li data-i18n="a_sg4"></li>
+        <li data-i18n="a_sg5"></li>
+        <li data-i18n="a_sg6"></li>
       </ul>
-      <p><b>Three possible answers:</b> "Likely a scam" when strong signs are found. "Be careful" when we are not sure. "No scam signs found" when none of the above appears, which still does not prove the message is real.</p>
-      <p><b>Limits:</b> the rules read words only. A well-written scam can pass, and a real letter can look odd after a photo is misread.</p>
+      <p data-i18n="a_three"></p>
+      <p data-i18n="a_limits"></p>
 
-      <h2>Your data</h2>
+      <h2 data-i18n="a_data_h"></h2>
       <ul>
-        <li>Personal details (IC, phone, account numbers) are masked before anything else happens.</li>
-        <li>Letters are not stored on our side. Your dictionary, points, language and tick are saved only in this browser.</li>
-        <li>Examples are fictional.</li>
+        <li data-i18n="a_dt1"></li>
+        <li data-i18n="a_dt2"></li>
+        <li data-i18n="a_dt3"></li>
       </ul>
-      <button class="btn btn-secondary" id="clearData" type="button">Clear my data</button>
+      <button class="btn btn-secondary" id="clearData" type="button" data-i18n="a_clear"></button>
       <p class="muted" id="clearMsg" role="status"></p>
 
-      <h2>Guidance, not legal advice</h2>
-      <p>Steps come from a cached copy of official sources, shown with the date and a confidence level. Check the official site before you act. Chinese and Tamil text still needs review by native speakers.</p>
+      <h2 data-i18n="a_guid_h"></h2>
+      <p data-i18n="a_guid_p"></p>
 
       <div class="note bad">
-        <b>Already paid or shared your bank details?</b> Call your bank now, then the National Scam Response Centre on <a href="tel:997">997</a>.
+        <b data-i18n="a_paid_b"></b> <span data-i18n="a_paid"></span> <a href="tel:997">997</a>.
       </div>
     </section>
   </main>
 
-  <footer class="wrap foot">FAHAM gives guidance, not legal advice. Examples are fictional (SAMPEL / FIKTIF).</footer>
+  <footer class="wrap foot">
+    <p><span data-i18n="foot_scam"></span> <a href="tel:997">NSRC 997</a>.</p>
+    <p data-i18n="foot_disc"></p>
+  </footer>
   <div id="toast" role="status" aria-live="polite"></div>
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/i18n.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
