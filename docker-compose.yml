@@ -3,9 +3,10 @@ services:
     build: ./backend
     ports: ["127.0.0.1:8000:8000"]   # local only; the public path is web -> /api/
     env_file:
-      - path: ./backend/.env
+      - path: ./.env                  # the one settings file, also read by compose itself
         required: false
     environment:
+      CLOUDFLARE_TUNNEL_TOKEN: ""     # the API never needs the tunnel token; keep it out of that container
       FAHAM_ALLOWED_ORIGINS: http://localhost:${WEB_PORT:-8080},http://127.0.0.1:${WEB_PORT:-8080}
   web:
     image: nginx:alpine

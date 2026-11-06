@@ -88,3 +88,27 @@ Messenger replies in the window are free. Tunnel or hosting with public HTTPS, a
 Tested (`backend/tests/test_channels.py`, simulated payloads, `ingest` and the network monkeypatched): handshake accept and reject, signature accept and reject, consent gating, STOP, reply language and wording, dedup, status update and echo ignoring, host allow-list and size cap, rate limit, status without secrets, email rejection on spf/dkim/dmarc fail and one reply per sender, email webhook secret.
 
 Not tested: anything live. No real Meta app, Page, webhook delivery, media download, Graph reply, IMAP login or SMTP send has been run. The real Meta payload shapes are coded from the public docs and may differ in detail (for example media URL hosts). The IMAP fetch loop and SMTP sending are untested beyond `process_email`. zh and ta strings are unreviewed.
+
+
+## Email through Mailtrap and Cloudflare Email Routing (own domain)
+
+```
+sender -> faham@yourdomain (Cloudflare Email Routing) -> Mailtrap Inbound inbox
+        FAHAM polls the inbox over Mailtrap's API -> analyses -> replies over Mailtrap SMTP
+```
+
+| Setting | Value |
+|---|---|
+| `MAILTRAP_API_TOKEN` | Mailtrap API token (sent only as a header to `mailtrap.io`) |
+| `MAILTRAP_INBOX_ID` | Number of the Inbound inbox (from its page or the API), not the address |
+| `SMTP_HOST` / `SMTP_PORT` | `live.smtp.mailtrap.io` / `587` (also 2525 and 25 with STARTTLS, 465 with forced TLS). Use the Sandbox host while testing: nothing is delivered |
+| `SMTP_USER` / `SMTP_PASSWORD` | `api` / your Mailtrap API token. Mailtrap's SMTP page may show the user as `apismtp@mailtrap.io`; in testing that name was rejected with the same token (535) and `api` was accepted, so try `api` first |
+| `SMTP_FROM`, `EMAIL_PUBLIC_ADDRESS` | `faham@yourdomain` |
+
+How it behaves:
+- The worker lists the newest messages (`GET /api/inbound/inboxes/{id}/messages`), downloads the raw `.eml` from the signed link Mailtrap returns (https only, no redirects, 25 MB cap), analyses it and replies to the sender.
+- A message FAHAM answered is **deleted** from Mailtrap straight away, so letters are not kept there. Anything it did not answer (Cloudflare's address-verification mail, bounces, forged or automated senders) stays so you can read it in the Mailtrap inbox.
+- After a restart, mail older than two hours is left alone so nobody is answered twice.
+- Delivery from Cloudflare Email Routing to a `...@inbound-mailtrap.io` address is not described in Mailtrap's docs and has **not been tested here**. If Cloudflare refuses it, enable "Inbound domain receiving" on a subdomain such as `inbox.yourdomain` instead (Mailtrap gives the MX record; keep Email Routing on the root domain, since two MX sets on one name conflict).
+- Not tested against live Mailtrap yet: the API shapes come from its documentation (list, get message with `raw_message_url`, delete).
+- Replies carry `Date`, `Message-ID`, `In-Reply-To`/`References` and `Auto-Submitted: auto-replied`, so mail clients thread them and other auto-responders stay quiet. Check delivery in Mailtrap's Email Logs (mailtrap.io/sending/email_logs).

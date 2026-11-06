@@ -86,13 +86,13 @@ cd backend
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements-dev.txt
-uvicorn app.main:app --reload --port 8000    # docs at http://localhost:8000/docs
+uvicorn app.main:app --reload --port 8000 --env-file ../.env    # docs at http://localhost:8000/docs
 ```
 In a second terminal serve the frontend on port 5500 as above. Opening `frontend/index.html` straight from disk needs `FAHAM_ALLOW_NULL_ORIGIN=1` in the API's environment.
 
 ### 3. Docker
 ```bash
-cp backend/.env.example backend/.env     # add your own keys
+cp .env.example .env     # add your own keys; one file for compose and the API
 docker compose up -d --build
 # web http://localhost:8080    API http://localhost:8000/docs
 ```
@@ -106,7 +106,7 @@ cd backend && pytest -q
 ```
 
 ## Configuration
-Copy `backend/.env.example` to `backend/.env`. Never commit it.
+Copy `.env.example` to `.env` in the repo root (one file for Docker Compose and the API). Never commit it.
 
 | Variable | Default | Purpose |
 |---|---|---|

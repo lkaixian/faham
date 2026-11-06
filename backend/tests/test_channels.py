@@ -201,3 +201,72 @@ def test_reply_languages_and_multi(monkeypatch):
     assert reply.summary(batch("no_signals"), "bm", "x").startswith("Tiada tanda penipuan ditemui (ini bukan bukti)")
     monkeypatch.setenv("FAHAM_PUBLIC_URL", "https://faham.example")
     assert "https://faham.example/terms" in reply.notice("en") and len(reply.notice("en").splitlines()) == 3
+
+
+def test_mailtrap_inbound_replies_then_deletes(env, monkeypatch):
+    monkeypatch.setenv("MAILTRAP_API_TOKEN", "tok")
+    monkeypatch.setenv("MAILTRAP_INBOX_ID", "15")
+    monkeypatch.setenv("SMTP_HOST", "smtp.example")
+    assert channels.email_ready()
+    now = channels.datetime.datetime.now(channels.datetime.timezone.utc)
+    old = (now - channels.datetime.timedelta(hours=5)).isoformat()
+    msgs = [{"id": "a", "received_at": now.isoformat()}, {"id": "b", "received_at": now.isoformat()},
+            {"id": "old", "received_at": old}]
+    calls = []
+
+    def fake_mt(method, path):
+        calls.append((method, path))
+        if method == "GET" and path == "/messages":
+            return {"data": msgs, "last_id": None}
+        if method == "GET":
+            return {"raw_message_url": "https://files.example/" + path.rsplit("/", 1)[1]}
+        return {}
+    monkeypatch.setattr(channels, "_mt", fake_mt)
+    monkeypatch.setattr(channels, "_mt_raw", lambda url: url.encode())
+    monkeypatch.setattr(channels, "process_email", lambda raw: raw.endswith(b"/a"))  # only "a" gets a reply
+    channels._poll_mailtrap()
+    assert ("DELETE", "/messages/a") in calls and ("DELETE", "/messages/b") not in calls
+    assert not any("old" in p for _, p in calls)  # too old after a restart: untouched
+    calls.clear()
+    channels._poll_mailtrap()  # same ids again: nothing fetched twice
+    assert calls == [("GET", "/messages")]
+
+
+def test_mailtrap_raw_link_must_be_https_and_named_host(monkeypatch):
+    for bad in ("http://files.example/x", "https://10.0.0.5/x", "file:///etc/passwd", "https://localhost/x"):
+        with pytest.raises(ValueError):
+            channels._mt_raw(bad)
+
+
+def _capture_smtp(monkeypatch):
+    seen = {}
+
+    class FakeSMTP:
+        def __init__(self, host, port, timeout=0):
+            seen.update(cls=type(self).__name__, host=host, port=port, starttls=False)
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def starttls(self): seen["starttls"] = True
+        def login(self, u, p): seen["user"] = u
+        def send_message(self, m): seen["msg"] = m
+
+    class FakeSSL(FakeSMTP):
+        pass
+    monkeypatch.setattr(channels.smtplib, "SMTP", FakeSMTP)
+    monkeypatch.setattr(channels.smtplib, "SMTP_SSL", FakeSSL)
+    return seen
+
+
+def test_smtp_starttls_on_587_and_forced_tls_on_465(monkeypatch):
+    seen = _capture_smtp(monkeypatch)
+    for k, v in dict(SMTP_HOST="live.smtp.mailtrap.io", SMTP_USER="apismtp@mailtrap.io", SMTP_PASSWORD="p",
+                     SMTP_FROM="FAHAM <faham@larmkx.com>").items():
+        monkeypatch.setenv(k, v)
+    monkeypatch.setenv("SMTP_PORT", "587")
+    channels._smtp_send("user@example.org", "Re: x", "hello", "<orig@mail>")
+    assert seen["cls"] == "FakeSMTP" and seen["starttls"] and seen["user"] == "apismtp@mailtrap.io"
+    m = seen["msg"]
+    assert m["Date"] and m["Message-ID"].endswith("@larmkx.com>") and m["In-Reply-To"] == m["References"] == "<orig@mail>"
+    monkeypatch.setenv("SMTP_PORT", "465")
+    channels._smtp_send("user@example.org", "Re: x", "hello", "")
+    assert seen["cls"] == "FakeSSL" and seen["port"] == 465 and seen["starttls"] is False

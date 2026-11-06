@@ -1,4 +1,4 @@
-"""Messaging channels: Messenger, email (IMAP poll + webhook).
+"""Messaging channels: Messenger, email (IMAP or Mailtrap Inbound poll, plus webhook).
 
 Env-configured; unconfigured channels are inert. Stdlib only. State is in memory by design
 (ponytail: a restart forgets consent, dedup and rate limits; move to Redis if that matters).
@@ -7,6 +7,7 @@ Never logs ids, numbers or content; never fetches URLs found in messages.
 from __future__ import annotations
 
 import collections
+import datetime
 import hashlib
 import hmac
 import imaplib
@@ -23,7 +24,7 @@ import urllib.request
 from email import message_from_bytes
 from email.header import decode_header, make_header
 from email.message import EmailMessage
-from email.utils import parseaddr
+from email.utils import formatdate, make_msgid, parseaddr
 from typing import Callable
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
@@ -276,14 +277,21 @@ def _subject(msg) -> str:
 
 
 def _smtp_send(to: str, subject: str, body: str, msgid: str) -> None:
+    sender = env("SMTP_FROM") or env("EMAIL_PUBLIC_ADDRESS") or env("SMTP_USER")
     m = EmailMessage()
-    m["From"], m["To"], m["Subject"] = env("SMTP_FROM") or env("SMTP_USER"), to, subject
+    m["From"], m["To"], m["Subject"] = sender, to, subject
+    m["Date"] = formatdate()  # smtplib adds neither Date nor Message-ID; mail without them is often marked as spam
+    m["Message-ID"] = make_msgid(domain=parseaddr(sender)[1].rpartition("@")[2] or None)
     m["Auto-Submitted"] = "auto-replied"
     if msgid and not re.search(r"[\r\n]", msgid):
-        m["In-Reply-To"] = msgid
+        m["In-Reply-To"] = m["References"] = msgid
     m.set_content(body)
-    with smtplib.SMTP(env("SMTP_HOST"), int(env("SMTP_PORT") or 587), timeout=TIMEOUT) as s:
-        s.starttls()
+    port = int(env("SMTP_PORT") or 587)
+    # 465 is TLS from the first byte (Mailtrap: "forced TLS"); 587, 2525 and 25 start plain and upgrade with STARTTLS
+    with (smtplib.SMTP_SSL(env("SMTP_HOST"), port, timeout=TIMEOUT) if port == 465
+          else smtplib.SMTP(env("SMTP_HOST"), port, timeout=TIMEOUT)) as s:
+        if port != 465:
+            s.starttls()
         if env("SMTP_USER"):
             s.login(env("SMTP_USER"), env("SMTP_PASSWORD"))
         s.send_message(m)
@@ -307,8 +315,59 @@ def process_email(raw: bytes) -> bool:
     return True
 
 
+def mt_ready() -> bool:
+    """Mailtrap Inbound (REST, API token) instead of IMAP."""
+    return bool(env("MAILTRAP_API_TOKEN")) and env("MAILTRAP_INBOX_ID").isdigit()
+
+
 def email_ready() -> bool:
-    return all(env(k) for k in ("IMAP_HOST", "IMAP_USER", "IMAP_PASSWORD", "SMTP_HOST"))
+    return bool(env("SMTP_HOST")) and (mt_ready() or all(env(k) for k in ("IMAP_HOST", "IMAP_USER", "IMAP_PASSWORD")))
+
+
+MT_API = "https://mailtrap.io/api/inbound/inboxes/"
+MT_MAX_AGE = 2 * HOUR  # after a restart, older mail is left alone rather than answered twice
+
+
+def _mt(method: str, path: str):
+    req = urllib.request.Request(MT_API + env("MAILTRAP_INBOX_ID") + path, method=method, headers={
+        "Authorization": "Bearer " + env("MAILTRAP_API_TOKEN"), "Accept": "application/json", "User-Agent": "faham/0.1"})
+    with _open(req) as r:
+        return json.loads(r.read(1_000_000) or b"{}")
+
+
+def _mt_raw(url: str) -> bytes:
+    """Raw .eml from the signed link Mailtrap returns. https only, no redirects, no token sent, size capped."""
+    host = (urllib.parse.urlparse(url).hostname or "").lower()
+    if urllib.parse.urlparse(url).scheme != "https" or "." not in host or host.replace(".", "").isdigit():
+        raise ValueError("link not allowed")
+    with _open(urllib.request.Request(url, headers={"User-Agent": "faham/0.1"})) as r:
+        data = r.read(CAP + 1)
+    if len(data) > CAP:
+        raise ValueError("too large")
+    return data
+
+
+def _mt_recent(m: dict) -> bool:
+    try:
+        ts = datetime.datetime.fromisoformat(str(m.get("received_at", "")).replace("Z", "+00:00"))
+        return (datetime.datetime.now(datetime.timezone.utc) - ts).total_seconds() < MT_MAX_AGE
+    except ValueError:
+        return True
+
+
+def _poll_mailtrap() -> None:
+    j = _mt("GET", "/messages")
+    # Newest first. A message we answered is deleted from Mailtrap; anything else (such as Cloudflare's
+    # address-verification mail) stays so you can read it in the Mailtrap inbox.
+    for m in ((j if isinstance(j, list) else j.get("data")) or [])[:10]:
+        mid = str(m.get("id") or "")
+        if not mid or not _mt_recent(m) or _dup("mailtrap", mid):
+            continue
+        try:
+            if process_email(_mt_raw(_mt("GET", "/messages/" + mid).get("raw_message_url") or "")):
+                _mt("DELETE", "/messages/" + mid)
+        except Exception as e:
+            log.warning("mailtrap message failed: %s", type(e).__name__)
 
 
 def _poll_once() -> None:
@@ -335,9 +394,9 @@ def _poll_once() -> None:
 def _loop() -> None:
     while True:
         try:
-            _poll_once()
+            (_poll_mailtrap if mt_ready() else _poll_once)()
         except Exception as e:
-            log.warning("imap failed: %s", type(e).__name__)
+            log.warning("email poll failed: %s", type(e).__name__)
         time.sleep(max(10, int(env("IMAP_POLL_SECONDS") or 60)))
 
 
