@@ -24,6 +24,8 @@ docker compose up --build                   # web :8080, api :8000
 
 CI runs `pytest -q` on Python 3.12 for every push. `pages.yml` deploys `frontend/` to GitHub Pages from `main`.
 
+After changing anything under `frontend/assets`, run `python scripts/bust_cache.py` (it fingerprints the CSS and JS links so Cloudflare never serves an old copy next to a new page). `pytest` fails if you forget.
+
 ## Rules for working here
 
 1. **Deterministic first, LLM second.** Classification, extraction and scam checks are regex/rules. The LLM only rewrites the explanation and must stay optional; the offline demo must always work.
