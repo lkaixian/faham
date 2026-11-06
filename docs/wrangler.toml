@@ -1,0 +1,9 @@
+# Optional: deploy the email Worker from the command line instead of pasting it into the dashboard.
+#   cd docs && npx wrangler login && npx wrangler deploy && npx wrangler secret put FAHAM_SECRET
+# Edit FAHAM_URL first. FAHAM_SECRET is a secret, so it is not stored here.
+name = "faham-email"
+main = "cloudflare-email-worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+FAHAM_URL = "https://faham.example.com"

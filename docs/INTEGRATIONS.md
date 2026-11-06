@@ -112,3 +112,19 @@ How it behaves:
 - Delivery from Cloudflare Email Routing to a `...@inbound-mailtrap.io` address is not described in Mailtrap's docs and has **not been tested here**. If Cloudflare refuses it, enable "Inbound domain receiving" on a subdomain such as `inbox.yourdomain` instead (Mailtrap gives the MX record; keep Email Routing on the root domain, since two MX sets on one name conflict).
 - Not tested against live Mailtrap yet: the API shapes come from its documentation (list, get message with `raw_message_url`, delete).
 - Replies carry `Date`, `Message-ID`, `In-Reply-To`/`References` and `Auto-Submitted: auto-replied`, so mail clients thread them and other auto-responders stay quiet. Check delivery in Mailtrap's Email Logs (mailtrap.io/sending/email_logs).
+
+### Receiving without Mailtrap Inbound: Cloudflare Email Worker
+
+If your Mailtrap plan only sends, receive with Cloudflare Email Routing and a Worker (free):
+
+```
+sender -> faham@yourdomain -> Cloudflare Email Routing -> Email Worker -> POST /api/channels/email?reply=1
+        FAHAM analyses it and replies from SMTP_FROM through Mailtrap SMTP
+```
+
+1. Set `EMAIL_WEBHOOK_SECRET` in `.env` (a long random string) and the `SMTP_*` settings. Rebuild: `docker compose up -d`.
+2. Cloudflare dashboard > Workers & Pages > Create > Workers > Hello World, deploy it, then **Edit code** and paste `docs/cloudflare-email-worker.js` (the drag-and-drop uploader refuses it: "does not yet support projects that require a build process"). Or use `docs/wrangler.toml` with `npx wrangler deploy`. Set `FAHAM_URL` (text) and `FAHAM_SECRET` (secret, same value as `EMAIL_WEBHOOK_SECRET`). Deploy.
+3. Email Routing > Routing rules > Create address `faham`, action **Send to a Worker**, choose that Worker.
+4. If the site sits behind **Cloudflare Access**, add a Bypass rule for the path `/api/channels/email`, or the Worker's request is turned away. The route is protected by the secret header and the rate limit.
+
+The reply route uses the same safeguards as the mailbox worker: no reply to automated or no-reply senders, failed SPF/DKIM/DMARC headers, or more than one message per sender per window. Mail is processed in memory and not stored.

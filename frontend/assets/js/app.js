@@ -20,6 +20,7 @@
   const LANGS = Object.keys(D.languages);
   const state = {
     lang: LANGS.includes(store.get("lang", "bm")) ? store.get("lang", "bm") : "bm",
+    senior: !EMBED && store.get("senior", false) === true,   // easy mode: bigger text, fewer buttons, shorter flow
     xl: "bm", xlManual: false,           // xl = language of the explanation; follows the UI language unless detected or chosen
     theme: EMBED ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : store.get("theme", "light"),
     learned: new Set(store.get("learned", [])),
@@ -507,7 +508,7 @@
     state.xl = b.dataset.x; state.xlManual = true; $("#detectNote").textContent = ""; syncChips();
   });
   function refreshLang() {
-    stopSpeak(); $("#fLang").value = state.lang; applyI18n(); syncChips(); renderMode(); renderExamples(); setTheme(); setVoice();
+    stopSpeak(); $("#fLang").value = state.lang; applyI18n(); syncChips(); renderMode(); renderExamples(); setTheme(); setVoice(); renderSenior();
     if (!$("#ob").hidden) renderOb(); updateCount(true); renderLevel();
     renderUp(); renderQueue();
     if (!$("#result").hidden) { if (state.view === "sum") renderSummary(); else if (state.result) renderResult(state.result, true); }
@@ -659,7 +660,7 @@
     if (["online", "walkin"].some((k) => (r.route[k].steps || []).length)) out.push({ id: "todo", h: "h_todo", html: todoHtml(r), say: () => [route().slice(0, 4).join(" "), "en"] });
     out.push({ id: "draft", h: "h_draft", html: draftHtml(r), say: () => [`${t("rem_label")} ${reminderText(r)}`, state.lang] });
     out.push({ id: "learn", h: "h_learn", html: learnHtml(r), say: () => [clean(r.kenapa.a), "en"] });
-    return out;
+    return state.senior ? out.filter((p) => ["verdict", "now", "why"].includes(p.id)) : out;   // easy mode: verdict, what to do, why
   }
   const rbar = (act, lbl) => `
       <div class="rbar">
@@ -776,9 +777,10 @@
   function renderOb() {
     const [k, ico] = OB[obI], last = obI === OB.length - 1;
     const lis = (a) => `<ul class="ob-list">${a.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
-    const extra = ["", `<p class="muted">${esc(t("ob2_n", { b: t("a_clear") }))}</p>`, "",
+    const extra = [`<button class="btn btn-secondary" type="button" data-ob="senior" aria-pressed="${state.senior}">${esc(t(state.senior ? "sr_turn_off" : "sr_btn"))}</button><p class="muted">${esc(t("sr_ban"))}</p>`, `<p class="muted">${esc(t("ob2_n", { b: t("a_clear") }))}</p>`, "",
       `<a class="btn btn-primary btn-big call" href="tel:997">${esc(t("ob4_call"))}</a><p class="muted">${esc(t("ob4_n"))}</p>`,
       `${more(lis(t("ob_tc")), "ob_tc_sum")}${more(lis(t("ob_cc")), "ob_cc_sum")}
+       <p><a href="terms.html?lang=${state.lang}" target="_blank" rel="noopener">${esc(t("tm_h1"))}</a></p>
        <label class="tick"><input type="checkbox" id="obTick"${obTick ? " checked" : ""} /><span>${esc(t("ob_agree"))}</span></label><p class="muted">${esc(t("ob_draft"))}</p>`][obI];
     $("#ob").innerHTML = `<div class="wrap">
       <div class="chips" role="group" aria-label="${esc(t("ui_lang"))}">${chipBtns("data-u")}</div>
@@ -811,6 +813,7 @@
     const a = b.dataset.ob, k = OB[obI][0];
     if (a === "next") obGo(1); else if (a === "back") obGo(-1);
     else if (a === "start" && obTick) endOb();
+    else if (a === "senior") setSenior(!state.senior);
     else if (a === "hear") readAloud([t(k + "_h") + ".", ...t(k + "_b")].join(" "), state.lang, b, $("#obNote"));   // static text only, and only when asked
   });
   $("#ob").addEventListener("change", (e) => { if (e.target.id === "obTick") { obTick = e.target.checked; $("#obStart").disabled = !obTick; } });
@@ -933,7 +936,7 @@
   /* ---------- pages, theme, data ---------- */
   const VIEWS = ["check", "practice", "dictionary", "family", "connect", "about"];
   function route(first) {
-    const v = EMBED ? "check" : VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
+    const v = EMBED || state.senior ? "check" : VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
     VIEWS.forEach((n) => ($("#view-" + n).hidden = n !== v));
     $$(".top nav a").forEach((a) => (a.getAttribute("href") === "#" + v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
     document.title = "FAHAM: " + t("ti_" + v);
@@ -950,12 +953,40 @@
     $("#themeLbl").textContent = t(state.theme === "dark" ? "th_light" : "th_dark");
     $('meta[name="theme-color"]').setAttribute("content", state.theme === "dark" ? "#0e1719" : "#0b5c63");
   }
-  $("#themeBtn").addEventListener("click", () => { state.theme = state.theme === "dark" ? "light" : "dark"; save(); setTheme(); });
+  /* Theme switch: the new theme grows as a circle from the button (View Transitions API). Browsers without it get a short
+     colour fade. No animation for reduced motion or easy mode. */
+  $("#themeBtn").addEventListener("click", (e) => {
+    const apply = () => { state.theme = state.theme === "dark" ? "light" : "dark"; save(); setTheme(); };   // flips when applied, so quick double clicks still toggle twice
+    if (state.senior || matchMedia("(prefers-reduced-motion: reduce)").matches) { apply(); return; }
+    if (!document.startViewTransition) {
+      document.documentElement.classList.add("theme-fade"); apply();
+      setTimeout(() => document.documentElement.classList.remove("theme-fade"), 500); return;
+    }
+    const r = e.currentTarget.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    const rad = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    document.startViewTransition(apply).ready.then(() => document.documentElement.animate(
+      { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${rad}px at ${x}px ${y}px)`] },
+      { duration: 650, easing: "cubic-bezier(.4, 0, .2, 1)", pseudoElement: "::view-transition-new(root)" })).catch(() => {});
+  });
+
+  /* ---------- easy (senior) mode: set from the header, the first page and the welcome dialog ---------- */
+  function renderSenior() {
+    if (state.senior) document.documentElement.dataset.senior = "1"; else delete document.documentElement.dataset.senior;
+    $("#seniorBtn").setAttribute("aria-pressed", state.senior); $("#seniorLbl").textContent = t("sr_btn");
+    $("#seniorMsg").textContent = t(state.senior ? "sr_ban_on" : "sr_ban"); $("#seniorBannerBtn").textContent = t(state.senior ? "sr_turn_off" : "sr_turn_on");
+  }
+  function setSenior(on) {
+    state.senior = on; store.set("senior", on); renderSenior(); stopSpeak(); state.step = 0;
+    if (!$("#ob").hidden) renderOb();
+    if (!$("#result").hidden && state.view !== "sum" && state.result) renderResult(state.result); else route(true);
+    toast(t(on ? "sr_toast_on" : "sr_toast_off"));
+  }
+  ["#seniorBtn", "#seniorBannerBtn"].forEach((id) => $(id).addEventListener("click", () => setSenior(!state.senior)));
   $("#clearData").addEventListener("click", () => {
     if (state.busy) { toast(t("wait_check")); return; }
     try { Object.keys(localStorage).filter((k) => k.startsWith("faham_")).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
     forgetOb();
-    Object.assign(state, { lang: "bm", xl: "bm", xlManual: false, theme: "light", learned: new Set(), xp: 0, voice: true, all: false, step: 0, result: null, last: null });
+    Object.assign(state, { lang: "bm", xl: "bm", xlManual: false, theme: "light", learned: new Set(), xp: 0, voice: true, senior: false, all: false, step: 0, result: null, last: null });
     $("#consentBox").checked = false; $("#consentBlock").hidden = true; $("#pasteBox").value = ""; queue = []; state.batch = null; renderQueue(); $("#postBox").value = ""; formErr("");
     $("#detectNote").textContent = ""; $("#hint").hidden = false;
     $("#result").hidden = true; $("#result").innerHTML = ""; $("#checker").hidden = false;
@@ -1006,7 +1037,8 @@
   }, 30000);
 
   /* ---------- init ---------- */
-  renderChips(); setTheme(); setVoice(); applyI18n(); syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();
+  renderChips(); setTheme(); setVoice(); applyI18n(); renderSenior();
+  if (state.senior) { try { sessionStorage.setItem("faham_intro_seen", "1"); } catch (e) {} }   // easy mode skips the animated welcome (intro.js reads this flag after app.js) syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();
   $("#hint").hidden = !!store.get("checked", false);
   state.practice.order = D.practice.map((_, i) => i).sort(() => Math.random() - 0.5).slice(0, 6);
   renderPractice(); route(true); renderUp(); checkApi();

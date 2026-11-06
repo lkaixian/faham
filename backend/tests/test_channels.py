@@ -270,3 +270,51 @@ def test_smtp_starttls_on_587_and_forced_tls_on_465(monkeypatch):
     monkeypatch.setenv("SMTP_PORT", "465")
     channels._smtp_send("user@example.org", "Re: x", "hello", "")
     assert seen["cls"] == "FakeSSL" and seen["port"] == 465 and seen["starttls"] is False
+
+
+def test_email_webhook_reply_mode(env, monkeypatch):
+    c, _, _ = env
+    monkeypatch.setenv("EMAIL_WEBHOOK_SECRET", "s3")
+    got = []
+    monkeypatch.setattr(channels, "process_email", lambda raw: got.append(raw) or True)
+    h = {"X-FAHAM-Secret": "s3"}
+    assert c.post("/api/channels/email?reply=1", content=b"mail", headers=h).status_code == 503  # no SMTP yet
+    monkeypatch.setenv("SMTP_HOST", "smtp.example")
+    assert c.post("/api/channels/email?reply=1", content=b"mail", headers={"X-FAHAM-Secret": "bad"}).status_code == 403
+    r = c.post("/api/channels/email?reply=1", content=b"mail", headers=h)
+    assert r.status_code == 200 and r.json() == {"ok": True} and got == [b"mail"]
+
+
+def _mail_batch():
+    sc = NS(verdict="likely_scam", verify_yourself=["Taip alamat rasmi <b>sendiri</b>", "Telefon talian rasmi", "tiga", "empat"],
+            reasons=[NS(kind="risk", text="sebab <script>x</script> http://evil.example/x"), NS(kind="risk", text="Domain tidak rasmi"),
+                     NS(kind="ok", text="baik"), NS(kind="info", text="info")])
+    ok = NS(verdict="no_signals", verify_yourself=[], reasons=[NS(kind="info", text="x")])
+    mk = lambda s: NS(scam=s, route=NS(source_url="https://www.hasil.gov.my"))
+    return NS(files=[NS(name="secret-name.pdf", kind="eml", result=mk(sc)), NS(name="invoice.pdf", kind="pdf", result=mk(ok))])
+
+
+def test_reply_email_html_is_safe_and_structured(monkeypatch):
+    from app import mail_html
+    monkeypatch.setenv("FAHAM_PUBLIC_URL", "https://faham.example")
+    for lang in ("bm", "en", "zh", "ta"):
+        h, t = mail_html.html_body(_mail_batch(), lang), mail_html.text(_mail_batch(), lang)
+        assert "FAHAM" in h and "cid:faham-logo" in h and "NSRC 997" in h and "https://faham.example/terms" in h
+        assert "<script>" not in h and "evil.example" not in h and "secret-name" not in h and "invoice" not in h and "secret-name" not in t
+        assert "genuine" not in (h + t).lower() and "https://www.hasil.gov.my" in h
+    en = mail_html.text(_mail_batch(), "en")
+    assert "The email itself: Likely a scam" in en and "Attachment 1: No scam signs found" in en  # not "File 1 / File 2"
+    assert "File 1" not in en and "&lt;b&gt;sendiri&lt;/b&gt;" in mail_html.html_body(_mail_batch(), "en")  # tags in the text are escaped in HTML
+    assert "<html" in mail_html.html_body(NS(files=[]), "en") and "could not read" in mail_html.text(NS(files=[]), "en")
+
+
+def test_reply_email_is_multipart_with_inline_logo(monkeypatch):
+    from app import mail_html
+    seen = _capture_smtp(monkeypatch)
+    monkeypatch.setenv("SMTP_HOST", "smtp.example")
+    monkeypatch.setenv("SMTP_FROM", "faham@larmkx.com")
+    channels._smtp_send("u@example.org", "Re: x", mail_html.text(_mail_batch(), "en"), "", mail_html.html_body(_mail_batch(), "en"))
+    m = seen["msg"]
+    kinds = [p.get_content_type() for p in m.walk()]
+    assert m.get_content_type() == "multipart/alternative" and "text/plain" in kinds and "text/html" in kinds and "image/png" in kinds
+    assert "multipart/related" in kinds and any(p.get("Content-ID") == "<faham-logo>" for p in m.walk())

@@ -341,3 +341,46 @@ img.orig { max-height: 70vh; object-fit: contain; }
 .skip-link { position: absolute; right: 20px; bottom: 20px; z-index: 2; background: var(--surface); }
 @keyframes introBlink { 50% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .intro-title .caret { animation: none; } .intro-sub, .intro-actions { transition: none; } }
+/* ---------- easy (senior) mode: html[data-senior]. Bigger type, one thing per screen, nothing that is not needed ---------- */
+.senior-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; justify-content: space-between; background: var(--ok-bg); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; margin: 0 0 14px; }
+.senior-banner p { margin: 0; flex: 1 1 260px; font-weight: 600; }
+.senior-banner .btn { margin: 0; }
+html[data-senior] { font-size: 22px; }
+html[data-senior] *, html[data-senior] *::before, html[data-senior] *::after { animation: none !important; transition: none !important; }
+html[data-senior] .top nav, html[data-senior] .mode, html[data-senior] #themeBtn, html[data-senior] .docpane,
+html[data-senior] .trace, html[data-senior] [data-act="all"], html[data-senior] [data-act="sum"],
+html[data-senior] .hint, html[data-senior] .priv, html[data-senior] #exBox, html[data-senior] .meta,
+html[data-senior] .dropnote, html[data-senior] #upTypes, html[data-senior] #view-check .lead, html[data-senior] .foot p + p + p { display: none !important; }
+html[data-senior] .wrap { max-width: 680px; }
+html[data-senior] #main:has(#view-check:not([hidden]) #result.split:not([hidden])) { max-width: 680px; }
+html[data-senior] #result.split { display: block; }
+html[data-senior] .btn { min-height: 68px; font-size: 1.1rem; padding: 0 24px; width: 100%; margin: 8px 0; }
+html[data-senior] .bar .btn, html[data-senior] .ctrls .btn { width: auto; min-height: 56px; margin: 0; }
+html[data-senior] .chip { min-height: 56px; min-width: 64px; font-size: 1.1rem; }
+html[data-senior] .upbtns { display: flex; flex-direction: column; gap: 4px; }
+html[data-senior] textarea { min-height: 7.5rem; font-size: 1.1rem; }
+html[data-senior] #view-check h1 { font-size: 1.9rem; line-height: 1.25; }
+html[data-senior] .verdict h1 { font-size: 2rem; }
+html[data-senior] .verdict p { font-size: 1.15rem; }
+html[data-senior] .next-step { font-size: 1.35rem; line-height: 1.5; }
+html[data-senior] .snav { display: flex; flex-direction: column-reverse; gap: 0; }
+html[data-senior] .rbar { display: flex; flex-direction: column; }
+html[data-senior] .stepbar p { font-size: 1.1rem; }
+html[data-senior] .senior-banner { background: var(--warn-bg); }
+html[data-senior] .skip-link, html[data-senior] #intro .btn { width: auto; }
+html[data-senior] .upbtns .btn { flex: none; }
+html[data-senior] .rbar [data-act="again"], html[data-senior] .vnote { display: none; }
+html[data-senior] textarea { height: 9rem; }
+
+/* theme switch: circular reveal (app.js drives the clip-path); the old view stays underneath, unblended */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+html.theme-fade, html.theme-fade * { transition: background-color .4s ease, color .4s ease, border-color .4s ease, fill .4s ease, stroke .4s ease !important; }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }
+
+/* legal page */
+#main h3 { font-size: 1.05rem; margin: 1.4em 0 .3em; }
+#main h2 { margin-top: 1.8em; }
+.toc ol { padding-left: 1.2em; }
+.toc a { font-weight: 600; }

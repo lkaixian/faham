@@ -31,7 +31,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from fastapi.responses import PlainTextResponse
 from starlette.concurrency import run_in_threadpool
 
-from . import ingest, reply
+from . import ingest, mail_html, reply
 
 log = logging.getLogger("faham.channels")
 router = APIRouter(prefix="/api/channels", tags=["channels"])
@@ -276,7 +276,7 @@ def _subject(msg) -> str:
     return "Re: " + re.sub(r"^(re:\s*)+", "", s, flags=re.I)
 
 
-def _smtp_send(to: str, subject: str, body: str, msgid: str) -> None:
+def _smtp_send(to: str, subject: str, body: str, msgid: str, html: str | None = None) -> None:
     sender = env("SMTP_FROM") or env("EMAIL_PUBLIC_ADDRESS") or env("SMTP_USER")
     m = EmailMessage()
     m["From"], m["To"], m["Subject"] = sender, to, subject
@@ -286,6 +286,12 @@ def _smtp_send(to: str, subject: str, body: str, msgid: str) -> None:
     if msgid and not re.search(r"[\r\n]", msgid):
         m["In-Reply-To"] = m["References"] = msgid
     m.set_content(body)
+    if html:  # plain text stays as the fallback; the logo travels inside the message (no remote images)
+        m.add_alternative(html, subtype="html")
+        try:
+            m.get_payload()[1].add_related(mail_html.LOGO.read_bytes(), "image", "png", cid="<" + mail_html.CID + ">")
+        except OSError:
+            pass
     port = int(env("SMTP_PORT") or 587)
     # 465 is TLS from the first byte (Mailtrap: "forced TLS"); 587, 2525 and 25 start plain and upgrade with STARTTLS
     with (smtplib.SMTP_SSL(env("SMTP_HOST"), port, timeout=TIMEOUT) if port == 465
@@ -310,8 +316,8 @@ def process_email(raw: bytes) -> bool:
         return False
     docs = ingest.extract("message.eml", "message/rfc822", raw)
     lang = reply.detect(" ".join(d.text for d in docs if d.text)[:2000])
-    body = reply.summary(ingest.analyze_files(docs, lang, None), lang, "email") + "\n\n" + reply.notice(lang)
-    _smtp_send(sender, _subject(msg), body, str(msg.get("Message-ID", "")))
+    batch = ingest.analyze_files(docs, lang, None)
+    _smtp_send(sender, _subject(msg), mail_html.text(batch, lang), str(msg.get("Message-ID", "")), mail_html.html_body(batch, lang))
     return True
 
 
@@ -415,8 +421,17 @@ def start_email_worker() -> threading.Thread | None:
 ensure_worker = start_email_worker  # status() calls it, so the first /api/health-style poll starts it
 
 
+def _reply_task(raw: bytes) -> None:
+    try:
+        process_email(raw)
+    except Exception as e:
+        log.warning("email reply failed: %s", type(e).__name__)
+
+
 @router.post("/email")
-async def email_hook(request: Request):
+async def email_hook(request: Request, bg: BackgroundTasks):
+    """Raw RFC822 push (for example from a Cloudflare Email Worker). Without ?reply=1 it returns the analysis;
+    with ?reply=1 it answers the sender by email (same rules as the mailbox worker) and returns {"ok": true}."""
     secret = env("EMAIL_WEBHOOK_SECRET")
     if not secret:
         raise HTTPException(404)
@@ -425,6 +440,11 @@ async def email_hook(request: Request):
     raw = await request.body()
     if not raw or len(raw) > CAP:
         raise HTTPException(413 if raw else 400)
+    if request.query_params.get("reply") == "1":
+        if not env("SMTP_HOST"):
+            raise HTTPException(503, "SMTP is not configured")
+        bg.add_task(_reply_task, raw)
+        return {"ok": True}
     def work():
         docs = ingest.extract("message.eml", "message/rfc822", raw)
         return ingest.analyze_files(docs, reply.detect(" ".join(d.text for d in docs if d.text)[:2000]), None)

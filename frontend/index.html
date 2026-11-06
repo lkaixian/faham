@@ -35,6 +35,10 @@
       <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="" width="31" height="40" /><span>FAHAM</span></a>
       <div class="ctrls">
         <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
+        <button class="btn btn-quiet" id="seniorBtn" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 10 5h2l5 14M7 14h8M19 8v6m-3-3h6"/></svg>
+          <span id="seniorLbl"></span>
+        </button>
         <button class="btn btn-quiet" id="themeBtn" type="button" aria-pressed="false">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>
           <span id="themeLbl"></span>
@@ -61,6 +65,7 @@
     <!-- ===== CHECK ===== -->
     <section class="view" id="view-check">
       <div id="checker">
+        <div class="senior-banner" id="seniorBanner" role="group"><p id="seniorMsg"></p><button class="btn btn-secondary" id="seniorBannerBtn" type="button"></button></div>
         <h1 tabindex="-1" data-i18n="c_h1"></h1>
         <p class="lead" data-i18n="c_lead"></p>
 
@@ -254,6 +259,7 @@
   <footer class="wrap foot">
     <p><span data-i18n="foot_scam"></span> <a href="tel:997">NSRC 997</a>.</p>
     <p data-i18n="foot_disc"></p>
+    <p><a href="terms.html" data-i18n="tm_h1"></a></p>
   </footer>
   <div class="ob" id="ob" role="dialog" aria-modal="true" aria-labelledby="obH" hidden></div>
   <div id="toast" role="status" aria-live="polite"></div>

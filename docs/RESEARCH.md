@@ -69,7 +69,7 @@ OCR evidence: Tesseract ships a fast Malay (`msa`) model, version 4.1.0 in Fedor
 ## 4. PDPA compliance
 
 ### Does it apply?
-- The Personal Data Protection Act 2010 (Act 709) applies to personal data processed in **commercial transactions**; the federal and state governments are excluded under section 3(1) (confirmed by the [Azmi & Associates note](https://www.azmilaw.com/insights/malaysian-personal-data-protection-act-2010-does-it-apply-to-government-agencies/) and [AmCham summary](https://amcham.com.my/malaysian-personal-data-protection-act-2010-does-it-apply-to-government-agencies/)). A student competition demo using fictional data is unlikely to be a commercial transaction, but any real launch, or a paid or advertising model, would be. Design as if it applies; confirm with UTHM's legal or research office **[verify]**.
+- The Personal Data Protection Act 2010 (Act 709) applies to personal data processed in **commercial transactions**; the federal and state governments are excluded under section 3(1) (confirmed by the [Azmi & Associates note](https://www.azmilaw.com/insights/malaysian-personal-data-protection-act-2010-does-it-apply-to-government-agencies/) and [AmCham summary](https://amcham.com.my/malaysian-personal-data-protection-act-2010-does-it-apply-to-government-agencies/)). A student competition demo using fictional data is unlikely to be a commercial transaction, but any real launch, or a paid or advertising model, would be. Design as if it applies; confirm with a qualified legal adviser **[verify]**.
 - Section 3(2): data processed wholly outside Malaysia is out of scope unless intended for processing in Malaysia (same sources).
 
 ### 2024 amendments (Act A1727)

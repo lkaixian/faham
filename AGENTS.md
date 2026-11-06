@@ -1,6 +1,6 @@
 # AGENTS.md
 
-FAHAM: an agent that reads official Malaysian letters (LHDN, JPJ, PDRM, PTPTN, courts, councils, banks), checks for scams, explains in BM/EN/中文/தமிழ், teaches the rule behind it, routes the user, and drafts a reply for approval. UTHM team entry, Agentic AI Challenge, Festival Idea Putrajaya, 19 Nov 2026. Research and open issues: `docs/NOTES.md`.
+FAHAM: an agent that reads official Malaysian letters (LHDN, JPJ, PDRM, PTPTN, courts, councils, banks), checks for scams, explains in BM/EN/中文/தமிழ், teaches the rule behind it, routes the user, and drafts a reply for approval. Entry for the Agentic AI Challenge, Festival Idea Putrajaya, 19 Nov 2026. Research and open issues: `docs/NOTES.md`.
 
 ## Layout
 

@@ -3,7 +3,7 @@
 > **Faham surat. Faham langkah. Faham hak anda.**
 > Every scary letter becomes a 60-second lesson, so people need help less each time.
 
-FAHAM is the UTHM team's entry for the **Agentic AI Challenge** at **Festival Idea Putrajaya 2026** (19 Nov 2026, theme: *Edutainment & Innovation*). It helps people who struggle with official letters and messages from LHDN, JPJ, PDRM, PTPTN, courts, councils and banks, and it protects them from scams that copy those agencies.
+FAHAM is an entry for the **Agentic AI Challenge** at **Festival Idea Putrajaya 2026** (19 Nov 2026, theme: *Edutainment & Innovation*). It helps people who struggle with official letters and messages from LHDN, JPJ, PDRM, PTPTN, courts, councils and banks, and it protects them from scams that copy those agencies.
 
 Paste a message, upload a file, or pick a practice example. For each one the agent:
 
@@ -14,7 +14,7 @@ Paste a message, upload a file, or pick a practice example. For each one the age
 5. **Routes** the user online or walk-in, with steps taken from an official-source registry
 6. **Acts** by drafting a reply and a reminder. The user approves; nothing is sent or paid automatically
 
-Also included: **Spot the scam** practice, **Family** mode, and **Connect** (website embed, Messenger and email forwarding).
+Also included: **Easy mode** (a switch in the header, on the first page and in the welcome dialog: bigger text, one thing per screen, three short steps, no menus), **Spot the scam** practice, **Family** mode, and **Connect** (website embed, Messenger and email forwarding).
 
 ## What the verdict means
 
@@ -52,7 +52,7 @@ flowchart LR
 - **The plan changes on evidence.** A scam verdict switches the agent from "help comply" to "protect and report".
 - **Human in the loop.** Every action is a draft with `requires_approval: true`.
 
-More detail: [Architecture](docs/ARCHITECTURE.md) · [Agent flow](docs/AGENT_FLOW.md) · [API](docs/API.md) · [Integrations](docs/INTEGRATIONS.md) · [Privacy and safety](docs/PRIVACY_SAFETY.md) · [Research](docs/RESEARCH.md) · [Notes](docs/NOTES.md)
+More detail: [Architecture](docs/ARCHITECTURE.md) · [Agent flow](docs/AGENT_FLOW.md) · [API](docs/API.md) · [Integrations](docs/INTEGRATIONS.md) · [Privacy and safety](docs/PRIVACY_SAFETY.md) · [Research](docs/RESEARCH.md) · [Terms and privacy](docs/TERMS_AND_PRIVACY.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Terms review notes](docs/TERMS_REVIEW.md) · [Notes](docs/NOTES.md)
 
 ## Repository layout
 
@@ -157,11 +157,11 @@ The address changes every time the container restarts. Stop it with `docker comp
 - All sample letters, names, IC numbers and accounts here are **fictional** (marked SAMPEL · FIKTIF). Never commit real people's letters.
 - FAHAM gives **guidance, not legal advice**. Steps come from a cached official-source registry dated in the response; office data is demo data.
 - Not yet tested live: Messenger and email forwarding against real Meta and mail servers, and OCR on scanned documents.
-- Chinese and Tamil text needs native-speaker review, and the Terms and Code of Conduct need UTHM review, before the demo.
+- Chinese and Tamil text needs native-speaker review, and the Terms and Code of Conduct need a legal read, before the demo.
 - Known gaps and next steps are tracked in [docs/NOTES.md](docs/NOTES.md).
 
 ## Team
-UTHM: Yb, Kevinraj, Muhammad Aqil, Larm Kai Xian. Advisor: Dr. Ramhuzaini bin Abd Rahman.
+Yb, Kevinraj, Muhammad Aqil, Larm Kai Xian.
 
 ## License
 MIT. See [LICENSE](LICENSE).
