@@ -182,7 +182,7 @@
   const verifyOf = (r) => (r.verify.length ? r.verify : t("vd_" + r.verdict));
 
   /* ---------- build one result object from the API or from a bundled sample ---------- */
-  const mapTrace = (tr0) => (tr0 || []).map((x) => ({ k: x.kind, t: x.tool, m: x.message, flag: x.flag }));
+  const mapTrace = (tr0) => (tr0 || []).map((x) => ({ k: x.kind, t: x.tool, m: x.message, flag: x.flag, stage: x.stage, facts: x.facts }));
   function fromApi(d, lang) {
     const f = d.fields, r = d.route;
     return applyScam({
@@ -259,14 +259,76 @@
       return result ? { data: result } : { error: t("e_net"), retry: true };
     } catch (e) { clearTimeout(to); return { error: t("e_net"), retry: true }; }
   }
-  const LIVE_TAG = { think: "st_think", tool: "st_tool", ok: "st_ok", bad: "st_bad", warn: "st_warn" };
+  /* ---------- what the agent did, in plain words (live progress and the "What FAHAM checked" list) ---------- */
+  const DID_ICON = { ok: "ok", warn: "info", bad: "risk", info: "info" };
+  const list = (a) => (a.filter(Boolean).length > 3 ? a.filter(Boolean).slice(0, 3).concat("…") : a.filter(Boolean)).join(", ");
+  // One finished step -> { k: "ok" | "warn" | "bad" | "info", x: sentence in the page language } or null if it is not worth a line.
+  function human(s) {
+    const f = s.facts || {}, T = s.tool || "", ok = (x) => ({ k: "ok", x }), warn = (x) => ({ k: "warn", x }), bad = (x) => ({ k: "bad", x }), info = (x) => ({ k: "info", x });
+    switch (T) {
+      case "privacy.redact": return ok(t("hs_read"));
+      case "classify_issuer": case "classify.issuer": return f.name ? ok(t("hs_who", { name: f.name })) : info(t("hs_who_unknown"));
+      case "extract_fields": case "extract.fields": {
+        const bits = [f.amount && t("hs_f_amount", { v: f.amount }), f.deadline && t("hs_f_deadline", { v: f.deadline }), f.reference && t("hs_f_ref", { v: f.reference })];
+        return bits.some(Boolean) ? ok(t("hs_fields", { facts: list(bits) })) : info(t("hs_fields_none"));
+      }
+      case "run_rules": return (f.risk || []).length ? bad(t("hs_rules_bad", { n: f.risk.length })) : ok(t("hs_rules_ok"));
+      case "inspect_links": return !f.total ? info(t("hs_links_none")) : f.odd ? warn(t("hs_links_bad", { n: f.total, odd: f.odd })) : ok(t("hs_links_ok", { n: f.total }));
+      case "lookup_registry": return f.known ? ok(t("hs_reg_ok", { name: f.name })) : info(t("hs_reg_no"));
+      case "fetch_official_page": {
+        if (f.thin) return info(t("hs_page_thin", { host: f.host }));
+        const found = (f.found || []).length, missing = (f.missing || []).length;
+        return { k: missing && !found ? "warn" : "ok", x: t("hs_page", { host: f.host }) + (found ? " " + t("hs_page_found", { x: list(f.found) }) : "") + (missing ? " " + t("hs_page_missing", { x: list(f.missing) }) : "") };
+      }
+      case "domain_intel": {
+        const a = f.age_days;
+        if (!f.resolves && a == null) return warn(t("hs_dom_none", { d: f.domain }));
+        if (a == null) return info(t("hs_dom_unk", { d: f.domain }));
+        return a < 180 ? bad(t("hs_dom_new", { d: f.domain, n: a })) : a >= 365 ? ok(t("hs_dom_old", { d: f.domain, n: Math.floor(a / 365) })) : info(t("hs_dom_mid", { d: f.domain, n: a }));
+      }
+      case "prepare_draft": return s.stage === "agent" ? ok(t({ family_warning: "hs_draft_family", scam_report: "hs_draft_report", reminder_ics: "hs_draft_ics" }[f.kind] || "hs_act")) : null;
+      case "scam.check": return ok(t("hs_weigh"));
+      case "llm.explain": return ok(t("hs_write"));
+      case "teach.lesson": return ok(t("hs_teach"));
+      case "gov.retrieve": return ok(t("hs_route"));
+      case "act.draft": return ok(t("hs_act"));
+      default: return null;
+    }
+  }
+  const didLi = (h) => `<li class="d-${h.k}">${svg(DID_ICON[h.k])}<span>${esc(h.x)}</span></li>`;
+  const humanSteps = (trace) => (trace || []).map((s) => human({ stage: s.stage, kind: s.kind, tool: s.t, facts: s.facts })).filter(Boolean)
+    .filter((h, i, a) => a.findIndex((y) => y.x === h.x) === i);
+  const didHtml = (r) => { const hs = humanSteps(r.trace); return `<p>${esc(t("did_intro"))}</p><ol class="did">${hs.map(didLi).join("")}</ol><p class="muted">${esc(t("did_tech"))}</p>`; };
+
+  // The progress bar: a percentage from what has finished (reading, each tool the agent chose, weighing, writing), plus one sentence about now.
+  const prog = { n: 0, pct: 0, ceil: 8, timer: 0 };
+  function paint() { $("#progFill").style.width = prog.pct + "%"; $("#progBar").setAttribute("aria-valuenow", Math.round(prog.pct)); $("#progPct").textContent = Math.round(prog.pct) + "%"; }
+  function setPct(p) { prog.pct = Math.max(prog.pct, Math.min(99, p)); prog.ceil = Math.min(94, prog.pct + 6); paint(); }
+  // between steps the bar creeps forward a little (never past the next likely step), so a slow model call does not look like a freeze
+  function progReset() {
+    clearInterval(prog.timer); prog.n = 0; prog.pct = 0; prog.ceil = 8; $("#progSteps").innerHTML = ""; setPct(2); $("#busyTxt").textContent = t("ps_read");
+    prog.timer = setInterval(() => { if (prog.pct < prog.ceil) { prog.pct += 0.35; paint(); } }, 700);
+  }
   function addLive(s) {
-    const ol = $("#live"); if (!s.message) return;
-    const li = document.createElement("li");
-    li.className = "k-" + s.kind + (s.flag ? " flag" : "");
-    li.innerHTML = `<span class="tag">${esc(t(LIVE_TAG[s.kind] || "st_step"))}${s.tool ? " " + esc(s.tool) : ""}</span> ${esc(clean(s.message))}`;
-    ol.appendChild(li);
-    while (ol.children.length > 9) ol.removeChild(ol.firstChild);
+    if (!s.message) return;
+    const T = s.tool || "";
+    let now = "";
+    if (T === "ocr.read" || T === "privacy.redact") { setPct(8); now = t("ps_plan"); }
+    else if (s.kind === "think" && /^Goal/.test(s.message)) { setPct(12); now = t("ps_plan"); }
+    else if (s.kind === "think" && s.stage !== "verify" && s.stage !== "explain" && s.stage !== "route") now = t("ps_think");
+    else if (s.stage === "agent" && s.kind === "tool") { prog.n++; setPct(15 + 55 * (1 - Math.pow(0.78, prog.n))); now = t("ps_after"); }
+    else if (T === "scam.check") { setPct(78); now = t("ps_write"); }
+    else if (T === "llm.explain") { setPct(86); now = t("ps_write"); }
+    else if (T === "teach.lesson") setPct(90);
+    else if (T === "gov.retrieve" || T === "office.locate") setPct(94);
+    else if (T === "act.draft" || T === "prepare_draft") setPct(97);
+    if (now) $("#busyTxt").textContent = now;
+    const h = human({ stage: s.stage, kind: s.kind, tool: s.tool, facts: s.facts });
+    if (!h) return;
+    const ol = $("#progSteps");
+    ol.insertAdjacentHTML("beforeend", didLi(h));
+    while (ol.children.length > 7) ol.removeChild(ol.firstChild);
+    ol.lastElementChild.scrollIntoView({ block: "nearest" });
   }
 
   /* staged progress: the API answers in one go, so the four stages (Read, Check, Explain, Route) are paced on the client */
@@ -277,10 +339,10 @@
     $("#busyTxt").textContent = t("busy_step", { n: i + 1, s: t(STAGES[i]) }) + (photo && i === 0 ? " " + t("busy_photo") : "");
   }
   function setBusy(on, o = {}) {
-    state.busy = on; clearInterval(stageTimer);
+    state.busy = on; clearInterval(stageTimer); if (!on) clearInterval(prog.timer);
     $("#busy").hidden = !on;
-    $("#stages").hidden = !!o.sample || !!o.live; $("#live").hidden = !o.live;
-    if (on && o.live) { $("#live").innerHTML = ""; $("#busyTxt").textContent = t("ag_live"); }
+    $("#stages").hidden = !!o.sample || !!o.live; $("#prog").hidden = !o.live;
+    if (on && o.live) progReset();
     if (on && o.sample) $("#busyTxt").textContent = t("busy_ex");
     if (on && !o.sample && !o.live) { let i = 0; drawStage(0, o.photo); stageTimer = setInterval(() => { if (i < STAGES.length - 1) drawStage(++i, o.photo); }, 1500); }
     $("#checkBtn").disabled = on || !state.api; $$(".example").forEach((b) => (b.disabled = on));
@@ -691,7 +753,7 @@
       { id: "now", h: "next_h", html: nowHtml(r), say: () => [vs.slice(0, 2).join(" "), rl(r)] },
       { id: "why", h: "h_why", html: whyHtml(r, 3), say: () => [r.reasons.slice(0, 3).map(reasonText).join(" "), rl(r)] }
     ];
-    if (r.agent && r.agent.mode === "ai") out.push({ id: "agent", h: "h_agent", html: agentHtml(r), say: () => [r.agent.summary || "", "en"] });
+    if (humanSteps(r.trace).length > 3) out.push({ id: "agent", h: "h_agent", html: didHtml(r), say: () => [t("did_intro"), state.lang] });
     if (ps.length || f.amount || f.deadline) out.push({ id: "says", h: "h_says", html: saysHtml(r, true), say: () => [sentences(ps).slice(0, 3).join(" "), paraLang(r)] });
     if (["online", "walkin"].some((k) => (r.route[k].steps || []).length)) out.push({ id: "todo", h: "h_todo", html: todoHtml(r), say: () => [route().slice(0, 4).join(" "), "en"] });
     out.push({ id: "draft", h: "h_draft", html: draftHtml(r), say: () => [`${t("rem_label")} ${reminderText(r)}`, state.lang] });
@@ -726,7 +788,7 @@
     const grp = (id, title, body, dflt) => `<details class="grp" data-g="${id}"${(id in open ? open[id] : dflt || wide) ? " open" : ""}><summary><h2>${esc(title)}</h2></summary><div class="gbody">${body}</div></details>`;
     const v = r.verdict;
     const verdict = `<div class="verdict v-${v}${keep ? "" : " fresh"}">${svg(v)}<div><h1 id="vHead" tabindex="-1">${esc(t("v_" + v))}</h1><p>${esc(t("vs_" + v))}</p></div></div>${agentNote(r)}`;
-    const tail = `<details class="trace"><summary>${esc(t("tr_sum"))}</summary>
+    const tail = `<details class="trace"><summary>${esc(t("tr_sum"))}</summary>${r.agent && r.agent.mode === "ai" ? `<div class="agent-tech" lang="en">${agentHtml(r)}</div>` : ""}
         <p class="muted">${esc(t("tr_note"))}</p>
         <ol class="trace-list" lang="en">${(r.trace || []).map((x) => `<li class="${x.flag ? "flag" : ""}"><span class="tag">${esc(STATUS[x.k] ? t(STATUS[x.k]) : t("st_step"))}${x.t ? " " + esc(x.t) : ""}</span>${esc(clean(x.m))}</li>`).join("") || `<li>${esc(t("tr_none"))}</li>`}</ol>
       </details>`;
@@ -744,7 +806,7 @@
         <button class="btn btn-secondary" type="button" data-act="sum"><span>${esc(t("r_copy_sum"))}</span></button>
       </section>
       ${grp("why", t("h_why"), whyHtml(r), true)}
-      ${r.agent && r.agent.mode === "ai" ? grp("agent", t("h_agent"), agentHtml(r)) : ""}
+      ${humanSteps(r.trace).length > 3 ? grp("agent", t("h_agent"), didHtml(r)) : ""}
       ${grp("verify", t("h_verify"), verifyHtml(r), true)}
       ${grp("says", t("h_says"), saysHtml(r, false))}
       ${grp("todo", t("h_todo"), todoHtml(r))}

@@ -72,6 +72,8 @@ class Dossier:
     extras: list = field(default_factory=list)  # (kind, title, text)
     attachments: list = field(default_factory=list)  # (filename, mime, content)
     wants: set = field(default_factory=set)  # drafts to build once the verdict is final
+    facts: dict = field(default_factory=dict)  # structured result of the tool call in progress, for the plain-language timeline
+    domains: dict = field(default_factory=dict)  # domain -> {'age_days': int | None, 'resolves': bool}, from domain_intel
     used: list = field(default_factory=list)
     plan: list = field(default_factory=list)
     net: int = 0
@@ -173,12 +175,14 @@ def _need_issuer(d: Dossier) -> None:
 
 def t_classify_issuer(d: Dossier) -> str:
     d.issuer, d.conf = T.TOOLS["classify.issuer"].fn(d.letter)
+    d.facts = {"issuer": d.issuer, "name": T.SOURCES.get(d.issuer, {}).get("name")}
     return f"the message points to agency '{d.issuer}' (confidence {d.conf})"
 
 
 def t_extract_fields(d: Dossier) -> str:
     d.fields = T.TOOLS["extract.fields"].fn(d.letter)
     f = d.fields
+    d.facts = {"amount": f["amount"], "deadline": f["deadline"], "reference": f["reference"]}
     return f"amount={f['amount']}; deadline={f['deadline']}; reference={f['reference']}"
 
 
@@ -187,11 +191,13 @@ def t_run_rules(d: Dossier) -> str:
     v = T.TOOLS["scam.check"].fn(d.letter, d.issuer, "en")
     risk = [r["code"] for r in v["reasons"] if r["kind"] == "risk"]
     ok = [r["code"] for r in v["reasons"] if r["kind"] == "ok"]
+    d.facts = {"verdict": v["verdict"], "risk": risk, "good": ok}
     return f"rules verdict={v['verdict']} (score {v['score']}); risk codes: {risk or 'none'}; good signs: {ok or 'none'}"
 
 
 def t_inspect_links(d: Dossier) -> str:
     res = T.TOOLS["link.inspect"].fn(d.letter)
+    d.facts = {"total": len(res), "official": sum(1 for x in res if x["official"]), "odd": sum(1 for x in res if x["findings"] and not x["official"])}
     if not res:
         return "no links in the message"
     return " | ".join(f"{x['host']}: " + ("official domain" if x["official"] else "; ".join(x["findings"]) or "nothing odd") for x in res)
@@ -200,6 +206,7 @@ def t_inspect_links(d: Dossier) -> str:
 def t_lookup_registry(d: Dossier, issuer: str | None = None) -> str:
     _need_issuer(d)
     r = T.TOOLS["registry.lookup"].fn((issuer or d.issuer or "").upper())
+    d.facts = {"known": r["known"], "name": r.get("name")}
     if not r["known"]:
         return "that agency is not in the registry"
     return f"{r['name']}: official sites {', '.join(r['domains'])}; official source {r['source_url']}; official online steps: {' / '.join(r['online_steps'])}"
@@ -234,6 +241,7 @@ def t_fetch_official_page(d: Dossier, url: str, look_for: list | None = None) ->
         i = text.lower().find(term.lower())
         (found if i >= 0 else missing).append(f"'{term}': ..." + text[max(0, i - 60):i + 100] + "..." if i >= 0 else term)
     thin = len(text) < 300  # a page that builds itself with scripts shows almost nothing to a plain reader
+    d.facts = {"host": u.hostname, "found": [x.split("'")[1] for x in found], "missing": missing, "thin": thin}
     return (f"HTTP {status}; title '{p.title.strip()[:80]}'; {len(text)} characters of readable text"
             + ("; WARNING: very little text, so the page probably loads its content with scripts and a missing term proves NOTHING" if thin else "")
             + (f"; FOUND {' | '.join(found)}" if found else "") + (f"; NOT FOUND on this page: {', '.join(missing)}" if missing else ""))
@@ -276,12 +284,15 @@ def t_domain_intel(d: Dossier, domain: str) -> str:
     ips = _resolves(dom)
     reg = _registered(dom)
     age = f"registered {reg} ({(date.today() - reg).days} days ago)" if reg else "registration date not available"
+    d.domains[dom] = {"age_days": (date.today() - reg).days if reg else None, "resolves": bool(ips)}
+    d.facts = {"domain": dom, "resolves": bool(ips), "age_days": d.domains[dom]["age_days"]}
     return f"{dom}: {'resolves' if ips else 'does not resolve'}; {age}"
 
 
 def t_prepare_draft(d: Dossier, kind: str) -> str:
     if kind not in KINDS:
         raise ToolError(f"kind must be one of {', '.join(KINDS)}")
+    d.facts = {"kind": kind}
     if kind == "family_warning":
         d.extras = [x for x in d.extras if x[0] != kind] + [(kind, render("family_warning_h", d.language), render("family_warning", d.language))]
         return "prepared a warning message for relatives"
@@ -337,6 +348,26 @@ def _prompt(d: Dossier, history: list[dict], last: bool) -> str:
             f"\nWhat has happened so far:\n{rounds}\n\n<letter>\n{_numbers(d.letter[:MAX_LETTER])}\n</letter>")
 
 
+# A hard signal can condemn a message on its own, so the harness checks it instead of trusting the model's label.
+CUES = {  # the quoted words must really be about this
+    "ai_payment_demand": r"bayar|\bpay\b|payment|transfer|pindah|deposit|yuran|\bfee\b|kad hadiah|gift ?card|crypto|bitcoin|usdt|tunai|\bcash\b|e-?wallet|touch ?n ?go|duitnow|akaun peribadi|personal account",
+    "ai_credential": r"kata laluan|password|\btac\b|\botp\b|\bpin\b|log ?masuk|login|log in|ic depan|gambar ic|photo of|nombor kad|card number|\bcvv\b|kod pengesahan|verification code",
+    "ai_remote_access": r"anydesk|teamviewer|quicksupport|remote|akses jauh|pasang aplikasi|install|\.apk|muat turun aplikasi|download (?:the |an? )?app",
+}
+NEW_DOMAIN_DAYS = 180
+
+
+def _unverified(d: Dossier, cat: str, quote: str) -> str | None:
+    """Why a hard signal cannot be accepted yet, or None if the evidence backs it."""
+    if cat in CUES and not re.search(CUES[cat], quote, re.I):
+        return "the quoted words do not show that"
+    if cat == "ai_new_domain":
+        hosts = [h for h in T._domains(quote)]
+        if not any((d.domains.get(h) or {}).get("age_days") is not None and d.domains[h]["age_days"] < NEW_DOMAIN_DAYS for h in hosts):
+            return "no lookup showed that the website is new (run domain_intel and quote the address)"
+    return None
+
+
 def _ask(system: str, prompt: str, tries: int = 2) -> dict | None:
     """One model turn. A failed call or unreadable answer is tried again once: a blip must not end the agent."""
     for i in range(tries):
@@ -357,6 +388,11 @@ def _finish(d: Dossier, fin: dict, tr) -> None:
         if cat not in SIGNALS or not quote or any(c == cat for c, _ in d.signals) or len(d.signals) >= 5:
             d.refused += 1
             tr.note("verify", "warn", f"ignored a proposed signal ({cat if cat in SIGNALS else 'unknown'}): " + ("no such wording in the message" if cat in SIGNALS and not quote else "not allowed"))
+            continue
+        why = _unverified(d, cat, quote)
+        if why:
+            d.refused += 1
+            tr.note("verify", "warn", f"ignored a proposed signal ({cat}): {why}")
             continue
         d.signals.append((cat, quote))
         tr.note("verify", "bad", f"✗ evidence the agent found ({cat}): \"{quote[:100]}\"")
@@ -409,6 +445,7 @@ def run(letter: str, language: str, postcode: str | None, tr) -> Dossier:
                 tr.note("agent", "warn", f"refused a call to an unknown tool ({str(name)[:30]})")
             else:
                 try:
+                    d.facts = {}
                     res = spec[0](d, **{k: v for k, v in args.items() if k in spec[2]})
                     d.used.append(name)
                 except ToolError as e:
@@ -420,7 +457,7 @@ def run(letter: str, language: str, postcode: str | None, tr) -> Dossier:
                     log.warning("tool %s failed: %s", name, type(e).__name__)
                     res = "error: the tool failed"
                 if not res.startswith("error"):
-                    tr.call("agent", name, (json.dumps(args, ensure_ascii=False)[:90] + " → " if args else "") + _safe(res)[:420])
+                    tr.call("agent", name, (json.dumps(args, ensure_ascii=False)[:90] + " → " if args else "") + _safe(res)[:420], dict(d.facts))
             obs.append(f"{name}({json.dumps(args, ensure_ascii=False)[:120]}) -> {_safe(res)}")
         history.append({"round": rnd, "thought": thought, "obs": obs})
     return d

@@ -33,8 +33,8 @@ class Trace:
     def think(self, stage, msg):
         self._add(TraceStep(stage=stage, kind="think", message=msg))
 
-    def call(self, stage, tool, msg):
-        self._add(TraceStep(stage=stage, kind="tool", tool=tool, message=msg))
+    def call(self, stage, tool, msg, facts=None):
+        self._add(TraceStep(stage=stage, kind="tool", tool=tool, message=msg, facts=facts))
 
     def note(self, stage, kind, msg, flag=False):
         self._add(TraceStep(stage=stage, kind=kind, message=msg, flag=flag))
@@ -62,11 +62,12 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
     filled: list[str] = []
     if d.issuer is None:
         d.issuer, d.conf = T.TOOLS["classify.issuer"].fn(redacted)
-        tr.call("read", "classify.issuer", f"issuer = {d.issuer} (confidence {d.conf})")
+        tr.call("read", "classify.issuer", f"issuer = {d.issuer} (confidence {d.conf})", {"issuer": d.issuer, "name": T.SOURCES.get(d.issuer, {}).get("name")})
         filled += ["classify_issuer"] if d.mode == "ai" else []
     if d.fields is None:
         d.fields = T.TOOLS["extract.fields"].fn(redacted)
-        tr.call("read", "extract.fields", f"amount = {d.fields['amount']} · deadline = {d.fields['deadline']} · ref = {d.fields['reference']}")
+        tr.call("read", "extract.fields", f"amount = {d.fields['amount']} · deadline = {d.fields['deadline']} · ref = {d.fields['reference']}",
+            {"amount": d.fields["amount"], "deadline": d.fields["deadline"], "reference": d.fields["reference"]})
         filled += ["extract_fields"] if d.mode == "ai" else []
     issuer, f = d.issuer, d.fields
 

@@ -10,7 +10,7 @@
   <link rel="icon" href="assets/img/favicon-48.png" type="image/png" sizes="48x48" />
   <link rel="icon" href="assets/img/favicon-256.png" type="image/png" sizes="256x256" />
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
-  <link rel="stylesheet" href="assets/css/styles.css?v=84a3a75b" />
+  <link rel="stylesheet" href="assets/css/styles.css?v=f6910871" />
 </head>
 <body>
   <div id="intro" role="dialog" aria-modal="true" aria-label="FAHAM">
@@ -137,7 +137,11 @@
         <div class="busy" id="busy" hidden>
           <p id="busyTxt" role="status"></p>
           <ol class="stages" id="stages" aria-hidden="true"></ol>
-          <ol class="live" id="live" lang="en" hidden></ol>
+          <div class="prog" id="prog" hidden>
+            <div class="bar-track" id="progBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="busyTxt"><i id="progFill"></i></div>
+            <p class="prog-pct" id="progPct" aria-hidden="true">0%</p>
+            <ol class="prog-steps" id="progSteps"></ol>
+          </div>
         </div>
 
       </div>
@@ -281,8 +285,8 @@
 
   <script src="assets/js/config.js?v=0d0784f3"></script>
   <script src="assets/js/data.js?v=a4702ead"></script>
-  <script src="assets/js/i18n.js?v=405ea2c0"></script>
-  <script src="assets/js/app.js?v=2143a8e9"></script>
+  <script src="assets/js/i18n.js?v=3764758c"></script>
+  <script src="assets/js/app.js?v=01301d8a"></script>
   <script src="assets/js/intro.js?v=0d20ed6c"></script>
 </body>
 </html>

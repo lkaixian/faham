@@ -8,7 +8,7 @@ A fixed six-stage pipeline, not a planner. `orchestrator.run()` calls tools in a
 
 | Piece | Size | Notes |
 |---|---|---|
-| `tools.py` | 10 tools | rules + regex; OCR via optional pytesseract, falls back to the supplied text |
+| `tools.py` | 12 registry tools | rules + regex; OCR via optional pytesseract, falls back to the supplied text. The agent (`loop.py`) calls 8 tools of its own, see AGENT.md |
 | `orchestrator.py` | 1 function | builds `Trace`, assembles `AnalyzeResponse` |
 | `llm.py` | 1 function | Anthropic only, returns `None` on any failure |
 | Frontend | `app.js` 519, `data.js` 359, `index.html` 411, `styles.css` 578 lines | state in `localStorage` (`faham_*`), read-aloud via `speechSynthesis`, local demo trace if the API is down |
@@ -39,7 +39,7 @@ A fixed six-stage pipeline, not a planner. `orchestrator.run()` calls tools in a
 14. **No input limits.** `text` has a minimum length but no maximum; regexes run on whatever is sent.
 
 ## Strengths worth keeping
-- Clean separation: rules decide, LLM only words things, offline always works.
+- Clean separation: the agent gathers evidence, the rules are the floor and decide the verdict, offline always works.
 - Typed contracts and a trace the UI can render, which is the strongest demo asset.
 - Privacy and demo rules are written down (`PRIVACY_SAFETY.md`).
 - Small enough to explain in the 5 minute video.

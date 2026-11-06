@@ -10,10 +10,14 @@ Judges are likely to ask three questions: *Can it be wrong? What happens to my l
 | Harmful action by the agent | The agent only drafts and pre-fills. `requires_approval: true` is set on every action, and the user approves before anything is sent or paid. |
 
 ## Data handling
-1. **Scan:** the image stays on the device until it is redacted (production target: on-device OCR).
-2. **Redact:** IC, phone, account and addressee are masked.
-3. **Process:** the agent works on the redacted text only.
-4. **Discard:** the letter is not stored. Only the learned glossary terms stay, on the user's device.
+1. **Read:** text comes out of the input. Images are read by OCR on the server (production target: on-device OCR).
+2. **Redact:** `privacy.redact` masks IC numbers, emails, display names, phone numbers, account numbers, addresses, plates, names (after Kepada/Nama, titles, BIN/BINTI/A/L forms), passport-style IDs, dates of birth, and any leftover run of 8 or more digits. It is regex-based and best effort.
+3. **Hide again for models:** in the agent's prompts, runs of 7 or more digits become `[NUMBER]`; tool results are masked too; a guard blocks any model call that still contains something that looks like an email, an IC or a long digit run.
+4. **Process:** the agent and the explanation work on the masked text only. Scam verdicts use fixed templates, not model text.
+5. **Reach outside:** only official URLs (never the message) and domain names that appear in the message leave the server for the agent's lookups.
+6. **Discard:** the letter is not stored. Only learned glossary terms stay, on the user's device.
+
+The pattern-by-pattern list, what each service receives, and the known gaps (free-form names, unusual address styles, words inside links) are in [AGENT.md, section 9](AGENT.md#9-personal-data-pii).
 
 ## Demo rules
 - Use only clearly fictional letters, marked **SAMPEL · FIKTIF**.

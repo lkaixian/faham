@@ -9,7 +9,7 @@ flowchart LR
   U[User / child helping parent] --> FE[Static dashboard<br/>HTML JS, localStorage]
   FE -- text, language, postcode --> API[FastAPI<br/>/api/analyze]
   FE -. API down .-> DEMO[In-browser demo trace<br/>data.js samples]
-  API --> ORCH[orchestrator.run<br/>fixed pipeline + Trace]
+  API --> ORCH[orchestrator.run<br/>agent loop + Trace]
   ORCH --> R[Read<br/>ocr.read, privacy.redact,<br/>classify.issuer, extract.fields]
   R --> V{scam.check<br/>genuine?}
   V -- yes --> E[Explain, Teach, Route, Act]
@@ -101,7 +101,7 @@ Per [Ecovis](https://www.ecovis.com.my/malaysias-new-personal-data-protection-ac
 | Entertainment | Spot-the-scam rounds, XP and levels | Gives repeat use | Items are static; run each through `scam.check` live so the practice is the agent |
 | Innovation | Scam-aware plan switch, route and draft, human approval | Clear difference from a chatbot | Online or walk-in is not decided; add it |
 | Inclusion | Four languages, read-aloud, family mode | Strong social angle | zh and ta reviewed by native speakers; check a Malay and a Tamil voice exists on the demo device; family "send" is simulated, so label it so |
-| Agentic criteria | Tools, reasoning trace, replanning, human in the loop | Trace is visible on screen | It is a fixed pipeline; add the route decision and a second replan (low-confidence classification asks the user to confirm the agency) |
+| Agentic criteria | Tools, reasoning trace, replanning, human in the loop | Trace is visible on screen | Superseded: an LLM agent loop now plans, uses tools and replans (see AGENT.md) |
 | Impact evidence | Malaysian scam losses were about RM1.57 billion in 2024 and above RM2.7 billion for January to November 2025 per [The Vibes](https://www.thevibes.com/articles/news/112602/total-of-rm1.57-billion-lost-to-online-fraud-in-2024-up-84-from-previous-year) and [The Vibes](https://www.thevibes.com/articles/news/116658/malaysia-hit-with-over-67000-online-crime-cases-in-11-months-losses-surpass-rm2.7-billion); NSRC runs 24 hours since 1 July 2025 per [Technave](https://technave.com/gadget/RM1-12-billion-lost-to-online-scams-in-Malaysia-NSRC-expands-to-24-7-operations-43760.html) | Gives the problem a number | News figures, not official statistics **[verify with PDRM or Home Ministry before the video]**. I found no source tying these specifically to letter-style impersonation of LHDN or courts; do not claim that |
 
 ## 6. Security hardening

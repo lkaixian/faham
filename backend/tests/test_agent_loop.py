@@ -242,7 +242,52 @@ def test_judgement_calls_alone_never_condemn_a_message(monkeypatch):
 
 
 def test_one_hard_signal_or_the_rules_plus_soft_ones_still_condemn(monkeypatch):
-    scripted(monkeypatch, j(thought="x", actions=[], finish={"assessment": "likely_scam", "summary": "s", "signals": [{"category": "ai_remote_access", "quote": "Notis taksiran tahun 2025"}]}))
-    assert analyse(NOTICE)["scam"]["verdict"] == "likely_scam"
+    scripted(monkeypatch, j(thought="x", actions=[], finish={"assessment": "likely_scam", "summary": "s", "signals": [{"category": "ai_remote_access", "quote": "sila pasang aplikasi AnyDesk"}]}))
+    assert analyse(NOTICE + " Untuk membayar, sila pasang aplikasi AnyDesk.")["scam"]["verdict"] == "likely_scam"
     scripted(monkeypatch, j(thought="x", actions=[], finish={"assessment": "likely_scam", "summary": "s", "signals": [{"category": "ai_secrecy", "quote": "Jangan beritahu sesiapa"}]}))
     assert analyse(SCAM)["scam"]["verdict"] == "likely_scam"  # the rules already agree
+
+
+SURVEY = ("Jemputan menyertai kajian kepuasan pelanggan Jabatan Perangkaan Malaysia (DOSM) 2026. Pautan kaji selidik: https://forms.gle/duKHPXyPqngPEAFx6 "
+          "Portal: https://www.dosm.gov.my Soalan: 03-8885 4675.")
+
+
+def test_a_claim_that_a_site_is_new_needs_a_lookup_that_shows_it(monkeypatch):
+    """The real DOSM survey email was called a scam because the agent claimed forms.gle was new without ever checking."""
+    claim = {"category": "ai_new_domain", "quote": "https://forms.gle/duKHPXyPqngPEAFx6"}
+    scripted(monkeypatch, j(thought="x", actions=[], finish={"assessment": "likely_scam", "summary": "s", "signals": [claim]}))
+    r = analyse(SURVEY)
+    assert r["agent"]["signals"] == 0 and r["agent"]["refused"] == 1 and r["scam"]["verdict"] != "likely_scam"
+    assert any("no lookup showed that the website is new" in t["message"] for t in r["trace"])
+    # a lookup that shows an OLD site does not support the claim either
+    monkeypatch.setattr(loop, "_resolves", lambda d: ["203.0.113.9"])
+    monkeypatch.setattr(loop, "_registered", lambda d: date(2019, 2, 12))
+    scripted(monkeypatch, j(thought="check", actions=[{"tool": "domain_intel", "args": {"domain": "forms.gle"}}]),
+             j(thought="x", actions=[], finish={"assessment": "likely_scam", "summary": "s", "signals": [claim]}))
+    r = analyse(SURVEY)
+    assert r["agent"]["signals"] == 0 and r["scam"]["verdict"] != "likely_scam"
+    # a lookup that shows a young site does
+    monkeypatch.setattr(loop, "_registered", lambda d: date.today() - timedelta(days=9))
+    scripted(monkeypatch, j(thought="check", actions=[{"tool": "domain_intel", "args": {"domain": "forms.gle"}}]),
+             j(thought="x", actions=[], finish={"assessment": "likely_scam", "summary": "s", "signals": [claim]}))
+    assert analyse(SURVEY)["scam"]["verdict"] == "likely_scam"
+
+
+def test_a_hard_signal_needs_quoted_words_that_really_show_it(monkeypatch):
+    scripted(monkeypatch, j(thought="x", actions=[], finish={"assessment": "likely_scam", "summary": "s", "signals": [
+        {"category": "ai_payment_demand", "quote": "Pautan kaji selidik"}, {"category": "ai_credential", "quote": "Portal: https://www.dosm.gov.my"},
+        {"category": "ai_remote_access", "quote": "Jemputan menyertai kajian kepuasan"}]}))
+    r = analyse(SURVEY)
+    assert r["agent"]["signals"] == 0 and r["agent"]["refused"] == 3 and r["scam"]["verdict"] != "likely_scam"
+
+
+def test_tool_steps_carry_facts_for_the_plain_language_timeline(monkeypatch):
+    stub_net(monkeypatch)
+    scripted(monkeypatch, j(thought="x", actions=[{"tool": "classify_issuer"}, {"tool": "inspect_links"}, {"tool": "domain_intel", "args": {"domain": "hasil-refund.top"}}]),
+             j(thought="d", actions=[{"tool": "fetch_official_page", "args": {"url": "https://www.hasil.gov.my/", "look_for": ["AnyDesk", "MyTax"]}}]),
+             j(thought="done", actions=[], finish={"assessment": "caution", "summary": "s", "signals": []}))
+    r = analyse(GIFT)
+    f = {t["tool"]: t["facts"] for t in r["trace"] if t["stage"] == "agent" and t["kind"] == "tool"}
+    assert f["classify_issuer"]["issuer"] == "LHDN" and f["inspect_links"]["total"] == 1 and f["inspect_links"]["odd"] == 1
+    assert f["domain_intel"] == {"domain": "hasil-refund.top", "resolves": True, "age_days": 6}
+    assert f["fetch_official_page"]["host"] == "www.hasil.gov.my" and f["fetch_official_page"]["found"] == ["MyTax"] and f["fetch_official_page"]["missing"] == ["AnyDesk"]

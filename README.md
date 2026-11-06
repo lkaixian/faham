@@ -26,6 +26,22 @@ Also included: **Easy mode** (a switch in the header, on the first page and in t
 
 Every result lists its reasons (risk, good sign, note), and the message sits beside the result with the matching parts highlighted (the original PDF or image has its own tab) and **steps to verify on your own**, independent of the letter. Social media and form links are shown as notes. If an agency has official accounts in the registry (`social` in `official_sources.json`), a different account claiming to be that agency is a red flag.
 
+## How the agent works (short version)
+
+FAHAM gives a language model a goal and a set of tools and lets it work in rounds of **think, act, observe** until it can justify a conclusion. Plain code around it hides personal details first, limits what the model can do, checks every claim it makes, and re-runs the scam rules last as a safety floor.
+
+| | |
+|---|---|
+| **Plans** | It writes a plan in round one and revises it when a tool fails or something surprising turns up. What shapes the plan: the message, guidance in the system prompt, what earlier rounds found, and budgets (5 rounds, 3 tools a round, 4 outside lookups, 50 seconds) |
+| **Tools (8)** | `classify_issuer`, `extract_fields`, `run_rules`, `inspect_links`, `lookup_registry`, `fetch_official_page` (reads a page on the agency's real website), `domain_intel` (does a website exist, and when was it registered), `prepare_draft` (a warning for relatives, a scam report, a calendar file) |
+| **Searches** | It does not run web searches. It can fetch pages only from official agency sites (registry domains or `.gov.my`) and look up domains that appear in the message |
+| **Creates tools?** | No, on purpose. It can only call the fixed list; anything else is refused |
+| **Reasons** | Each round has a written thought; it ends with quoted evidence and "what could make me wrong". The verdict is computed from the rules plus its *verified* evidence, not from its opinion |
+| **Personal data** | Masked before any model sees it (IC, phone, account, email, address, plate, names, passport, date of birth, any 8+ digit run), digit runs hidden again in prompts, tool results masked, and a guard that blocks any call that still looks personal |
+| **Autonomy** | It runs unattended and stops on its own. Email is fully autonomous. Nothing leaves the person's hands without their approval |
+
+**Read [docs/AGENT.md](docs/AGENT.md)** for the full flow, every condition and limit, the personal-data pipeline pattern by pattern, a worked example, and a tweak guide that lists each setting with the file and the trade-off.
+
 ## Architecture
 
 ```mermaid
@@ -53,7 +69,7 @@ flowchart LR
 - **The plan changes on evidence.** A scam verdict switches the agent from "help comply" to "protect and report".
 - **Human in the loop.** Every action is a draft with `requires_approval: true`.
 
-More detail: [Architecture](docs/ARCHITECTURE.md) · [Agent flow](docs/AGENT_FLOW.md) · [API](docs/API.md) · [Integrations](docs/INTEGRATIONS.md) · [Privacy and safety](docs/PRIVACY_SAFETY.md) · [Research](docs/RESEARCH.md) · [Terms and privacy](docs/TERMS_AND_PRIVACY.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Terms review notes](docs/TERMS_REVIEW.md) · [Competition notes](docs/COMPETITION.md) · [Notes](docs/NOTES.md)
+More detail: [Architecture](docs/ARCHITECTURE.md) · [**Agent (read this)**](docs/AGENT.md) · [Agent flow](docs/AGENT_FLOW.md) · [API](docs/API.md) · [Integrations](docs/INTEGRATIONS.md) · [Privacy and safety](docs/PRIVACY_SAFETY.md) · [Research](docs/RESEARCH.md) · [Terms and privacy](docs/TERMS_AND_PRIVACY.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Terms review notes](docs/TERMS_REVIEW.md) · [Competition notes](docs/COMPETITION.md) · [Notes](docs/NOTES.md)
 
 ## Repository layout
 
@@ -61,12 +77,13 @@ More detail: [Architecture](docs/ARCHITECTURE.md) · [Agent flow](docs/AGENT_FLO
 frontend/   static web app, no build step (config.js sets API_BASE); embed.html for websites
 backend/
   app/main.py            routes: /api/health /api/tools /api/analyze /api/analyze-file /api/practice /api/tts
-  app/agent/             orchestrator.py, tools.py (tool registry), i18n.py (verdict text, 4 languages)
+  app/agent/             loop.py (the agent), orchestrator.py, tools.py (rules, registry), i18n.py (verdict text, 4 languages)
   app/ingest.py          file reading: PDF, DOCX, TXT, MD, EML, images
   app/channels.py        Messenger webhook and email forwarding
   app/llm.py, tts.py     ILMU and Anthropic text, ILMU read-aloud
   app/data/              official_sources.json, offices.json (demo), practice.json
-  tests/                 pytest
+  tests/                 pytest (test_agent_loop.py covers the agent)
+  evals/run_suite.py     measures the live agent on real documents
 docs/       design notes and research
 ```
 

@@ -35,6 +35,7 @@ class TraceStep(BaseModel):
     message: str
     tool: Optional[str] = None
     flag: bool = False
+    facts: Optional[dict] = None  # structured result of a tool call, so the page can say it in plain words and in any language
 
 
 class Fields(BaseModel):
