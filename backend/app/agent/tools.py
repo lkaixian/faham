@@ -196,6 +196,17 @@ def _domains(text: str) -> list[str]:
     return out
 
 
+def _social_handles(text: str) -> list[str]:
+    """Social URLs in the text as 'host/handle' (www and @ stripped, lowercase), each once."""
+    out = []
+    for u in URL_RE.findall(text):
+        pu = urlparse(u if "://" in u else "http://" + u)
+        host = (pu.hostname or "").lower().removeprefix("www.")
+        if any(host == n or host.endswith("." + n) for n in SOCIAL if n != "mail.google.com"):
+            out.append(host + "/" + pu.path.strip("/").split("/")[0].lstrip("@").lower())
+    return list(dict.fromkeys(out))
+
+
 @tool("scam.check", "Domain allowlist + red-flag rules. Returns verdict and evidence.")
 def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list = ()) -> dict:
     """Verdict plus reasons. Sentences come from i18n.TEXT in `language`; each reason carries its stable `code`."""
@@ -213,7 +224,7 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
         elif d.endswith(".gov.my") or any(d == o or d.endswith("." + o) for o in official if o != ".gov.my"):
             good.append(("official_domain", r("official_domain", d=d)))
         elif hit(SOCIAL):
-            if not any(c == "social_links" for c, _ in info):
+            if not any(c == "social_links" for c, _ in info) and not SOURCES.get(issuer, {}).get("social"):
                 info.append(("social_links", r("social_links")))
         elif hit(FORMS):
             info.append(("form_link", r("form_link", d=d)))
@@ -221,6 +232,13 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
             flags.append(("unofficial_domain", r("unofficial_domain", d=d)))
             if _lookalike(d):
                 flags.append(("lookalike", r("lookalike", d=d)))
+    known = {h.lower().removeprefix("www.") for h in SOURCES.get(issuer, {}).get("social", [])}
+    if known:  # the registry lists this agency's real accounts: anything else claiming to be them is suspect
+        for h in _social_handles(text):
+            if h in known:
+                good.append(("official_social", r("official_social", d=h)))
+            else:
+                flags.append(("social_mismatch", r("social_mismatch", d=h)))
     if issuer != "UNKNOWN" and not flags:
         good.append(("known_pattern", r("known_pattern", issuer=issuer)))
     if REF_RE.search(text):

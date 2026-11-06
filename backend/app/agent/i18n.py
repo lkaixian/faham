@@ -89,6 +89,18 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "信中有社交媒体链接。请到该机构官方网站核对这些是否为其真实账号",
         "ta": "சமூக ஊடக இணைப்புகள் உள்ளன. அவை நிறுவனத்தின் உண்மையான கணக்குகளா என அதன் அதிகாரப்பூர்வ இணையதளத்தில் சரிபார்க்கவும்",
     },
+    "official_social": {
+        "en": "Social account {d} is on our list of this agency's official accounts",
+        "bm": "Akaun sosial {d} ada dalam senarai akaun rasmi agensi ini",
+        "zh": "社交账号 {d} 在我们的该机构官方账号名单中",
+        "ta": "சமூக ஊடகக் கணக்கு {d} இந்த நிறுவனத்தின் அதிகாரப்பூர்வ கணக்குகளின் பட்டியலில் உள்ளது",
+    },
+    "social_mismatch": {
+        "en": "Social account {d} is NOT on our list of this agency's official accounts",
+        "bm": "Akaun sosial {d} TIADA dalam senarai akaun rasmi agensi ini",
+        "zh": "社交账号 {d} 不在我们的该机构官方账号名单中",
+        "ta": "சமூக ஊடகக் கணக்கு {d} இந்த நிறுவனத்தின் அதிகாரப்பூர்வ கணக்குகளின் பட்டியலில் இல்லை",
+    },
     "form_link": {
         "en": "Asks you to fill an online form ({d}). Confirm the survey is listed on the agency's own website before entering personal details",
         "bm": "Meminta anda mengisi borang dalam talian ({d}). Sahkan kaji selidik itu ada di laman web rasmi agensi sebelum mengisi butiran peribadi",

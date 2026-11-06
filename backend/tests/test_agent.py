@@ -212,3 +212,11 @@ def test_genuine_footer_links_are_not_scam_signs():
     assert v["verdict"] == "caution" and not v["red_flags"]
     assert {r["code"] for r in v["reasons"]} >= {"form_link", "social_links"}
     assert T.scam_check("Hubungi kami di WhatsApp 012 untuk sahkan akaun", "UNKNOWN", "en")["red_flags"]
+
+
+def test_social_links_checked_against_registry(monkeypatch):
+    monkeypatch.setitem(T.SOURCES["PTPTN"], "social", ["facebook.com/ptptn.official"])
+    ok = T.scam_check("PTPTN: https://www.facebook.com/PTPTN.Official", "PTPTN", "en")
+    fake = T.scam_check("PTPTN: https://facebook.com/ptptn.bantuan", "PTPTN", "en")
+    assert any(r["code"] == "official_social" for r in ok["reasons"]) and not ok["red_flags"]
+    assert any(r["code"] == "social_mismatch" for r in fake["reasons"]) and fake["verdict"] != "no_signals"
