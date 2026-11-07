@@ -520,7 +520,17 @@ html[data-senior] #busyTxt { font-size: 1.3rem; }
   body { background: linear-gradient(180deg, #e7def6 0, var(--bg) 320px) no-repeat, var(--bg); }
   [data-theme="dark"] body { background: linear-gradient(180deg, #241a47 0, var(--bg) 320px) no-repeat, var(--bg); }
 
-  /* header */
+  /* header: nothing but the logo and Menu may ever sit in it, so it can never be wider than the screen.
+     The pages, language and settings live in the sheet; if they are still in the header (script not run yet) hide them. */
+  html, body { overflow-x: clip; max-width: 100%; }
+  .top > nav, .top .bar > .ctrls, .top .bar > .mode { display: none; }
+  .sheet nav { display: grid; }
+  .sheet .ctrls { display: flex; flex-direction: column; }
+  .sheet .mode { display: flex; }
+  .top .bar { overflow: hidden; }
+  .top .brand { min-width: 0; flex: 0 1 auto; }
+  .top .logo-d { max-width: 100%; width: auto; }
+  .menu-btn { flex: none; margin-left: auto; }
   .top { position: sticky; top: 0; z-index: 30; background: var(--plum); border-bottom: 3px solid #f0b84a; }
   .top .bar { flex-wrap: nowrap; min-height: 64px; padding-block: 6px; gap: 10px; }
   .top .logo-l { display: none; }
