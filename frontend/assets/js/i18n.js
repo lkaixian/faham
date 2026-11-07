@@ -178,7 +178,9 @@ window.FAHAM_T = {
     emb_note: "Dengan guna alat ini, anda setuju dengan terma dan notis privasi FAHAM.",
     emb_link: "Baca terma penuh",
     a_dt5: "Fail yang dimuat naik dibaca dalam memori dan tidak disimpan.",
-    a_dt7: "Messenger melalui Meta, dan e-mel melalui penyedia e-mel anda. Mereka boleh nampak apa yang anda hantar di sana."
+    a_dt7: "Messenger melalui Meta, dan e-mel melalui penyedia e-mel anda. Mereka boleh nampak apa yang anda hantar di sana.",
+    busy_queue: "Ramai sedang menyemak. Anda nombor {n} dalam barisan. Sila tunggu sebentar.",
+    busy_quick: "Semakan pantas: {v}. Sedang menulis penerangan...",
   },
 
   en: {
@@ -357,7 +359,9 @@ window.FAHAM_T = {
     emb_note: "Using this tool means you agree to the FAHAM terms and privacy notice.",
     emb_link: "Read the full terms",
     a_dt5: "Uploaded files are read in memory and not stored.",
-    a_dt7: "Messenger goes through Meta, and email goes through your mail provider. They can see what you send there."
+    a_dt7: "Messenger goes through Meta, and email goes through your mail provider. They can see what you send there.",
+    busy_queue: "Many people are checking. You are number {n} in line. Please wait a moment.",
+    busy_quick: "Quick check: {v}. Writing the explanation...",
   },
 
   zh: {
@@ -536,7 +540,9 @@ window.FAHAM_T = {
     emb_note: "使用这个工具，就表示您同意 FAHAM 的条款和隐私声明。",
     emb_link: "阅读完整条款",
     a_dt5: "上传的文件只在内存中读取，不会保存。",
-    a_dt7: "Messenger 经过 Meta，电邮经过您的电邮服务商。他们能看到您在那里发送的内容。"
+    a_dt7: "Messenger 经过 Meta，电邮经过您的电邮服务商。他们能看到您在那里发送的内容。",
+    busy_queue: "现在使用的人较多。你排第 {n} 位，请稍等。",
+    busy_quick: "快速检查：{v}。正在撰写说明...",
   },
 
   ta: {
@@ -715,6 +721,8 @@ window.FAHAM_T = {
     emb_note: "இந்தக் கருவியைப் பயன்படுத்தினால் FAHAM-இன் விதிமுறைகளையும் தனியுரிமை அறிவிப்பையும் ஏற்கிறீர்கள்.",
     emb_link: "முழு விதிமுறைகளைப் படிக்க",
     a_dt5: "பதிவேற்றிய கோப்புகள் நினைவகத்தில் மட்டும் படிக்கப்படும், சேமிக்கப்படாது.",
-    a_dt7: "Messenger Meta வழியாகச் செல்லும்; மின்னஞ்சல் உங்கள் மின்னஞ்சல் சேவை வழங்குநர் வழியாகச் செல்லும். அங்கே நீங்கள் அனுப்புவதை அவர்கள் பார்க்க முடியும்."
+    a_dt7: "Messenger Meta வழியாகச் செல்லும்; மின்னஞ்சல் உங்கள் மின்னஞ்சல் சேவை வழங்குநர் வழியாகச் செல்லும். அங்கே நீங்கள் அனுப்புவதை அவர்கள் பார்க்க முடியும்.",
+    busy_queue: "நிறையப் பேர் சரிபார்க்கிறார்கள். நீங்கள் வரிசையில் {n}-வது. சற்றுக் காத்திருங்கள்.",
+    busy_quick: "விரைவுச் சரிபார்ப்பு: {v}. விளக்கத்தை எழுதுகிறோம்...",
   }
 };

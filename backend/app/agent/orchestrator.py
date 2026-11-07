@@ -30,6 +30,34 @@ class Trace:
         self.steps.append(TraceStep(stage=stage, kind=kind, message=msg, flag=flag))
 
 
+def quick_verdict(req: AnalyzeRequest) -> dict | None:
+    """Rules-only verdict for the SSE stream's first event (no LLM, no OCR). None if the request has only an image."""
+    if not req.text.strip():
+        return None
+    redacted, _ = T.redact(req.text)
+    issuer, _ = T.classify_issuer(redacted)
+    v = T.scam_check(redacted, issuer, req.language)
+    f = T.extract_fields(redacted)
+    return {"verdict": v["verdict"], "score": v["score"], "scam_type": v["scam_type"], "issuer": issuer,
+            "fields": f, "reasons": v["reasons"], "verify_yourself": v["verify_yourself"]}
+
+
+class _Memo:
+    """Tool calls with the same name and arguments run once per analysis (the planner may ask twice)."""
+
+    def __init__(self) -> None:
+        self.seen: dict[tuple, object] = {}
+        self.skipped = 0
+
+    def call(self, name: str, *args):
+        k = (name, repr(args))
+        if k in self.seen:
+            self.skipped += 1
+            return self.seen[k]
+        self.seen[k] = T.TOOLS[name].fn(*args)
+        return self.seen[k]
+
+
 def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tuple | list = ()) -> AnalyzeResponse:
     tr = Trace()
     tr.think("read", "Goal: help the user understand this letter, confirm it is real, and decide the next action.")
@@ -52,8 +80,9 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
 
     # ---- VERIFY
     tr.think("verify", "Before explaining anything, I must check this is not a scam.")
-    verdict = T.TOOLS["scam.check"].fn(redacted, issuer, req.language, extra_signals)
-    en = verdict if req.language == "en" else T.TOOLS["scam.check"].fn(redacted, issuer, "en", extra_signals)  # trace stays English
+    memo = _Memo()
+    verdict = memo.call("scam.check", redacted, issuer, req.language, tuple(extra_signals))
+    en = memo.call("scam.check", redacted, issuer, "en", tuple(extra_signals))  # trace stays English; same args as above run once
     tr.call("verify", "scam.check", "domain allowlist · red-flag rules · reference pattern")
     for g in en["good_signs"]:
         tr.note("verify", "ok", "✓ " + g)

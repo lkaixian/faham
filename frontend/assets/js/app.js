@@ -235,6 +235,39 @@
     } catch (e) { return { error: t("e_net"), retry: true }; }
   }
 
+  /* Server-sent events: the rules verdict arrives first (about 1 s), then the explanation. Falls back to post(). */
+  async function postStream(body, ms) {
+    let to = 0;
+    try {
+      const ctrl = new AbortController(); to = setTimeout(() => ctrl.abort(), ms);
+      const res = await fetch(CFG.API_BASE + "/api/analyze/stream", { method: "POST", headers: { "Content-Type": "application/json" }, signal: ctrl.signal, body: JSON.stringify(body) });
+      if (res.status === 422) { clearTimeout(to); return { error: t("e_422") }; }
+      if (!res.ok || !res.body) { clearTimeout(to); return post(body, ms); }
+      const rd = res.body.getReader(), dec = new TextDecoder(); let buf = "", data = null, err = null;
+      for (;;) {
+        const { done, value } = await rd.read(); if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let i;
+        while ((i = buf.indexOf("
+
+")) >= 0) {
+          const blk = buf.slice(0, i); buf = buf.slice(i + 2);
+          const m = blk.match(/^event: (\w+)
+data: ([\s\S]*)$/); if (!m) continue;
+          let d; try { d = JSON.parse(m[2]); } catch (e) { continue; }
+          if (m[1] === "queue" || m[1] === "verdict") state.streamMsg = true;
+          if (m[1] === "queue") $("#busyTxt").textContent = t("busy_queue", { n: d.position });
+          else if (m[1] === "verdict") { $("#busyTxt").textContent = t("busy_quick", { v: t("vw_" + d.verdict) }); }
+          else if (m[1] === "result") data = d;
+          else if (m[1] === "error") err = d;
+        }
+      }
+      clearTimeout(to);
+      if (err) return { error: err.status === 422 ? t("e_422") : t("e_server", { n: err.status }), retry: err.status !== 422 };
+      return data ? { data } : { error: t("e_net"), retry: true };
+    } catch (e) { clearTimeout(to); return { error: t("e_net"), retry: true }; }
+  }
+
   /* staged progress: the API answers in one go, so the four stages (Read, Check, Explain, Route) are paced on the client */
   const STAGES = ["s_read", "s_verify", "s_explain", "s_route"];
   let stageTimer = 0;
@@ -243,11 +276,11 @@
     $("#busyTxt").textContent = t("busy_step", { n: i + 1, s: t(STAGES[i]) }) + (photo && i === 0 ? " " + t("busy_photo") : "");
   }
   function setBusy(on, o = {}) {
-    state.busy = on; clearInterval(stageTimer);
+    state.busy = on; state.streamMsg = false; clearInterval(stageTimer);
     $("#busy").hidden = !on;
     $("#stages").hidden = !!o.sample;
     if (on && o.sample) $("#busyTxt").textContent = t("busy_ex");
-    if (on && !o.sample) { let i = 0; drawStage(0, o.photo); stageTimer = setInterval(() => { if (i < STAGES.length - 1) drawStage(++i, o.photo); }, 1500); }
+    if (on && !o.sample) { let i = 0; drawStage(0, o.photo); stageTimer = setInterval(() => { if (i < STAGES.length - 1 && !state.streamMsg) drawStage(++i, o.photo); }, 1500); }
     $("#checkBtn").disabled = on || !state.api; $$(".example").forEach((b) => (b.disabled = on));
   }
   function formErr(m, retry) {
@@ -260,7 +293,7 @@
     setBusy(true);
     const body = { language: state.xl, text: inp.text };
     const pc = $("#postBox").value.trim(); if (/^\d{1,5}$/.test(pc)) body.postcode = pc;
-    const x = await post(body, 30000);
+    const x = await postStream(body, 30000);
     setBusy(false);
     if (x.error) { formErr(x.error, x.retry ? () => checkOwn(inp) : null); return; }
     show(fromApi(x.data, body.language));

@@ -10,6 +10,8 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
+import urllib.error
 import urllib.request
 
 from . import config
@@ -54,6 +56,20 @@ def _anthropic(system: str, user: str) -> str | None:
 PROVIDERS = {"ilmu": _ilmu, "anthropic": _anthropic}
 
 
+def _retry(fn, system: str, user: str):
+    """Retry transient failures (timeouts, 429, 5xx) with exponential backoff. Auth errors fail at once."""
+    for i in range(max(1, config.LLM_RETRIES)):
+        try:
+            return fn(system, user)
+        except urllib.error.HTTPError as exc:
+            if exc.code in (400, 401, 403, 404) or i == config.LLM_RETRIES - 1:
+                raise
+        except Exception:
+            if i == config.LLM_RETRIES - 1:
+                raise
+        time.sleep(config.LLM_BACKOFF * 2 ** i)
+
+
 def complete(prompt: str, language: str) -> str | None:
     """Try each configured provider in order; None means use the offline template."""
     chain = config.llm_chain()
@@ -62,7 +78,7 @@ def complete(prompt: str, language: str) -> str | None:
     user = f"Language: {LANG_NAMES.get(language, 'English')}\n\n<letter>\n{prompt}\n</letter>"
     for name in chain:
         try:
-            if out := PROVIDERS[name](SYSTEM_PROMPT, user):
+            if out := _retry(PROVIDERS[name], SYSTEM_PROMPT, user):
                 return out
         except Exception as exc:  # network, auth, missing package
             log.warning("LLM %s failed, trying next: %s", name, type(exc).__name__)

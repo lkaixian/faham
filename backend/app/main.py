@@ -7,19 +7,43 @@ import base64
 import binascii
 import json
 import random
+import threading
+import time
+from contextlib import asynccontextmanager
 
 from urllib.parse import unquote
 
 from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 
-from . import channels, config, ingest, tts
+from . import channels, config, ingest, limiter, tts
 from .agent import orchestrator
 from .agent.tools import TOOLS, classify_issuer, redact, scam_check
 from .models import AnalyzeRequest, AnalyzeResponse, BatchResponse, Language, PracticeItem, TTSRequest
 
+def _warm_cache() -> None:
+    """Pre-run the bundled sample messages so the first tap on an example is instant. Skipped when an LLM is
+    configured, so a restart never spends provider credit."""
+    if config.llm_ready():
+        return
+    for item in PRACTICE:
+        for lang in ("bm", "en", "zh", "ta"):
+            try:
+                orchestrator.run(AnalyzeRequest(text=item["text"], language=lang))
+            except Exception:  # warming is best effort
+                pass
+
+
+@asynccontextmanager
+async def lifespan(_app):
+    threading.Thread(target=_warm_cache, daemon=True, name="warm-cache").start()
+    yield
+
+
 app = FastAPI(
+    lifespan=lifespan,
     title="FAHAM Agent API",
     version="0.1.0",
     description="Agentic AI that reads official Malaysian letters, checks for scams, explains, teaches and prepares the next step.",
@@ -60,21 +84,70 @@ def list_tools():
     return [{"name": t.name, "description": t.description} for t in TOOLS.values()]
 
 
+def _decode_image(b64: str | None) -> bytes | None:
+    if not b64:
+        return None
+    try:
+        image = base64.b64decode(b64, validate=True)
+    except (binascii.Error, ValueError):
+        raise HTTPException(422, "image_b64 is not valid base64")
+    if not image.startswith((b"\x89PNG\r\n\x1a\n", b"\xff\xd8\xff")):
+        raise HTTPException(422, "image must be PNG or JPEG")
+    return image
+
+
 @app.post("/api/analyze", response_model=AnalyzeResponse)
 def analyze(req: AnalyzeRequest):
-    """Run the full agent. The letter is processed in memory and not stored."""
-    image = None
-    if req.image_b64:
-        try:
-            image = base64.b64decode(req.image_b64, validate=True)
-        except (binascii.Error, ValueError):
-            raise HTTPException(422, "image_b64 is not valid base64")
-        if not image.startswith((b"\x89PNG\r\n\x1a\n", b"\xff\xd8\xff")):
-            raise HTTPException(422, "image must be PNG or JPEG")
+    """Run the full agent. The letter is processed in memory and not stored. Waits its turn when busy."""
+    image = _decode_image(req.image_b64)
     try:
-        return orchestrator.run(req, image)
+        with limiter.LIMITER.slot(patience=config.QUEUE_PATIENCE):
+            return orchestrator.run(req, image)
     except orchestrator.OCRUnavailable as e:
         raise HTTPException(422, str(e))
+    except limiter.Busy:
+        raise HTTPException(503, "FAHAM is busy. Please try again in a moment.", headers={"Retry-After": "5"})
+
+
+def _sse(event: str, data) -> str:
+    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+@app.post("/api/analyze/stream")
+def analyze_stream(req: AnalyzeRequest):
+    """Server-sent events: `queue` (place in line, only while waiting), `verdict` (rules only, fast),
+    `explanation` (after the optional LLM), `result` (the full AnalyzeResponse), or `error`."""
+    image = _decode_image(req.image_b64)
+    t0 = time.monotonic()
+
+    def events():
+        lim = limiter.LIMITER
+        ticket = lim.enter()
+        got, first = False, True
+        try:
+            while not got:
+                got = lim.acquire(ticket, 0 if first else 1.0)
+                if not got:
+                    yield _sse("queue", {"position": lim.position(ticket), "waiting": lim.waiting()})
+                    if time.monotonic() - t0 > config.QUEUE_PATIENCE:
+                        yield _sse("error", {"status": 503, "detail": "FAHAM is busy. Please try again in a moment."})
+                        return
+                first = False
+            try:
+                if (q := orchestrator.quick_verdict(req)) is not None:
+                    yield _sse("verdict", q)
+                res = orchestrator.run(req, image)
+                yield _sse("explanation", {"text": res.explanation})
+                yield _sse("result", res.model_dump())
+            except orchestrator.OCRUnavailable as e:
+                yield _sse("error", {"status": 422, "detail": str(e)})
+            finally:
+                lim.release()
+        finally:
+            lim.leave(ticket)  # no-op once admitted; frees the place if the client hung up while waiting
+
+    return StreamingResponse(events(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 
 @app.post("/api/analyze-file", response_model=BatchResponse)
