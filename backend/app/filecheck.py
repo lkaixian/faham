@@ -13,6 +13,7 @@ import struct
 import zipfile
 
 from . import apk as apkmod
+from . import office
 from .config import DATA_DIR
 
 MAX_ENTRIES, MAX_NAMES, MAX_MANIFEST = 5000, 20, 5 * 1024 * 1024
@@ -103,9 +104,14 @@ def inspect(filename: str | None, data: bytes, via_chat: bool = False) -> tuple[
     raw = (filename or "file").replace("\\", "/").rsplit("/", 1)[-1]
     name, ext = clean(raw), (_exts(clean(raw)) or [""])[-1]
     scan = {"names": [], "encrypted": False, "unreadable": False, "tricks": False, "apk": False, "manifest": None}
+    extra: list[str] = []
     if data[:4] in (b"PK\x03\x04", b"PK\x05\x06"):
         scan = _zip_scan(data)
         label = "Android app (APK)" if scan["apk"] or ext == "apk" else "ZIP archive"
+        if "[Content_Types].xml" in scan["names"]:  # an Office file
+            label, extra = "Office document", office.scan_ooxml(data, ext, via_chat)
+    elif data[:8] == office.OLE_MAGIC:
+        label, extra = "Old Office file", office.scan_ole(data)
     elif data[:6] in (b"7z\xbc\xaf\x27\x1c",) or data[:5] == b"Rar!\x1a":
         scan["unreadable"], label = True, "archive that Tulen cannot open"
     elif data[:2] == b"MZ":
@@ -150,6 +156,7 @@ def inspect(filename: str | None, data: bytes, via_chat: bool = False) -> tuple[
         codes.append("file_unreadable")
     if codes and (LURE.search(name) or any(LURE.search(n) for n in inner[:MAX_NAMES])):
         codes.append("file_lure_name")
+    codes += extra
     return label, inner, list(dict.fromkeys(codes)), clean(facts, 400)
 
 

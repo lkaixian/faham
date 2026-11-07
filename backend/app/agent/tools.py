@@ -334,8 +334,8 @@ AI_SOFT = set(AI_SIGNALS) - AI_HARD
 # File signals (filecheck.py). Weak ones are real but common in innocent files (an APK exists, a zip is encrypted, a lure-like
 # name), so like the soft AI signals they weigh 12 and can never alone give "likely scam". Strong ones are deliberate evasion
 # or a disguised script and weigh 30.
-FILE_WEAK = {"file_script", "file_apk", "file_encrypted", "file_unreadable", "file_disk_image", "file_name_trick", "file_lure_name", "file_apk_perms"}
-FILE_STRONG = {"file_script_disguised", "file_zip_tricks", "file_apk_takeover", "file_apk_brand"}
+FILE_WEAK = {"file_script", "file_apk", "file_encrypted", "file_unreadable", "file_disk_image", "file_name_trick", "file_lure_name", "file_apk_perms", "file_macro"}
+FILE_STRONG = {"file_script_disguised", "file_zip_tricks", "file_apk_takeover", "file_apk_brand", "file_macro_hidden", "file_office_remote"}
 SOFT, HARD = AI_SOFT | FILE_WEAK, AI_HARD | FILE_STRONG
 
 

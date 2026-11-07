@@ -96,6 +96,24 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "此应用使用了银行或机构的名称，但它不是该机构已知的应用",
         "ta": "இந்தச் செயலி ஒரு வங்கி அல்லது அமைப்பின் பெயரைப் பயன்படுத்துகிறது, ஆனால் அது அந்த அமைப்பின் அறியப்பட்ட செயலி அல்ல",
     },
+    "file_macro": {
+        "en": "This Office file contains, or probably contains, macros: small programs that run when it is opened. A real letter does not need them",
+        "bm": "Fail Office ini mengandungi, atau mungkin mengandungi, makro: atur cara kecil yang berjalan apabila dibuka. Surat sebenar tidak memerlukannya",
+        "zh": "此 Office 文件含有或可能含有宏：打开时会自动运行的小程序。真正的信函不需要宏",
+        "ta": "இந்த Office கோப்பில் மேக்ரோக்கள் உள்ளன அல்லது இருக்கலாம்: திறக்கும்போது தானாக ஓடும் சிறு நிரல்கள். உண்மையான கடிதத்துக்கு இவை தேவையில்லை",
+    },
+    "file_macro_hidden": {
+        "en": "A file with macros that is named like a plain document and came by chat or a link, a common way to hide it",
+        "bm": "Fail bermakro yang dinamakan seperti dokumen biasa dan diterima melalui sembang atau pautan, cara biasa untuk menyembunyikannya",
+        "zh": "含有宏的文件被取名成普通文档，并通过聊天或链接发来，这是常见的隐藏手法",
+        "ta": "மேக்ரோ உள்ள கோப்பு சாதாரண ஆவணம் போலப் பெயரிடப்பட்டு அரட்டை அல்லது இணைப்பு வழியாக வந்துள்ளது; இது மறைக்கும் பொதுவான வழி",
+    },
+    "file_office_remote": {
+        "en": "This document pulls something from another website or runs a command when opened (a remote template or a DDE field)",
+        "bm": "Dokumen ini mengambil sesuatu dari laman web lain atau menjalankan arahan apabila dibuka (templat jauh atau medan DDE)",
+        "zh": "此文档在打开时会从其他网站获取内容或运行命令（远程模板或 DDE 字段）",
+        "ta": "இந்த ஆவணம் திறக்கும்போது வேறொரு இணையதளத்திலிருந்து ஒன்றை இழுக்கிறது அல்லது கட்டளையை இயக்குகிறது (தொலை வார்ப்புரு அல்லது DDE புலம்)",
+    },
     "file_zip_tricks": {
         "en": "The archive is built in an unusual way (odd paths, overlapping or appended parts) that hides its contents from checkers",
         "bm": "Arkib dibina dengan cara luar biasa (laluan pelik, bahagian bertindih atau ditambah) untuk menyembunyikan isinya daripada pemeriksa",

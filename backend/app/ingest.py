@@ -17,7 +17,7 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse
 
 from .agent import orchestrator
-from . import filecheck
+from . import filecheck, office
 from .models import AnalyzeRequest, BatchResponse, BatchSummary, FileResult
 
 log = logging.getLogger("faham.ingest")
@@ -62,11 +62,11 @@ def detect(filename: str | None, content_type: str | None, data: bytes) -> str:
         return "pdf"
     if data[:8] == b"\x89PNG\r\n\x1a\n" or data[:3] == b"\xff\xd8\xff":
         return "image"
-    if data[:8] == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":
+    if data[:8] == office.OLE_MAGIC:
+        if office.scan_ole(data):
+            return "file_risk"  # macros (or a password) in an old Office file: report it, do not refuse it
         raise IngestError(415, "Old Word/Excel files are not accepted because they can hold macros. Save as PDF or DOCX.")
     if data[:4] in (b"PK\x03\x04", b"PK\x05\x06"):
-        if ext in ("docm", "xlsm", "pptm"):
-            raise IngestError(415, "Macro-enabled Office files are not accepted. Save as PDF or DOCX.")
         try:
             with zipfile.ZipFile(io.BytesIO(data)) as z:
                 names = set(z.namelist())
@@ -74,8 +74,9 @@ def detect(filename: str | None, content_type: str | None, data: bytes) -> str:
             if ext == "docx":
                 raise IngestError(422, "The file is damaged")
             return "file_risk"  # a broken archive is itself a sign (some scam files break parsers on purpose)
-        if any(n.lower().endswith("vbaproject.bin") for n in names):
-            raise IngestError(415, "Files with macros are not accepted")
+        office_like = "word/document.xml" in names or "[Content_Types].xml" in names
+        if office_like and (ext in office.MACRO_EXT or "file_macro" in office.scan_ooxml(data, ext, False)):
+            return "file_risk"  # macros are reported as signs, never executed
         if "word/document.xml" in names:
             return "docx"
         if "[Content_Types].xml" in names:
@@ -320,7 +321,9 @@ def extract(filename: str | None, content_type: str | None, data: bytes, *,
     if kind == "pdf":
         return [_pdf(name, data)]
     if kind == "docx":
-        return [_docx(name, data)]
+        d = _docx(name, data)
+        d.signals += office.scan_ooxml(data, _ext(filename), via_chat)  # remote template or DDE in an otherwise normal letter
+        return [d]
     if kind == "text":
         return [_text(name, data)]
     if kind == "eml":

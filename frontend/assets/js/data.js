@@ -324,6 +324,58 @@ window.FAHAM_DATA = {
       },
       draft: "LAPORAN SCAM (draf untuk NSRC / balai polis)\n\nTarikh terima: [auto]\nSaluran: SMS / WhatsApp\nNombor penghantar: 011-XXXX XXXX\nKandungan: Mendakwa dari PDRM, minta pindahan RM 2,150 ke akaun \"Syarikat Penyelesaian Saman\" dalam 24 jam dan ugut waran tangkap. Pautan: bit.ly/saman-pdrm-bayar\nTindakan saya: Tidak membuat bayaran. Tidak klik pautan.\n\n[Nama penuh]",
       reminder: "No deadline - this is not a real demand"
+    },
+    {
+      id: "apk",
+      short: "\"Wedding invitation\" file",
+      kind: "Suspicious file",
+      issuer: "Claims to be: a wedding invitation (SAMPEL)",
+      issuerShort: "Unverified sender",
+      title: "JEMPUTAN MAJLIS PERKAHWINAN.apk",
+      ref: "FIKTIF-APK-001",
+      date: "Hari ini",
+      to: "PENERIMA",
+      body: [
+        "SAMPEL, FIKTIF. Fail diterima di WhatsApp daripada nombor yang tidak dikenali.",
+        "Mesej: \"Salam, ini <mark class='red'>kad jemputan</mark> majlis kami. Sila buka fail ini di telefon anda.\"",
+        "Nama fail: <mark class='red'>JEMPUTAN MAJLIS PERKAHWINAN.apk</mark> (fail aplikasi Android, bukan kad atau gambar).",
+        "Tulen tidak membuka atau memasang fail ini. Ia hanya menyemak nama, jenis dan kebenaran yang diminta."
+      ],
+      fields: { Issuer: "Unverified", Type: "Android app file (.apk)", Amount: "None", Deadline: "None", Reference: "None", Urgency: "Lure: wedding invitation" },
+      scam: {
+        genuine: false, score: 10,
+        checks: [
+          "x|An Android app (.apk) sent in a chat. Real apps come from Google Play, not from a message",
+          "x|It asks to read your text messages and draw over other apps, which is how TAC codes are stolen (example data)",
+          "x|The file name is a wedding invitation, a common lure for this kind of app",
+          "x|Nothing in the file was opened, installed or run"
+        ]
+      },
+      explain: {
+        bm: ["Ini hampir pasti SCAM. Kad jemputan tidak pernah berbentuk fail aplikasi (.apk). Jika dipasang, orang asing boleh membaca mesej teks anda dan mencuri kod TAC.", "Jangan buka atau pasang. Padam mesej itu, hubungi orang yang kononnya menghantar melalui cara lain, dan telefon NSRC 997 jika anda sudah memasangnya."],
+        en: ["This is almost certainly a SCAM. A wedding invitation is never an app file (.apk). If you install it, strangers can read your text messages and steal your TAC codes.", "Do not open or install it. Delete the message, contact the person who seems to have sent it by another way, and call NSRC 997 if you already installed it."],
+        zh: ["这几乎可以肯定是诈骗。请柬绝不会是应用文件（.apk）。一旦安装，陌生人就能读取你的短信并窃取 TAC 验证码。", "不要打开或安装。删除该信息，用其他方式联系看似发送者，如果已经安装，请致电 NSRC 997。"],
+        ta: ["இது கிட்டத்தட்ட நிச்சயமாக ஒரு மோசடி. திருமண அழைப்பிதழ் ஒருபோதும் செயலிக் கோப்பாக (.apk) இருக்காது. நிறுவினால், அந்நியர்கள் உங்கள் குறுஞ்செய்திகளைப் படித்து TAC குறியீடுகளைத் திருடலாம்.", "திறக்கவோ நிறுவவோ வேண்டாம். செய்தியை நீக்கி, அனுப்பியதாகத் தோன்றும் நபரை வேறு வழியில் தொடர்புகொள்ளுங்கள்; ஏற்கனவே நிறுவியிருந்தால் NSRC 997-ஐ அழையுங்கள்."]
+      },
+      kenapa: {
+        q: "Kenapa saya dapat fail ini?",
+        a: "Scammers send app files disguised as wedding cards, parcels or bills. Once installed, the app can read your SMS and steal TAC codes, then send itself to your contacts.",
+        rule: "Rule of thumb: install apps only from Google Play or the App Store, and never open an app file (.apk) that arrives in a chat."
+      },
+      terms: ["NSRC 997"],
+      route: {
+        online: {
+          steps: ["Do NOT open or install the file. Delete the message.", "If you already installed it, switch on airplane mode and call your bank's hotline and NSRC 997.", "Report the number to the NSRC (997) or check it on Semak Mule."],
+          prepare: ["Screenshot of the message", "Sender number", "Bank (if you lost money)"]
+        },
+        walkin: {
+          steps: ["Make a police report if money was lost.", "Ask your bank to freeze the account if you installed the app.", "Bring the evidence below."],
+          prepare: ["IC (original)", "Screenshots", "Bank transaction slip"]
+        },
+        source: "rmp.gov.my · NSRC 997", confidence: "High"
+      },
+      draft: "LAPORAN SCAM (draf untuk NSRC / balai polis)\n\nTarikh terima: [auto]\nSaluran: WhatsApp\nNombor penghantar: 011-XXXX XXXX\nKandungan: Fail \"JEMPUTAN MAJLIS PERKAHWINAN.apk\" yang mengaku kad jemputan. Fail aplikasi Android, tidak dibuka.\nTindakan saya: Tidak memasang fail. Mesej dipadam.\n\n[Nama penuh]",
+      reminder: "No deadline - this is not a real demand"
     }
   ],
 

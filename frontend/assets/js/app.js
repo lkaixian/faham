@@ -432,7 +432,7 @@
   /* ---------- files: up to 10, one request each (POST /api/analyze-file, raw bytes) ---------- */
   const MAX_FILES = 10, MB = 1048576;
   const EXT = { pdf: "pdf", docx: "docx", txt: "text", md: "text", eml: "eml", png: "image", jpg: "image", jpeg: "image", webp: "image", gif: "image",
-    ...Object.fromEntries("zip apk 7z rar exe scr msi bat cmd ps1 vbs vbe wsf hta js jse jar lnk iso img".split(" ").map((e) => [e, "file"])) };   // checked by name and listing only, never opened
+    ...Object.fromEntries("zip apk 7z rar exe scr msi bat cmd ps1 vbs vbe wsf hta js jse jar lnk iso img docm dotm xlsm xlsb pptm doc xls".split(" ").map((e) => [e, "file"])) };   // checked by name and listing only, never opened
   const MACRO = /^(doc|dot|docm|dotm|xlsm|xlsb|pptm|xlam)$/;          // old Word and macro files get their own message
   let queue = [], qid = 0;                                            // { id, file, ext, kind, st: wait|send|read|done|fail, pct, msg }
   const kb = (n) => (n < MB ? Math.max(1, Math.round(n / 1024)) + " KB" : (n / MB).toFixed(1) + " MB");

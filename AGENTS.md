@@ -11,6 +11,7 @@ Tulen (formerly FAHAM; the repo, env vars and URL keep that name): a scam and au
 - `backend/app/data/*.json`: `official_sources.json`, `official_directory.json` (domains only, see `docs/DIRECTORY.md`), `offices.json` (demo), `practice.json`.
 - `frontend/`: static HTML/CSS/JS, no build step. Falls back to a fully in-browser demo mode when the API is unreachable (`assets/js/data.js` holds the sample letters).
 - `backend/app/agent/scam_content.py`: scam types and their lesson, route and draft in 4 languages. `cache.py`, `limiter.py`, `counter.py`, `mcp_server.py`. `frontend/assets/js/safety.js`: offline safety tools; `frontend/sw.js`: service worker.
+- `backend/app/filecheck.py`, `apk.py`, `office.py`, `data/known_apps.json`: static file-safety checks (ZIP, APK, scripts, Office macros). Name, first bytes and archive listing only: never open, run, extract or store a file; weak signals can never alone give likely_scam (see FILE_WEAK/FILE_STRONG in `tools.py`).
 - `backend/tests/eval/`: labelled dataset and the recall / false-positive gate (see `docs/EVAL.md`).
 - `docs/`: ARCHITECTURE, AGENT_FLOW, API, PRIVACY_SAFETY, DEPLOY, EVAL, PITCH_PLAN, NOTES.
 

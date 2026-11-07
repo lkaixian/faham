@@ -86,17 +86,16 @@ def test_docx_doctype_rejected():
     assert e.value.status == 422
 
 
-def test_docm_and_legacy_doc_rejected():
-    with pytest.raises(ingest.IngestError) as e:
-        ingest.extract("a.docm", None, docx("hi"))
+def test_macro_files_are_flagged_not_refused_and_plain_legacy_doc_still_refused():
+    ole = bytes.fromhex("d0cf11e0a1b11ae1")
+    with pytest.raises(ingest.IngestError) as e:  # an old file with no macro marker: still unreadable as a letter
+        ingest.extract("a.doc", None, ole + b"0" * 50)
     assert e.value.status == 415
-    with pytest.raises(ingest.IngestError) as e:
-        ingest.extract("a.doc", None, b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1" + b"0" * 50)
-    assert e.value.status == 415
+    d = ingest.extract("a.docm", None, docx("hi"))[0]
+    assert d.kind == "file_risk"
     macro = zipped({"[Content_Types].xml": "<x/>", "word/document.xml": "<a/>", "word/vbaProject.bin": "x"})
-    with pytest.raises(ingest.IngestError) as e:
-        ingest.extract("a.docx", None, macro)
-    assert e.value.status == 415
+    d = ingest.extract("a.docx", None, macro)[0]
+    assert d.kind == "file_risk" and "file_macro" in d.signals
 
 
 def test_bad_magic_rejected():

