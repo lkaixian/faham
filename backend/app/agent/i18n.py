@@ -77,6 +77,30 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "要你“验证”户口或个人资料",
         "ta": "உங்கள் கணக்கு அல்லது விவரங்களை 'சரிபார்க்க' சொல்கிறது",
     },
+    "guaranteed_returns": {
+        "en": "Promises guaranteed or very high profit (real investments cannot)",
+        "bm": "Menjanjikan untung dijamin atau sangat tinggi (pelaburan sebenar tidak boleh)",
+        "zh": "承诺保证赚钱或超高回报（真正的投资做不到）",
+        "ta": "உறுதியான அல்லது மிக அதிக லாபம் என்று வாக்களிக்கிறது (உண்மையான முதலீடு இப்படி இருக்காது)",
+    },
+    "advance_fee": {
+        "en": "Asks you to pay a deposit or fee first to start or register",
+        "bm": "Minta anda bayar deposit atau yuran dahulu untuk mula atau mendaftar",
+        "zh": "要你先付押金或费用才能开始或登记",
+        "ta": "தொடங்க அல்லது பதிவு செய்ய முதலில் வைப்புத் தொகை அல்லது கட்டணம் கேட்கிறது",
+    },
+    "romance_money": {
+        "en": "A stranger far away asks you to send money, or to use a friend's account",
+        "bm": "Orang tidak dikenali di tempat jauh minta anda hantar wang, atau guna akaun kawannya",
+        "zh": "远方的陌生人要你汇款，或汇到他朋友的户口",
+        "ta": "தொலைவிலுள்ள அறிமுகமில்லாதவர் பணம் அனுப்பச் சொல்கிறார், அல்லது நண்பரின் கணக்கைப் பயன்படுத்தச் சொல்கிறார்",
+    },
+    "prize_win": {
+        "en": "Says you won a prize you never entered for (a classic scam opening)",
+        "bm": "Kata anda menang hadiah yang tidak pernah anda sertai (cara biasa penipu)",
+        "zh": "说你中了从没参加过的奖（典型骗局开场）",
+        "ta": "நீங்கள் பங்கேற்காத பரிசை வென்றதாகக் கூறுகிறது (பொதுவான மோசடி தொடக்கம்)",
+    },
     "safe_account": {
         "en": "Mentions a 'safe account' (real authorities never use one)",
         "bm": "Menyebut 'akaun selamat' (pihak berkuasa sebenar tidak pernah guna)",

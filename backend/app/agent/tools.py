@@ -194,6 +194,10 @@ RED_FLAGS: list[tuple[str, str]] = [
     (r"diskaun\s+\d+%", "discount"),
     (r"akaun\s+(?:bank\s+)?(?:baharu|baru)|new (?:bank )?account|(?:changed|updated) (?:bank )?account|(?:tukar|bertukar|ditukar)\w*\s+akaun|akaun[^.\n]{0,30}(?:telah|sudah)\s+(?:berubah|ditukar)", "new_account"),
     (r"https?://(?:[^\s/]*@|\[email\])|https?://\d{1,3}(?:\.\d{1,3}){3}", "hidden_link"),
+    (r"dijamin\s+(?:untung|keuntungan|pulangan)|guaranteed\s+(?:profit|return|income)|(?:profit|untung|keuntungan|pulangan)[^.\n]{0,25}(?:every month|sebulan|setiap bulan|per month)|保证[^。\n]{0,8}(?:赚|收益|回报|盈利)|每月[^。\n]{0,4}赚|லாபம்\s*உறுதி|உறுதி[^.\n]{0,12}லாபம்", "guaranteed_returns"),
+    (r"deposit\w*\s+(?:of\s+)?rm\s?\d[^.\n]{0,40}(?:activate|aktif|daftar|register)|rm\s?\d[\d,.]*\s+deposit[^.\n]{0,40}(?:activate|aktif|daftar|register)|yuran\s+pendaftaran|registration fee|押金|订金|வைப்புத்?\s*தொகை", "advance_fee"),
+    (r"(?:army|military|tentera|soldier|军医|军人|ராணுவ)[^.\n]{0,25}(?:doctor|doktor|engineer|jurutera|医|மருத்துவர்)[^.\n]{0,40}(?:syria|afghanistan|yemen|iraq|overseas|abroad|luar negara|mission|misi|海外|国外|叙利亚|阿富汗|சிரியா|ஆப்கான்|வெளிநாடு)|(?:doctor|doktor|医生)\s*(?:army|tentera|military)[^.\n]{0,20}(?:syria|afghanistan|yemen|iraq|overseas|abroad|luar negara|mission|misi|海外|国外|叙利亚|阿富汗|சிரியா|ஆப்கான்|வெளிநாடு)|(?:send|hantar)[^.\n]{0,30}(?:money|wang|duit)[^.\n]{0,30}(?:friend'?s|kawan)[^.\n]{0,15}(?:account|akaun)|钱[^。\n]{0,6}(?:汇|转)[^。\n]{0,10}朋友[^。\n]{0,6}(?:户口|账户)|நண்பர[^.\n]{0,12}கணக்[^.\n]{0,20}பணம்[^.\n]{0,10}அனுப்பு", "romance_money"),
+    (r"(?:you(?:'ve| have)?\s+won|anda\s+(?:telah\s+)?menang|congratulations[^.\n]{0,30}won)[^.\n]{0,30}(?:prize|lottery|lucky draw|rm\s?\d|cash|hadiah|cabutan|iphone|voucher)|menang[^.\n]{0,25}(?:hadiah|cabutan)|(?:won|win)[^.\n]{0,25}(?:prize|lottery|lucky draw)|中奖|中獎|லாட்டரி[^.\n]{0,25}வென்ற|பரிசு[^.\n]{0,25}வென்ற", "prize_win"),
     (r"verify your account|confirm your details|sahkan (?:akaun|maklumat)|akaun anda (?:akan )?(?:di)?(?:gantung|sekat|bekukan|tutup)|your account (?:will be|has been) (?:suspended|blocked|closed)", "credential_harvest"),
 ]
 

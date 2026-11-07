@@ -1,0 +1,706 @@
+[
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "macau",
+  "split": "dev",
+  "text": "PDRM Bukit Aman: Nama anda dikaitkan dengan kes pengubahan wang haram. Kami akan keluarkan waran tangkap. Pindahkan wang ke akaun selamat 8001234567 untuk pengesahan. Jangan beritahu sesiapa.",
+  "id": "bm-scam-01"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "parcel",
+  "split": "dev",
+  "text": "J&T: Bungkusan anda tertahan di kastam. Bayar RM 3.50 yuran penghantaran di http://jnt-my-track.top/bayar dalam 24 jam atau bungkusan dikembalikan.",
+  "id": "bm-scam-02"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "family_impersonation",
+  "split": "dev",
+  "text": "Hi mak, ini nombor baru Ali. Phone saya rosak. Boleh tolong transfer RM 800 ke akaun ni dulu? Nanti saya ganti, jangan bagitahu abah.",
+  "id": "bm-scam-03"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "job",
+  "split": "dev",
+  "text": "Kerja sambilan dari rumah! Gaji RM 300 sehari, hanya like video TikTok. Hubungi WhatsApp 011-2345 6789 untuk daftar, deposit RM 100 untuk aktifkan akaun.",
+  "id": "bm-scam-04"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "phishing_refund",
+  "split": "dev",
+  "text": "LHDN: Anda layak terima bayaran balik cukai RM 1,284. Klik http://hasil-refund.xyz/tuntut dan masukkan butiran kad serta TAC untuk terima wang.",
+  "id": "bm-scam-05"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "apk_install",
+  "split": "dev",
+  "text": "Tahniah, pakej Pos Malaysia anda sedia. Muat turun aplikasi penjejakan (pos-track.apk) dari pautan ini dan pasang untuk lihat status.",
+  "id": "bm-scam-06"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "investment",
+  "split": "dev",
+  "text": "Pelaburan emas dijamin untung 30% sebulan, modal RM 500 sahaja. Sertai kumpulan VIP kami, tempat terhad, bayar hari ini.",
+  "id": "bm-scam-07"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "love",
+  "split": "dev",
+  "text": "Sayang, saya doktor tentera di Syria. Saya perlu bayar RM 5,000 untuk cuti pulang. Tolong hantar wang melalui akaun kawan saya, kita akan berkahwin.",
+  "id": "bm-scam-08"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "phishing_bank",
+  "split": "dev",
+  "text": "MAYBANK: Akaun anda akan dibekukan hari ini. Sahkan identiti di http://maybank2u-secure.top/login dan masukkan nombor TAC segera.",
+  "id": "bm-scam-09"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "utility_bill",
+  "split": "dev",
+  "text": "TNB: Bil elektrik anda untuk Oktober 2026 ialah RM 142.30. Bayar sebelum 25 November 2026 melalui myTNB atau kaunter. Rujukan akaun SAMPEL/123.",
+  "id": "bm-legit-10"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "family_chat",
+  "split": "dev",
+  "text": "Mak, saya balik pukul 7 malam ni. Nak makan apa? Saya beli di kedai.",
+  "id": "bm-legit-11"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "clinic",
+  "split": "dev",
+  "text": "Peringatan: temujanji klinik anda pada 12 November 2026, 10.30 pagi. Sila bawa kad pengenalan. Tidak perlu balas.",
+  "id": "bm-legit-12"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "school",
+  "split": "dev",
+  "text": "PIBG SMK Taman Sentosa: Mesyuarat agung pada Sabtu 15 November, 9 pagi di dewan sekolah. Semua ibu bapa dijemput hadir.",
+  "id": "bm-legit-13"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "tax_notice",
+  "split": "dev",
+  "text": "LHDN: Notis peringatan bayaran cukai pendapatan tahun taksiran 2025. Baki RM 420 perlu dijelaskan sebelum 30 November 2026 melalui MyTax di mytax.hasil.gov.my. Rujukan LHDN/SAMPEL/TT2025/0042",
+  "id": "bm-legit-14"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "loan_notice",
+  "split": "dev",
+  "text": "PTPTN: Penyata akaun anda tersedia di portal rasmi ptptn.gov.my. Bayaran bulanan RM 150 akan ditolak daripada gaji mengikut jadual.",
+  "id": "bm-legit-15"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "bank_alert",
+  "split": "dev",
+  "text": "Maybank: Kad kredit anda digunakan sebanyak RM 45.00 di Giant Setia Alam. Jika bukan anda, hubungi nombor di belakang kad anda.",
+  "id": "bm-legit-16"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "road_tax",
+  "split": "dev",
+  "text": "JPJ: Cukai jalan kenderaan anda tamat 5 Disember 2026. Perbaharui melalui MyJPJ di jpj.gov.my atau kaunter JPJ.",
+  "id": "bm-legit-17"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "family_chat",
+  "split": "dev",
+  "text": "Abang, jangan lupa bayar yuran tuisyen adik hujung bulan ni ya. Terima kasih.",
+  "id": "bm-legit-18"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "macau",
+  "split": "dev",
+  "text": "Bukit Aman police: you are linked to a money laundering case and an arrest warrant will be issued. Move your money to the safe account 8001234567 for verification. Do not tell anyone.",
+  "id": "en-scam-19"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "parcel",
+  "split": "dev",
+  "text": "J&T: your parcel is held at customs. Pay the RM 3.50 delivery fee at http://jnt-my-track.top/pay within 24 hours or it will be returned.",
+  "id": "en-scam-20"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "family_impersonation",
+  "split": "dev",
+  "text": "Hi mum, this is my new number, my phone broke. Can you transfer RM 800 to this account first? I will pay you back. Please do not tell dad.",
+  "id": "en-scam-21"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "job",
+  "split": "dev",
+  "text": "Work from home! RM 300 a day just for liking TikTok videos. WhatsApp 011-2345 6789 to register, RM 100 deposit needed to activate your account.",
+  "id": "en-scam-22"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "phishing_refund",
+  "split": "dev",
+  "text": "LHDN: you are eligible for a tax refund of RM 1,284. Click http://hasil-refund.xyz/claim and enter your card details and TAC to receive it.",
+  "id": "en-scam-23"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "apk_install",
+  "split": "dev",
+  "text": "Congratulations, your Pos Malaysia parcel is ready. Download the tracking app (pos-track.apk) from this link and install it to see the status.",
+  "id": "en-scam-24"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "investment",
+  "split": "dev",
+  "text": "Guaranteed gold investment, 30% profit every month, only RM 500 to start. Join our VIP group, places are limited, pay today.",
+  "id": "en-scam-25"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "love",
+  "split": "dev",
+  "text": "Darling, I am an army doctor in Syria. I must pay RM 5,000 for my leave. Please send the money through my friend's account, we will get married.",
+  "id": "en-scam-26"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "phishing_bank",
+  "split": "dev",
+  "text": "MAYBANK: your account will be frozen today. Verify your identity at http://maybank2u-secure.top/login and enter your TAC number immediately.",
+  "id": "en-scam-27"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "utility_bill",
+  "split": "dev",
+  "text": "TNB: your electricity bill for October 2026 is RM 142.30. Pay before 25 November 2026 through myTNB or at the counter. Account ref SAMPEL/123.",
+  "id": "en-legit-28"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "family_chat",
+  "split": "dev",
+  "text": "Mum, I will be home at 7 tonight. What do you want for dinner? I will buy it on the way.",
+  "id": "en-legit-29"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "clinic",
+  "split": "dev",
+  "text": "Reminder: your clinic appointment is on 12 November 2026 at 10.30 am. Please bring your IC. No reply needed.",
+  "id": "en-legit-30"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "school",
+  "split": "dev",
+  "text": "PIBG SMK Taman Sentosa: annual general meeting on Saturday 15 November at 9 am in the school hall. All parents are welcome.",
+  "id": "en-legit-31"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "tax_notice",
+  "split": "dev",
+  "text": "LHDN: reminder to settle your 2025 income tax. The balance of RM 420 is due before 30 November 2026 through MyTax at mytax.hasil.gov.my. Ref LHDN/SAMPEL/TT2025/0042",
+  "id": "en-legit-32"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "loan_notice",
+  "split": "dev",
+  "text": "PTPTN: your account statement is available on the official portal ptptn.gov.my. The monthly RM 150 will be deducted from your salary as scheduled.",
+  "id": "en-legit-33"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "bank_alert",
+  "split": "dev",
+  "text": "Maybank: your credit card was used for RM 45.00 at Giant Setia Alam. If this was not you, call the number on the back of your card.",
+  "id": "en-legit-34"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "road_tax",
+  "split": "dev",
+  "text": "JPJ: your vehicle road tax expires on 5 December 2026. Renew through MyJPJ at jpj.gov.my or at a JPJ counter.",
+  "id": "en-legit-35"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "family_chat",
+  "split": "dev",
+  "text": "Bro, do not forget to pay your sister's tuition fee at the end of the month. Thanks.",
+  "id": "en-legit-36"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "macau",
+  "split": "dev",
+  "text": "武吉免登警察局：您涉嫌洗黑钱案，我们将发出逮捕令。请把钱转入安全账户 8001234567 进行核实。不要告诉任何人。",
+  "id": "zh-scam-37"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "parcel",
+  "split": "dev",
+  "text": "J&T：您的包裹被海关扣留。请在24小时内通过 http://jnt-my-track.top/pay 支付 RM 3.50 运费，否则包裹将被退回。",
+  "id": "zh-scam-38"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "family_impersonation",
+  "split": "dev",
+  "text": "妈，这是我的新号码，我手机坏了。能不能先帮我转 RM 800 到这个户口？不要告诉爸爸。",
+  "id": "zh-scam-39"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "job",
+  "split": "dev",
+  "text": "在家兼职！日薪 RM 300，只需给视频点赞。WhatsApp 011-2345 6789 报名，需先付 RM 100 押金激活账户。",
+  "id": "zh-scam-40"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "phishing_refund",
+  "split": "dev",
+  "text": "LHDN：您有 RM 1,284 退税。请点击 http://hasil-refund.xyz/claim 输入银行卡资料和 TAC 领取。",
+  "id": "zh-scam-41"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "apk_install",
+  "split": "dev",
+  "text": "恭喜！您的包裹已到。请下载追踪应用 pos-track.apk 并安装以查看状态。",
+  "id": "zh-scam-42"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "investment",
+  "split": "dev",
+  "text": "黄金投资保证每月赚30%，只需 RM 500。加入VIP群，名额有限，今天就付款。",
+  "id": "zh-scam-43"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "love",
+  "split": "dev",
+  "text": "亲爱的，我是在叙利亚的军医。我需要付 RM 5,000 才能休假回国。请把钱汇到我朋友的户口，我们会结婚。",
+  "id": "zh-scam-44"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "phishing_bank",
+  "split": "dev",
+  "text": "MAYBANK：您的账户今天将被冻结。请在 http://maybank2u-secure.top/login 验证身份并立即输入 TAC 号码。",
+  "id": "zh-scam-45"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "utility_bill",
+  "split": "dev",
+  "text": "TNB：您2026年10月的电费为 RM 142.30。请于2026年11月25日前通过 myTNB 或柜台缴付。账户参考 SAMPEL/123。",
+  "id": "zh-legit-46"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "family_chat",
+  "split": "dev",
+  "text": "妈，我今晚七点回家。想吃什么？我在路上买。",
+  "id": "zh-legit-47"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "clinic",
+  "split": "dev",
+  "text": "提醒：您的诊所预约在2026年11月12日上午10:30。请带身份证。无需回复。",
+  "id": "zh-legit-48"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "school",
+  "split": "dev",
+  "text": "学校家教协会：周六11月15日上午9点在礼堂召开常年大会，欢迎所有家长出席。",
+  "id": "zh-legit-49"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "tax_notice",
+  "split": "dev",
+  "text": "LHDN：2025评税年所得税提醒。余额 RM 420 须于2026年11月30日前通过 mytax.hasil.gov.my 缴付。参考号 LHDN/SAMPEL/TT2025/0042",
+  "id": "zh-legit-50"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "loan_notice",
+  "split": "dev",
+  "text": "PTPTN：您的账户报表已上传至官方网站 ptptn.gov.my。每月 RM 150 将按计划从薪水扣除。",
+  "id": "zh-legit-51"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "bank_alert",
+  "split": "dev",
+  "text": "Maybank：您的信用卡在 Giant Setia Alam 消费 RM 45.00。如非本人，请拨打卡背面的号码。",
+  "id": "zh-legit-52"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "road_tax",
+  "split": "dev",
+  "text": "JPJ：您的车辆路税将于2026年12月5日到期。请通过 jpj.gov.my 的 MyJPJ 或柜台更新。",
+  "id": "zh-legit-53"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "family_chat",
+  "split": "dev",
+  "text": "哥，月底别忘了交弟弟的补习费。谢谢。",
+  "id": "zh-legit-54"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "macau",
+  "split": "dev",
+  "text": "காவல்துறை புக்கிட் அமான்: உங்கள் பெயர் பண மோசடி வழக்கில் உள்ளது. கைது ஆணை வழங்கப்படும். சரிபார்ப்புக்கு பாதுகாப்பான கணக்கு 8001234567-க்கு பணம் மாற்றவும். யாரிடமும் சொல்ல வேண்டாம்.",
+  "id": "ta-scam-55"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "parcel",
+  "split": "dev",
+  "text": "உங்கள் பார்சல் சுங்கத்தில் நிறுத்தப்பட்டுள்ளது. RM 3.50 கட்டணத்தை http://pos-my-track.top/pay இல் 24 மணி நேரத்தில் செலுத்துங்கள்.",
+  "id": "ta-scam-56"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "family_impersonation",
+  "split": "dev",
+  "text": "அம்மா, இது என் புதிய எண். என் தொலைபேசி உடைந்துவிட்டது. தயவு செய்து RM 800 இந்தக் கணக்குக்கு மாற்றுங்கள். அப்பாவிடம் சொல்ல வேண்டாம்.",
+  "id": "ta-scam-57"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "job",
+  "split": "dev",
+  "text": "வீட்டிலிருந்தே வேலை! நாளுக்கு RM 300, வீடியோக்களுக்கு லைக் மட்டும். WhatsApp 011-2345 6789. கணக்கை செயல்படுத்த RM 100 வைப்புத் தொகை செலுத்துங்கள்.",
+  "id": "ta-scam-58"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "phishing_refund",
+  "split": "dev",
+  "text": "LHDN: உங்களுக்கு RM 1,284 வரித் திரும்பப்பெறுதல் உள்ளது. http://hasil-refund.xyz/claim இல் அட்டை விவரங்களையும் TAC-ஐயும் உள்ளிடுங்கள்.",
+  "id": "ta-scam-59"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "apk_install",
+  "split": "dev",
+  "text": "வாழ்த்துக்கள்! உங்கள் பார்சலைக் கண்காணிக்க pos-track.apk செயலியைப் பதிவிறக்கி நிறுவவும்.",
+  "id": "ta-scam-60"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "investment",
+  "split": "dev",
+  "text": "தங்க முதலீடு மாதம் 30% லாபம் உறுதி, RM 500 மட்டுமே. VIP குழுவில் சேருங்கள், இடங்கள் குறைவு, இன்றே செலுத்துங்கள்.",
+  "id": "ta-scam-61"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "love",
+  "split": "dev",
+  "text": "அன்பே, நான் சிரியாவில் ராணுவ மருத்துவர். விடுப்புக்கு RM 5,000 செலுத்த வேண்டும். என் நண்பரின் கணக்குக்கு பணம் அனுப்பு, நாம் திருமணம் செய்வோம்.",
+  "id": "ta-scam-62"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "phishing_bank",
+  "split": "dev",
+  "text": "MAYBANK: உங்கள் கணக்கு இன்று முடக்கப்படும். http://maybank2u-secure.top/login இல் அடையாளத்தை உறுதிசெய்து TAC எண்ணை உடனே உள்ளிடுங்கள்.",
+  "id": "ta-scam-63"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "utility_bill",
+  "split": "dev",
+  "text": "TNB: உங்கள் அக்டோபர் 2026 மின் கட்டணம் RM 142.30. 25 நவம்பர் 2026-க்கு முன் myTNB அல்லது கவுண்டரில் செலுத்துங்கள். கணக்கு குறிப்பு SAMPEL/123.",
+  "id": "ta-legit-64"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "family_chat",
+  "split": "dev",
+  "text": "அம்மா, நான் இன்று இரவு 7 மணிக்கு வருகிறேன். என்ன சாப்பிட வேண்டும்?",
+  "id": "ta-legit-65"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "clinic",
+  "split": "dev",
+  "text": "நினைவூட்டல்: உங்கள் மருத்துவ சந்திப்பு 12 நவம்பர் 2026, காலை 10.30. அடையாள அட்டையைக் கொண்டு வாருங்கள். பதில் தேவையில்லை.",
+  "id": "ta-legit-66"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "school",
+  "split": "dev",
+  "text": "பள்ளி பெற்றோர் ஆசிரியர் சங்கம்: ஆண்டுக் கூட்டம் சனிக்கிழமை 15 நவம்பர் காலை 9 மணிக்கு மண்டபத்தில். அனைத்து பெற்றோரும் வரவேற்கப்படுகிறார்கள்.",
+  "id": "ta-legit-67"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "tax_notice",
+  "split": "dev",
+  "text": "LHDN: 2025 மதிப்பீட்டு ஆண்டு வருமான வரி நினைவூட்டல். மீதம் RM 420 ஐ 30 நவம்பர் 2026-க்கு முன் mytax.hasil.gov.my வழியாகச் செலுத்தவும். குறிப்பு LHDN/SAMPEL/TT2025/0042",
+  "id": "ta-legit-68"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "loan_notice",
+  "split": "dev",
+  "text": "PTPTN: உங்கள் கணக்கு அறிக்கை அதிகாரப்பூர்வ தளம் ptptn.gov.my இல் உள்ளது. மாதாந்திர RM 150 சம்பளத்திலிருந்து கழிக்கப்படும்.",
+  "id": "ta-legit-69"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "bank_alert",
+  "split": "dev",
+  "text": "Maybank: உங்கள் கடன் அட்டை Giant Setia Alam-இல் RM 45.00 பயன்படுத்தப்பட்டது. நீங்கள் இல்லையெனில் அட்டையின் பின்னாலுள்ள எண்ணை அழைக்கவும்.",
+  "id": "ta-legit-70"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "road_tax",
+  "split": "dev",
+  "text": "JPJ: உங்கள் வாகனச் சாலை வரி 5 டிசம்பர் 2026 அன்று முடிகிறது. jpj.gov.my இல் MyJPJ வழியாகப் புதுப்பிக்கவும்.",
+  "id": "ta-legit-71"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "family_chat",
+  "split": "dev",
+  "text": "அண்ணா, மாத இறுதியில் தம்பியின் டியூஷன் கட்டணம் செலுத்த மறக்காதே. நன்றி.",
+  "id": "ta-legit-72"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "prize",
+  "split": "held_out",
+  "text": "Anda menang hadiah RM 10,000 dalam cabutan bertuah Shopee. Untuk tuntut, bayar cukai RM 200 ke akaun 1122334455 hari ini.",
+  "id": "bm-scam-73"
+ },
+ {
+  "lang": "bm",
+  "label": "scam",
+  "kind": "court_summons",
+  "split": "held_out",
+  "text": "Ini Pegawai Mahkamah. Anda ada saman tertunggak RM 1,500. Bayar segera ke akaun peribadi 5566778899 atau waran tangkap akan dikeluarkan.",
+  "id": "bm-scam-74"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "school",
+  "split": "held_out",
+  "text": "Hi, kelas tambahan Matematik esok dibatalkan kerana cikgu demam. Kelas ganti hari Sabtu. Terima kasih.",
+  "id": "bm-legit-75"
+ },
+ {
+  "lang": "bm",
+  "label": "legit",
+  "kind": "epf_statement",
+  "split": "held_out",
+  "text": "KWSP: Penyata caruman anda untuk Oktober 2026 telah tersedia di i-Akaun di www.kwsp.gov.my.",
+  "id": "bm-legit-76"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "parcel",
+  "split": "held_out",
+  "text": "Dear customer, your parcel could not be delivered. Reschedule at http://post-reschedule.info/my and pay RM 2 handling fee.",
+  "id": "en-scam-77"
+ },
+ {
+  "lang": "en",
+  "label": "scam",
+  "kind": "tax_call",
+  "split": "held_out",
+  "text": "Hello, I am calling from LHDN. You owe back taxes. Pay now with gift cards or you will be arrested.",
+  "id": "en-scam-78"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "ride_receipt",
+  "split": "held_out",
+  "text": "Your Grab ride receipt: RM 12.50 on 6 November 2026. Thank you for riding with us.",
+  "id": "en-legit-79"
+ },
+ {
+  "lang": "en",
+  "label": "legit",
+  "kind": "work_chat",
+  "split": "held_out",
+  "text": "Hi team, the meeting is moved to 3 pm tomorrow in the second-floor meeting room.",
+  "id": "en-legit-80"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "telco_police",
+  "split": "held_out",
+  "text": "您好，我是电信公司客服，您的手机号码涉嫌诈骗，请马上联系警官，不要告诉家人。",
+  "id": "zh-scam-81"
+ },
+ {
+  "lang": "zh",
+  "label": "scam",
+  "kind": "prize",
+  "split": "held_out",
+  "text": "恭喜您中奖 RM 50,000！请先缴纳 RM 500 手续费到户口 9988776655 才能领奖。",
+  "id": "zh-scam-82"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "school",
+  "split": "held_out",
+  "text": "老师通知：明天学校放假，后天正常上课。请家长留意。",
+  "id": "zh-legit-83"
+ },
+ {
+  "lang": "zh",
+  "label": "legit",
+  "kind": "courier",
+  "split": "held_out",
+  "text": "您的快递已放在门口保安处，请凭手机号码领取。",
+  "id": "zh-legit-84"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "phishing_bank",
+  "split": "held_out",
+  "text": "உங்கள் வங்கிக் கணக்கு சரிபார்ப்பு தேவை. உடனே http://bank-verify.top/login இல் கடவுச்சொல்லை உள்ளிடுங்கள்.",
+  "id": "ta-scam-85"
+ },
+ {
+  "lang": "ta",
+  "label": "scam",
+  "kind": "prize",
+  "split": "held_out",
+  "text": "நீங்கள் லாட்டரியில் RM 50,000 வென்றீர்கள். பரிசைப் பெற முதலில் RM 500 வரி செலுத்துங்கள்.",
+  "id": "ta-scam-86"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "bank_credit",
+  "split": "held_out",
+  "text": "வங்கி: உங்கள் கணக்கில் RM 500 வரவு வைக்கப்பட்டது. நன்றி.",
+  "id": "ta-legit-87"
+ },
+ {
+  "lang": "ta",
+  "label": "legit",
+  "kind": "power_cut",
+  "split": "held_out",
+  "text": "நாளை மின்தடை அறிவிப்பு: காலை 9 முதல் மதியம் 1 வரை எங்கள் பகுதியில் பராமரிப்பு பணி நடைபெறும்.",
+  "id": "ta-legit-88"
+ }
+]
