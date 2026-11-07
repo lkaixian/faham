@@ -21,6 +21,9 @@ Judges are likely to ask three questions: *Can it be wrong? What happens to my l
 
 The pattern-by-pattern list, what each service receives, and the known gaps (free-form names, unusual address styles, words inside links) are in [AGENT.md, section 9](AGENT.md#9-personal-data-pii).
 
+## Files that can carry malware (ZIP, APK, scripts, programs)
+Tulen never opens, runs, installs, extracts or saves these files. `filecheck.py` looks only at the file name, the first bytes and the archive's list of entries; an Android app's manifest (its package name and the permissions it asks for) is read from memory with a size limit. No member is decompressed, so a zip bomb has nothing to expand. The file's bytes never reach any model: the agent sees one neutral line (name, type, what is listed inside, the permissions requested) with names stripped of hidden characters. A file can come out as "caution" at best, never as safe, and a result is a set of signs, not an antivirus verdict. The optional "I got this on WhatsApp, SMS or a link" tick adds context and is sent as the `X-Via-Chat: 1` header; nothing about it is stored.
+
 ## What the server keeps
 
 | Item | What | How long |

@@ -63,6 +63,9 @@ data: { ...the full AnalyzeResponse... }
 `queue` appears only while waiting. `verdict` is rules-only and arrives first. A failure is `event: error` with `{status, detail}`.
 
 
+## `POST /api/analyze-file` and `/api/analyze-file/stream`
+Raw file bytes as the body. Headers: `X-Filename` (URL-encoded), `Content-Type`, and optional `X-Via-Chat: 1` (the person got the file on WhatsApp, SMS or a link). PDF, DOCX, text, email and images are read as letters. ZIP, APK, 7z, rar, scripts, programs, disk images and shortcuts are not read: they are inspected by name, first bytes and archive listing only (never opened, run or stored) and come back as a normal result whose reasons are the file signs found. Macro-enabled Office files are still refused (415). Response: `BatchResponse`.
+
 ## `GET /api/practice?n=5`
 Returns `n` fictional messages for Spot-the-scam:
 ```json

@@ -334,8 +334,8 @@ AI_SOFT = set(AI_SIGNALS) - AI_HARD
 # File signals (filecheck.py). Weak ones are real but common in innocent files (an APK exists, a zip is encrypted, a lure-like
 # name), so like the soft AI signals they weigh 12 and can never alone give "likely scam". Strong ones are deliberate evasion
 # or a disguised script and weigh 30.
-FILE_WEAK = {"file_script", "file_apk", "file_encrypted", "file_unreadable", "file_disk_image", "file_name_trick", "file_lure_name"}
-FILE_STRONG = {"file_script_disguised", "file_zip_tricks"}
+FILE_WEAK = {"file_script", "file_apk", "file_encrypted", "file_unreadable", "file_disk_image", "file_name_trick", "file_lure_name", "file_apk_perms"}
+FILE_STRONG = {"file_script_disguised", "file_zip_tricks", "file_apk_takeover", "file_apk_brand"}
 SOFT, HARD = AI_SOFT | FILE_WEAK, AI_HARD | FILE_STRONG
 
 
@@ -412,6 +412,8 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     if fam:  # the one check that beats this scam: hear their real voice on the number you already have
         verify.insert(0, r("call_old_number"))
     stype = detect_scam_type(low, family=bool(fam)) if verdict != "no_signals" else None
+    if verdict != "no_signals" and any(c.startswith("file_apk") for c, _ in flags):
+        stype = "apk_install"  # the lesson for apps sent in a message; file names never reach the text rules
     return {"genuine": verdict != "likely_scam",  # means 'not flagged', not 'proven genuine'
             "verdict": verdict, "score": score, "red_flags": [t for _, t in flags], "good_signs": [t for _, t in good],
             "reasons": reasons, "verify_yourself": verify, "scam_type": stype}

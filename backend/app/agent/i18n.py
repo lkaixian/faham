@@ -78,6 +78,24 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "文件名冒充机构、银行、包裹或请柬，这是常见的诱饵",
         "ta": "கோப்பின் பெயர் ஒரு அமைப்பு, வங்கி, பார்சல் அல்லது அழைப்பிதழைப் போல நடிக்கிறது; இது பொதுவான தூண்டில்",
     },
+    "file_apk_perms": {
+        "en": "This app asks for sensitive powers, such as reading your text messages or drawing over other apps. An app sent in a message has not been checked by Google Play",
+        "bm": "Aplikasi ini meminta kuasa sensitif, seperti membaca mesej teks anda atau melukis di atas aplikasi lain. Aplikasi yang dihantar dalam mesej tidak disemak oleh Google Play",
+        "zh": "此应用要求敏感权限，例如读取你的短信或覆盖在其他应用上方。通过信息发来的应用没有经过 Google Play 审核",
+        "ta": "இந்தச் செயலி உங்கள் குறுஞ்செய்திகளைப் படிப்பது அல்லது பிற செயலிகளின் மேல் வரைவது போன்ற முக்கிய அதிகாரங்களைக் கேட்கிறது. செய்தியில் வந்த செயலியை Google Play சரிபார்க்கவில்லை",
+    },
+    "file_apk_takeover": {
+        "en": "This app asks for the powers scam apps use to read TAC codes and control your phone (text messages, screen control, overlays)",
+        "bm": "Aplikasi ini meminta kuasa yang digunakan aplikasi penipuan untuk membaca kod TAC dan mengawal telefon anda (mesej teks, kawalan skrin, tindihan)",
+        "zh": "此应用要求诈骗应用常用的权限，用来读取 TAC 验证码并控制你的手机（短信、屏幕控制、覆盖层）",
+        "ta": "இந்தச் செயலி மோசடிச் செயலிகள் TAC குறியீடுகளைப் படிக்கவும் தொலைபேசியைக் கட்டுப்படுத்தவும் பயன்படுத்தும் அதிகாரங்களைக் கேட்கிறது (குறுஞ்செய்தி, திரைக் கட்டுப்பாடு, மேல்படலம்)",
+    },
+    "file_apk_brand": {
+        "en": "The app uses the name of a bank or agency, but it is not that organisation's known app",
+        "bm": "Aplikasi ini menggunakan nama bank atau agensi, tetapi bukan aplikasi yang diketahui milik organisasi itu",
+        "zh": "此应用使用了银行或机构的名称，但它不是该机构已知的应用",
+        "ta": "இந்தச் செயலி ஒரு வங்கி அல்லது அமைப்பின் பெயரைப் பயன்படுத்துகிறது, ஆனால் அது அந்த அமைப்பின் அறியப்பட்ட செயலி அல்ல",
+    },
     "file_zip_tricks": {
         "en": "The archive is built in an unusual way (odd paths, overlapping or appended parts) that hides its contents from checkers",
         "bm": "Arkib dibina dengan cara luar biasa (laluan pelik, bahagian bertindih atau ditambah) untuk menyembunyikan isinya daripada pemeriksa",

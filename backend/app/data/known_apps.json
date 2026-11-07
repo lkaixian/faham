@@ -1,0 +1,20 @@
+{
+  "_note": "Official Android package IDs for brands that scammers copy. 'confidence' is 'play' (seen on the live Google Play page) or 'third-party' (listed by a tracker only, verify before relying on it). The list is INCOMPLETE on purpose: a package that is not here is never proof of a fake, so a brand mismatch only counts together with risky permissions or chat delivery. A package that IS here gives no reassurance either, because a repackaged copy keeps the same name. Sourced from research_notes/Tulen file safety inspection/apk_static_analysis.md.",
+  "apps": [
+    {"brand": "Maybank", "keywords": ["maybank", "maybank2u", "mae "], "packages": ["com.maybank2u.life"], "confidence": "play"},
+    {"brand": "CIMB", "keywords": ["cimb", "octo"], "packages": ["com.cimb.cimbocto"], "confidence": "play"},
+    {"brand": "Touch 'n Go eWallet", "keywords": ["touch n go", "touch'n go", "tngd", "tng ewallet", "tng"], "packages": ["my.com.tngdigital.ewallet"], "confidence": "play"},
+    {"brand": "MySejahtera", "keywords": ["mysejahtera"], "packages": ["my.gov.onegovappstore.mysejahtera"], "confidence": "play"},
+    {"brand": "RHB", "keywords": ["rhb"], "packages": ["com.rhbgroup.rhbmobilebanking"], "confidence": "third-party"},
+    {"brand": "Public Bank", "keywords": ["public bank", "pbengage", "pb engage"], "packages": ["com.engage.pbb.pbengage2my.release"], "confidence": "third-party"},
+    {"brand": "Boost", "keywords": ["boost"], "packages": ["my.com.myboost"], "confidence": "third-party"},
+    {"brand": "Hong Leong", "keywords": ["hong leong", "hongleong", "hlb"], "packages": [], "confidence": "unverified"},
+    {"brand": "Bank Islam", "keywords": ["bank islam", "bankislam"], "packages": [], "confidence": "unverified"},
+    {"brand": "AmBank", "keywords": ["ambank", "amonline"], "packages": [], "confidence": "unverified"},
+    {"brand": "Bank Negara Malaysia", "keywords": ["bank negara", "bnm"], "packages": [], "confidence": "unverified"},
+    {"brand": "PDRM", "keywords": ["pdrm", "polis", "police"], "packages": [], "confidence": "unverified"},
+    {"brand": "JPJ", "keywords": ["jpj", "myjpj"], "packages": [], "confidence": "unverified"},
+    {"brand": "LHDN", "keywords": ["lhdn", "hasil", "mytax"], "packages": [], "confidence": "unverified"},
+    {"brand": "Pos Malaysia", "keywords": ["pos malaysia", "posmalaysia", "pos laju"], "packages": [], "confidence": "unverified"}
+  ]
+}

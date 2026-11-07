@@ -314,8 +314,8 @@ def extract(filename: str | None, content_type: str | None, data: bytes, *,
     log.info("ingest kind=%s bytes=%d depth=%d", kind, len(data), depth)
     name = re.sub(r"[\x00-\x1f]", "", (filename or "file").replace("\\", "/").rsplit("/", 1)[-1])[:100] or "file"
     if kind == "file_risk":
-        label, inner, codes = filecheck.inspect(filename, data, via_chat)
-        return [Doc(name, kind, filecheck.describe(filename, label, inner, via_chat), signals=codes,
+        label, inner, codes, facts = filecheck.inspect(filename, data, via_chat)
+        return [Doc(name, kind, filecheck.describe(filename, label, inner, via_chat, facts), signals=codes,
                     warnings=["Tulen checked the file name and the list of files inside. It did not open or run anything."])]
     if kind == "pdf":
         return [_pdf(name, data)]

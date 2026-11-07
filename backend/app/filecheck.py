@@ -7,11 +7,16 @@ the codes live in i18n.TEXT. Weak codes can never give "likely scam" alone (see 
 from __future__ import annotations
 
 import io
+import json
 import re
 import struct
 import zipfile
 
-MAX_ENTRIES, MAX_NAMES = 5000, 20
+from . import apk as apkmod
+from .config import DATA_DIR
+
+MAX_ENTRIES, MAX_NAMES, MAX_MANIFEST = 5000, 20, 5 * 1024 * 1024
+KNOWN_APPS = json.loads((DATA_DIR / "known_apps.json").read_text(encoding="utf-8"))["apps"]
 EXEC = {"exe", "scr", "msi", "bat", "cmd", "com", "pif", "ps1", "vbs", "vbe", "wsf", "wsh", "hta", "js", "jse", "jar", "dll"}
 DISK = {"iso", "img", "lnk"}
 ARCHIVE = {"zip", "7z", "rar", "tar", "gz", "cab"}
@@ -51,7 +56,7 @@ def _eocd_count(data: bytes) -> int:
 
 def _zip_scan(data: bytes) -> dict:
     """Listing-only look at a zip: names, encryption, odd compression, overlap, traversal, appended archives."""
-    r = {"names": [], "encrypted": False, "unreadable": False, "tricks": False, "apk": False}
+    r = {"names": [], "encrypted": False, "unreadable": False, "tricks": False, "apk": False, "manifest": None}
     try:
         z = zipfile.ZipFile(io.BytesIO(data))
         infos = z.infolist()
@@ -63,6 +68,15 @@ def _zip_scan(data: bytes) -> dict:
         infos = infos[:MAX_ENTRIES]
     r["names"] = [i.filename for i in infos]
     r["apk"] = "AndroidManifest.xml" in r["names"]
+    if r["apk"]:  # one bounded read of the manifest; a second manifest or a broken one is a sign, not a crash
+        mans = [i for i in infos if i.filename == "AndroidManifest.xml"]
+        r["tricks"] |= len(mans) > 1
+        try:
+            with z.open(mans[0]) as f:
+                raw = f.read(MAX_MANIFEST + 1)
+            r["manifest"] = apkmod.parse_manifest(raw) if len(raw) <= MAX_MANIFEST else None
+        except Exception:  # encrypted, unsupported compression, corrupt stream
+            r["manifest"] = None
     r["encrypted"] = any(i.flag_bits & 1 for i in infos)
     r["unreadable"] |= any(i.compress_type not in (0, 8) for i in infos)
     for i in infos:  # traversal, absolute paths, drive letters, alternate data streams
@@ -75,11 +89,20 @@ def _zip_scan(data: bytes) -> dict:
     return r
 
 
-def inspect(filename: str | None, data: bytes, via_chat: bool = False) -> tuple[str, list[str], list[str]]:
-    """(kind label, names inside, signal codes). Pure and cheap: safe on hostile input, never raises."""
+def _brand(m: "apkmod.Manifest", name: str) -> str:
+    """The brand an app claims (by file name, label or package) when its package is not one of that brand's known IDs, else empty."""
+    hay = f"{name} {m.label} {m.package}".lower()
+    for a in KNOWN_APPS:
+        if any(re.search(rf"\b{re.escape(k.strip())}\b", hay) for k in a["keywords"]) and m.package not in a["packages"]:
+            return a["brand"]
+    return ""
+
+
+def inspect(filename: str | None, data: bytes, via_chat: bool = False) -> tuple[str, list[str], list[str], str]:
+    """(kind label, names inside, signal codes, facts about an APK). Pure and cheap: safe on hostile input, never raises."""
     raw = (filename or "file").replace("\\", "/").rsplit("/", 1)[-1]
     name, ext = clean(raw), (_exts(clean(raw)) or [""])[-1]
-    scan = {"names": [], "encrypted": False, "unreadable": False, "tricks": False, "apk": False}
+    scan = {"names": [], "encrypted": False, "unreadable": False, "tricks": False, "apk": False, "manifest": None}
     if data[:4] in (b"PK\x03\x04", b"PK\x05\x06"):
         scan = _zip_scan(data)
         label = "Android app (APK)" if scan["apk"] or ext == "apk" else "ZIP archive"
@@ -99,8 +122,24 @@ def inspect(filename: str | None, data: bytes, via_chat: bool = False) -> tuple[
         codes.append("file_script_disguised" if context else "file_script")
     elif HIDDEN.search(raw):
         codes.append("file_name_trick")
+    facts = ""
     if scan["apk"] or ext == "apk":
         codes.append("file_apk")
+        m = scan["manifest"]
+        if m is None or not m.ok:
+            codes.append("file_unreadable")  # a manifest that will not parse is itself a sign
+        else:
+            facts = apkmod.facts(m)
+            claim, context = _brand(m, name), via_chat or bool(LURE.search(name))
+            heavy = ("accessibility" in m.caps and len(m.caps) > 1) or {"sms", "overlay"} <= m.caps or {"sms", "notification"} <= m.caps
+            if m.caps:
+                codes.append("file_apk_perms")
+            if heavy or (m.caps and context):
+                codes.append("file_apk_takeover")
+            if claim and (m.caps or via_chat):
+                codes.append("file_apk_brand")
+    elif any((_exts(n) or [""])[-1] == "apk" for n in inner):
+        codes.append("file_apk")  # an app tucked inside an archive
     if ext in DISK or any((_exts(n) or [""])[-1] in DISK for n in inner):
         codes.append("file_disk_image")
     if scan["tricks"]:
@@ -111,13 +150,14 @@ def inspect(filename: str | None, data: bytes, via_chat: bool = False) -> tuple[
         codes.append("file_unreadable")
     if codes and (LURE.search(name) or any(LURE.search(n) for n in inner[:MAX_NAMES])):
         codes.append("file_lure_name")
-    return label, inner, codes
+    return label, inner, list(dict.fromkeys(codes)), clean(facts, 400)
 
 
-def describe(filename: str | None, label: str, inner: list[str], via_chat: bool) -> str:
+def describe(filename: str | None, label: str, inner: list[str], via_chat: bool, facts: str = "") -> str:
     """A neutral fact line the agent can read. Names are cleaned; the file's bytes never reach the agent."""
     dots = lambda n: n.replace(".", "․")  # .zip and .pdf are real web endings: keep names from being read as links
     s = f"Uploaded file: {dots(clean(filename or 'file'))}. Type: {label}."
     if inner:
         s += " Inside: " + ", ".join(dots(n) for n in inner[:MAX_NAMES]) + (f" and {len(inner) - MAX_NAMES} more." if len(inner) > MAX_NAMES else ".")
+    s += " " + dots(facts) if facts else ""
     return s + (" The person says it arrived by chat, SMS or a link." if via_chat else "")
