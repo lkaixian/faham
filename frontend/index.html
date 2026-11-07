@@ -24,7 +24,10 @@
   <link rel="icon" href="assets/img/favicon-48.png" type="image/png" sizes="48x48" />
   <link rel="icon" href="assets/img/favicon-256.png" type="image/png" sizes="256x256" />
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
-  <link rel="stylesheet" href="assets/css/styles.css?v=e5217224" />
+  <link rel="preload" href="assets/fonts/ubuntu-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/ubuntu-latin-700.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/fonts.css?v=2a12f096" />
+  <link rel="stylesheet" href="assets/css/styles.css?v=da99ca62" />
 </head>
 <body>
   <div id="intro" role="dialog" aria-modal="true" aria-label="Tulen">
@@ -47,6 +50,7 @@
   <header class="top">
     <div class="wrap bar">
       <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/tulen-wordmark-light.png" alt="Tulen logo" width="132" height="40" /><img class="logo logo-d" src="assets/img/tulen-wordmark-dark.png" alt="Tulen logo" width="132" height="40" /></a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuSheet"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span data-i18n="menu_btn"></span></button>
       <div class="ctrls">
         <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
         <div class="tools">
@@ -67,16 +71,17 @@
       <span class="mode" id="mode" role="status"></span>
     </div>
     <nav class="wrap" data-i18n-aria="nav_label">
-      <a href="#check" data-i18n="nav_check"></a>
-      <a href="#practice" data-i18n="nav_practice"></a>
-      <a href="#dictionary" data-i18n="nav_dict"></a>
-      <a href="#family" data-i18n="nav_family"></a>
-      <a href="#call" data-i18n="nav_call"></a>
-      <a href="#connect" data-i18n="nav_connect"></a>
-      <a href="#about" data-i18n="nav_about"></a>
+      <a href="#check"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5M8.5 11l2 2 3.5-4"/></svg><span data-i18n="nav_check"></span></a>
+      <a href="#practice"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12h.01"/></svg><span data-i18n="nav_practice"></span></a>
+      <a href="#dictionary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg><span data-i18n="nav_dict"></span></a>
+      <a href="#family"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9.5" r="2.3"/><path d="M3.5 19c.4-3.2 2.6-5 5.5-5s5.1 1.8 5.5 5M15 14.3c2.7-.4 4.9 1 5.5 4"/></svg><span data-i18n="nav_family"></span></a>
+      <a href="#call"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4h3l1.5 4-2 1.3a11 11 0 0 0 5.7 5.7l1.3-2 4 1.5v3a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z"/></svg><span data-i18n="nav_call"></span></a>
+      <a href="#connect"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><span data-i18n="nav_connect"></span></a>
+      <a href="#about"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.2 2.8 7.4 7 9 4.2-1.6 7-4.8 7-9V6z"/><path d="M12 11v4.5M12 8h.01"/></svg><span data-i18n="nav_about"></span></a>
       <button class="btn paid-btn" id="paidBtn" type="button" data-i18n="pd_btn"></button>
     </nav>
   </header>
+  <div class="paid-strip-wrap"><button class="paid-strip" id="paidStrip" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4.5M12 17.5h.01"/></svg><span data-i18n="menu_paid_strip"></span></button></div>
 
   <main class="wrap" id="main" tabindex="-1">
 
@@ -84,8 +89,10 @@
     <section class="view" id="view-check">
       <div id="checker">
         <div class="senior-banner" id="seniorBanner" role="group"><p id="seniorMsg"></p><button class="btn btn-secondary" id="seniorBannerBtn" type="button"></button></div>
-        <h1 tabindex="-1" data-i18n="c_h1"></h1>
-        <p class="lead" data-i18n="c_lead"></p>
+        <div class="hero">
+          <h1 tabindex="-1" data-i18n="c_h1"></h1>
+          <p class="lead" data-i18n="c_lead"></p>
+        </div>
 
         <div class="note warn" id="offlineNote" hidden><b data-i18n="off_b"></b> <span data-i18n="off_t"></span></div>
 
@@ -318,14 +325,27 @@
     <button class="btn btn-primary" id="exitStay" type="button" autofocus></button>
     <button class="btn btn-quiet" id="exitGo" type="button"></button>
   </dialog>
+  <div class="sheet" id="menuSheet" role="dialog" aria-modal="true" aria-labelledby="menuT" hidden>
+    <div class="sheet-in">
+      <div class="sheet-head">
+        <h2 id="menuT" data-i18n="menu_btn"></h2>
+        <button class="btn" id="menuClose" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg><span data-i18n="menu_close"></span></button>
+      </div>
+      <div id="slotNav"></div>
+      <p class="sheet-h" data-i18n="menu_lang"></p>
+      <div id="slotCtrls"></div>
+      <div id="slotMode"></div>
+    </div>
+  </div>
   <div class="ob" id="ob" role="dialog" aria-modal="true" aria-labelledby="obH" hidden></div>
   <div id="paid" role="dialog" aria-modal="true" aria-labelledby="pdH" hidden></div>
   <div id="toast" role="status" aria-live="polite"></div>
 
   <script src="assets/js/config.js?v=6788caad"></script>
   <script src="assets/js/data.js?v=9c902970"></script>
-  <script src="assets/js/i18n.js?v=5098344b"></script>
-  <script src="assets/js/app.js?v=3aa7c175"></script>
+  <script src="assets/js/i18n.js?v=5352ee0c"></script>
+  <script src="assets/js/app.js?v=06713146"></script>
+  <script src="assets/js/menu.js?v=fef34172"></script>
   <script src="assets/js/intro.js?v=a92e6fae"></script>
 </body>
 </html>

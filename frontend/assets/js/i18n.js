@@ -4,6 +4,7 @@
 window.FAHAM_T = {
   bm: {
     skip: "Langkau ke kandungan", nav_label: "Menu utama", nav_check: "Semak", nav_practice: "Latihan", nav_dict: "Kamus saya", nav_family: "Keluarga", nav_about: "Tentang dan privasi",
+    menu_btn: "Menu", menu_close: "Tutup", menu_lang: "Bahasa dan tetapan", menu_paid_strip: "Sudah bayar? Tekan di sini",
     ui_lang: "Bahasa paparan", th_dark: "Gelap", th_light: "Cerah", mode_wait: "Menyambung...", mode_on: "Penyemak dalam talian", mode_off: "Mod contoh: penyemak luar talian, contoh sahaja",
     ti_check: "Semak surat atau mesej", ti_practice: "Latihan: kenal penipuan", ti_dictionary: "Kamus saya", ti_family: "Keluarga: bantu ibu bapa", ti_about: "Tentang dan privasi",
     c_h1: "Semak surat atau mesej", c_lead: "Ada surat, SMS atau WhatsApp yang buat anda risau? Tampal teks atau muat naik gambar. Kami cari tanda penipuan dan tunjuk apa yang perlu dibuat.",
@@ -315,6 +316,7 @@ window.FAHAM_T = {
 
   en: {
     skip: "Skip to content", nav_label: "Main menu", nav_check: "Check", nav_practice: "Practice", nav_dict: "My dictionary", nav_family: "Family", nav_about: "About and privacy",
+    menu_btn: "Menu", menu_close: "Close", menu_lang: "Language and settings", menu_paid_strip: "Already paid? Tap here",
     ui_lang: "Display language", th_dark: "Dark", th_light: "Light", mode_wait: "Connecting...", mode_on: "Checker online", mode_off: "Sample mode: checker offline, examples only",
     ti_check: "Check a letter or message", ti_practice: "Practice: spot the scam", ti_dictionary: "My dictionary", ti_family: "Family: help a parent", ti_about: "About and privacy",
     c_h1: "Check a letter or message", c_lead: "Got a letter, SMS or WhatsApp that worries you? Paste the text or upload a photo. We look for scam signs and show you what to do.",
@@ -626,6 +628,7 @@ window.FAHAM_T = {
 
   zh: {
     skip: "跳到内容", nav_label: "主菜单", nav_check: "检查", nav_practice: "练习", nav_dict: "我的词典", nav_family: "家人", nav_about: "关于与隐私",
+    menu_btn: "菜单", menu_close: "关闭", menu_lang: "语言和设置", menu_paid_strip: "已经付款？点这里",
     ui_lang: "显示语言", th_dark: "深色", th_light: "浅色", mode_wait: "连接中...", mode_on: "检查服务在线", mode_off: "示例模式：检查服务离线，只能用示例",
     ti_check: "检查信件或信息", ti_practice: "练习：识破诈骗", ti_dictionary: "我的词典", ti_family: "家人：帮助父母", ti_about: "关于与隐私",
     c_h1: "检查信件或信息", c_lead: "收到让您担心的信件、短信或 WhatsApp？把内容贴上来，或上传照片。我们会找诈骗迹象，并告诉您该怎么做。",
@@ -937,6 +940,7 @@ window.FAHAM_T = {
 
   ta: {
     skip: "உள்ளடக்கத்துக்குச் செல்", nav_label: "முதன்மை மெனு", nav_check: "சரிபார்க்க", nav_practice: "பயிற்சி", nav_dict: "என் அகராதி", nav_family: "குடும்பம்", nav_about: "பற்றியும் தனியுரிமையும்",
+    menu_btn: "பட்டி", menu_close: "மூடு", menu_lang: "மொழியும் அமைப்புகளும்", menu_paid_strip: "பணம் செலுத்திவிட்டீர்களா? இங்கே தொடவும்",
     ui_lang: "காட்சி மொழி", th_dark: "இருள்", th_light: "ஒளி", mode_wait: "இணைக்கிறது...", mode_on: "சரிபார்ப்பி இணையத்தில் உள்ளது", mode_off: "மாதிரி முறை: சரிபார்ப்பி இணைப்பில் இல்லை, எடுத்துக்காட்டுகள் மட்டும்",
     ti_check: "கடிதம் அல்லது செய்தியைச் சரிபார்க்க", ti_practice: "பயிற்சி: மோசடியை அடையாளம் காணுங்கள்", ti_dictionary: "என் அகராதி", ti_family: "குடும்பம்: பெற்றோருக்கு உதவ", ti_about: "பற்றியும் தனியுரிமையும்",
     c_h1: "கடிதம் அல்லது செய்தியைச் சரிபார்க்கவும்", c_lead: "உங்களைக் கவலைப்படுத்தும் கடிதம், SMS அல்லது WhatsApp வந்ததா? உரையை ஒட்டவும் அல்லது படத்தைப் பதிவேற்றவும். மோசடி அறிகுறிகளைத் தேடி, என்ன செய்ய வேண்டும் என்று காட்டுவோம்.",

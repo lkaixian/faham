@@ -1,11 +1,13 @@
 /* Design decisions (public-service tool; ENERGY 1 / RHYTHM 2 / MOTION 1). One reason each.
-   - System font stack: loads instantly on cheap phones, no third-party request, device fonts cover BM, Chinese and Tamil.
+   - Ubuntu (self-hosted, Latin only, 3 weights, about 220 KB): friendly and very legible for older readers; no third-party request.
+     Chinese and Tamil use the device fonts listed after it.
    - 18px base and 1.6 line height: older readers on small screens.
    - One deep teal accent (7:1 on white): calm and institutional; used only for actions, links and focus.
    - Red, amber and green-grey are reserved for verdicts and always sit beside an icon and words, never color alone.
    - Flat cards with one 12px radius, only around groups of related fields; the page itself stays plain.
    - Single 720px column, no sidebar or grid: one task per screen, easy to read aloud and to follow with a screen reader.
-   - No gradients, blur, orbs or emoji; icons are inline SVG using currentColor so they follow the theme.
+   - Gradients only in the phone layer (header, menu sheet, hero card, primary button), taken from the logo's plum and gold.
+     No blur, orbs or emoji; icons are inline SVG using currentColor so they follow the theme.
    - Tap targets are at least 48px (seniors, shaky hands) so thumbs and shaky hands hit them first time.
    - Motion (dial 2): short opacity fades between pages, one 220ms rise for the result, one ring on the verdict, smooth accordions,
      press feedback, toast fade, a calm 4-stage progress bar. Each explains state or confirms an action. All off under prefers-reduced-motion.
@@ -15,7 +17,7 @@
   --bg: #f6f3fb; --surface: #ffffff; --text: #1b1433; --muted: #4d4768; --line: #a79ece;
   --accent: #5a3b8c; --on-accent: #ffffff; --link: #5a3b8c; --plum: #2a1e4d; --lavender: #8b7cc7;
   --bad: #a3190f; --bad-bg: #fdecea; --warn: #7a4b00; --warn-bg: #fff3d1; --ok: #1d5a3a; --ok-bg: #e6f2ec;
-  --r: 12px; --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Noto Sans Tamil", "Latha", "Nirmala UI", sans-serif;
+  --r: 12px; --font: "Ubuntu", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Noto Sans Tamil", "Latha", "Nirmala UI", sans-serif;
 }
 [data-theme="dark"] {
   --bg: #0e0b1d; --surface: #1a1433; --text: #ece9f7; --muted: #b7b0d6; --line: #675c9c;
@@ -504,3 +506,82 @@ html[data-senior] #busyTxt { font-size: 1.3rem; }
   .snav { position: sticky; bottom: 0; background: var(--bg); padding: 8px 0; margin: 12px 0 0; z-index: 4; }
 }
 .fp { overflow-wrap: anywhere; font: .85rem/1.5 ui-monospace, Consolas, monospace; }
+
+/* ---------- Phone layer (max-width 640px): one big Menu button, plum header, gold highlights ----------
+   Reasons: the old header was 320px tall on a phone and its page links scrolled sideways out of sight.
+   Now: a 64px sticky header, ONE "Menu" button (icon and word) that opens a full-screen sheet of big tiles,
+   a red "Already paid" strip that is always one tap away, and a hero card so the first screen says what to do.
+   Colours come from the logo: plum #2a1e4d and gold #f0b84a. Gold is for highlights only; text stays white on plum (13:1). */
+.menu-btn, .paid-strip-wrap, .sheet { display: none; }
+.top nav a svg { display: none; }
+.hero { display: contents; }
+@media (max-width: 640px) {
+  html { font-size: 19px; }
+  body { background: linear-gradient(180deg, #e7def6 0, var(--bg) 320px) no-repeat, var(--bg); }
+  [data-theme="dark"] body { background: linear-gradient(180deg, #241a47 0, var(--bg) 320px) no-repeat, var(--bg); }
+
+  /* header */
+  .top { position: sticky; top: 0; z-index: 30; background: var(--plum); border-bottom: 3px solid #f0b84a; }
+  .top .bar { flex-wrap: nowrap; min-height: 64px; padding-block: 6px; gap: 10px; }
+  .top .logo-l { display: none; }
+  .top .logo-d { display: block; height: 34px; }
+  .top .brand { min-height: 52px; }
+  .menu-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 18px; border: 0; border-radius: 16px; background: #f0b84a; color: #2a1e4d; font: 700 1.05rem/1 var(--font); cursor: pointer; box-shadow: 0 3px 0 #b8862a; }
+  .menu-btn svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+  .menu-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #b8862a; }
+  .menu-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+  /* always-reachable emergency strip */
+  .paid-strip-wrap { display: block; max-width: 720px; margin: 0 auto; padding: 12px 16px 0; }
+  .paid-strip { width: 100%; min-height: 56px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 16px; background: #b3261e; color: #fff; font: 700 1.05rem/1.2 var(--font); cursor: pointer; box-shadow: 0 6px 14px rgba(179, 38, 30, .3); }
+  .paid-strip svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .paid-strip:focus-visible { outline: 3px solid var(--text); outline-offset: 3px; }
+
+  /* the menu sheet */
+  .sheet { display: block; position: fixed; inset: 0; z-index: 60; overflow-y: auto; overscroll-behavior: contain; background: linear-gradient(165deg, #241a47 0%, #3a2870 58%, #5a3b8c 100%); color: #fff; }
+  .sheet-in { max-width: 520px; margin: 0 auto; padding: 14px 16px 48px; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; }
+  .sheet-head h2 { margin: 0; color: #fff; font-size: 1.7rem; }
+  .sheet .btn { color: #fff; border-color: rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .1); margin: 0; }
+  .sheet .btn:focus-visible, .sheet a:focus-visible, .sheet .chip:focus-visible { outline: 3px solid #f0b84a; outline-offset: 3px; }
+  .sheet-h { margin: 26px 0 10px; font-size: .95rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #cfc4ee; }
+  .sheet nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0 0; padding: 0; max-width: none; }
+  .sheet nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 108px; padding: 12px 8px; border-radius: 22px; border: 2px solid rgba(255, 255, 255, .25); background: rgba(255, 255, 255, .1); color: #fff; text-align: center; text-decoration: none; font-weight: 700; font-size: 1.05rem; line-height: 1.25; }
+  .sheet nav a svg { display: block; width: 34px; height: 34px; fill: none; stroke: #f0b84a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .sheet nav a:active { transform: scale(.98); }
+  .sheet nav a[aria-current="page"] { background: #f0b84a; border-color: #f0b84a; color: #2a1e4d; }
+  .sheet nav a[aria-current="page"] svg { stroke: #2a1e4d; }
+  .sheet nav .paid-btn { order: -1; grid-column: 1 / -1; min-height: 72px; margin: 0; border: 0; border-radius: 22px; background: #c62828; color: #fff; font-size: 1.2rem; box-shadow: 0 6px 16px rgba(0, 0, 0, .3); }
+  .sheet .ctrls { align-items: stretch; gap: 12px; flex: none; }
+  .sheet .uilang { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sheet .chip { min-height: 56px; border-color: rgba(255, 255, 255, .45); color: #fff; font-size: 1.1rem; }
+  .sheet .chip[aria-pressed="true"] { background: #f0b84a; border-color: #f0b84a; color: #2a1e4d; }
+  .sheet .tools { display: grid; grid-template-columns: 1fr; gap: 10px; justify-content: stretch; }
+  .sheet .tools .btn { justify-content: flex-start; min-height: 58px; padding: 0 18px; font-size: 1.05rem; border-radius: 16px; }
+  .sheet .tools .btn[aria-pressed="true"] { background: rgba(240, 184, 74, .22); border-color: #f0b84a; }
+  .sheet .tools .btn svg { stroke: #f0b84a; flex: none; }
+  .sheet .tools { margin-top: 6px; }
+  .sheet .tools .btn span, .sheet #themeBtn span, .sheet #voiceBtn span { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; }   /* the earlier rule hides these two labels; elders need the words */
+  .sheet .mode { color: #d9d0f2; padding-top: 14px; }
+  .sheet .pill { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .3); color: #fff; }
+
+  /* first screen: say what to do */
+  .hero { display: block; position: relative; overflow: hidden; margin: 14px 0 8px; padding: 22px 20px 20px; border-radius: 26px; color: #fff; background: linear-gradient(135deg, #2a1e4d 0%, #4a3180 62%, #6b47b3 100%); box-shadow: 0 12px 26px rgba(42, 30, 77, .3); }
+  .hero::after { content: ""; position: absolute; right: -34px; top: -34px; width: 130px; height: 130px; border-radius: 50%; background: radial-gradient(circle, rgba(240, 184, 74, .6), rgba(240, 184, 74, 0) 70%); pointer-events: none; }
+  .hero h1 { position: relative; margin: 0 0 6px; color: #fff; font-size: 1.7rem; line-height: 1.2; }
+  .hero .lead { position: relative; margin: 0; color: #ece6fb; font-size: 1.05rem; }
+
+  /* cards and buttons */
+  h1 { font-size: 1.7rem; }
+  .card { border-radius: 22px; border-color: #cfc6e8; box-shadow: 0 8px 20px rgba(42, 30, 77, .08); }
+  [data-theme="dark"] .card { border-color: var(--line); box-shadow: none; }
+  [data-theme="light"] .btn-primary { background: linear-gradient(135deg, #5a3b8c, #7a52c0); box-shadow: 0 6px 14px rgba(90, 59, 140, .3); }
+  .btn { border-radius: 14px; }
+  #form .btn-primary { width: 100%; min-height: 62px; font-size: 1.2rem; margin-right: 0; }
+  #form .btn-secondary, #form .btn-quiet { min-height: 54px; }
+}
+@media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .menu-btn, .sheet nav a, .btn-primary { transition: transform .12s ease, box-shadow .12s ease; }
+  .sheet:not([hidden]) { animation: sheetIn .22s ease-out; }
+  @keyframes sheetIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+}
