@@ -116,7 +116,9 @@
     const u = new SpeechSynthesisUtterance(text);
     u.lang = D.languages[lang].speech; u.rate = 0.9;
     const v = speechSynthesis.getVoices().find((x) => x.lang && x.lang.toLowerCase().startsWith(u.lang.slice(0, 2).toLowerCase()));
-    if (v) u.voice = v; else toast(t("no_voice", { n: langName(lang) }));
+    if (v) u.voice = v;
+    else if (lang === "ta") { me.note.textContent = t("no_voice_ta"); toast(t("no_voice_ta")); stopSpeak(); return; }
+    else toast(t("no_voice", { n: langName(lang) }));
     u.onend = () => { if (cur === me) stopSpeak(); };
     u.onerror = (ev) => { if (cur === me) (ev.error === "not-allowed" ? blocked() : stopSpeak()); };
     me.note.textContent = t("vnote");
@@ -188,6 +190,7 @@
       sample: false, lang, redacted: String(d.redacted_text || ""), explain: { [lang]: String(d.explanation || "").split(/\n+/).filter(Boolean) },
       fields: { issuer: f.issuer, type: f.letter_type, amount: f.amount, deadline: f.deadline, reference: f.reference },
       kenapa: { q: d.lesson.question, a: d.lesson.answer }, terms: d.lesson.terms || [],
+      entities: d.entities || null, others: d.others_checked || 0, scamType: (d.scam && d.scam.scam_type) || null,
       route: { url: r.source_url, label: String(r.source_url).replace(/^https?:\/\//, ""), date: r.retrieved_at, confidence: r.confidence,
         online: { steps: r.online_steps, prepare: r.prepare_online }, walkin: { steps: r.walkin_steps, prepare: r.prepare_walkin } },
       reminder: d.action.reminder, draft: d.action.draft, trace: mapTrace(d.trace)
@@ -248,12 +251,9 @@
         const { done, value } = await rd.read(); if (done) break;
         buf += dec.decode(value, { stream: true });
         let i;
-        while ((i = buf.indexOf("
-
-")) >= 0) {
+        while ((i = buf.indexOf("\n\n")) >= 0) {
           const blk = buf.slice(0, i); buf = buf.slice(i + 2);
-          const m = blk.match(/^event: (\w+)
-data: ([\s\S]*)$/); if (!m) continue;
+          const m = blk.match(/^event: (\w+)\ndata: ([\s\S]*)$/); if (!m) continue;
           let d; try { d = JSON.parse(m[2]); } catch (e) { continue; }
           if (m[1] === "queue" || m[1] === "verdict") state.streamMsg = true;
           if (m[1] === "queue") $("#busyTxt").textContent = t("busy_queue", { n: d.position });
@@ -543,6 +543,7 @@ data: ([\s\S]*)$/); if (!m) continue;
     stopSpeak(); $("#fLang").value = state.lang; applyI18n(); syncChips(); renderMode(); renderExamples(); setTheme(); setVoice();
     if (!$("#ob").hidden) renderOb(); updateCount(true); renderLevel();
     renderUp(); renderQueue();
+    if (window.FAHAM_SAFETY) window.FAHAM_SAFETY.refresh();
     if (!$("#result").hidden) { if (state.view === "sum") renderSummary(); else if (state.result) renderResult(state.result, true); }
     if (!state.practice.answered) renderPractice();
     route(true);
@@ -672,6 +673,17 @@ data: ([\s\S]*)$/); if (!m) continue;
     <pre class="draft" lang="ms">${esc(r.draft)}</pre>
     <button class="btn btn-primary" type="button" data-act="copy"><span>${esc(t("copy"))}</span></button>
     <p class="note"><b>${esc(t("draft_note_b"))}</b> ${esc(t("draft_note"))}</p>`;
+  /* Semak Mule shortcut, "others checked", family alert and the paid button. Details are shown as text only; FAHAM never calls Semak Mule. */
+  const waLink = (r) => "https://wa.me/?text=" + encodeURIComponent(t("hp_fam_msg", { t: t("hp_t_" + (r.scamType || "other")) }));
+  function helpHtml(r) {
+    const e = r.entities || {}, rows = [["hp_acc", e.accounts], ["hp_ph", e.phones], ["hp_co", e.companies]].filter(([, a]) => a && a.length);
+    const list = rows.length ? `<div class="facts">${rows.map(([k, a]) => a.map((x) => `<span class="fact"><span>${esc(t(k))}</span><b>${esc(x)}</b></span>`).join("")).join("")}</div>` : `<p class="muted">${esc(t("hp_mule_none"))}</p>`;
+    const others = r.others > 0 ? `<p class="note">${esc(t("hp_others", { n: r.others }))}</p>` : "";
+    const fam = r.verdict === "likely_scam" ? `<h3 class="h3">${esc(t("hp_fam_h"))}</h3><p>${esc(t("hp_fam_p"))}</p><a class="btn btn-primary" href="${esc(waLink(r))}" target="_blank" rel="noopener noreferrer"><span>${esc(t("hp_fam_btn"))}</span></a>` : "";
+    return `${others}<h3 class="h3">${esc(t("hp_mule_h"))}</h3><p>${esc(t("hp_mule_p"))}</p>${list}
+      <a class="btn btn-secondary" href="https://semakmule.rmp.gov.my" target="_blank" rel="noopener noreferrer"><span>${esc(t("hp_mule_btn"))}</span></a>
+      ${fam}<button class="btn btn-secondary" type="button" data-act="paid"><span>${esc(t("pd_btn"))}</span></button>`;
+  }
   function learnHtml(r) {
     const learnable = r.terms.filter((x) => D.glossary[x]), allIn = learnable.length && learnable.every((x) => state.learned.has(x));
     return `<h3 class="h3">${esc(tr(r.kenapa.q))}</h3><p>${esc(clean(r.kenapa.a))}</p>
@@ -690,6 +702,7 @@ data: ([\s\S]*)$/); if (!m) continue;
     ];
     if (ps.length || f.amount || f.deadline) out.push({ id: "says", h: "h_says", html: saysHtml(r, true), say: () => [sentences(ps).slice(0, 3).join(" "), paraLang(r)] });
     if (["online", "walkin"].some((k) => (r.route[k].steps || []).length)) out.push({ id: "todo", h: "h_todo", html: todoHtml(r), say: () => [route().slice(0, 4).join(" "), "en"] });
+    if (v !== "no_signals") out.splice(2, 0, { id: "help", h: "h_help", html: helpHtml(r), say: () => [t("hp_fam_p"), state.lang] });
     out.push({ id: "draft", h: "h_draft", html: draftHtml(r), say: () => [`${t("rem_label")} ${reminderText(r)}`, state.lang] });
     out.push({ id: "learn", h: "h_learn", html: learnHtml(r), say: () => [clean(r.kenapa.a), "en"] });
     return out;
@@ -728,6 +741,7 @@ data: ([\s\S]*)$/); if (!m) continue;
       </section>
       ${grp("why", t("h_why"), whyHtml(r), true)}
       ${grp("verify", t("h_verify"), verifyHtml(r), true)}
+      ${v !== "no_signals" ? grp("help", t("h_help"), helpHtml(r), true) : ""}
       ${grp("says", t("h_says"), saysHtml(r, false))}
       ${grp("todo", t("h_todo"), todoHtml(r))}
       ${grp("draft", t("h_draft"), draftHtml(r))}
@@ -770,7 +784,8 @@ data: ([\s\S]*)$/); if (!m) continue;
     }
     const a = e.target.closest("[data-act]"); if (!a) return;
     const act = a.dataset.act;
-    if (act === "again") backToChecker();
+    if (act === "paid") window.FAHAM_SAFETY.openPaid(a);
+    else if (act === "again") backToChecker();
     else if (act === "list") showSummary();
     else if (act === "speak") { $("#tapListen").hidden = true; speakStep(true); }
     else if (!r) return;
@@ -964,7 +979,7 @@ data: ([\s\S]*)$/); if (!m) continue;
   $("#fSpeak").addEventListener("click", (e) => readAloud(famText, famLang, e.currentTarget, $("#fVnote")));
 
   /* ---------- pages, theme, data ---------- */
-  const VIEWS = ["check", "practice", "dictionary", "family", "connect", "about"];
+  const VIEWS = ["check", "practice", "dictionary", "family", "call", "connect", "about"];
   function route(first) {
     const v = EMBED ? "check" : VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
     VIEWS.forEach((n) => ($("#view-" + n).hidden = n !== v));
@@ -1037,6 +1052,9 @@ data: ([\s\S]*)$/); if (!m) continue;
       if (r.ok !== state.api) checkApi();
     } catch (e) { if (state.api) setMode(false); }
   }, 30000);
+
+  window.FAHAM_APP = { t, state, toast, esc, readAloud, stopSpeak, copyText, htmlLang: HTML_LANG };
+  const sf = document.createElement("script"); sf.src = "assets/js/safety.js"; document.body.appendChild(sf);
 
   /* ---------- init ---------- */
   renderChips(); setTheme(); setVoice(); applyI18n(); syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();

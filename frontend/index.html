@@ -51,8 +51,10 @@
       <a href="#practice" data-i18n="nav_practice"></a>
       <a href="#dictionary" data-i18n="nav_dict"></a>
       <a href="#family" data-i18n="nav_family"></a>
+      <a href="#call" data-i18n="nav_call"></a>
       <a href="#connect" data-i18n="nav_connect"></a>
       <a href="#about" data-i18n="nav_about"></a>
+      <button class="btn paid-btn" id="paidBtn" type="button" data-i18n="pd_btn"></button>
     </nav>
   </header>
 
@@ -75,6 +77,7 @@
         <form id="form" class="card" novalidate>
           <label for="pasteBox" data-i18n="f_paste"></label>
           <textarea id="pasteBox" rows="7" maxlength="20000" aria-describedby="vhint cnt" data-i18n-ph="f_ph"></textarea>
+          <button class="btn btn-secondary mic" id="micBtn" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span></span></button>
           <div class="meta"><span class="vh" id="vhint" role="status"></span><span class="cnt" id="cnt"></span></div>
           <p class="muted priv"><span data-i18n="f_priv"></span> <a href="#about" data-i18n="f_priv_a"></a></p>
 
@@ -192,6 +195,13 @@
       </div>
     </section>
 
+    <!-- ===== CALL ===== -->
+    <section class="view" id="view-call" hidden>
+      <h1 tabindex="-1" data-i18n="cl_h1"></h1>
+      <p class="lead" data-i18n="cl_lead"></p>
+      <div id="callBody"></div>
+    </section>
+
     <!-- ===== CONNECT ===== -->
     <section class="view" id="view-connect" hidden>
       <h1 tabindex="-1" data-i18n="cn_h1"></h1>
@@ -256,6 +266,7 @@
     <p data-i18n="foot_disc"></p>
   </footer>
   <div class="ob" id="ob" role="dialog" aria-modal="true" aria-labelledby="obH" hidden></div>
+  <div id="paid" role="dialog" aria-modal="true" aria-labelledby="pdH" hidden></div>
   <div id="toast" role="status" aria-live="polite"></div>
 
   <script src="assets/js/config.js"></script>
