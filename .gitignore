@@ -13,3 +13,5 @@ node_modules/
 
 backend/var/
 *.sqlite3
+.env.*
+!.env.example

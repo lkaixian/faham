@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FAHAM</title>
   <meta name="description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
-  <meta name="theme-color" content="#0b5c63" />
+  <meta name="theme-color" content="#5a3b8c" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="FAHAM" />
@@ -24,7 +24,7 @@
   <link rel="icon" href="assets/img/favicon-48.png" type="image/png" sizes="48x48" />
   <link rel="icon" href="assets/img/favicon-256.png" type="image/png" sizes="256x256" />
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/styles.css?v=6f4edc18" />
 </head>
 <body>
   <div id="intro" role="dialog" aria-modal="true" aria-label="FAHAM">
@@ -49,14 +49,20 @@
       <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="FAHAM logo" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="FAHAM logo" width="31" height="40" /><span aria-hidden="true">FAHAM</span></a>
       <div class="ctrls">
         <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
-        <button class="btn btn-quiet" id="themeBtn" type="button" aria-pressed="false">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>
-          <span id="themeLbl"></span>
-        </button>
-        <button class="btn btn-quiet" id="voiceBtn" type="button" aria-pressed="true">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
-          <span id="voiceLbl"></span>
-        </button>
+        <div class="tools">
+          <button class="btn btn-quiet" id="seniorBtn" type="button" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 10 5h2l5 14M7 14h8M19 8v6m-3-3h6"/></svg>
+            <span id="seniorLbl"></span>
+          </button>
+          <button class="btn btn-quiet" id="themeBtn" type="button" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>
+            <span id="themeLbl"></span>
+          </button>
+          <button class="btn btn-quiet" id="voiceBtn" type="button" aria-pressed="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+            <span id="voiceLbl"></span>
+          </button>
+        </div>
       </div>
       <span class="mode" id="mode" role="status"></span>
     </div>
@@ -77,6 +83,7 @@
     <!-- ===== CHECK ===== -->
     <section class="view" id="view-check">
       <div id="checker">
+        <div class="senior-banner" id="seniorBanner" role="group"><p id="seniorMsg"></p><button class="btn btn-secondary" id="seniorBannerBtn" type="button"></button></div>
         <h1 tabindex="-1" data-i18n="c_h1"></h1>
         <p class="lead" data-i18n="c_lead"></p>
 
@@ -147,6 +154,11 @@
         <div class="busy" id="busy" hidden>
           <p id="busyTxt" role="status"></p>
           <ol class="stages" id="stages" aria-hidden="true"></ol>
+          <div class="prog" id="prog" hidden>
+            <div class="bar-track" id="progBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="busyTxt"><i id="progFill"></i></div>
+            <p class="prog-pct" id="progPct" aria-hidden="true">0%</p>
+            <ol class="prog-steps" id="progSteps"></ol>
+          </div>
         </div>
 
       </div>
@@ -290,15 +302,28 @@
     <p><span data-i18n="foot_scam"></span> <a href="tel:997">NSRC 997</a>.</p>
     <p data-i18n="foot_disc"></p>
     <p class="muted" data-i18n="foot_src"></p>
+    <p><a href="terms.html" data-i18n="tm_h1"></a></p>
+    <div id="seniorFootBox" hidden><button class="btn btn-quiet" id="seniorFoot" type="button"></button></div>
   </footer>
+  <dialog id="msgDlg" aria-labelledby="msgDlgH">
+    <h2 id="msgDlgH"></h2>
+    <div id="msgDlgBody"></div>
+    <button class="btn btn-primary" id="msgDlgClose" type="button"></button>
+  </dialog>
+  <dialog id="exitDlg" aria-labelledby="exitDlgH">
+    <h2 id="exitDlgH"></h2>
+    <p id="exitDlgP"></p>
+    <button class="btn btn-primary" id="exitStay" type="button" autofocus></button>
+    <button class="btn btn-quiet" id="exitGo" type="button"></button>
+  </dialog>
   <div class="ob" id="ob" role="dialog" aria-modal="true" aria-labelledby="obH" hidden></div>
   <div id="paid" role="dialog" aria-modal="true" aria-labelledby="pdH" hidden></div>
   <div id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/i18n.js"></script>
-  <script src="assets/js/app.js"></script>
-  <script src="assets/js/intro.js"></script>
+  <script src="assets/js/config.js?v=0d0784f3"></script>
+  <script src="assets/js/data.js?v=a4702ead"></script>
+  <script src="assets/js/i18n.js?v=c3acfd44"></script>
+  <script src="assets/js/app.js?v=407459fa"></script>
+  <script src="assets/js/intro.js?v=0d20ed6c"></script>
 </body>
 </html>

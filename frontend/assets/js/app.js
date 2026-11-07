@@ -20,6 +20,7 @@
   const LANGS = Object.keys(D.languages);
   const state = {
     lang: LANGS.includes(store.get("lang", "bm")) ? store.get("lang", "bm") : "bm",
+    senior: !EMBED && store.get("senior", false) === true,   // easy mode: bigger text, fewer buttons, shorter flow
     xl: "bm", xlManual: false,           // xl = language of the explanation; follows the UI language unless detected or chosen
     theme: EMBED ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : store.get("theme", "light"),
     learned: new Set(store.get("learned", [])),
@@ -183,7 +184,7 @@
   const verifyOf = (r) => (r.verify.length ? r.verify : t("vd_" + r.verdict));
 
   /* ---------- build one result object from the API or from a bundled sample ---------- */
-  const mapTrace = (tr0) => (tr0 || []).map((x) => ({ k: x.kind, t: x.tool, m: x.message, flag: x.flag }));
+  const mapTrace = (tr0) => (tr0 || []).map((x) => ({ k: x.kind, t: x.tool, m: x.message, flag: x.flag, stage: x.stage, facts: x.facts }));
   function fromApi(d, lang) {
     const f = d.fields, r = d.route;
     return applyScam({
@@ -193,7 +194,7 @@
       entities: d.entities || null, others: d.others_checked || 0, scamType: (d.scam && d.scam.scam_type) || null,
       route: { url: r.source_url, label: String(r.source_url).replace(/^https?:\/\//, ""), date: r.retrieved_at, confidence: r.confidence,
         online: { steps: r.online_steps, prepare: r.prepare_online }, walkin: { steps: r.walkin_steps, prepare: r.prepare_walkin } },
-      reminder: d.action.reminder, draft: d.action.draft, trace: mapTrace(d.trace)
+      reminder: d.action.reminder, draft: d.action.draft, extra: d.action.extra || [], files: d.action.attachments || [], agent: d.agent || null, trace: mapTrace(d.trace)
     }, d.scam);
   }
   function fromSample(l) {
@@ -237,35 +238,109 @@
       return { data: await res.json() };
     } catch (e) { return { error: t("e_net"), retry: true }; }
   }
-
-  /* Server-sent events: the rules verdict arrives first (about 1 s), then the explanation. Falls back to post(). */
-  async function postStream(body, ms) {
-    let to = 0;
+  // The agent's steps arrive one by one (server-sent events) so the page can show it working. null = no stream here, use post().
+  async function postStream(body, ms, onStep) {
+    const ctrl = new AbortController(), to = setTimeout(() => ctrl.abort(), ms);
     try {
-      const ctrl = new AbortController(); to = setTimeout(() => ctrl.abort(), ms);
       const res = await fetch(CFG.API_BASE + "/api/analyze/stream", { method: "POST", headers: { "Content-Type": "application/json" }, signal: ctrl.signal, body: JSON.stringify(body) });
-      if (res.status === 422) { clearTimeout(to); return { error: t("e_422") }; }
-      if (!res.ok || !res.body) { clearTimeout(to); return post(body, ms); }
-      const rd = res.body.getReader(), dec = new TextDecoder(); let buf = "", data = null, err = null;
+      if (res.status === 422) return { error: t("e_422") };
+      if (!res.ok || !res.body) return null;
+      const rd = res.body.getReader(), dec = new TextDecoder();
+      let buf = "", result = null;
       for (;;) {
-        const { done, value } = await rd.read(); if (done) break;
+        const { value, done } = await rd.read();
+        if (done) break;
         buf += dec.decode(value, { stream: true });
-        let i;
-        while ((i = buf.indexOf("\n\n")) >= 0) {
-          const blk = buf.slice(0, i); buf = buf.slice(i + 2);
-          const m = blk.match(/^event: (\w+)\ndata: ([\s\S]*)$/); if (!m) continue;
-          let d; try { d = JSON.parse(m[2]); } catch (e) { continue; }
-          if (m[1] === "queue" || m[1] === "verdict") state.streamMsg = true;
-          if (m[1] === "queue") $("#busyTxt").textContent = t("busy_queue", { n: d.position });
-          else if (m[1] === "verdict") { $("#busyTxt").textContent = t("busy_quick", { v: t("vw_" + d.verdict) }); }
-          else if (m[1] === "result") data = d;
-          else if (m[1] === "error") err = d;
+        for (let i = buf.indexOf("\n\n"); i >= 0; i = buf.indexOf("\n\n")) {
+          const block = buf.slice(0, i); buf = buf.slice(i + 2);
+          const nl = block.indexOf("\n"), ev = block.slice(7, nl), j = JSON.parse(block.slice(nl + 7));
+          if (ev === "step") onStep && onStep(j);
+          else if (ev === "queue") $("#busyTxt").textContent = t("busy_queue", { n: j.position });   // waiting for a free place in line
+          else if (ev === "result") result = j;
+          else if (ev === "error") { clearTimeout(to); return { error: j.status === 422 ? t("e_422") : t("e_server", { n: j.status }), retry: j.status !== 422 }; }
         }
       }
       clearTimeout(to);
-      if (err) return { error: err.status === 422 ? t("e_422") : t("e_server", { n: err.status }), retry: err.status !== 422 };
-      return data ? { data } : { error: t("e_net"), retry: true };
+      return result ? { data: result } : { error: t("e_net"), retry: true };
     } catch (e) { clearTimeout(to); return { error: t("e_net"), retry: true }; }
+  }
+  /* ---------- what the agent did, in plain words (live progress and the "What FAHAM checked" list) ---------- */
+  const DID_ICON = { ok: "ok", warn: "info", bad: "risk", info: "info" };
+  const list = (a) => (a.filter(Boolean).length > 3 ? a.filter(Boolean).slice(0, 3).concat("…") : a.filter(Boolean)).join(", ");
+  // One finished step -> { k: "ok" | "warn" | "bad" | "info", x: sentence in the page language } or null if it is not worth a line.
+  function human(s) {
+    const f = s.facts || {}, T = s.tool || "", ok = (x) => ({ k: "ok", x }), warn = (x) => ({ k: "warn", x }), bad = (x) => ({ k: "bad", x }), info = (x) => ({ k: "info", x });
+    switch (T) {
+      case "privacy.redact": return ok(t("hs_read"));
+      case "classify_issuer": case "classify.issuer": return f.name ? ok(t("hs_who", { name: f.name })) : info(t("hs_who_unknown"));
+      case "extract_fields": case "extract.fields": {
+        const bits = [f.amount && t("hs_f_amount", { v: f.amount }), f.deadline && t("hs_f_deadline", { v: f.deadline }), f.reference && t("hs_f_ref", { v: f.reference })];
+        return bits.some(Boolean) ? ok(t("hs_fields", { facts: list(bits) })) : info(t("hs_fields_none"));
+      }
+      case "run_rules": return (f.risk || []).length ? bad(t("hs_rules_bad", { n: f.risk.length })) : ok(t("hs_rules_ok"));
+      case "inspect_links": return !f.total ? info(t("hs_links_none")) : f.odd ? warn(t("hs_links_bad", { n: f.total, odd: f.odd })) : ok(t("hs_links_ok", { n: f.total }));
+      case "lookup_registry": return f.known ? ok(t("hs_reg_ok", { name: f.name })) : info(t("hs_reg_no"));
+      case "fetch_official_page": {
+        if (f.thin) return info(t("hs_page_thin", { host: f.host }));
+        const found = (f.found || []).length, missing = (f.missing || []).length;
+        return { k: missing && !found ? "warn" : "ok", x: t("hs_page", { host: f.host }) + (found ? " " + t("hs_page_found", { x: list(f.found) }) : "") + (missing ? " " + t("hs_page_missing", { x: list(f.missing) }) : "") };
+      }
+      case "domain_intel": {
+        const a = f.age_days;
+        if (!f.resolves && a == null) return warn(t("hs_dom_none", { d: f.domain }));
+        if (a == null) return info(t("hs_dom_unk", { d: f.domain }));
+        return a < 180 ? bad(t("hs_dom_new", { d: f.domain, n: a })) : a >= 365 ? ok(t("hs_dom_old", { d: f.domain, n: Math.floor(a / 365) })) : info(t("hs_dom_mid", { d: f.domain, n: a }));
+      }
+      case "prepare_draft": return s.stage === "agent" ? ok(t({ family_warning: "hs_draft_family", scam_report: "hs_draft_report", reminder_ics: "hs_draft_ics" }[f.kind] || "hs_act")) : null;
+      case "scam.check": return ok(t("hs_weigh"));
+      case "llm.explain": return ok(t("hs_write"));
+      case "teach.lesson": return ok(t("hs_teach"));
+      case "gov.retrieve": return ok(t("hs_route"));
+      case "act.draft": return ok(t("hs_act"));
+      default: return null;
+    }
+  }
+  const didLi = (h) => `<li class="d-${h.k}">${svg(DID_ICON[h.k])}<span>${esc(h.x)}</span></li>`;
+  const humanSteps = (trace) => (trace || []).map((s) => human({ stage: s.stage, kind: s.kind, tool: s.t, facts: s.facts })).filter(Boolean)
+    .filter((h, i, a) => a.findIndex((y) => y.x === h.x) === i);
+  // The agent's run as a vertical flow: Read -> Investigate -> Weigh -> Explain -> Plan, each step with the few things it did.
+  const FLOW = [["fl_read", ["read"]], ["fl_check", ["agent"]], ["fl_weigh", ["verify"]], ["fl_explain", ["explain", "teach"]], ["fl_act", ["route", "act"]]];
+  const didHtml = (r) => {
+    const seen = new Set(), hs = (r.trace || []).map((s) => ({ st: s.stage, h: human({ stage: s.stage, kind: s.kind, tool: s.t, facts: s.facts }) })).filter((x) => x.h);
+    const nodes = FLOW.map(([k, sts]) => ({ k, items: hs.filter((x) => sts.includes(x.st) && !seen.has(x.h.x) && seen.add(x.h.x)).map((x) => x.h) })).filter((n) => n.items.length);
+    const worst = (it) => (it.some((h) => h.k === "bad") ? "bad" : it.some((h) => h.k === "warn") ? "warn" : "ok");
+    return `<p>${esc(t("did_intro"))}</p><ol class="flow">${nodes.map((n, i) => `<li class="fl-${worst(n.items)}"><span class="fl-n" aria-hidden="true">${i + 1}</span><div><b>${esc(t(n.k))}</b><ul class="did">${n.items.map(didLi).join("")}</ul></div></li>`).join("")}</ol><p class="muted">${esc(t("did_tech"))}</p>`;
+  };
+
+  // The progress bar: a percentage from what has finished (reading, each tool the agent chose, weighing, writing), plus one sentence about now.
+  const prog = { n: 0, pct: 0, ceil: 8, timer: 0 };
+  function paint() { $("#progFill").style.width = prog.pct + "%"; $("#progBar").setAttribute("aria-valuenow", Math.round(prog.pct)); $("#progPct").textContent = Math.round(prog.pct) + "%"; }
+  function setPct(p) { prog.pct = Math.max(prog.pct, Math.min(99, p)); prog.ceil = Math.min(94, prog.pct + 6); paint(); }
+  // between steps the bar creeps forward a little (never past the next likely step), so a slow model call does not look like a freeze
+  function progReset() {
+    clearInterval(prog.timer); prog.n = 0; prog.pct = 0; prog.ceil = 8; $("#progSteps").innerHTML = ""; setPct(2); $("#busyTxt").textContent = t("ps_read");
+    prog.timer = setInterval(() => { if (prog.pct < prog.ceil) { prog.pct += 0.35; paint(); } }, 700);
+  }
+  function addLive(s) {
+    if (!s.message) return;
+    const T = s.tool || "";
+    let now = "";
+    if (T === "ocr.read" || T === "privacy.redact") { setPct(8); now = t("ps_plan"); }
+    else if (s.kind === "think" && /^Goal/.test(s.message)) { setPct(12); now = t("ps_plan"); }
+    else if (s.kind === "think" && s.stage !== "verify" && s.stage !== "explain" && s.stage !== "route") now = t("ps_think");
+    else if (s.stage === "agent" && s.kind === "tool") { prog.n++; setPct(15 + 55 * (1 - Math.pow(0.78, prog.n))); now = t("ps_after"); }
+    else if (T === "scam.check") { setPct(78); now = t("ps_write"); }
+    else if (T === "llm.explain") { setPct(86); now = t("ps_write"); }
+    else if (T === "teach.lesson") setPct(90);
+    else if (T === "gov.retrieve" || T === "office.locate") setPct(94);
+    else if (T === "act.draft" || T === "prepare_draft") setPct(97);
+    if (now) $("#busyTxt").textContent = now;
+    const h = human({ stage: s.stage, kind: s.kind, tool: s.tool, facts: s.facts });
+    if (!h) return;
+    const ol = $("#progSteps");
+    ol.insertAdjacentHTML("beforeend", didLi(h));
+    while (ol.children.length > 7) ol.removeChild(ol.firstChild);
+    ol.lastElementChild.scrollIntoView({ block: "nearest" });
   }
 
   /* staged progress: the API answers in one go, so the four stages (Read, Check, Explain, Route) are paced on the client */
@@ -276,11 +351,12 @@
     $("#busyTxt").textContent = t("busy_step", { n: i + 1, s: t(STAGES[i]) }) + (photo && i === 0 ? " " + t("busy_photo") : "");
   }
   function setBusy(on, o = {}) {
-    state.busy = on; state.streamMsg = false; clearInterval(stageTimer);
+    state.busy = on; state.streamMsg = false; clearInterval(stageTimer); if (!on) clearInterval(prog.timer);
     $("#busy").hidden = !on;
-    $("#stages").hidden = !!o.sample;
+    $("#stages").hidden = !!o.sample || !!o.live; $("#prog").hidden = !o.live;
+    if (on && o.live) progReset();
     if (on && o.sample) $("#busyTxt").textContent = t("busy_ex");
-    if (on && !o.sample) { let i = 0; drawStage(0, o.photo); stageTimer = setInterval(() => { if (i < STAGES.length - 1 && !state.streamMsg) drawStage(++i, o.photo); }, 1500); }
+    if (on && !o.sample && !o.live) { let i = 0; drawStage(0, o.photo); stageTimer = setInterval(() => { if (i < STAGES.length - 1 && !state.streamMsg) drawStage(++i, o.photo); }, 1500); }
     $("#checkBtn").disabled = on || !state.api; $$(".example").forEach((b) => (b.disabled = on));
   }
   function formErr(m, retry) {
@@ -290,10 +366,11 @@
 
   async function checkOwn(inp) {
     state.last = inp; formErr(""); stopSpeak();
-    setBusy(true);
+    setBusy(true, { live: true });
     const body = { language: state.xl, text: inp.text };
     const pc = $("#postBox").value.trim(); if (/^\d{1,5}$/.test(pc)) body.postcode = pc;
-    const x = await postStream(body, 30000);
+    let x = await postStream(body, 120000, addLive);
+    if (x === null) { setBusy(true); x = await post(body, 90000); }   // an older server without the stream
     setBusy(false);
     if (x.error) { formErr(x.error, x.retry ? () => checkOwn(inp) : null); return; }
     show(fromApi(x.data, body.language));
@@ -399,17 +476,34 @@
   ["dragover", "drop"].forEach((ev) => window.addEventListener(ev, (e) => e.preventDefault()));   // a file dropped beside the box must not replace the page
 
   // XMLHttpRequest, not fetch, because only XHR reports upload progress
-  const sendFile = (q) => new Promise((done) => {
+  // The stream endpoint reports each agent step while the file is analysed; an older server falls back to the single-answer one.
+  const sendFile = (q, onStep, plain) => new Promise((done) => {
     const qs = new URLSearchParams({ language: state.xl }), pc = $("#postBox").value.trim();
     if (/^\d{1,5}$/.test(pc)) qs.set("postcode", pc);
     const x = new XMLHttpRequest();
-    x.open("POST", `${CFG.API_BASE}/api/analyze-file?${qs}`);
+    x.open("POST", `${CFG.API_BASE}/api/analyze-file${plain ? "" : "/stream"}?${qs}`);
     x.timeout = 120000;
     x.setRequestHeader("X-Filename", encodeURIComponent(q.file.name));
     x.setRequestHeader("Content-Type", q.file.type || "application/octet-stream");
+    let seen = 0, result = null, fail = 0;
+    const pump = () => {
+      const txt = x.responseText;
+      for (let i = txt.indexOf("\n\n", seen); i >= 0; i = txt.indexOf("\n\n", seen)) {
+        const block = txt.slice(seen, i), nl = block.indexOf("\n"); seen = i + 2;
+        let j = null; try { j = JSON.parse(block.slice(nl + 7)); } catch (e) { continue; }
+        const ev = block.slice(7, nl);
+        if (ev === "step") onStep(j); else if (ev === "result") result = j; else if (ev === "error") fail = j.status || 500;
+      }
+    };
     x.upload.onprogress = (e) => { if (e.lengthComputable) { q.pct = Math.round((100 * e.loaded) / e.total); renderQueue(); } };
     x.upload.onload = () => { q.st = "read"; renderQueue(); };
-    x.onload = () => { let j = null; try { j = JSON.parse(x.responseText); } catch (e) {} done({ status: x.status, json: j }); };
+    x.onprogress = () => { if (!plain && x.status === 200) pump(); };
+    x.onload = () => {
+      if (!plain && (x.status === 404 || x.status === 405)) { done(sendFile(q, onStep, true)); return; }
+      if (plain) { let j = null; try { j = JSON.parse(x.responseText); } catch (e) {} done({ status: x.status, json: j }); return; }
+      pump();
+      done(x.status !== 200 ? { status: x.status } : fail ? { status: fail } : result ? { status: 200, json: result } : { status: 0 });
+    };
     x.onerror = x.ontimeout = () => done({ status: 0 });
     x.send(q.file);
   });
@@ -424,12 +518,12 @@
   async function checkFiles() {
     state.last = null; formErr(""); stopSpeak();
     const lang = state.xl, todo = queue.filter((q) => q.st !== "done");
-    setBusy(true, { sample: true }); renderUp();
+    setBusy(true, { live: true }); renderUp();
     let items = [], firstErr = "";
     for (const [i, q] of todo.entries()) {
-      $("#busyTxt").textContent = t("u_busy", { i: i + 1, n: todo.length });
+      progReset(); $("#busyTxt").textContent = t("u_busy", { i: i + 1, n: todo.length });
       q.st = "send"; q.pct = 0; q.msg = ""; renderQueue();
-      const res = await sendFile(q);
+      const res = await sendFile(q, addLive);
       if (res.status === 200 && res.json && Array.isArray(res.json.files)) { q.st = "done"; items.push(...res.json.files.map((f) => toItem(f, lang, q.file))); }
       else { q.st = "fail"; q.msg = httpMsg(res.status, q.file.name); firstErr = firstErr || q.msg; items.push({ name: q.file.name, kind: q.kind, status: "error", http: q.msg, warnings: [], r: null }); }
       renderQueue();
@@ -540,7 +634,7 @@
     state.xl = b.dataset.x; state.xlManual = true; $("#detectNote").textContent = ""; syncChips();
   });
   function refreshLang() {
-    stopSpeak(); $("#fLang").value = state.lang; applyI18n(); syncChips(); renderMode(); renderExamples(); setTheme(); setVoice();
+    stopSpeak(); $("#fLang").value = state.lang; applyI18n(); syncChips(); renderMode(); renderExamples(); setTheme(); setVoice(); renderSenior();
     if (!$("#ob").hidden) renderOb(); updateCount(true); renderLevel();
     renderUp(); renderQueue();
     if (window.FAHAM_SAFETY) window.FAHAM_SAFETY.refresh();
@@ -672,7 +766,7 @@
     <p class="muted">${esc(t("draft_hint"))}</p>
     <pre class="draft" lang="ms">${esc(r.draft)}</pre>
     <button class="btn btn-primary" type="button" data-act="copy"><span>${esc(t("copy"))}</span></button>
-    <p class="note"><b>${esc(t("draft_note_b"))}</b> ${esc(t("draft_note"))}</p>`;
+<p class="note"><b>${esc(t("draft_note_b"))}</b> ${esc(t("draft_note"))}</p>${(r.extra || []).map((x, i) => `<h3>${esc(x.title)}</h3><p class="muted">${esc(t("ag_chosen"))}</p><pre class="draft">${esc(x.text)}</pre><button class="btn btn-secondary" type="button" data-act="copyx" data-i="${i}"><span>${esc(t("copy"))}</span></button>`).join("")}${(r.files || []).map((x, i) => `<p><button class="btn btn-secondary" type="button" data-act="dl" data-i="${i}"><span>${esc(t("ag_dl"))}</span></button></p>`).join("")}`;
   /* Semak Mule shortcut, "others checked", family alert and the paid button. Details are shown as text only; FAHAM never calls Semak Mule. */
   const waLink = (r) => "https://wa.me/?text=" + encodeURIComponent(t("hp_fam_msg", { t: t("hp_t_" + (r.scamType || "other")) }));
   function helpHtml(r) {
@@ -700,12 +794,13 @@
       { id: "now", h: "next_h", html: nowHtml(r), say: () => [vs.slice(0, 2).join(" "), rl(r)] },
       { id: "why", h: "h_why", html: whyHtml(r, 3), say: () => [r.reasons.slice(0, 3).map(reasonText).join(" "), rl(r)] }
     ];
+    if (humanSteps(r.trace).length > 3) out.push({ id: "agent", h: "h_agent", html: didHtml(r), say: () => [t("did_intro"), state.lang] });
     if (ps.length || f.amount || f.deadline) out.push({ id: "says", h: "h_says", html: saysHtml(r, true), say: () => [sentences(ps).slice(0, 3).join(" "), paraLang(r)] });
     if (["online", "walkin"].some((k) => (r.route[k].steps || []).length)) out.push({ id: "todo", h: "h_todo", html: todoHtml(r), say: () => [route().slice(0, 4).join(" "), "en"] });
     if (v !== "no_signals") out.splice(2, 0, { id: "help", h: "h_help", html: helpHtml(r), say: () => [t("hp_fam_p"), state.lang] });
     out.push({ id: "draft", h: "h_draft", html: draftHtml(r), say: () => [`${t("rem_label")} ${reminderText(r)}`, state.lang] });
     out.push({ id: "learn", h: "h_learn", html: learnHtml(r), say: () => [clean(r.kenapa.a), "en"] });
-    return out;
+    return state.senior ? out.filter((p) => ["verdict", "now", "why"].includes(p.id)) : out;   // easy mode: verdict, what to do, why
   }
   const rbar = (act, lbl) => `
       <div class="rbar">
@@ -715,14 +810,27 @@
       <p class="muted vnote" id="vnote" role="status"></p>
       <button class="btn btn-primary btn-big tap" type="button" id="tapListen" data-act="speak" hidden>${svg("speaker")}<span>${esc(t("tap"))}</span></button>`;
   const warnHtml = (r) => { const w = [...new Set((r.warnings || []).map((x) => (/ocr|scan/i.test(x) ? t("w_ocr") : String(x))))]; return w.length ? `<div class="note"><b>${esc(t("w_h"))}</b> ${w.map(esc).join(" ")}</div>` : ""; };
+  // the agent's own account: what it concluded, the plan it followed, what it used, and what could make it wrong
+  const agentHtml = (r) => {
+    const a = r.agent, li = (x) => `<li>${esc(clean(x))}</li>`;
+    return `<p lang="en">${esc(clean(a.summary || ""))}</p>` +
+      (a.plan.length ? `<h3>${esc(t("ag_plan"))}</h3><ol class="steps" lang="en">${a.plan.map(li).join("")}</ol>` : "") +
+      `<p class="muted">${esc(t("ag_stats", { r: a.rounds, n: a.tools.length, w: a.network }))}</p>` +
+      (a.doubts.length ? `<h3>${esc(t("ag_doubts"))}</h3><ul lang="en">${a.doubts.map(li).join("")}</ul>` : "") +
+      `<p class="muted">${esc(t("ag_trace"))}</p>`;
+  };
+  // what the agent did, in one line: the AI chose tools and added signals, or only the rules ran
+  const agentNote = (r) => (r.agent && r.agent.mode === "ai"
+    ? `<p class="agent-line">${esc(t("ag_ai", { n: (r.agent.tools || []).length, s: r.agent.signals || 0 }))}</p>`
+    : r.agent ? `<p class="agent-line muted">${esc(t("ag_rules"))}</p>` : "");
   function renderResult(r, keep) {
     const open = {};
     if (keep) $$("#result details[data-g]").forEach((d) => { open[d.dataset.g] = d.open; });
     const wide = matchMedia("(min-width: 700px)").matches;
     const grp = (id, title, body, dflt) => `<details class="grp" data-g="${id}"${(id in open ? open[id] : dflt || wide) ? " open" : ""}><summary><h2>${esc(title)}</h2></summary><div class="gbody">${body}</div></details>`;
     const v = r.verdict;
-    const verdict = `<div class="verdict v-${v}${keep ? "" : " fresh"}">${svg(v)}<div><h1 id="vHead" tabindex="-1">${esc(t("v_" + v))}</h1><p>${esc(t("vs_" + v))}</p></div></div>`;
-    const tail = `<details class="trace"><summary>${esc(t("tr_sum"))}</summary>
+    const verdict = `<div class="verdict v-${v}${keep ? "" : " fresh"}">${svg(v)}<div><h1 id="vHead" tabindex="-1">${esc(t("v_" + v))}</h1><p>${esc(t("vs_" + v))}</p></div></div>${agentNote(r)}`;
+    const tail = `<details class="trace"><summary>${esc(t("tr_sum"))}</summary>${r.agent && r.agent.mode === "ai" ? `<div class="agent-tech" lang="en">${agentHtml(r)}</div>` : ""}
         <p class="muted">${esc(t("tr_note"))}</p>
         <ol class="trace-list" lang="en">${(r.trace || []).map((x) => `<li class="${x.flag ? "flag" : ""}"><span class="tag">${esc(STATUS[x.k] ? t(STATUS[x.k]) : t("st_step"))}${x.t ? " " + esc(x.t) : ""}</span>${esc(clean(x.m))}</li>`).join("") || `<li>${esc(t("tr_none"))}</li>`}</ol>
       </details>`;
@@ -740,6 +848,7 @@
         <button class="btn btn-secondary" type="button" data-act="sum"><span>${esc(t("r_copy_sum"))}</span></button>
       </section>
       ${grp("why", t("h_why"), whyHtml(r), true)}
+      ${humanSteps(r.trace).length > 3 ? grp("agent", t("h_agent"), didHtml(r)) : ""}
       ${grp("verify", t("h_verify"), verifyHtml(r), true)}
       ${v !== "no_signals" ? grp("help", t("h_help"), helpHtml(r), true) : ""}
       ${grp("says", t("h_says"), saysHtml(r, false))}
@@ -775,6 +884,7 @@
     }
     const dt = e.target.closest("[data-doc]"); if (dt && r) { showOrig(r, dt.dataset.doc === "orig"); return; }
     const mk = e.target.closest("button[data-ri]");
+    if (mk && r && state.senior) { showMsg(r, mk.dataset.ri); return; }   // easy mode hides the side panel, so show the message in a popup
     if (mk && r) {
       if (r.blob) showOrig(r, false);
       const g = $(".docpane details"); if (g) g.open = true;
@@ -790,6 +900,12 @@
     else if (act === "speak") { $("#tapListen").hidden = true; speakStep(true); }
     else if (!r) return;
     else if (act === "copy") copyText(r.draft, t("draft_copied"));
+    else if (act === "dl") {
+      const f = (r.files || [])[+a.dataset.i]; if (!f) return;
+      const url = URL.createObjectURL(new Blob([f.content], { type: f.mime })), el = document.createElement("a");
+      el.href = url; el.download = f.filename; document.body.appendChild(el); el.click(); el.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+    else if (act === "copyx") copyText(((r.extra || [])[+a.dataset.i] || {}).text || "", t("draft_copied"));
     else if (act === "sum") copyText(summaryText(r), t("sum_copied"));
     else if (act === "next" || act === "prev") {
       state.step += act === "next" ? 1 : -1; renderResult(r, true); $("#result").scrollIntoView();
@@ -824,9 +940,10 @@
   function renderOb() {
     const [k, ico] = OB[obI], last = obI === OB.length - 1;
     const lis = (a) => `<ul class="ob-list">${a.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
-    const extra = ["", `<p class="muted">${esc(t("ob2_n", { b: t("a_clear") }))}</p>`, "",
+    const extra = [`<button class="btn btn-secondary" type="button" data-ob="senior" aria-pressed="${state.senior}">${esc(t(state.senior ? "sr_turn_off" : "sr_btn"))}</button><p class="muted">${esc(t("sr_ban"))}</p>`, `<p class="muted">${esc(t("ob2_n", { b: t("a_clear") }))}</p>`, "",
       `<a class="btn btn-primary btn-big call" href="tel:997">${esc(t("ob4_call"))}</a><p class="muted">${esc(t("ob4_n"))}</p>`,
       `${more(lis(t("ob_tc")), "ob_tc_sum")}${more(lis(t("ob_cc")), "ob_cc_sum")}
+       <p><a href="terms.html?lang=${state.lang}" target="_blank" rel="noopener">${esc(t("tm_h1"))}</a></p>
        <label class="tick"><input type="checkbox" id="obTick"${obTick ? " checked" : ""} /><span>${esc(t("ob_agree"))}</span></label><p class="muted">${esc(t("ob_draft"))}</p>`][obI];
     $("#ob").innerHTML = `<div class="wrap">
       <div class="chips" role="group" aria-label="${esc(t("ui_lang"))}">${chipBtns("data-u")}</div>
@@ -859,6 +976,7 @@
     const a = b.dataset.ob, k = OB[obI][0];
     if (a === "next") obGo(1); else if (a === "back") obGo(-1);
     else if (a === "start" && obTick) endOb();
+    else if (a === "senior") setSenior(!state.senior);   // welcome card: no confirmation needed
     else if (a === "hear") readAloud([t(k + "_h") + ".", ...t(k + "_b")].join(" "), state.lang, b, $("#obNote"));   // static text only, and only when asked
   });
   $("#ob").addEventListener("change", (e) => { if (e.target.id === "obTick") { obTick = e.target.checked; $("#obStart").disabled = !obTick; } });
@@ -981,7 +1099,7 @@
   /* ---------- pages, theme, data ---------- */
   const VIEWS = ["check", "practice", "dictionary", "family", "call", "connect", "about"];
   function route(first) {
-    const v = EMBED ? "check" : VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
+    const v = EMBED || state.senior ? "check" : VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
     VIEWS.forEach((n) => ($("#view-" + n).hidden = n !== v));
     $$(".top nav a").forEach((a) => (a.getAttribute("href") === "#" + v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
     document.title = "FAHAM: " + t("ti_" + v);
@@ -996,14 +1114,64 @@
     document.documentElement.dataset.theme = state.theme;
     $("#themeBtn").setAttribute("aria-pressed", state.theme === "dark");
     $("#themeLbl").textContent = t(state.theme === "dark" ? "th_light" : "th_dark");
-    $('meta[name="theme-color"]').setAttribute("content", state.theme === "dark" ? "#0e1719" : "#0b5c63");
+    $('meta[name="theme-color"]').setAttribute("content", state.theme === "dark" ? "#0e0b1d" : "#5a3b8c");
   }
-  $("#themeBtn").addEventListener("click", () => { state.theme = state.theme === "dark" ? "light" : "dark"; save(); setTheme(); });
+  /* Theme switch: the new theme grows as a circle from the button (View Transitions API). Browsers without it get a short
+     colour fade. No animation for reduced motion or easy mode. */
+  $("#themeBtn").addEventListener("click", (e) => {
+    const apply = () => { state.theme = state.theme === "dark" ? "light" : "dark"; save(); setTheme(); };   // flips when applied, so quick double clicks still toggle twice
+    if (state.senior || matchMedia("(prefers-reduced-motion: reduce)").matches) { apply(); return; }
+    if (!document.startViewTransition) {
+      document.documentElement.classList.add("theme-fade"); apply();
+      setTimeout(() => document.documentElement.classList.remove("theme-fade"), 500); return;
+    }
+    const r = e.currentTarget.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    const rad = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    document.startViewTransition(apply).ready.then(() => document.documentElement.animate(
+      { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${rad}px at ${x}px ${y}px)`] },
+      { duration: 650, easing: "cubic-bezier(.4, 0, .2, 1)", pseudoElement: "::view-transition-new(root)" })).catch(() => {});
+  });
+
+  /* ---------- easy (senior) mode: set from the header, the first page and the welcome dialog ---------- */
+  function renderSenior() {
+    if (state.senior) document.documentElement.dataset.senior = "1"; else delete document.documentElement.dataset.senior;
+    $("#seniorBtn").setAttribute("aria-pressed", state.senior); $("#seniorLbl").textContent = t("sr_btn");
+    $("#seniorFootBox").hidden = !state.senior; $("#seniorFoot").textContent = t("sr_turn_off");
+    $("#seniorMsg").textContent = t(state.senior ? "sr_ban_on" : "sr_ban"); $("#seniorBannerBtn").textContent = t(state.senior ? "sr_turn_off" : "sr_turn_on");
+  }
+  function setSenior(on) {
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {   // a short ease-in so the change of layout is not a jolt
+      const root = document.documentElement; root.classList.remove("mode-pop"); void root.offsetWidth; root.classList.add("mode-pop");
+      setTimeout(() => root.classList.remove("mode-pop"), 900);
+    }
+    state.senior = on; store.set("senior", on); renderSenior(); stopSpeak(); state.step = 0;
+    if (!$("#ob").hidden) renderOb();
+    if (!$("#result").hidden && state.view !== "sum" && state.result) renderResult(state.result); else route(true);
+    toast(t(on ? "sr_toast_on" : "sr_toast_off"));
+  }
+  // Turning easy mode on is one tap. Leaving it asks first, from a small button at the page bottom or from the header.
+  const exitDlg = $("#exitDlg"), msgDlg = $("#msgDlg");
+  function askExit() {
+    $("#exitDlgH").textContent = t("sr_exit_h"); $("#exitDlgP").textContent = t("sr_exit_p");
+    $("#exitStay").textContent = t("sr_exit_stay"); $("#exitGo").textContent = t("sr_exit_go");
+    exitDlg.showModal(); $("#exitStay").focus();
+  }
+  ["#seniorBtn", "#seniorBannerBtn", "#seniorFoot"].forEach((id) => $(id).addEventListener("click", () => (state.senior ? askExit() : setSenior(true))));
+  $("#exitStay").addEventListener("click", () => exitDlg.close());
+  $("#exitGo").addEventListener("click", () => { exitDlg.close(); setSenior(false); });
+  function showMsg(r, ri) {
+    $("#msgDlgH").textContent = t("doc_h"); $("#msgDlgClose").textContent = t("doc_close");
+    $("#msgDlgBody").innerHTML = `<p class="muted">${esc(t("doc_hint"))}</p><pre class="doctext">${docHtml(r)}</pre>`;
+    $$("#msgDlgBody mark").forEach((m) => m.classList.toggle("focus", m.dataset.ri === String(ri)));
+    msgDlg.showModal();
+    const m = document.querySelector("#msgDlgBody mark.focus"); if (m) m.scrollIntoView({ block: "center" });
+  }
+  $("#msgDlgClose").addEventListener("click", () => msgDlg.close());
   $("#clearData").addEventListener("click", () => {
     if (state.busy) { toast(t("wait_check")); return; }
     try { Object.keys(localStorage).filter((k) => k.startsWith("faham_")).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
     forgetOb();
-    Object.assign(state, { lang: "bm", xl: "bm", xlManual: false, theme: "light", learned: new Set(), xp: 0, voice: true, all: false, step: 0, result: null, last: null });
+    Object.assign(state, { lang: "bm", xl: "bm", xlManual: false, theme: "light", learned: new Set(), xp: 0, voice: true, senior: false, all: false, step: 0, result: null, last: null });
     $("#consentBox").checked = false; $("#consentBlock").hidden = true; $("#pasteBox").value = ""; queue = []; state.batch = null; renderQueue(); $("#postBox").value = ""; formErr("");
     $("#detectNote").textContent = ""; $("#hint").hidden = false;
     $("#result").hidden = true; $("#result").innerHTML = ""; $("#checker").hidden = false;
@@ -1057,7 +1225,9 @@
   const sf = document.createElement("script"); sf.src = "assets/js/safety.js"; document.body.appendChild(sf);
 
   /* ---------- init ---------- */
-  renderChips(); setTheme(); setVoice(); applyI18n(); syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();
+  renderChips(); setTheme(); setVoice(); applyI18n(); renderSenior();
+  if (state.senior) { try { sessionStorage.setItem("faham_intro_seen", "1"); } catch (e) {} }   // easy mode skips the animated welcome (intro.js reads this flag after app.js)
+  syncChips(); renderMode(); renderExamples(); updateCount(true); renderLevel(); fillFamily();
   $("#hint").hidden = !!store.get("checked", false);
   state.practice.order = D.practice.map((_, i) => i).sort(() => Math.random() - 0.5).slice(0, 6);
   renderPractice(); route(true); renderUp(); checkApi();

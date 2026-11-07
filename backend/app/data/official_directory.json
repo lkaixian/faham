@@ -1,0 +1,8090 @@
+[
+{
+"domains": [
+"airasia.com"
+],
+"id": "AIRASIA",
+"name": "AirAsia (MOVE Travel Sdn Bhd)",
+"category": "airline",
+"subtype": "low cost carrier",
+"aliases": [
+"airasia",
+"air asia",
+"airasia move"
+],
+"source": "https://www.airasia.com"
+},
+{
+"domains": [
+"fireflyz.com.my"
+],
+"id": "FIREFLY",
+"name": "Firefly Airlines",
+"category": "airline",
+"subtype": "regional carrier",
+"aliases": [
+"firefly"
+],
+"source": "https://www.fireflyz.com.my"
+},
+{
+"domains": [
+"maskargo.com"
+],
+"id": "MASKARGO",
+"name": "MAB Kargo (MASkargo)",
+"category": "airline",
+"subtype": "air cargo",
+"aliases": [
+"maskargo",
+"mab kargo"
+],
+"source": "https://www.maskargo.com (search results from official domain)"
+},
+{
+"domains": [
+"malaysiaairlines.com"
+],
+"id": "MALAYSIA_AIRLINES",
+"name": "Malaysia Airlines",
+"category": "airline",
+"subtype": "full service carrier",
+"aliases": [
+"malaysia airlines",
+"mas",
+"enrich"
+],
+"source": "https://www.malaysiaairlines.com"
+},
+{
+"domains": [
+"aeonbank.com.my"
+],
+"id": "AEON_BANK",
+"name": "AEON Bank (M) Berhad",
+"category": "bank",
+"subtype": "digital",
+"aliases": [
+"aeon bank"
+],
+"source": "https://www.bnm.gov.my/-/aeon-bank-m-berhad"
+},
+{
+"domains": [
+"affingroup.com"
+],
+"id": "AFFIN_BANK",
+"name": "Affin Bank Berhad",
+"category": "bank",
+"subtype": "commercial",
+"aliases": [
+"affin",
+"affin bank",
+"affin islamic"
+],
+"source": "https://www.bnm.gov.my/-/affin-bank-berhad"
+},
+{
+"domains": [
+"affinhwang.com"
+],
+"id": "AFFIN_HWANG_IB",
+"name": "Affin Hwang Investment Bank Berhad",
+"category": "bank",
+"subtype": "investment",
+"aliases": [
+"affin hwang",
+"affin hwang investment bank"
+],
+"source": "https://www.bnm.gov.my/-/affin-hwang-investment-bank-berhad"
+},
+{
+"domains": [
+"alrajhibank.com.my"
+],
+"id": "AL_RAJHI_MALAYSIA",
+"name": "Al Rajhi Banking & Investment Corporation (Malaysia) Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"al rajhi",
+"alrajhi",
+"al rajhi bank"
+],
+"source": "https://www.bnm.gov.my/-/al-rajhi-banking-investment-corporation-malaysia-berhad"
+},
+{
+"domains": [
+"alliancebank.com.my"
+],
+"id": "ALLIANCE_BANK",
+"name": "Alliance Bank Malaysia Berhad",
+"category": "bank",
+"subtype": "commercial",
+"aliases": [
+"alliance bank",
+"alliance"
+],
+"source": "https://www.bnm.gov.my/-/alliance-bank-malaysia-berhad"
+},
+{
+"domains": [
+"allianceislamicbank.com.my"
+],
+"id": "ALLIANCE_ISLAMIC",
+"name": "Alliance Islamic Bank Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"alliance islamic"
+],
+"source": "https://www.bnm.gov.my/-/alliance-islamic-bank-berhad"
+},
+{
+"domains": [
+"ambank.com.my",
+"ambankgroup.com",
+"ambankspot.com",
+"ambankbizclub.com"
+],
+"id": "AMBANK",
+"name": "AmBank (M) Berhad",
+"category": "bank",
+"subtype": "commercial",
+"aliases": [
+"ambank",
+"am bank",
+"ambank group"
+],
+"source": "https://www.ambankgroup.com"
+},
+{
+"domains": [
+"ambankislamic.com.my"
+],
+"id": "AMBANK_ISLAMIC",
+"name": "AmBank Islamic Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"ambank islamic"
+],
+"source": "https://www.bnm.gov.my/-/ambank-islamic-berhad"
+},
+{
+"domains": [
+"aminvest.com"
+],
+"id": "AMINVESTMENT_BANK",
+"name": "AmInvestment Bank Berhad",
+"category": "bank",
+"subtype": "investment",
+"aliases": [
+"aminvestment bank",
+"aminvest"
+],
+"source": "https://www.ambankgroup.com"
+},
+{
+"domains": [
+"apac.bnpparibas"
+],
+"id": "BNP_PARIBAS_MALAYSIA",
+"name": "BNP Paribas Malaysia Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"bnp paribas",
+"bnpp"
+],
+"source": "https://www.bnm.gov.my/-/bnp-paribas-malaysia-berhad"
+},
+{
+"domains": [
+"bangkokbank.com.my"
+],
+"id": "BANGKOK_BANK_MALAYSIA",
+"name": "Bangkok Bank Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"bangkok bank"
+],
+"source": "https://www.bnm.gov.my/-/bangkok-bank-berhad"
+},
+{
+"domains": [
+"bankislam.com",
+"bankislam.com.my",
+"bimb.com"
+],
+"id": "BANK_ISLAM",
+"name": "Bank Islam Malaysia Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"bank islam",
+"bimb",
+"bank islam malaysia"
+],
+"source": "https://www.bankislam.com"
+},
+{
+"domains": [
+"bankrakyat.com.my"
+],
+"id": "BANK_RAKYAT",
+"name": "Bank Kerjasama Rakyat Malaysia Berhad (Bank Rakyat)",
+"category": "bank",
+"subtype": "dfi",
+"aliases": [
+"bank rakyat",
+"irakyat"
+],
+"source": "https://www.bnm.gov.my/-/bank-kerjasama-rakyat-malaysia-berhad-bank-rakyat"
+},
+{
+"domains": [
+"muamalat.com.my"
+],
+"id": "BANK_MUAMALAT",
+"name": "Bank Muamalat Malaysia Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"bank muamalat",
+"muamalat"
+],
+"source": "https://www.bnm.gov.my/-/bank-muamalat-malaysia-berhad"
+},
+{
+"domains": [
+"bpmb.com.my"
+],
+"id": "BPMB",
+"name": "Bank Pembangunan Malaysia Berhad",
+"category": "bank",
+"subtype": "dfi",
+"aliases": [
+"bank pembangunan",
+"bpmb",
+"development bank of malaysia"
+],
+"source": "https://www.bnm.gov.my/-/bank-pembangunan-malaysia-berhad"
+},
+{
+"domains": [
+"agrobank.com.my"
+],
+"id": "AGROBANK",
+"name": "Bank Pertanian Malaysia Berhad (Agrobank)",
+"category": "bank",
+"subtype": "dfi",
+"aliases": [
+"agrobank",
+"bank pertanian",
+"agro bank"
+],
+"source": "https://www.bnm.gov.my/-/bank-pertanian-malaysia-berhad-agrobank"
+},
+{
+"domains": [
+"bsn.com.my"
+],
+"id": "BSN",
+"name": "Bank Simpanan Nasional",
+"category": "bank",
+"subtype": "dfi",
+"aliases": [
+"bsn",
+"bank simpanan nasional",
+"mybsn"
+],
+"source": "https://www.bnm.gov.my/-/bank-simpanan-nasional"
+},
+{
+"domains": [
+"business.bofa.com"
+],
+"id": "BANK_OF_AMERICA_MALAYSIA",
+"name": "Bank of America Malaysia Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"bank of america",
+"bofa"
+],
+"source": "https://www.bnm.gov.my/-/bank-of-america-malaysia-berhad"
+},
+{
+"domains": [
+"bankofchina.com.my"
+],
+"id": "BANK_OF_CHINA_MALAYSIA",
+"name": "Bank of China (Malaysia) Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"bank of china",
+"boc malaysia"
+],
+"source": "https://www.bnm.gov.my/-/bank-of-china-malaysia-berhad"
+},
+{
+"domains": [
+"myboostbank.co",
+"myboost.co",
+"myboost.com.my"
+],
+"id": "BOOST_BANK",
+"name": "Boost Bank Berhad",
+"category": "bank",
+"subtype": "digital",
+"aliases": [
+"boost bank",
+"boostbank",
+"boost",
+"boost holdings sdn. bhd. (boost)"
+],
+"source": "https://www.bnm.gov.my/-/boost-bank-berhad"
+},
+{
+"domains": [
+"cimb.com.my",
+"cimbclicks.com.my",
+"cimbbank.com.my",
+"cimb.com",
+"cimbpreferred.com.my",
+"cimbprivatewealth.com.my"
+],
+"id": "CIMB_BANK",
+"name": "CIMB Bank Berhad",
+"category": "bank",
+"subtype": "commercial",
+"aliases": [
+"cimb",
+"cimb bank",
+"cimb clicks",
+"cimb octo",
+"cimb investment bank"
+],
+"source": "https://www.cimb.com.my"
+},
+{
+"domains": [
+"cimbislamic.com"
+],
+"id": "CIMB_ISLAMIC",
+"name": "CIMB Islamic Bank Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"cimb islamic"
+],
+"source": "https://www.cimb.com.my"
+},
+{
+"domains": [
+"ccb.com"
+],
+"id": "CCB_MALAYSIA",
+"name": "China Construction Bank (Malaysia) Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"china construction bank",
+"ccb malaysia"
+],
+"source": "https://www.bnm.gov.my/-/china-construction-bank-malaysia-berhad"
+},
+{
+"domains": [
+"citigroup.com"
+],
+"id": "CITIBANK_MALAYSIA",
+"name": "Citibank Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"citibank",
+"citi",
+"citibank malaysia"
+],
+"source": "https://www.bnm.gov.my/-/citibank-berhad"
+},
+{
+"domains": [
+"db.com"
+],
+"id": "DEUTSCHE_MALAYSIA",
+"name": "Deutsche Bank (Malaysia) Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"deutsche bank"
+],
+"source": "https://www.bnm.gov.my/-/deutsche-bank-malaysia-berhad"
+},
+{
+"domains": [
+"exim.com.my"
+],
+"id": "EXIM_BANK",
+"name": "Export-Import Bank of Malaysia Berhad (EXIM Bank)",
+"category": "bank",
+"subtype": "dfi",
+"aliases": [
+"exim bank",
+"exim"
+],
+"source": "https://www.bnm.gov.my/-/export-import-bank-of-malaysia-berhad-exim-bank"
+},
+{
+"domains": [
+"gxbank.my"
+],
+"id": "GXBANK",
+"name": "GX Bank Berhad (GXBank)",
+"category": "bank",
+"subtype": "digital",
+"aliases": [
+"gxbank",
+"gx bank"
+],
+"source": "https://www.bnm.gov.my/-/gx-bank-berhad"
+},
+{
+"domains": [
+"hsbcamanah.com.my"
+],
+"id": "HSBC_AMANAH",
+"name": "HSBC Amanah Malaysia Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"hsbc amanah",
+"amanah"
+],
+"source": "https://www.bnm.gov.my/-/hsbc-amanah-malaysia-berhad"
+},
+{
+"domains": [
+"hsbc.com.my"
+],
+"id": "HSBC_MALAYSIA",
+"name": "HSBC Bank Malaysia Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"hsbc",
+"hsbc malaysia"
+],
+"source": "https://www.bnm.gov.my/-/hsbc-bank-malaysia-berhad"
+},
+{
+"domains": [
+"hlb.com.my",
+"hongleongconnect.my",
+"hongleongonline.com.my"
+],
+"id": "HONG_LEONG_BANK",
+"name": "Hong Leong Bank Berhad",
+"category": "bank",
+"subtype": "commercial",
+"aliases": [
+"hong leong",
+"hlb",
+"hong leong bank",
+"hl connect"
+],
+"source": "https://www.hlb.com.my"
+},
+{
+"domains": [
+"hlebroking.com"
+],
+"id": "HONG_LEONG_INVESTMENT_BANK",
+"name": "Hong Leong Investment Bank Berhad",
+"category": "bank",
+"subtype": "investment",
+"aliases": [
+"hong leong investment bank",
+"hlib"
+],
+"source": "https://www.bnm.gov.my/-/hong-leong-investment-bank-berhad"
+},
+{
+"domains": [
+"hlisb.com.my"
+],
+"id": "HONG_LEONG_ISLAMIC",
+"name": "Hong Leong Islamic Bank Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"hong leong islamic",
+"hlisb"
+],
+"source": "https://www.hlb.com.my"
+},
+{
+"domains": [
+"icbcmy.com"
+],
+"id": "ICBC_MALAYSIA",
+"name": "Industrial and Commercial Bank of China (Malaysia) Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"icbc",
+"icbc malaysia"
+],
+"source": "https://www.bnm.gov.my/-/industrial-and-commercial-bank-of-china-malaysia-berhad"
+},
+{
+"domains": [
+"kaf.com.my"
+],
+"id": "KAF_IB",
+"name": "KAF Investment Bank Berhad",
+"category": "bank",
+"subtype": "investment",
+"aliases": [
+"kaf",
+"kaf investment bank"
+],
+"source": "https://www.bnm.gov.my/-/kaf-investment-bank-berhad"
+},
+{
+"domains": [
+"kenanga.com.my",
+"kenangainvestors.com.my",
+"kentrade.com.my"
+],
+"id": "KENANGA_IB",
+"name": "Kenanga Investment Bank Berhad",
+"category": "bank",
+"subtype": "investment",
+"aliases": [
+"kenanga",
+"kenanga investment bank",
+"kenanga investors",
+"kenanga investment bank berhad"
+],
+"source": "https://www.bnm.gov.my/-/kenanga-investment-bank-berhad"
+},
+{
+"domains": [
+"kfh.com.my"
+],
+"id": "KFH_MALAYSIA",
+"name": "Kuwait Finance House (Malaysia) Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"kuwait finance house",
+"kfh"
+],
+"source": "https://www.bnm.gov.my/-/kuwait-finance-house-malaysia-berhad"
+},
+{
+"domains": [
+"mbsbbank.com"
+],
+"id": "MBSB_BANK",
+"name": "MBSB Bank Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"mbsb",
+"mbsb bank",
+"malaysia building society"
+],
+"source": "https://www.bnm.gov.my/-/mbsb-bank-berhad"
+},
+{
+"domains": [
+"bk.mufg.jp"
+],
+"id": "MUFG_MALAYSIA",
+"name": "MUFG Bank (Malaysia) Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"mufg",
+"mufg bank"
+],
+"source": "https://www.bnm.gov.my/-/mufg-bank-malaysia-berhad"
+},
+{
+"domains": [
+"maybank2u.com.my",
+"maybank.com"
+],
+"id": "MAYBANK",
+"name": "Malayan Banking Berhad (Maybank)",
+"category": "bank",
+"subtype": "commercial",
+"aliases": [
+"maybank",
+"maybank2u",
+"m2u",
+"mae",
+"maybank islamic"
+],
+"source": "https://www.bnm.gov.my/-/malayan-banking-berhad"
+},
+{
+"domains": [
+"midf.com.my"
+],
+"id": "MIDF",
+"name": "Malaysian Industrial Development Finance Berhad (MIDF)",
+"category": "bank",
+"subtype": "dfi",
+"aliases": [
+"midf"
+],
+"source": "https://www.bnm.gov.my/related-links-pg"
+},
+{
+"domains": [
+"ocbc.com.my",
+"ocbc.com"
+],
+"id": "OCBC_MALAYSIA",
+"name": "OCBC Bank (Malaysia) Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"ocbc",
+"ocbc malaysia",
+"ocbc al-amin"
+],
+"source": "https://www.ocbc.com.my"
+},
+{
+"domains": [
+"pbebank.com",
+"publicbank.com.my",
+"publicbankgroup.com"
+],
+"id": "PUBLIC_BANK",
+"name": "Public Bank Berhad",
+"category": "bank",
+"subtype": "commercial",
+"aliases": [
+"public bank",
+"pbe",
+"pbebank",
+"public bank berhad"
+],
+"source": "https://www.bnm.gov.my/-/public-bank-berhad"
+},
+{
+"domains": [
+"publicinvestbank.com"
+],
+"id": "PUBLIC_INVESTMENT_BANK",
+"name": "Public Investment Bank Berhad",
+"category": "bank",
+"subtype": "investment",
+"aliases": [
+"public investment bank",
+"public invest"
+],
+"source": "https://www.bnm.gov.my/-/public-investment-bank-berhad"
+},
+{
+"domains": [
+"publicislamicbank.com.my"
+],
+"id": "PUBLIC_ISLAMIC",
+"name": "Public Islamic Bank Berhad",
+"category": "bank",
+"subtype": "islamic",
+"aliases": [
+"public islamic bank"
+],
+"source": "https://www.bnm.gov.my/-/public-islamic-bank-berhad"
+},
+{
+"domains": [
+"rhbgroup.com",
+"rhb.com.my",
+"rhbinvest.com"
+],
+"id": "RHB_BANK",
+"name": "RHB Bank Berhad",
+"category": "bank",
+"subtype": "commercial",
+"aliases": [
+"rhb",
+"rhb bank",
+"rhb islamic",
+"rhb investment bank",
+"rhb now"
+],
+"source": "https://www.rhbgroup.com"
+},
+{
+"domains": [
+"smebank.com.my"
+],
+"id": "SME_BANK",
+"name": "Small Medium Enterprise Development Bank Malaysia Berhad (SME Bank)",
+"category": "bank",
+"subtype": "dfi",
+"aliases": [
+"sme bank"
+],
+"source": "https://www.bnm.gov.my/-/small-medium-enterprise-development-bank-malaysia-berhad-sme-bank"
+},
+{
+"domains": [
+"sc.com"
+],
+"id": "STANDARD_CHARTERED_MALAYSIA",
+"name": "Standard Chartered Bank Malaysia Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"standard chartered",
+"stanchart",
+"scb",
+"standard chartered saadiq",
+"saadiq"
+],
+"source": "https://www.bnm.gov.my/-/standard-chartered-bank-malaysia-berhad"
+},
+{
+"domains": [
+"smbc.co.jp"
+],
+"id": "SMBC_MALAYSIA",
+"name": "Sumitomo Mitsui Banking Corporation Malaysia Berhad",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"smbc",
+"sumitomo mitsui"
+],
+"source": "https://www.bnm.gov.my/-/sumitomo-mitsui-banking-corporation-malaysia-berhad"
+},
+{
+"domains": [
+"uob.com.my"
+],
+"id": "UOB_MALAYSIA",
+"name": "United Overseas Bank (Malaysia) Bhd",
+"category": "bank",
+"subtype": "foreign",
+"aliases": [
+"uob",
+"uob malaysia",
+"united overseas bank"
+],
+"source": "https://www.bnm.gov.my/-/united-overseas-bank-malaysia-berhad"
+},
+{
+"domains": [
+"rytbank.my"
+],
+"id": "RYT_BANK",
+"name": "YTL Digital Bank Berhad (Ryt Bank)",
+"category": "bank",
+"subtype": "digital",
+"aliases": [
+"ryt bank",
+"rytbank",
+"ytl digital bank"
+],
+"source": "https://www.bnm.gov.my/-/ytl-digital-bank-berhad"
+},
+{
+"domains": [
+"mbip.gov.my"
+],
+"id": "MBIP",
+"name": "Majlis Bandaraya Iskandar Puteri",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbip",
+"mpjbt",
+"majlis bandaraya iskandar puteri",
+"majlis perbandaran johor bahru tengah"
+],
+"state": "Johor",
+"source": "https://www.mbip.gov.my/en/home"
+},
+{
+"domains": [
+"mbjb.gov.my",
+"geojb.gov.my"
+],
+"id": "MBJB",
+"name": "Majlis Bandaraya Johor Bahru",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbjb",
+"majlis bandaraya johor bahru",
+"johor bahru city council"
+],
+"state": "Johor",
+"source": "https://www.mbjb.gov.my/"
+},
+{
+"domains": [
+"mbpg.gov.my"
+],
+"id": "MBPG",
+"name": "Majlis Bandaraya Pasir Gudang",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbpg",
+"mppg",
+"majlis bandaraya pasir gudang",
+"majlis perbandaran pasir gudang"
+],
+"state": "Johor",
+"source": "https://www.mbpg.gov.my/"
+},
+{
+"domains": [
+"mdkt.gov.my"
+],
+"id": "MDKT",
+"name": "Majlis Daerah Kota Tinggi",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdkt",
+"majlis daerah kota tinggi"
+],
+"state": "Johor",
+"source": "http://www.mdkt.gov.my/"
+},
+{
+"domains": [
+"mdlabis.gov.my"
+],
+"id": "MDLABIS",
+"name": "Majlis Daerah Labis",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdlabis",
+"majlis daerah labis"
+],
+"state": "Johor",
+"source": "https://www.mdlabis.gov.my/"
+},
+{
+"domains": [
+"mdmersing.gov.my"
+],
+"id": "MDMERSING",
+"name": "Majlis Daerah Mersing",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdmersing",
+"majlis daerah mersing"
+],
+"state": "Johor",
+"source": "https://www.mdmersing.gov.my/"
+},
+{
+"domains": [
+"mdsrenggam.gov.my"
+],
+"id": "MDSR",
+"name": "Majlis Daerah Simpang Renggam",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdsr",
+"majlis daerah simpang renggam"
+],
+"state": "Johor",
+"source": "https://www.mdsrenggam.gov.my/"
+},
+{
+"domains": [
+"mdtangkak.gov.my"
+],
+"id": "MDTANGKAK",
+"name": "Majlis Daerah Tangkak",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdt tangkak",
+"mdtangkak",
+"majlis daerah tangkak"
+],
+"state": "Johor",
+"source": "https://www.mdtangkak.gov.my/"
+},
+{
+"domains": [
+"mdyongpeng.gov.my"
+],
+"id": "MDYP",
+"name": "Majlis Daerah Yong Peng",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdyp",
+"majlis daerah yong peng"
+],
+"state": "Johor",
+"source": "https://www.mdyongpeng.gov.my/"
+},
+{
+"domains": [
+"mpbp.gov.my"
+],
+"id": "MPBP",
+"name": "Majlis Perbandaran Batu Pahat",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpbp",
+"majlis perbandaran batu pahat"
+],
+"state": "Johor",
+"source": "https://www.mpbp.gov.my/"
+},
+{
+"domains": [
+"mpkluang.gov.my"
+],
+"id": "MPKLUANG",
+"name": "Majlis Perbandaran Kluang",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpk kluang",
+"mpkluang",
+"majlis perbandaran kluang"
+],
+"state": "Johor",
+"source": "https://www.mpkluang.gov.my/"
+},
+{
+"domains": [
+"mpku.gov.my"
+],
+"id": "MPKU",
+"name": "Majlis Perbandaran Kulai",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpku",
+"majlis perbandaran kulai",
+"majlis daerah kulai"
+],
+"state": "Johor",
+"source": "https://www.mpku.gov.my/"
+},
+{
+"domains": [
+"mpmuar.gov.my"
+],
+"id": "MPMUAR",
+"name": "Majlis Perbandaran Muar",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpmuar",
+"majlis perbandaran muar"
+],
+"state": "Johor",
+"source": "https://www.mpmuar.gov.my/"
+},
+{
+"domains": [
+"mppengerang.gov.my"
+],
+"id": "MPPENGERANG",
+"name": "Majlis Perbandaran Pengerang",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mppengerang",
+"majlis perbandaran pengerang"
+],
+"state": "Johor",
+"source": "http://www.mppengerang.gov.my/"
+},
+{
+"domains": [
+"mppn.gov.my"
+],
+"id": "MPPN",
+"name": "Majlis Perbandaran Pontian",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mppn",
+"majlis perbandaran pontian",
+"majlis daerah pontian"
+],
+"state": "Johor",
+"source": "https://www.mppn.gov.my/"
+},
+{
+"domains": [
+"mpsegamat.gov.my"
+],
+"id": "MPSEGAMAT",
+"name": "Majlis Perbandaran Segamat",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpsegamat",
+"mps segamat",
+"majlis perbandaran segamat"
+],
+"state": "Johor",
+"source": "https://mpsegamat.gov.my/"
+},
+{
+"domains": [
+"mbas.gov.my"
+],
+"id": "MAJLIS_BANDARAYA_ALOR_SETAR",
+"name": "Majlis Bandaraya Alor Setar",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"majlis bandaraya alor setar",
+"mbas"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdbaling.gov.my"
+],
+"id": "MAJLIS_DAERAH_BALING",
+"name": "Majlis Daerah Baling",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah baling",
+"mdbaling"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdbb.gov.my"
+],
+"id": "MAJLIS_DAERAH_BANDAR_BAHARU",
+"name": "Majlis Daerah Bandar Baharu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah bandar baharu",
+"mdbb"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdptk.gov.my"
+],
+"id": "MAJLIS_DAERAH_PADANG_TERAP",
+"name": "Majlis Daerah Padang Terap",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah padang terap",
+"mdptk"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdpendang.gov.my"
+],
+"id": "MAJLIS_DAERAH_PENDANG",
+"name": "Majlis Daerah Pendang",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah pendang",
+"mdpendang"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdsik.gov.my"
+],
+"id": "MAJLIS_DAERAH_SIK",
+"name": "Majlis Daerah Sik",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah sik",
+"mdsik"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdyan.gov.my"
+],
+"id": "MAJLIS_DAERAH_YAN",
+"name": "Majlis Daerah Yan",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah yan",
+"mdyan"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [],
+"id": "MAJLIS_PERBANDARAN_KUBANG_PASU",
+"name": "Majlis Perbandaran Kubang Pasu",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis daerah kubang pasu",
+"majlis perbandaran kubang pasu",
+"mpkp"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpkk.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_KULIM",
+"name": "Majlis Perbandaran Kulim",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran kulim"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mplbp.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_LANGKAWI_BANDARAYA_PELANCONGAN",
+"name": "Majlis Perbandaran Langkawi Bandaraya Pelancongan",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran langkawi",
+"majlis perbandaran langkawi bandaraya pelancongan",
+"mplbp"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpspk.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_SUNGAI_PETANI",
+"name": "Majlis Perbandaran Sungai Petani",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran sungai petani",
+"mpspk"
+],
+"state": "Kedah",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdbachok.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_BACHOK",
+"name": "Majlis Daerah Bachok",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah bachok",
+"mdbachok"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mddabong.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_DABONG",
+"name": "Majlis Daerah Dabong",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah dabong",
+"mddabong"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdgm.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_GUA_MUSANG",
+"name": "Majlis Daerah Gua Musang",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah gua musang",
+"mdgm"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdjeli.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_JELI",
+"name": "Majlis Daerah Jeli",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah jeli",
+"mdjeli"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdketereh.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_KETEREH",
+"name": "Majlis Daerah Ketereh",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah ketereh",
+"mdketereh"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdkkrai.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_KUALA_KRAI",
+"name": "Majlis Daerah Kuala Krai",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah kuala krai",
+"mdkkrai"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdmachang.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_MACHANG",
+"name": "Majlis Daerah Machang",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah machang",
+"mdmachang"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdpmas.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_PASIR_MAS",
+"name": "Majlis Daerah Pasir Mas",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah pasir mas",
+"mdpmas"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdpputeh.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_PASIR_PUTEH",
+"name": "Majlis Daerah Pasir Puteh",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah pasir puteh",
+"mdpputeh"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdtanahmerah.gov.my"
+],
+"id": "MAJLIS_DAERAH_TANAH_MERAH",
+"name": "Majlis Daerah Tanah Merah",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah tanah merah",
+"mdtanahmerah"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdtumpat.kelantan.gov.my"
+],
+"id": "MAJLIS_DAERAH_TUMPAT",
+"name": "Majlis Daerah Tumpat",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah tumpat",
+"mdtumpat"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpkbbri.kelantan.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_KOTA_BHARU_BANDAR_RAYA_ISLAM",
+"name": "Majlis Perbandaran Kota Bharu Bandar Raya Islam",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran kota bharu bandar raya islam",
+"mpkb",
+"mpkb-bri",
+"mpkbbri"
+],
+"state": "Kelantan",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mbmb.gov.my"
+],
+"id": "MBMB",
+"name": "Majlis Bandaraya Melaka Bersejarah",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbmb",
+"majlis bandaraya melaka bersejarah",
+"historic melaka city council"
+],
+"state": "Melaka",
+"source": "https://www.mbmb.gov.my/ms/"
+},
+{
+"domains": [
+"mpag.gov.my"
+],
+"id": "MPAG",
+"name": "Majlis Perbandaran Alor Gajah",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpag",
+"majlis perbandaran alor gajah"
+],
+"state": "Melaka",
+"source": "https://www.mpag.gov.my/"
+},
+{
+"domains": [
+"mphtj.gov.my"
+],
+"id": "MPHTJ",
+"name": "Majlis Perbandaran Hang Tuah Jaya",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mphtj",
+"majlis perbandaran hang tuah jaya"
+],
+"state": "Melaka",
+"source": "https://www.mphtj.gov.my/"
+},
+{
+"domains": [
+"mpjasin.gov.my"
+],
+"id": "MPJASIN",
+"name": "Majlis Perbandaran Jasin",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpj jasin",
+"mpjasin",
+"majlis perbandaran jasin"
+],
+"state": "Melaka",
+"source": "https://www.mpjasin.gov.my/index.php/ms/"
+},
+{
+"domains": [
+"mbs.gov.my"
+],
+"id": "MBS",
+"name": "Majlis Bandaraya Seremban",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbs",
+"mps seremban",
+"mpn",
+"majlis bandaraya seremban",
+"majlis perbandaran seremban",
+"majlis perbandaran nilai",
+"seremban city council"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.mbs.gov.my/"
+},
+{
+"domains": [
+"mdjelebu.gov.my"
+],
+"id": "MDJ",
+"name": "Majlis Daerah Jelebu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdj",
+"mdjelebu",
+"majlis daerah jelebu"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.mdjelebu.gov.my/"
+},
+{
+"domains": [
+"mdkp.gov.my"
+],
+"id": "MDKP",
+"name": "Majlis Daerah Kuala Pilah",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah kuala pilah"
+],
+"state": "Negeri Sembilan",
+"source": "https://mdkp.gov.my/"
+},
+{
+"domains": [
+"mdr.gov.my"
+],
+"id": "MDR",
+"name": "Majlis Daerah Rembau",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdr",
+"majlis daerah rembau"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.mdr.gov.my/ms/"
+},
+{
+"domains": [
+"mdtampin.gov.my"
+],
+"id": "MDTAMPIN",
+"name": "Majlis Daerah Tampin",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdt tampin",
+"mdtampin",
+"majlis daerah tampin"
+],
+"state": "Negeri Sembilan",
+"source": "http://www.mdtampin.gov.my/en/home"
+},
+{
+"domains": [
+"mpjl.gov.my"
+],
+"id": "MPJL",
+"name": "Majlis Perbandaran Jempol",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpjl",
+"majlis perbandaran jempol",
+"majlis daerah jempol",
+"mdjl"
+],
+"state": "Negeri Sembilan",
+"source": "https://mpjl.gov.my/"
+},
+{
+"domains": [
+"mppd.gov.my"
+],
+"id": "MPPD",
+"name": "Majlis Perbandaran Port Dickson",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mppd",
+"majlis perbandaran port dickson"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.mppd.gov.my/ms"
+},
+{
+"domains": [
+"mbk.gov.my"
+],
+"id": "MAJLIS_BANDARAYA_KUANTAN",
+"name": "Majlis Bandaraya Kuantan",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"majlis bandaraya kuantan",
+"majlis perbandaran kuantan"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdbera.gov.my"
+],
+"id": "MAJLIS_DAERAH_BERA",
+"name": "Majlis Daerah Bera",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah bera",
+"mdbera"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdcameron.gov.my"
+],
+"id": "MAJLIS_DAERAH_CAMERON_HIGHLANDS",
+"name": "Majlis Daerah Cameron Highlands",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah cameron highlands",
+"mdch"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdjerantut.gov.my"
+],
+"id": "MAJLIS_DAERAH_JERANTUT",
+"name": "Majlis Daerah Jerantut",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah jerantut",
+"mdjerantut"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdlipis.gov.my"
+],
+"id": "MAJLIS_DAERAH_LIPIS",
+"name": "Majlis Daerah Lipis",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah lipis"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdmaran.gov.my"
+],
+"id": "MAJLIS_DAERAH_MARAN",
+"name": "Majlis Daerah Maran",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah maran"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [],
+"id": "MAJLIS_DAERAH_PEKAN",
+"name": "Majlis Daerah Pekan",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah pekan",
+"mdpekan"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdraub.gov.my"
+],
+"id": "MAJLIS_DAERAH_RAUB",
+"name": "Majlis Daerah Raub",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah raub",
+"mdraub"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdrompin.gov.my"
+],
+"id": "MAJLIS_DAERAH_ROMPIN",
+"name": "Majlis Daerah Rompin",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah rompin",
+"mdrompin"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpbentong.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_BENTONG",
+"name": "Majlis Perbandaran Bentong",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran bentong",
+"mpb"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpt.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_TEMERLOH",
+"name": "Majlis Perbandaran Temerloh",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran temerloh"
+],
+"state": "Pahang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mbi.gov.my"
+],
+"id": "MAJLIS_BANDARAYA_IPOH",
+"name": "Majlis Bandaraya Ipoh",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"majlis bandaraya ipoh",
+"mbi"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdbg.gov.my"
+],
+"id": "MAJLIS_DAERAH_BATU_GAJAH",
+"name": "Majlis Daerah Batu Gajah",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah batu gajah",
+"mdbg"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"gerik.gov.my"
+],
+"id": "MAJLIS_DAERAH_GERIK",
+"name": "Majlis Daerah Gerik",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah gerik",
+"mdg"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdkampar.gov.my"
+],
+"id": "MAJLIS_DAERAH_KAMPAR",
+"name": "Majlis Daerah Kampar",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah kampar",
+"mdk"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdkerian.gov.my"
+],
+"id": "MAJLIS_DAERAH_KERIAN",
+"name": "Majlis Daerah Kerian",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah kerian",
+"mdkerian"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdlg.gov.my"
+],
+"id": "MAJLIS_DAERAH_LENGGONG",
+"name": "Majlis Daerah Lenggong",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah lenggong",
+"mdlg"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdph.gov.my"
+],
+"id": "MAJLIS_DAERAH_PENGKALAN_HULU",
+"name": "Majlis Daerah Pengkalan Hulu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah pengkalan hulu",
+"mdph"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdpt.gov.my"
+],
+"id": "MAJLIS_DAERAH_PERAK_TENGAH",
+"name": "Majlis Daerah Perak Tengah",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah perak tengah"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdselama.gov.my"
+],
+"id": "MAJLIS_DAERAH_SELAMA",
+"name": "Majlis Daerah Selama",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah selama",
+"mdselama"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdtm.gov.my"
+],
+"id": "MAJLIS_DAERAH_TANJONG_MALIM",
+"name": "Majlis Daerah Tanjong Malim",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah tanjong malim",
+"mdtm"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdtapah.gov.my"
+],
+"id": "MAJLIS_DAERAH_TAPAH",
+"name": "Majlis Daerah Tapah",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah tapah",
+"mdtapah"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpkkpk.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_KUALA_KANGSAR",
+"name": "Majlis Perbandaran Kuala Kangsar",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran kuala kangsar"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpm.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_MANJUNG",
+"name": "Majlis Perbandaran Manjung",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran manjung"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mptaiping.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_TAIPING",
+"name": "Majlis Perbandaran Taiping",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran taiping"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpti.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_TELUK_INTAN",
+"name": "Majlis Perbandaran Teluk Intan",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran teluk intan",
+"mpti"
+],
+"state": "Perak",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpperlis.gov.my",
+"mpkangar.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_NEGERI_PERLIS",
+"name": "Majlis Perbandaran Negeri Perlis (dahulu Majlis Perbandaran Kangar)",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran kangar",
+"majlis perbandaran negeri perlis",
+"mpnp"
+],
+"state": "Perlis",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mbpp.gov.my"
+],
+"id": "MAJLIS_BANDARAYA_PULAU_PINANG",
+"name": "Majlis Bandaraya Pulau Pinang",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"majlis bandaraya pulau pinang",
+"mbpp"
+],
+"state": "Pulau Pinang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mbsp.gov.my"
+],
+"id": "MAJLIS_BANDARAYA_SEBERANG_PERAI",
+"name": "Majlis Bandaraya Seberang Perai",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"majlis bandaraya seberang perai",
+"majlis perbandaran seberang perai",
+"mbsp"
+],
+"state": "Pulau Pinang",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"dbkk.sabah.gov.my"
+],
+"id": "DBKK",
+"name": "Dewan Bandaraya Kota Kinabalu",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"dbkk",
+"kota kinabalu city hall"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"lbkudat.sabah.gov.my"
+],
+"id": "LB_KUDAT",
+"name": "Lembaga Bandaran Kudat",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"lb kudat",
+"kudat town board"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdbeaufort.sabah.gov.my"
+],
+"id": "MD_BEAUFORT",
+"name": "Majlis Daerah Beaufort",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md beaufort",
+"mdbeaufort"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdbeluran.sabah.gov.my"
+],
+"id": "MD_BELURAN",
+"name": "Majlis Daerah Beluran",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md beluran",
+"mdbeluran"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdkeningau.sabah.gov.my"
+],
+"id": "MD_KENINGAU",
+"name": "Majlis Daerah Keningau",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md keningau",
+"mdkeningau"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdkinabatangan.sabah.gov.my"
+],
+"id": "MD_KINABATANGAN",
+"name": "Majlis Daerah Kinabatangan",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md kinabatangan",
+"mdkinabatangan"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdkotabelud.sabah.gov.my"
+],
+"id": "MD_KOTABELUD",
+"name": "Majlis Daerah Kota Belud",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md kota belud",
+"mdkotabelud"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdkotamarudu.sabah.gov.my"
+],
+"id": "MD_KOTAMARUDU",
+"name": "Majlis Daerah Kota Marudu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md kota marudu",
+"mdkotamarudu"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdkualapenyu.sabah.gov.my"
+],
+"id": "MD_KUALAPENYU",
+"name": "Majlis Daerah Kuala Penyu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md kuala penyu",
+"mdkualapenyu"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdlahaddatu.sabah.gov.my"
+],
+"id": "MD_LAHADDATU",
+"name": "Majlis Daerah Lahad Datu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md lahad datu",
+"mpl"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdnabawan.sabah.gov.my"
+],
+"id": "MD_NABAWAN",
+"name": "Majlis Daerah Nabawan",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md nabawan",
+"mdnabawan"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdpapar.sabah.gov.my"
+],
+"id": "MD_PAPAR",
+"name": "Majlis Daerah Papar",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md papar",
+"mdpapar"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdputatan.sabah.gov.my"
+],
+"id": "MD_PUTATAN",
+"name": "Majlis Daerah Putatan",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md putatan",
+"mdputatan"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdranau.sabah.gov.my"
+],
+"id": "MD_RANAU",
+"name": "Majlis Daerah Ranau",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md ranau",
+"mdranau"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdsemporna.sabah.gov.my"
+],
+"id": "MD_SEMPORNA",
+"name": "Majlis Daerah Semporna",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md semporna",
+"mdsemporna"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdsipitang.sabah.gov.my"
+],
+"id": "MD_SIPITANG",
+"name": "Majlis Daerah Sipitang",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md sipitang",
+"mdsipitang"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdtambunan.sabah.gov.my"
+],
+"id": "MD_TAMBUNAN",
+"name": "Majlis Daerah Tambunan",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md tambunan",
+"mdtambunan"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdtelupid.sabah.gov.my"
+],
+"id": "MD_TELUPID",
+"name": "Majlis Daerah Telupid",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md telupid",
+"mdtelupid"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdtenom.sabah.gov.my"
+],
+"id": "MD_TENOM",
+"name": "Majlis Daerah Tenom",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md tenom",
+"mdtenom"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mdtuaran.sabah.gov.my"
+],
+"id": "MD_TUARAN",
+"name": "Majlis Daerah Tuaran",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"md tuaran",
+"mdtuaran"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mppenampang.sabah.gov.my"
+],
+"id": "MPP_PENAMPANG",
+"name": "Majlis Perbandaran Penampang",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpp penampang",
+"mp penampang"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mps.sabah.gov.my"
+],
+"id": "MPS_SANDAKAN",
+"name": "Majlis Perbandaran Sandakan",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mps sandakan"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"mpt.sabah.gov.my"
+],
+"id": "MPT_TAWAU",
+"name": "Majlis Perbandaran Tawau",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpt tawau"
+],
+"state": "Sabah",
+"source": "https://directory.sabah.gov.my"
+},
+{
+"domains": [
+"bda.gov.my"
+],
+"id": "BDA",
+"name": "Bintulu Development Authority",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"bda",
+"pihak berkuasa pembangunan bintulu",
+"mbb"
+],
+"state": "Sarawak",
+"source": "https://bda.gov.my/web/subpage/webpage_view/72"
+},
+{
+"domains": [
+"dbku.sarawak.gov.my"
+],
+"id": "DBKU",
+"name": "Dewan Bandaraya Kuching Utara",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"dbku",
+"kuching north city hall"
+],
+"state": "Sarawak",
+"source": "https://en.wikipedia.org/wiki/Kuching_North_City_Hall"
+},
+{
+"domains": [
+"mbks.sarawak.gov.my"
+],
+"id": "MBKS",
+"name": "Majlis Bandaraya Kuching Selatan",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbks",
+"kuching south city council"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"miricouncil.gov.my"
+],
+"id": "MBM",
+"name": "Majlis Bandaraya Miri",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbm",
+"miri city council"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"baudc.sarawak.gov.my"
+],
+"id": "MD_BAU",
+"name": "Majlis Daerah Bau",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"bau dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"betongdc.sarawak.gov.my"
+],
+"id": "MD_BETONG",
+"name": "Majlis Daerah Betong",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"betong dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"mukah-dalatdc.sarawak.gov.my"
+],
+"id": "MD_DALAT_MUKAH",
+"name": "Majlis Daerah Dalat dan Mukah",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mukah dc",
+"dalat mukah dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"gedongdc.sarawak.gov.my"
+],
+"id": "MD_GEDONG",
+"name": "Majlis Daerah Gedong",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"gedong dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"kanowitdc.sarawak.gov.my"
+],
+"id": "MD_KANOWIT",
+"name": "Majlis Daerah Kanowit",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"kanowit dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"kapitdc.sarawak.gov.my"
+],
+"id": "MD_KAPIT",
+"name": "Majlis Daerah Kapit",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"kapit dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"lawasdc.sarawak.gov.my"
+],
+"id": "MD_LAWAS",
+"name": "Majlis Daerah Lawas",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"lawas dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"limbangdc.sarawak.gov.my"
+],
+"id": "MD_LIMBANG",
+"name": "Majlis Daerah Limbang",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"limbang dc",
+"mplimbang"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"srdc.gov.my"
+],
+"id": "MDLR_SIBU",
+"name": "Majlis Daerah Luar Bandar Sibu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"srdc",
+"sibu rural district council"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"lubokantudc.sarawak.gov.my"
+],
+"id": "MD_LUBOKANTU",
+"name": "Majlis Daerah Lubok Antu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"lubok antu dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"lundudc.sarawak.gov.my"
+],
+"id": "MD_LUNDU",
+"name": "Majlis Daerah Lundu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"lundu dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"maradong-julaudc.sarawak.gov.my"
+],
+"id": "MD_MARADONG_JULAU",
+"name": "Majlis Daerah Maradong dan Julau",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"maradong julau dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"marudidc.sarawak.gov.my"
+],
+"id": "MD_MARUDI",
+"name": "Majlis Daerah Marudi",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"marudi dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"matu-darodc.sarawak.gov.my"
+],
+"id": "MD_MATU_DARO",
+"name": "Majlis Daerah Matu dan Daro",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"matu daro dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"saratokdc.sarawak.gov.my"
+],
+"id": "MD_SARATOK",
+"name": "Majlis Daerah Saratok",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"saratok dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"sarikeidc.sarawak.gov.my"
+],
+"id": "MD_SARIKEI",
+"name": "Majlis Daerah Sarikei",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"sarikei dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"seriandc.sarawak.gov.my"
+],
+"id": "MD_SERIAN",
+"name": "Majlis Daerah Serian",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"serian dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"simunjandc.sarawak.gov.my"
+],
+"id": "MD_SIMUNJAN",
+"name": "Majlis Daerah Simunjan",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"simunjan dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"sriamandc.sarawak.gov.my"
+],
+"id": "MD_SRIAMAN",
+"name": "Majlis Daerah Sri Aman",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"sri aman dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"mdsubis.sarawak.gov.my"
+],
+"id": "MD_SUBIS",
+"name": "Majlis Daerah Subis",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"subis dc"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"mpp.sarawak.gov.my"
+],
+"id": "MPP_PADAWAN",
+"name": "Majlis Perbandaran Padawan",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpp",
+"padawan municipal council"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"smc.gov.my"
+],
+"id": "MBS_SIBU",
+"name": "Majlis Perbandaran Sibu",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mps sibu",
+"smc",
+"sibu municipal council"
+],
+"state": "Sarawak",
+"source": "https://mphlg.sarawak.gov.my/web/subpage/webpage_view/163"
+},
+{
+"domains": [
+"mbdk.gov.my"
+],
+"id": "MBDK",
+"name": "Majlis Bandaraya Diraja Klang",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbdk",
+"majlis bandaraya diraja klang",
+"majlis perbandaran klang",
+"klang royal city council"
+],
+"state": "Selangor",
+"source": "https://www.mbdk.gov.my"
+},
+{
+"domains": [
+"mbpj.gov.my"
+],
+"id": "MBPJ",
+"name": "Majlis Bandaraya Petaling Jaya",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbpj",
+"majlis bandaraya petaling jaya",
+"petaling jaya city council"
+],
+"state": "Selangor",
+"source": "https://www.mbpj.gov.my/ms/rakyat/perkhidmatan-online-mbpj"
+},
+{
+"domains": [
+"mbsa.gov.my",
+"mymbsa.gov.my"
+],
+"id": "MBSA",
+"name": "Majlis Bandaraya Shah Alam",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbsa",
+"majlis bandaraya shah alam",
+"shah alam city council"
+],
+"state": "Selangor",
+"source": "https://www.mbsa.gov.my"
+},
+{
+"domains": [
+"mbsj.gov.my"
+],
+"id": "MBSJ",
+"name": "Majlis Bandaraya Subang Jaya",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"mbsj",
+"majlis bandaraya subang jaya",
+"subang jaya city council"
+],
+"state": "Selangor",
+"source": "https://www.mbsj.gov.my"
+},
+{
+"domains": [
+"mdsb.gov.my"
+],
+"id": "MDSB",
+"name": "Majlis Daerah Sabak Bernam",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"mdsb",
+"majlis daerah sabak bernam",
+"sabak bernam district council"
+],
+"state": "Selangor",
+"source": "https://www.mdsb.gov.my"
+},
+{
+"domains": [
+"mpaj.gov.my"
+],
+"id": "MPAJ",
+"name": "Majlis Perbandaran Ampang Jaya",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpaj",
+"majlis perbandaran ampang jaya",
+"ampang jaya municipal council"
+],
+"state": "Selangor",
+"source": "https://www.mpaj.gov.my"
+},
+{
+"domains": [
+"mphs.gov.my"
+],
+"id": "MPHS",
+"name": "Majlis Perbandaran Hulu Selangor",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mphs",
+"majlis perbandaran hulu selangor",
+"hulu selangor municipal council"
+],
+"state": "Selangor",
+"source": "https://www.mphs.gov.my"
+},
+{
+"domains": [
+"mpkj.gov.my"
+],
+"id": "MPKJ",
+"name": "Majlis Perbandaran Kajang",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpkj",
+"mpkj kajang",
+"majlis perbandaran kajang",
+"kajang municipal council"
+],
+"state": "Selangor",
+"source": "https://www.mpkj.gov.my"
+},
+{
+"domains": [
+"mpkl.gov.my"
+],
+"id": "MPKL",
+"name": "Majlis Perbandaran Kuala Langat",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpkl",
+"majlis perbandaran kuala langat",
+"kuala langat municipal council"
+],
+"state": "Selangor",
+"source": "https://www.mpkl.gov.my"
+},
+{
+"domains": [
+"mpks.gov.my",
+"mpks.sarawak.gov.my"
+],
+"id": "MPKS",
+"name": "Majlis Perbandaran Kuala Selangor",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpks",
+"majlis perbandaran kuala selangor",
+"kuala selangor municipal council",
+"kota samarahan municipal council"
+],
+"state": "Selangor",
+"source": "https://www.mpks.gov.my"
+},
+{
+"domains": [
+"mps.gov.my"
+],
+"id": "MPS",
+"name": "Majlis Perbandaran Selayang",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran selayang",
+"selayang municipal council"
+],
+"state": "Selangor",
+"source": "https://www.mps.gov.my"
+},
+{
+"domains": [
+"mpsepang.gov.my"
+],
+"id": "MPSEPANG",
+"name": "Majlis Perbandaran Sepang",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"mpsepang",
+"mps sepang",
+"majlis perbandaran sepang",
+"sepang municipal council"
+],
+"state": "Selangor",
+"source": "https://www.mpsepang.gov.my/en/e-payment/"
+},
+{
+"domains": [
+"mbkt.terengganu.gov.my"
+],
+"id": "MAJLIS_BANDARAYA_KUALA_TERENGGANU",
+"name": "Majlis Bandaraya Kuala Terengganu",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"majlis bandaraya kuala terengganu",
+"mbkt"
+],
+"state": "Terengganu",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdb.terengganu.gov.my"
+],
+"id": "MAJLIS_DAERAH_BESUT",
+"name": "Majlis Daerah Besut",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah besut",
+"mdb"
+],
+"state": "Terengganu",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdht.terengganu.gov.my"
+],
+"id": "MAJLIS_DAERAH_HULU_TERENGGANU",
+"name": "Majlis Daerah Hulu Terengganu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah hulu terengganu",
+"mdht"
+],
+"state": "Terengganu",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mdm.terengganu.gov.my"
+],
+"id": "MAJLIS_DAERAH_MARANG",
+"name": "Majlis Daerah Marang",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah marang"
+],
+"state": "Terengganu",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mds.terengganu.gov.my"
+],
+"id": "MAJLIS_DAERAH_SETIU",
+"name": "Majlis Daerah Setiu",
+"category": "council",
+"subtype": "district",
+"aliases": [
+"majlis daerah setiu",
+"mds"
+],
+"state": "Terengganu",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpd.terengganu.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_DUNGUN",
+"name": "Majlis Perbandaran Dungun",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran dungun",
+"mpd"
+],
+"state": "Terengganu",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"mpk.terengganu.gov.my"
+],
+"id": "MAJLIS_PERBANDARAN_KEMAMAN",
+"name": "Majlis Perbandaran Kemaman",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"majlis perbandaran kemaman"
+],
+"state": "Terengganu",
+"source": "https://archive.data.gov.my/data/dataset/senarai-pihak-berkuasa-tempatan-pbt-serta-agensi-diberi-kuasa-pbt/resource/996cab73-7c8c-4c91-a48a-fb9c1ce017f5"
+},
+{
+"domains": [
+"dbkl.gov.my"
+],
+"id": "DBKL",
+"name": "Dewan Bandaraya Kuala Lumpur",
+"category": "council",
+"subtype": "city",
+"aliases": [
+"dbkl",
+"dewan bandaraya kuala lumpur",
+"kuala lumpur city hall"
+],
+"state": "Wilayah Persekutuan Kuala Lumpur",
+"source": "https://www.dbkl.gov.my"
+},
+{
+"domains": [
+"pl.gov.my"
+],
+"id": "PL",
+"name": "Perbadanan Labuan",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"perbadanan labuan",
+"labuan corporation"
+],
+"state": "Wilayah Persekutuan Labuan",
+"source": "https://www.pl.gov.my"
+},
+{
+"domains": [
+"ppj.gov.my"
+],
+"id": "PPJ",
+"name": "Perbadanan Putrajaya",
+"category": "council",
+"subtype": "municipal",
+"aliases": [
+"ppj",
+"perbadanan putrajaya",
+"putrajaya corporation"
+],
+"state": "Wilayah Persekutuan Putrajaya",
+"source": "https://www.ppj.gov.my"
+},
+{
+"domains": [
+"citylinkexpress.com",
+"parcelguard.com.my"
+],
+"id": "CITY_LINK_EXPRESS",
+"name": "City-Link Express",
+"category": "courier",
+"subtype": "parcel courier",
+"aliases": [
+"city-link",
+"citylink",
+"city link"
+],
+"source": "https://www.citylinkexpress.com"
+},
+{
+"domains": [
+"dhl.com"
+],
+"id": "DHL_MALAYSIA",
+"name": "DHL Malaysia",
+"category": "courier",
+"subtype": "international courier",
+"aliases": [
+"dhl"
+],
+"source": "https://www.dhl.com/my-en/home.html"
+},
+{
+"domains": [
+"fedex.com"
+],
+"id": "FEDEX_MALAYSIA",
+"name": "FedEx Malaysia",
+"category": "courier",
+"subtype": "international courier",
+"aliases": [
+"fedex"
+],
+"source": "https://www.fedex.com/en-my/home.html"
+},
+{
+"domains": [
+"flashexpress.my"
+],
+"id": "FLASH_EXPRESS_MY",
+"name": "Flash Express Malaysia",
+"category": "courier",
+"subtype": "parcel courier",
+"aliases": [
+"flash express"
+],
+"source": "https://www.flashexpress.my (third-party listings; site timed out)"
+},
+{
+"domains": [
+"gdexpress.com"
+],
+"id": "GDEX",
+"name": "GD Express Sdn Bhd",
+"category": "courier",
+"subtype": "parcel courier",
+"aliases": [
+"gdex",
+"gd express"
+],
+"source": "https://gdexpress.com/?p=184 (search result of official site)"
+},
+{
+"domains": [
+"jtexpress.my"
+],
+"id": "JT_EXPRESS_MY",
+"name": "J&T Express (Malaysia) Sdn Bhd",
+"category": "courier",
+"subtype": "parcel courier",
+"aliases": [
+"j&t",
+"jnt",
+"j&t express"
+],
+"source": "https://www.jtexpress.my"
+},
+{
+"domains": [
+"lalamove.com"
+],
+"id": "LALAMOVE_MY",
+"name": "Lalamove Malaysia",
+"category": "courier",
+"subtype": "on-demand delivery",
+"aliases": [
+"lalamove"
+],
+"source": "https://www.lalamove.com/en-my/ (cited by Borneo Post, Malaysiakini press releases)"
+},
+{
+"domains": [
+"ninjavan.co"
+],
+"id": "NINJA_VAN_MY",
+"name": "Ninja Van Malaysia",
+"category": "courier",
+"subtype": "parcel courier",
+"aliases": [
+"ninja van",
+"ninjavan"
+],
+"source": "https://www.ninjavan.co/en-my"
+},
+{
+"domains": [
+"pos.com.my",
+"posonline.com.my"
+],
+"id": "POS_MALAYSIA",
+"name": "Pos Malaysia Berhad (Pos Laju)",
+"category": "courier",
+"subtype": "postal and courier",
+"aliases": [
+"pos malaysia",
+"pos laju",
+"poslaju",
+"pos malaysia berhad"
+],
+"source": "https://www.pos.com.my"
+},
+{
+"domains": [
+"spx.com.my"
+],
+"id": "SPX_EXPRESS_MY",
+"name": "SPX Xpress (Malaysia) Sdn Bhd (Shopee Xpress)",
+"category": "courier",
+"subtype": "parcel courier",
+"aliases": [
+"spx",
+"shopee xpress",
+"spx express"
+],
+"source": "https://spx.com.my"
+},
+{
+"domains": [
+"skynet.com.my"
+],
+"id": "SKYNET_MALAYSIA",
+"name": "Skynet Worldwide Express (M) Sdn Bhd",
+"category": "courier",
+"subtype": "express courier",
+"aliases": [
+"skynet"
+],
+"source": "https://www.skynet.com.my"
+},
+{
+"domains": [
+"ctoscredit.com.my",
+"ctos.com.my",
+"ctosbasis.com.my"
+],
+"id": "CTOS",
+"name": "CTOS Data Systems Sdn Bhd",
+"category": "credit",
+"subtype": "credit bureau",
+"aliases": [
+"ctos"
+],
+"source": "https://www.ctoscredit.com.my"
+},
+{
+"domains": [
+"experian.com.my"
+],
+"id": "EXPERIAN_MY",
+"name": "Experian Information Services (Malaysia) Sdn. Bhd. (MyCreditInfo)",
+"category": "credit",
+"subtype": "credit bureau",
+"aliases": [
+"experian",
+"mycreditinfo",
+"ccris"
+],
+"source": "https://www.experian.com.my"
+},
+{
+"domains": [
+"marc.com.my",
+"marcdata.com.my"
+],
+"id": "MARC",
+"name": "Malaysian Rating Corporation Berhad (MARC)",
+"category": "credit",
+"subtype": "rating agency",
+"aliases": [
+"marc"
+],
+"source": "https://www.marc.com.my"
+},
+{
+"domains": [
+"ram.com.my"
+],
+"id": "RAM",
+"name": "RAM Holdings Berhad",
+"category": "credit",
+"subtype": "rating agency",
+"aliases": [
+"ram ratings",
+"ram"
+],
+"source": "https://www.ram.com.my"
+},
+{
+"domains": [
+"carousell.com.my"
+],
+"id": "CAROUSELL_MY",
+"name": "Carousell Malaysia",
+"category": "ecommerce",
+"subtype": "classifieds",
+"aliases": [
+"carousell"
+],
+"source": "https://www.carousell.com.my (403 to fetch; domain via secondary listings)"
+},
+{
+"domains": [
+"lazada.com.my"
+],
+"id": "LAZADA_MY",
+"name": "Lazada Malaysia",
+"category": "ecommerce",
+"subtype": "marketplace",
+"aliases": [
+"lazada",
+"lazmall"
+],
+"source": "https://www.lazada.com.my"
+},
+{
+"domains": [
+"mudah.my"
+],
+"id": "MUDAH",
+"name": "Mudah.my",
+"category": "ecommerce",
+"subtype": "classifieds",
+"aliases": [
+"mudah"
+],
+"source": "https://www.mudah.my"
+},
+{
+"domains": [
+"pgmall.my"
+],
+"id": "PG_MALL",
+"name": "PG Mall",
+"category": "ecommerce",
+"subtype": "marketplace",
+"aliases": [
+"pg mall",
+"pgmall"
+],
+"source": "https://www.pgmall.my"
+},
+{
+"domains": [
+"shopback.my",
+"shopback.com.my"
+],
+"id": "SHOPBACK_MY",
+"name": "ShopBack Malaysia",
+"category": "ecommerce",
+"subtype": "cashback",
+"aliases": [
+"shopback"
+],
+"source": "https://www.shopback.my/"
+},
+{
+"domains": [
+"shopee.com.my"
+],
+"id": "SHOPEE_MY",
+"name": "Shopee Malaysia",
+"category": "ecommerce",
+"subtype": "marketplace",
+"aliases": [
+"shopee"
+],
+"source": "https://help.shopee.com.my"
+},
+{
+"domains": [
+"zalora.com.my"
+],
+"id": "ZALORA_MY",
+"name": "ZALORA Malaysia",
+"category": "ecommerce",
+"subtype": "fashion",
+"aliases": [
+"zalora"
+],
+"source": "https://www.zalora.com.my"
+},
+{
+"domains": [
+"foodpanda.my"
+],
+"id": "FOODPANDA_MY",
+"name": "foodpanda Malaysia",
+"category": "ecommerce",
+"subtype": "food delivery",
+"aliases": [
+"foodpanda"
+],
+"source": "https://www.foodpanda.my"
+},
+{
+"domains": [
+"mmea.gov.my"
+],
+"id": "APMM",
+"name": "Agensi Penguatkuasaan Maritim Malaysia (Malaysian Maritime Enforcement Agency)",
+"category": "federal",
+"subtype": "enforcement",
+"aliases": [
+"apmm",
+"maritim malaysia",
+"mmea"
+],
+"source": "https://www.mmea.gov.my/"
+},
+{
+"domains": [
+"cagamas.com.my"
+],
+"id": "CAGAMAS",
+"name": "Cagamas Berhad",
+"category": "federal",
+"subtype": "housing",
+"aliases": [
+"cagamas"
+],
+"source": "https://www.cagamas.com.my/contact-us"
+},
+{
+"domains": [
+"felcra.com.my"
+],
+"id": "FELCRA",
+"name": "FELCRA Berhad",
+"category": "federal",
+"subtype": "agriculture",
+"aliases": [
+"felcra"
+],
+"source": "https://www.felcra.com.my"
+},
+{
+"domains": [
+"fgvholdings.com"
+],
+"id": "FGV",
+"name": "FGV Holdings Berhad",
+"category": "federal",
+"subtype": "agriculture",
+"aliases": [
+"fgv"
+],
+"source": "https://www.fgvholdings.com"
+},
+{
+"domains": [
+"hkl.moh.gov.my"
+],
+"id": "HKL",
+"name": "Hospital Kuala Lumpur",
+"category": "federal",
+"subtype": "health",
+"aliases": [
+"hkl"
+],
+"source": "https://hkl.moh.gov.my/"
+},
+{
+"domains": [
+"mardi.gov.my"
+],
+"id": "MARDI",
+"name": "Institut Penyelidikan dan Kemajuan Pertanian Malaysia",
+"category": "federal",
+"subtype": "agriculture",
+"aliases": [
+"mardi"
+],
+"source": "https://www.mardi.gov.my"
+},
+{
+"domains": [
+"doe.gov.my"
+],
+"id": "JAS",
+"name": "Jabatan Alam Sekitar (Department of Environment)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"jas",
+"doe"
+],
+"source": "https://www.doe.gov.my/en/online-services-2/"
+},
+{
+"domains": [
+"bomba.gov.my"
+],
+"id": "BOMBA",
+"name": "Jabatan Bomba dan Penyelamat Malaysia (Fire and Rescue Department)",
+"category": "federal",
+"subtype": "enforcement",
+"aliases": [
+"bomba",
+"jbpm"
+],
+"source": "https://www.bomba.gov.my/en/"
+},
+{
+"domains": [
+"imi.gov.my"
+],
+"id": "IMIGRESEN",
+"name": "Jabatan Imigresen Malaysia (Immigration Department of Malaysia)",
+"category": "federal",
+"subtype": "enforcement",
+"aliases": [
+"jim",
+"imigresen",
+"imi"
+],
+"source": "https://www.imi.gov.my"
+},
+{
+"domains": [
+"mdi.gov.my"
+],
+"id": "MDI",
+"name": "Jabatan Insolvensi Malaysia (Malaysian Department of Insolvency)",
+"category": "federal",
+"subtype": "justice",
+"aliases": [
+"mdi",
+"insolvensi",
+"muflis"
+],
+"source": "https://www.mdi.gov.my"
+},
+{
+"domains": [
+"customs.gov.my"
+],
+"id": "KASTAM",
+"name": "Jabatan Kastam Diraja Malaysia (Royal Malaysian Customs Department)",
+"category": "federal",
+"subtype": "enforcement",
+"aliases": [
+"kastam",
+"jkdm",
+"customs"
+],
+"source": "https://www.customs.gov.my"
+},
+{
+"domains": [
+"jkm.gov.my"
+],
+"id": "JKM",
+"name": "Jabatan Kebajikan Masyarakat (Department of Social Welfare)",
+"category": "federal",
+"subtype": "social",
+"aliases": [
+"jkm",
+"kebajikan"
+],
+"source": "https://www.jkm.gov.my"
+},
+{
+"domains": [
+"kehakiman.gov.my"
+],
+"id": "KEHAKIMAN",
+"name": "Jabatan Kehakiman Malaysia / Mahkamah (Judiciary of Malaysia, Courts)",
+"category": "federal",
+"subtype": "justice",
+"aliases": [
+"kehakiman",
+"mahkamah",
+"ecourt",
+"court"
+],
+"source": "https://www.kehakiman.gov.my"
+},
+{
+"domains": [
+"islam.gov.my",
+"halal.gov.my"
+],
+"id": "JAKIM",
+"name": "Jabatan Kemajuan Islam Malaysia (Department of Islamic Development Malaysia)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"jakim",
+"halal"
+],
+"source": "https://www.islam.gov.my/ms/hubungi-kami"
+},
+{
+"domains": [
+"jkr.gov.my"
+],
+"id": "JKR",
+"name": "Jabatan Kerja Raya (Public Works Department)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"jkr"
+],
+"source": "https://aduan.jkr.gov.my/"
+},
+{
+"domains": [
+"agc.gov.my"
+],
+"id": "AGC",
+"name": "Jabatan Peguam Negara (Attorney General's Chambers)",
+"category": "federal",
+"subtype": "justice",
+"aliases": [
+"agc",
+"peguam negara",
+"jpn peguam"
+],
+"source": "https://www.agc.gov.my"
+},
+{
+"domains": [
+"jpn.gov.my"
+],
+"id": "JPN",
+"name": "Jabatan Pendaftaran Negara (National Registration Department)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"jpn",
+"mykad",
+"mykid"
+],
+"source": "https://www.jpn.gov.my"
+},
+{
+"domains": [
+"ros.gov.my"
+],
+"id": "ROS",
+"name": "Jabatan Pendaftaran Pertubuhan Malaysia (Registrar of Societies)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"ros",
+"jppm"
+],
+"source": "https://www.ros.gov.my/"
+},
+{
+"domains": [
+"jpt.mohe.gov.my"
+],
+"id": "JPT",
+"name": "Jabatan Pendidikan Tinggi (Department of Higher Education)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"jpt"
+],
+"source": "https://jpt.mohe.gov.my/portal/index.php/en/"
+},
+{
+"domains": [
+"jpj.gov.my"
+],
+"id": "JPJ",
+"name": "Jabatan Pengangkutan Jalan Malaysia (Road Transport Department)",
+"category": "federal",
+"subtype": "enforcement",
+"aliases": [
+"jpj",
+"myjpj"
+],
+"source": "https://www.jpj.gov.my"
+},
+{
+"domains": [
+"dosm.gov.my"
+],
+"id": "DOSM",
+"name": "Jabatan Perangkaan Malaysia (Department of Statistics Malaysia)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"dosm",
+"perangkaan"
+],
+"source": "https://www.dosm.gov.my"
+},
+{
+"domains": [
+"jpm.gov.my"
+],
+"id": "JPM",
+"name": "Jabatan Perdana Menteri (Prime Minister's Department)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"jpm"
+],
+"source": "https://www.jpm.gov.my/en/"
+},
+{
+"domains": [
+"forestry.gov.my"
+],
+"id": "JPSM",
+"name": "Jabatan Perhutanan Semenanjung Malaysia (Forestry Department Peninsular Malaysia)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"jpsm",
+"perhutanan"
+],
+"source": "https://www.forestry.gov.my/en/"
+},
+{
+"domains": [
+"jpa.gov.my"
+],
+"id": "JPA",
+"name": "Jabatan Perkhidmatan Awam (Public Service Department)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"jpa",
+"biasiswa jpa",
+"jabatan perkhidmatan awam",
+"jabatan perkhidmatan awam (jpa)"
+],
+"source": "https://www.jpa.gov.my/"
+},
+{
+"domains": [
+"doa.gov.my"
+],
+"id": "DOA",
+"name": "Jabatan Pertanian (Department of Agriculture)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"doa",
+"jabatan pertanian"
+],
+"source": "https://www.doa.gov.my/"
+},
+{
+"domains": [
+"jtksm.mohr.gov.my"
+],
+"id": "JTKSM",
+"name": "Jabatan Tenaga Kerja Semenanjung Malaysia (Department of Labour Peninsular Malaysia)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"jtk",
+"jtksm"
+],
+"source": "https://jtksm.mohr.gov.my/en"
+},
+{
+"domains": [
+"kbs.gov.my"
+],
+"id": "KBS",
+"name": "Kementerian Belia dan Sukan (Ministry of Youth and Sports)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kbs"
+],
+"source": "https://www.kbs.gov.my/ms/"
+},
+{
+"domains": [
+"moha.gov.my",
+"kdn.gov.my"
+],
+"id": "KDN",
+"name": "Kementerian Dalam Negeri (Ministry of Home Affairs)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kdn",
+"moha"
+],
+"source": "https://www.moha.gov.my/"
+},
+{
+"domains": [
+"digital.gov.my",
+"rakyatdigital.gov.my"
+],
+"id": "KD",
+"name": "Kementerian Digital (Ministry of Digital)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"digital"
+],
+"source": "https://www.digital.gov.my/"
+},
+{
+"domains": [
+"ekonomi.gov.my"
+],
+"id": "EKONOMI",
+"name": "Kementerian Ekonomi (Ministry of Economy)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"ekonomi",
+"epu"
+],
+"source": "https://ekonomi.gov.my/ms"
+},
+{
+"domains": [
+"rurallink.gov.my"
+],
+"id": "KKDW",
+"name": "Kementerian Kemajuan Desa dan Wilayah (Ministry of Rural and Regional Development)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kkdw",
+"kplb"
+],
+"source": "https://www.rurallink.gov.my/"
+},
+{
+"domains": [
+"kkr.gov.my"
+],
+"id": "KKR",
+"name": "Kementerian Kerja Raya (Ministry of Works)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kkr"
+],
+"source": "https://www.kkr.gov.my/ms"
+},
+{
+"domains": [
+"moh.gov.my"
+],
+"id": "KKM",
+"name": "Kementerian Kesihatan Malaysia (Ministry of Health)",
+"category": "federal",
+"subtype": "health",
+"aliases": [
+"kkm",
+"moh",
+"kesihatan"
+],
+"source": "https://www.moh.gov.my/en/directory"
+},
+{
+"domains": [
+"mof.gov.my"
+],
+"id": "KEWANGAN",
+"name": "Kementerian Kewangan (Ministry of Finance)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kewangan",
+"mof",
+"perbendaharaan",
+"treasury"
+],
+"source": "https://www.mof.gov.my"
+},
+{
+"domains": [
+"komunikasi.gov.my"
+],
+"id": "KOMUNIKASI",
+"name": "Kementerian Komunikasi (Ministry of Communications)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kkd",
+"komunikasi"
+],
+"source": "https://www.komunikasi.gov.my/"
+},
+{
+"domains": [
+"kln.gov.my"
+],
+"id": "KLN",
+"name": "Kementerian Luar Negeri (Ministry of Foreign Affairs, Wisma Putra)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kln",
+"wisma putra",
+"wismaputra",
+"mofa"
+],
+"source": "https://www.kln.gov.my/"
+},
+{
+"domains": [
+"miti.gov.my"
+],
+"id": "MITI",
+"name": "Kementerian Pelaburan, Perdagangan dan Industri (Ministry of Investment, Trade and Industry)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"miti"
+],
+"source": "https://www.miti.gov.my/"
+},
+{
+"domains": [
+"motac.gov.my"
+],
+"id": "MOTAC",
+"name": "Kementerian Pelancongan, Seni dan Budaya (Ministry of Tourism, Arts and Culture)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"motac"
+],
+"source": "https://www.motac.gov.my/en/"
+},
+{
+"domains": [
+"kuskop.gov.my"
+],
+"id": "KUSKOP",
+"name": "Kementerian Pembangunan Usahawan dan Koperasi (Ministry of Entrepreneur and Cooperatives Development)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kuskop"
+],
+"source": "https://www.kuskop.gov.my/"
+},
+{
+"domains": [
+"kpwkm.gov.my"
+],
+"id": "KPWKM",
+"name": "Kementerian Pembangunan Wanita, Keluarga dan Masyarakat (Ministry of Women, Family and Community Development)",
+"category": "federal",
+"subtype": "social",
+"aliases": [
+"kpwkm"
+],
+"source": "https://www.kpwkm.gov.my/"
+},
+{
+"domains": [
+"moe.gov.my"
+],
+"id": "KPM",
+"name": "Kementerian Pendidikan Malaysia (Ministry of Education)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kpm",
+"moe",
+"pendidikan",
+"ministry of education",
+"kementerian pendidikan malaysia (kpm/moe)"
+],
+"source": "https://www.moe.gov.my"
+},
+{
+"domains": [
+"mohe.gov.my"
+],
+"id": "KPT",
+"name": "Kementerian Pendidikan Tinggi (Ministry of Higher Education)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kpt",
+"mohe",
+"pengajian tinggi",
+"upu",
+"upuonline",
+"kementerian pendidikan tinggi (kpt/mohe, incl. upu)"
+],
+"source": "https://www.mohe.gov.my/en"
+},
+{
+"domains": [
+"mot.gov.my"
+],
+"id": "MOT",
+"name": "Kementerian Pengangkutan (Ministry of Transport)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"mot",
+"pengangkutan"
+],
+"source": "https://www.mot.gov.my/en"
+},
+{
+"domains": [
+"petra.gov.my"
+],
+"id": "PETRA",
+"name": "Kementerian Peralihan Tenaga dan Transformasi Air (Ministry of Energy Transition and Water Transformation)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"petra"
+],
+"source": "https://www.petra.gov.my/"
+},
+{
+"domains": [
+"kpdn.gov.my"
+],
+"id": "KPDN",
+"name": "Kementerian Perdagangan Dalam Negeri dan Kos Sara Hidup (Ministry of Domestic Trade and Cost of Living)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kpdn",
+"kpdnhep",
+"kpdnkk"
+],
+"source": "https://www.kpdn.gov.my/en/"
+},
+{
+"domains": [
+"kpk.gov.my"
+],
+"id": "KPK",
+"name": "Kementerian Perladangan dan Komoditi (Ministry of Plantation and Commodities)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kpk"
+],
+"source": "https://www.kpk.gov.my/"
+},
+{
+"domains": [
+"perpaduan.gov.my"
+],
+"id": "KPN",
+"name": "Kementerian Perpaduan Negara (Ministry of National Unity)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kpn",
+"perpaduan"
+],
+"source": "https://www.perpaduan.gov.my/"
+},
+{
+"domains": [
+"mod.gov.my"
+],
+"id": "MINDEF",
+"name": "Kementerian Pertahanan (Ministry of Defence)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"mindef",
+"mod",
+"kementerian pertahanan"
+],
+"source": "https://www.mod.gov.my/"
+},
+{
+"domains": [
+"kpkm.gov.my"
+],
+"id": "KPKM",
+"name": "Kementerian Pertanian dan Keterjaminan Makanan (Ministry of Agriculture and Food Security)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kpkm",
+"mafs"
+],
+"source": "https://www.kpkm.gov.my/en/"
+},
+{
+"domains": [
+"kpkt.gov.my"
+],
+"id": "KPKT",
+"name": "Kementerian Perumahan dan Kerajaan Tempatan (Ministry of Housing and Local Government)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kpkt"
+],
+"source": "https://www.kpkt.gov.my/"
+},
+{
+"domains": [
+"mosti.gov.my"
+],
+"id": "MOSTI",
+"name": "Kementerian Sains, Teknologi dan Inovasi (Ministry of Science, Technology and Innovation)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"mosti"
+],
+"source": "https://www.mosti.gov.my/en"
+},
+{
+"domains": [
+"nres.gov.my"
+],
+"id": "NRES",
+"name": "Kementerian Sumber Asli dan Kelestarian Alam (Ministry of Natural Resources and Environmental Sustainability)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"nres",
+"kesedar",
+"nrecc"
+],
+"source": "https://www.nres.gov.my/"
+},
+{
+"domains": [
+"mohr.gov.my"
+],
+"id": "KESUMA",
+"name": "Kementerian Sumber Manusia (Ministry of Human Resources)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kesuma",
+"mohr",
+"ksm"
+],
+"source": "https://www.mohr.gov.my/"
+},
+{
+"domains": [
+"kwp.gov.my"
+],
+"id": "KWP",
+"name": "Kementerian Wilayah Persekutuan (Ministry of Federal Territories)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"kwp"
+],
+"source": "https://www.kwp.gov.my/"
+},
+{
+"domains": [
+"ktmb.com.my"
+],
+"id": "KTMB",
+"name": "Keretapi Tanah Melayu Berhad",
+"category": "federal",
+"subtype": "transport",
+"aliases": [
+"ktmb",
+"ktm"
+],
+"source": "https://www.ktmb.com.my"
+},
+{
+"domains": [
+"kwsp.gov.my"
+],
+"id": "KWSP",
+"name": "Kumpulan Wang Simpanan Pekerja (EPF)",
+"category": "federal",
+"subtype": "statutory",
+"aliases": [
+"kwsp",
+"epf",
+"i-akaun",
+"i-saraan"
+],
+"source": "https://www.kwsp.gov.my"
+},
+{
+"domains": [
+"hasil.gov.my"
+],
+"id": "LHDN",
+"name": "Lembaga Hasil Dalam Negeri Malaysia (Inland Revenue Board, HASiL)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"lhdn",
+"lhdnm",
+"hasil",
+"mytax",
+"irb"
+],
+"source": "https://www.hasil.gov.my"
+},
+{
+"domains": [
+"felda.gov.my"
+],
+"id": "FELDA",
+"name": "Lembaga Kemajuan Tanah Persekutuan (FELDA)",
+"category": "federal",
+"subtype": "agriculture",
+"aliases": [
+"felda"
+],
+"source": "https://www.felda.gov.my"
+},
+{
+"domains": [
+"mpob.gov.my"
+],
+"id": "MPOB",
+"name": "Lembaga Minyak Sawit Malaysia",
+"category": "federal",
+"subtype": "agriculture",
+"aliases": [
+"mpob"
+],
+"source": "https://www.mpob.gov.my"
+},
+{
+"domains": [
+"cidb.gov.my"
+],
+"id": "CIDB",
+"name": "Lembaga Pembangunan Industri Pembinaan Malaysia",
+"category": "federal",
+"subtype": "statutory",
+"aliases": [
+"cidb"
+],
+"source": "https://www.cidb.gov.my"
+},
+{
+"domains": [
+"lppsa.gov.my"
+],
+"id": "LPPSA",
+"name": "Lembaga Pembiayaan Perumahan Sektor Awam",
+"category": "federal",
+"subtype": "housing",
+"aliases": [
+"lppsa"
+],
+"source": "https://www.lppsa.gov.my"
+},
+{
+"domains": [
+"tabunghaji.gov.my",
+"thijari.com.my"
+],
+"id": "LTH",
+"name": "Lembaga Tabung Haji",
+"category": "federal",
+"subtype": "religious",
+"aliases": [
+"tabung haji",
+"lth",
+"lembaga tabung haji"
+],
+"source": "https://tabunghaji.gov.my/en/about-us-0"
+},
+{
+"domains": [
+"mara.gov.my"
+],
+"id": "MARA",
+"name": "Majlis Amanah Rakyat",
+"category": "federal",
+"subtype": "education-fund",
+"aliases": [
+"mara",
+"mrsm",
+"kolej mara",
+"majlis amanah rakyat (mara)"
+],
+"source": "https://www.mara.gov.my"
+},
+{
+"domains": [
+"malaysiaairports.com.my"
+],
+"id": "MAHB",
+"name": "Malaysia Airports Holdings Berhad",
+"category": "federal",
+"subtype": "transport",
+"aliases": [
+"malaysia airports",
+"mahb"
+],
+"source": "https://www.malaysiaairports.com.my"
+},
+{
+"domains": [
+"mdec.my"
+],
+"id": "MDEC",
+"name": "Malaysia Digital Economy Corporation",
+"category": "federal",
+"subtype": "trade",
+"aliases": [
+"mdec"
+],
+"source": "https://mdec.my"
+},
+{
+"domains": [
+"matrade.gov.my"
+],
+"id": "MATRADE",
+"name": "Malaysia External Trade Development Corporation",
+"category": "federal",
+"subtype": "trade",
+"aliases": [
+"matrade"
+],
+"source": "https://www.matrade.gov.my"
+},
+{
+"domains": [
+"mida.gov.my"
+],
+"id": "MIDA",
+"name": "Malaysian Investment Development Authority",
+"category": "federal",
+"subtype": "trade",
+"aliases": [
+"mida"
+],
+"source": "https://www.mida.gov.my"
+},
+{
+"domains": [
+"malaysia.gov.my",
+"mygov.gov.my"
+],
+"id": "MYGOV",
+"name": "MyGovernment / Portal Rasmi Kerajaan Malaysia",
+"category": "federal",
+"subtype": "portal",
+"aliases": [
+"mygov",
+"mygovernment",
+"portal kerajaan"
+],
+"source": "https://www.malaysia.gov.my/my/agency-directory"
+},
+{
+"domains": [
+"mykasih.com.my"
+],
+"id": "MYKASIH",
+"name": "MyKasih Foundation",
+"category": "federal",
+"subtype": "social",
+"aliases": [
+"mykasih",
+"sara"
+],
+"source": "https://mykasih.com.my/about-us/"
+},
+{
+"domains": [
+"mysejahtera.malaysia.gov.my",
+"mysejahtera.moh.gov.my"
+],
+"id": "MYSEJAHTERA",
+"name": "MySejahtera (Kementerian Kesihatan Malaysia)",
+"category": "federal",
+"subtype": "health",
+"aliases": [
+"mysejahtera"
+],
+"source": "https://mysejahtera.malaysia.gov.my/faq_en/"
+},
+{
+"domains": [
+"ksn.gov.my"
+],
+"id": "KSN",
+"name": "Pejabat Ketua Setiausaha Negara (Chief Secretary to the Government)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"ksn"
+],
+"source": "https://www.ksn.gov.my/"
+},
+{
+"domains": [
+"pmo.gov.my"
+],
+"id": "PMO",
+"name": "Pejabat Perdana Menteri (Prime Minister's Office)",
+"category": "federal",
+"subtype": "ministry",
+"aliases": [
+"pmo",
+"ppm"
+],
+"source": "https://www.pmo.gov.my/en/"
+},
+{
+"domains": [
+"hrdcorp.gov.my"
+],
+"id": "HRD_CORP",
+"name": "Pembangunan Sumber Manusia Berhad (HRD Corp)",
+"category": "federal",
+"subtype": "statutory",
+"aliases": [
+"hrd corp",
+"hrdf",
+"phsm"
+],
+"source": "https://www.hrdcorp.gov.my"
+},
+{
+"domains": [
+"pr1ma.my"
+],
+"id": "PR1MA",
+"name": "Perbadanan PR1MA Malaysia",
+"category": "federal",
+"subtype": "housing",
+"aliases": [
+"pr1ma"
+],
+"source": "https://www.pr1ma.my"
+},
+{
+"domains": [
+"ptptn.gov.my"
+],
+"id": "PTPTN",
+"name": "Perbadanan Tabung Pendidikan Tinggi Nasional",
+"category": "federal",
+"subtype": "education-fund",
+"aliases": [
+"ptptn",
+"myptptn",
+"perbadanan tabung pendidikan tinggi nasional"
+],
+"source": "https://www.ptptn.gov.my"
+},
+{
+"domains": [
+"perkeso.gov.my"
+],
+"id": "PERKESO",
+"name": "Pertubuhan Keselamatan Sosial (SOCSO/PERKESO)",
+"category": "federal",
+"subtype": "social",
+"aliases": [
+"perkeso",
+"socso",
+"eis"
+],
+"source": "https://www.perkeso.gov.my"
+},
+{
+"domains": [
+"risda.gov.my"
+],
+"id": "RISDA",
+"name": "Pihak Berkuasa Kemajuan Pekebun Kecil Perusahaan Getah (RISDA)",
+"category": "federal",
+"subtype": "agriculture",
+"aliases": [
+"risda"
+],
+"source": "https://www.risda.gov.my"
+},
+{
+"domains": [
+"rmp.gov.my"
+],
+"id": "PDRM",
+"name": "Polis Diraja Malaysia (Royal Malaysia Police)",
+"category": "federal",
+"subtype": "enforcement",
+"aliases": [
+"pdrm",
+"polis",
+"rmp"
+],
+"source": "https://www.rmp.gov.my"
+},
+{
+"domains": [
+"myrapid.com.my"
+],
+"id": "PRASARANA",
+"name": "Prasarana Malaysia Berhad (Rapid KL)",
+"category": "federal",
+"subtype": "transport",
+"aliases": [
+"prasarana",
+"rapid kl",
+"myrapid"
+],
+"source": "https://www.myrapid.com.my"
+},
+{
+"domains": [
+"sirim.my",
+"sirim-qas.com.my"
+],
+"id": "SIRIM",
+"name": "SIRIM Berhad",
+"category": "federal",
+"subtype": "trade",
+"aliases": [
+"sirim",
+"sirim qas"
+],
+"source": "https://www.sirim.my"
+},
+{
+"domains": [
+"semakmule.rmp.gov.my"
+],
+"id": "SEMAKMULE",
+"name": "Semak Mule (CCID, Polis Diraja Malaysia)",
+"category": "federal",
+"subtype": "enforcement",
+"aliases": [
+"semak mule",
+"semakmule",
+"ccid"
+],
+"source": "https://semakmule.rmp.gov.my"
+},
+{
+"domains": [
+"bantuantunai.hasil.gov.my"
+],
+"id": "STR",
+"name": "Sumbangan Tunai Rahmah (Portal Rasmi STR)",
+"category": "federal",
+"subtype": "social",
+"aliases": [
+"str",
+"sumbangan tunai rahmah",
+"bantuan tunai rahmah",
+"mystr"
+],
+"source": "https://bantuantunai.hasil.gov.my"
+},
+{
+"domains": [
+"mcmc.gov.my"
+],
+"id": "MCMC",
+"name": "Suruhanjaya Komunikasi dan Multimedia Malaysia (Malaysian Communications and Multimedia Commission)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"mcmc",
+"skmm"
+],
+"source": "https://www.mcmc.gov.my/en/home"
+},
+{
+"domains": [
+"sprm.gov.my"
+],
+"id": "SPRM",
+"name": "Suruhanjaya Pencegahan Rasuah Malaysia (Malaysian Anti-Corruption Commission, MACC)",
+"category": "federal",
+"subtype": "enforcement",
+"aliases": [
+"sprm",
+"macc"
+],
+"source": "https://www.sprm.gov.my"
+},
+{
+"domains": [
+"span.gov.my"
+],
+"id": "SPAN",
+"name": "Suruhanjaya Perkhidmatan Air Negara",
+"category": "federal",
+"subtype": "statutory",
+"aliases": [
+"span"
+],
+"source": "https://www.span.gov.my"
+},
+{
+"domains": [
+"spa.gov.my"
+],
+"id": "SPA",
+"name": "Suruhanjaya Perkhidmatan Awam Malaysia (Public Service Commission)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"spa"
+],
+"source": "https://www.spa.gov.my/"
+},
+{
+"domains": [
+"spr.gov.my"
+],
+"id": "SPR",
+"name": "Suruhanjaya Pilihan Raya Malaysia (Election Commission)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"spr"
+],
+"source": "https://www.spr.gov.my"
+},
+{
+"domains": [
+"ssm.com.my",
+"ssm4u.com.my"
+],
+"id": "SSM",
+"name": "Suruhanjaya Syarikat Malaysia (Companies Commission of Malaysia)",
+"category": "federal",
+"subtype": "department",
+"aliases": [
+"ssm",
+"companies commission",
+"suruhanjaya syarikat malaysia (ssm)"
+],
+"source": "https://www.ssm.com.my"
+},
+{
+"domains": [
+"st.gov.my"
+],
+"id": "ST",
+"name": "Suruhanjaya Tenaga",
+"category": "federal",
+"subtype": "energy",
+"aliases": [
+"suruhanjaya tenaga",
+"energy commission"
+],
+"source": "https://www.st.gov.my"
+},
+{
+"domains": [
+"spnb.com.my"
+],
+"id": "SPNB",
+"name": "Syarikat Perumahan Negara Berhad",
+"category": "federal",
+"subtype": "housing",
+"aliases": [
+"spnb"
+],
+"source": "https://www.spnb.com.my"
+},
+{
+"domains": [
+"tngdigital.com.my",
+"tngdigitalgroup.com"
+],
+"id": "TNG_DIGITAL",
+"name": "TNG Digital Sdn Bhd (TNG eWallet)",
+"category": "federal",
+"subtype": "transport",
+"aliases": [
+"tng ewallet",
+"tng digital",
+"tng digital sdn bhd (touch 'n go ewallet)"
+],
+"source": "https://www.tngdigital.com.my"
+},
+{
+"domains": [
+"aia.com.my"
+],
+"id": "AIA_MY",
+"name": "AIA Bhd., AIA General Berhad and AIA PUBLIC Takaful Bhd.",
+"category": "insurer",
+"subtype": "life",
+"aliases": [
+"aia",
+"aia public takaful",
+"aia general"
+],
+"source": "https://aia.com.my"
+},
+{
+"domains": [
+"allianz.com.my"
+],
+"id": "ALLIANZ_MY",
+"name": "Allianz Malaysia Berhad",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"allianz"
+],
+"source": "https://www.allianz.com.my"
+},
+{
+"domains": [
+"berjayasompo.com.my"
+],
+"id": "BERJAYA_SOMPO",
+"name": "Berjaya Sompo Insurance Berhad",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"berjaya sompo",
+"sompo"
+],
+"source": "https://www.berjayasompo.com.my"
+},
+{
+"domains": [
+"chubb.com"
+],
+"id": "CHUBB_MY",
+"name": "Chubb Insurance Malaysia Berhad",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"chubb"
+],
+"source": "https://www.chubb.com/my-en/"
+},
+{
+"domains": [
+"etiqa.com.my",
+"etiqa.com"
+],
+"id": "ETIQA_MY",
+"name": "Etiqa Insurance and Takaful (Malayan Banking Group)",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"etiqa"
+],
+"source": "https://www.etiqa.com.my"
+},
+{
+"domains": [
+"fwd.com.my"
+],
+"id": "FWD_MY",
+"name": "FWD Insurance and FWD Takaful (Malaysia)",
+"category": "insurer",
+"subtype": "life",
+"aliases": [
+"fwd"
+],
+"source": "https://www.fwd.com.my"
+},
+{
+"domains": [
+"generali.com.my",
+"mygenlife.com.my"
+],
+"id": "GENERALI_MY",
+"name": "Generali Insurance Malaysia Berhad and Generali Life Insurance Malaysia Berhad",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"generali",
+"axa affin",
+"axa affin generali"
+],
+"source": "https://www.generali.com.my"
+},
+{
+"domains": [
+"greateasterngeneral.com"
+],
+"id": "GREAT_EASTERN_GENERAL_MY",
+"name": "Great Eastern General Insurance (Malaysia) Berhad",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"great eastern general",
+"ge general"
+],
+"source": "https://www.greateasternlife.com/my/en.html"
+},
+{
+"domains": [
+"greateasternlife.com"
+],
+"id": "GREAT_EASTERN_LIFE_MY",
+"name": "Great Eastern Life Assurance (Malaysia) Berhad",
+"category": "insurer",
+"subtype": "life",
+"aliases": [
+"great eastern",
+"ge life",
+"geli"
+],
+"source": "https://www.greateasternlife.com/my/en.html"
+},
+{
+"domains": [
+"greateasterntakaful.com"
+],
+"id": "GREAT_EASTERN_TAKAFUL_MY",
+"name": "Great Eastern Takaful Berhad",
+"category": "insurer",
+"subtype": "takaful",
+"aliases": [
+"great eastern takaful",
+"ge takaful"
+],
+"source": "https://www.greateasternlife.com/my/en.html"
+},
+{
+"domains": [
+"hla.com.my"
+],
+"id": "HONG_LEONG_ASSURANCE",
+"name": "Hong Leong Assurance Berhad",
+"category": "insurer",
+"subtype": "life",
+"aliases": [
+"hla",
+"hong leong assurance"
+],
+"source": "https://www.bnm.gov.my/-/hong-leong-assurance-berhad"
+},
+{
+"domains": [
+"kurnia.com"
+],
+"id": "LIBERTY_KURNIA_MY",
+"name": "Liberty General Insurance Berhad (Kurnia Insurance)",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"liberty",
+"kurnia"
+],
+"source": "https://www.kurnia.com"
+},
+{
+"domains": [
+"msig.com.my"
+],
+"id": "MSIG_MY",
+"name": "MSIG Insurance (Malaysia) Bhd",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"msig"
+],
+"source": "https://www.msig.com.my"
+},
+{
+"domains": [
+"manulife.com.my"
+],
+"id": "MANULIFE_MY",
+"name": "Manulife Insurance Berhad / Manulife Holdings Berhad",
+"category": "insurer",
+"subtype": "life",
+"aliases": [
+"manulife"
+],
+"source": "http://www.manulife.com.my/en/individual.html"
+},
+{
+"domains": [
+"prudential.com.my"
+],
+"id": "PRUDENTIAL_MY",
+"name": "Prudential Assurance Malaysia Berhad",
+"category": "insurer",
+"subtype": "life",
+"aliases": [
+"prudential",
+"pru",
+"prumy"
+],
+"source": "https://www.prudential.com.my"
+},
+{
+"domains": [
+"prubsn.com.my"
+],
+"id": "PRUBSN_MY",
+"name": "Prudential BSN Takaful Berhad (pruBSN)",
+"category": "insurer",
+"subtype": "takaful",
+"aliases": [
+"prubsn",
+"pru bsn takaful"
+],
+"source": "https://www.prudential.com.my"
+},
+{
+"domains": [
+"rhbinsurance.com.my"
+],
+"id": "RHB_INSURANCE",
+"name": "RHB Insurance Berhad",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"rhb insurance"
+],
+"source": "https://www.rhbinsurance.com.my"
+},
+{
+"domains": [
+"sunlifemalaysia.com"
+],
+"id": "SUNLIFE_MY",
+"name": "Sun Life Malaysia Assurance Berhad and Sun Life Malaysia Takaful Berhad",
+"category": "insurer",
+"subtype": "life",
+"aliases": [
+"sun life",
+"sunlife"
+],
+"source": "https://www.sunlifemalaysia.com"
+},
+{
+"domains": [
+"takaful-malaysia.com.my",
+"kaotim.my"
+],
+"id": "TAKAFUL_MALAYSIA",
+"name": "Syarikat Takaful Malaysia Berhad",
+"category": "insurer",
+"subtype": "takaful",
+"aliases": [
+"takaful malaysia",
+"kaotim"
+],
+"source": "https://www.takaful-malaysia.com.my"
+},
+{
+"domains": [
+"takaful-ikhlas.com.my"
+],
+"id": "TAKAFUL_IKHLAS",
+"name": "Takaful IKHLAS",
+"category": "insurer",
+"subtype": "takaful",
+"aliases": [
+"takaful ikhlas",
+"ikhlas"
+],
+"source": "https://www.takaful-ikhlas.com.my"
+},
+{
+"domains": [
+"zurich.com.my"
+],
+"id": "ZURICH_MY",
+"name": "Zurich Malaysia (Zurich General, Zurich Life, Zurich Takaful)",
+"category": "insurer",
+"subtype": "general",
+"aliases": [
+"zurich"
+],
+"source": "https://www.zurich.com.my"
+},
+{
+"domains": [
+"asnb.com.my"
+],
+"id": "ASNB",
+"name": "Amanah Saham Nasional Berhad (ASNB)",
+"category": "investment",
+"subtype": "unit trust",
+"aliases": [
+"asnb",
+"asb",
+"amanah saham nasional",
+"myasnb"
+],
+"source": "https://www.asnb.com.my"
+},
+{
+"domains": [
+"manulifeim.com.my"
+],
+"id": "MANULIFE_IM",
+"name": "Manulife Investment Management (M) Berhad",
+"category": "investment",
+"subtype": "fund manager",
+"aliases": [
+"manulife investment"
+],
+"source": "http://www.manulife.com.my/en/individual.html"
+},
+{
+"domains": [
+"maybank-ib.com"
+],
+"id": "MAYBANK_IB",
+"name": "Maybank Investment Bank Berhad",
+"category": "investment",
+"subtype": "stockbroker",
+"aliases": [
+"maybank ib"
+],
+"source": "https://www.maybank-ib.com"
+},
+{
+"domains": [
+"moomoo.com"
+],
+"id": "MOOMOO_MY",
+"name": "Moomoo Securities Malaysia Sdn. Bhd.",
+"category": "investment",
+"subtype": "stockbroker",
+"aliases": [
+"moomoo",
+"futu"
+],
+"source": "https://www.moomoo.com/my"
+},
+{
+"domains": [
+"pnb.com.my"
+],
+"id": "PNB",
+"name": "Permodalan Nasional Berhad (PNB)",
+"category": "investment",
+"subtype": "fund manager",
+"aliases": [
+"pnb",
+"permodalan nasional"
+],
+"source": "https://www.pnb.com.my"
+},
+{
+"domains": [
+"principal.com.my",
+"principalislamic.com"
+],
+"id": "PRINCIPAL_MY",
+"name": "Principal Asset Management Berhad",
+"category": "investment",
+"subtype": "fund manager",
+"aliases": [
+"principal"
+],
+"source": "https://www.principal.com.my"
+},
+{
+"domains": [
+"publicmutual.com.my"
+],
+"id": "PUBLIC_MUTUAL",
+"name": "Public Mutual Berhad",
+"category": "investment",
+"subtype": "unit trust",
+"aliases": [
+"public mutual"
+],
+"source": "https://www.publicmutual.com.my"
+},
+{
+"domains": [
+"rakutentrade.my"
+],
+"id": "RAKUTEN_TRADE",
+"name": "Rakuten Trade Sdn. Bhd.",
+"category": "investment",
+"subtype": "stockbroker",
+"aliases": [
+"rakuten trade"
+],
+"source": "https://www.rakutentrade.my"
+},
+{
+"domains": [
+"tasecurities.com.my",
+"taonline.com.my"
+],
+"id": "TA_SECURITIES",
+"name": "TA Securities Holdings Berhad",
+"category": "investment",
+"subtype": "stockbroker",
+"aliases": [
+"ta securities",
+"ta online"
+],
+"source": "https://www.tasecurities.com.my"
+},
+{
+"domains": [
+"atome.my"
+],
+"id": "ATOME_MY",
+"name": "Atome Malaysia",
+"category": "payment",
+"subtype": "bnpl",
+"aliases": [
+"atome"
+],
+"source": "https://www.atome.my"
+},
+{
+"domains": [
+"bigpayme.com"
+],
+"id": "BIGPAY",
+"name": "BigPay Malaysia Sdn Bhd",
+"category": "payment",
+"subtype": "ewallet",
+"aliases": [
+"bigpay"
+],
+"source": "https://www.bnm.gov.my/-/bigpay-malaysia-sdn-bhd"
+},
+{
+"domains": [
+"merchantrademoney.com",
+"mtradeasia.com"
+],
+"id": "MERCHANTRADE",
+"name": "Merchantrade Asia Sdn Bhd (Merchantrade Money)",
+"category": "payment",
+"subtype": "ewallet",
+"aliases": [
+"merchantrade"
+],
+"source": "https://www.merchantrademoney.com"
+},
+{
+"domains": [
+"fiuu.com",
+"merchant.razer.com"
+],
+"id": "RAZER_FIUU",
+"name": "Razer Merchant Services (now Fiuu)",
+"category": "payment",
+"subtype": "gateway",
+"aliases": [
+"razer merchant services",
+"rms",
+"fiuu"
+],
+"source": "https://merchant.razer.com"
+},
+{
+"domains": [
+"help.shopee.com.my"
+],
+"id": "SHOPEEPAY_MY",
+"name": "ShopeePay Malaysia Sdn Bhd",
+"category": "payment",
+"subtype": "ewallet",
+"aliases": [
+"shopee pay",
+"spaylater"
+],
+"source": "https://help.shopee.com.my/portal/article/78687-[ShopeePay]-What-is-ShopeePay"
+},
+{
+"domains": [
+"wise.com"
+],
+"id": "WISE_MY",
+"name": "Wise Payments Malaysia Sdn. Bhd.",
+"category": "payment",
+"subtype": "remittance",
+"aliases": [
+"wise",
+"transferwise"
+],
+"source": "https://wise.com/my/"
+},
+{
+"domains": [
+"akpk.org.my"
+],
+"id": "AKPK",
+"name": "Agensi Kaunseling dan Pengurusan Kredit (AKPK)",
+"category": "regulator",
+"subtype": "credit counselling",
+"aliases": [
+"akpk"
+],
+"source": "https://www.etiqa.com.my"
+},
+{
+"domains": [
+"bnm.gov.my"
+],
+"id": "BNM",
+"name": "Bank Negara Malaysia",
+"category": "regulator",
+"subtype": "central bank",
+"aliases": [
+"bnm",
+"bank negara",
+"bank negara malaysia",
+"central bank of malaysia"
+],
+"source": "https://www.bnm.gov.my"
+},
+{
+"domains": [
+"bursamalaysia.com"
+],
+"id": "BURSA_MALAYSIA",
+"name": "Bursa Malaysia Berhad",
+"category": "regulator",
+"subtype": "exchange",
+"aliases": [
+"bursa",
+"bursa malaysia"
+],
+"source": "https://www.sc.com.my"
+},
+{
+"domains": [
+"fmos.org.my"
+],
+"id": "FMOS",
+"name": "Financial Markets Ombudsman Service (FMOS, formerly OFS and SIDREC)",
+"category": "regulator",
+"subtype": "ombudsman",
+"aliases": [
+"fmos",
+"ofs",
+"ombudsman for financial services"
+],
+"source": "https://www.fmos.org.my/"
+},
+{
+"domains": [
+"pidm.gov.my"
+],
+"id": "PIDM",
+"name": "Perbadanan Insurans Deposit Malaysia (PIDM)",
+"category": "regulator",
+"subtype": "deposit insurer",
+"aliases": [
+"pidm"
+],
+"source": "https://www.pidm.gov.my"
+},
+{
+"domains": [
+"sc.com.my",
+"investsmartsc.my"
+],
+"id": "SC_MY",
+"name": "Securities Commission Malaysia",
+"category": "regulator",
+"subtype": "securities",
+"aliases": [
+"suruhanjaya sekuriti",
+"securities commission"
+],
+"source": "https://www.sc.com.my"
+},
+{
+"domains": [
+"99speedmart.com.my"
+],
+"id": "SPEEDMART_99",
+"name": "99 Speedmart",
+"category": "retail",
+"subtype": "convenience store",
+"aliases": [
+"99 speedmart",
+"99speedmart"
+],
+"source": "https://www.99speedmart.com.my"
+},
+{
+"domains": [
+"aeonretail.com.my"
+],
+"id": "AEON_RETAIL",
+"name": "AEON Co. (M) Bhd",
+"category": "retail",
+"subtype": "hypermarket",
+"aliases": [
+"aeon"
+],
+"source": "https://www.aeonretail.com.my"
+},
+{
+"domains": [
+"giant.com.my"
+],
+"id": "GIANT_MY",
+"name": "Giant (GCH Retail Malaysia)",
+"category": "retail",
+"subtype": "hypermarket",
+"aliases": [
+"giant"
+],
+"source": "https://www.giant.com.my"
+},
+{
+"domains": [
+"guardian.com.my"
+],
+"id": "GUARDIAN_MY",
+"name": "Guardian Malaysia",
+"category": "retail",
+"subtype": "health and beauty",
+"aliases": [
+"guardian"
+],
+"source": "https://www.guardian.com.my (Bernama product link; homepage fetch empty)"
+},
+{
+"domains": [
+"jayagrocer.com"
+],
+"id": "JAYA_GROCER",
+"name": "Jaya Grocer (Trendcell Sdn Bhd)",
+"category": "retail",
+"subtype": "supermarket",
+"aliases": [
+"jaya grocer"
+],
+"source": "https://www.jayagrocer.com"
+},
+{
+"domains": [
+"kkgroup.my"
+],
+"id": "KK_MART",
+"name": "KK Super Mart",
+"category": "retail",
+"subtype": "convenience store",
+"aliases": [
+"kk mart",
+"kk super mart"
+],
+"source": "https://kkgroup.my (Hiredly, klia2 listing)"
+},
+{
+"domains": [
+"lotuss.com.my"
+],
+"id": "LOTUSS",
+"name": "Lotus's Malaysia",
+"category": "retail",
+"subtype": "hypermarket",
+"aliases": [
+"lotus's",
+"lotus",
+"lotuss"
+],
+"source": "https://www.lotuss.com.my"
+},
+{
+"domains": [
+"mydin.my"
+],
+"id": "MYDIN",
+"name": "Mydin Mohamed Holdings",
+"category": "retail",
+"subtype": "hypermarket",
+"aliases": [
+"mydin"
+],
+"source": "https://www.mydin.my (Bernama and Says launch reports)"
+},
+{
+"domains": [
+"watsons.com.my"
+],
+"id": "WATSONS_MY",
+"name": "Watsons Malaysia",
+"category": "retail",
+"subtype": "health and beauty",
+"aliases": [
+"watsons"
+],
+"source": "https://www.watsons.com.my"
+},
+{
+"domains": [
+"bhpetrol.com.my"
+],
+"id": "BHPETROL",
+"name": "BHPetrol Malaysia",
+"category": "service",
+"subtype": "fuel",
+"aliases": [
+"bhpetrol",
+"bh petrol"
+],
+"source": "https://www.bhpetrol.com.my"
+},
+{
+"domains": [
+"caltex.com"
+],
+"id": "CALTEX_MALAYSIA",
+"name": "Caltex Malaysia (Chevron Malaysia)",
+"category": "service",
+"subtype": "fuel",
+"aliases": [
+"caltex",
+"caltexgo"
+],
+"source": "https://www.caltex.com/my"
+},
+{
+"domains": [
+"grab.com"
+],
+"id": "GRAB_MALAYSIA",
+"name": "Grab Malaysia",
+"category": "service",
+"subtype": "ride-hailing, delivery and payments",
+"aliases": [
+"grab",
+"grabfood",
+"grabpay",
+"grabmart",
+"grabexpress",
+"grab financial",
+"grab malaysia (myteksi sdn bhd; grabpay)"
+],
+"source": "https://www.grab.com/my/"
+},
+{
+"domains": [
+"jompay.com.my",
+"paynet.my"
+],
+"id": "JOMPAY",
+"name": "JomPAY (PayNet)",
+"category": "service",
+"subtype": "bill payment",
+"aliases": [
+"jompay",
+"paynet",
+"jompay (paynet)",
+"fpx",
+"duitnow",
+"mydebit",
+"payments network malaysia sdn bhd (paynet)"
+],
+"source": "https://www.jompay.com.my redirects to paynet.my"
+},
+{
+"domains": [
+"myeg.com.my"
+],
+"id": "MYEG",
+"name": "MyEG Services Berhad",
+"category": "service",
+"subtype": "e-government services",
+"aliases": [
+"myeg",
+"myeg services berhad"
+],
+"source": "https://www.myeg.com.my"
+},
+{
+"domains": [
+"petronas.com",
+"petronas.com.my",
+"mymesra.com.my"
+],
+"id": "PETRONAS",
+"name": "PETRONAS and Petronas Dagangan (Mesra)",
+"category": "service",
+"subtype": "fuel",
+"aliases": [
+"petronas",
+"mesra",
+"petronas dagangan",
+"petroliam nasional berhad"
+],
+"source": "https://www.petronas.com.my redirects to petronas.com; https://www.mymesra.com.my"
+},
+{
+"domains": [
+"petron.com.my"
+],
+"id": "PETRON_MALAYSIA",
+"name": "Petron Malaysia",
+"category": "service",
+"subtype": "fuel",
+"aliases": [
+"petron"
+],
+"source": "https://www.petron.com.my/newsroom/"
+},
+{
+"domains": [
+"shell.com.my"
+],
+"id": "SHELL_MALAYSIA",
+"name": "Shell Malaysia",
+"category": "service",
+"subtype": "fuel",
+"aliases": [
+"shell",
+"shell malaysia"
+],
+"source": "https://www.shell.com.my"
+},
+{
+"domains": [
+"johor.gov.my"
+],
+"id": "KERAJAAN_JOHOR",
+"name": "Kerajaan Negeri Johor",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk johor",
+"johor state government"
+],
+"state": "Johor",
+"source": "https://www.johor.gov.my"
+},
+{
+"domains": [
+"maij.gov.my",
+"e-wakafjohor.gov.my"
+],
+"id": "MAINJ",
+"name": "Majlis Agama Islam Negeri Johor",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"maij",
+"mainj",
+"zakat johor"
+],
+"state": "Johor",
+"source": "https://www.maij.gov.my"
+},
+{
+"domains": [
+"ranhillsaj.com.my"
+],
+"id": "RANHILL_SAJ",
+"name": "Ranhill SAJ Sdn Bhd (Syarikat Air Johor)",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"saj",
+"ranhill saj",
+"syarikat air johor"
+],
+"state": "Johor",
+"source": "https://www.ranhillsaj.com.my"
+},
+{
+"domains": [
+"kedah.gov.my"
+],
+"id": "KERAJAAN_KEDAH",
+"name": "Kerajaan Negeri Kedah",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk kedah",
+"kedah state government"
+],
+"state": "Kedah",
+"source": "https://www.kedah.gov.my"
+},
+{
+"domains": [
+"maik.kedah.gov.my",
+"maik.gov.my"
+],
+"id": "MAIK_KEDAH",
+"name": "Majlis Agama Islam Negeri Kedah",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"maik kedah"
+],
+"state": "Kedah",
+"source": "https://maik.kedah.gov.my"
+},
+{
+"domains": [
+"pknk.gov.my"
+],
+"id": "PKNK",
+"name": "Perbadanan Kemajuan Negeri Kedah",
+"category": "state",
+"subtype": "economic",
+"aliases": [
+"pknk"
+],
+"state": "Kedah",
+"source": "https://www.mida.gov.my/wp-content/uploads/2022/09/Corporate-Profile-Kedah-State-Development-Corporation.pdf"
+},
+{
+"domains": [
+"sada.com.my"
+],
+"id": "SADA",
+"name": "Syarikat Air Darul Aman Sdn Bhd",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"sada",
+"air kedah"
+],
+"state": "Kedah",
+"source": "https://www.sada.com.my"
+},
+{
+"domains": [
+"airkelantan.com.my"
+],
+"id": "AKSB",
+"name": "Air Kelantan Sdn Bhd",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"aksb",
+"air kelantan"
+],
+"state": "Kelantan",
+"source": "https://airkelantan.com.my"
+},
+{
+"domains": [
+"e-maik.my"
+],
+"id": "MAIK_KELANTAN",
+"name": "Majlis Agama Islam dan Adat Istiadat Melayu Kelantan",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"maik",
+"maik kelantan",
+"zakat kelantan"
+],
+"state": "Kelantan",
+"source": "https://www.e-maik.my"
+},
+{
+"domains": [
+"kelantan.gov.my",
+"kelantan.my"
+],
+"id": "KERAJAAN_KELANTAN",
+"name": "Pejabat Setiausaha Kerajaan Negeri Kelantan",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk kelantan",
+"kelantan state government"
+],
+"state": "Kelantan",
+"source": "https://www.kelantan.gov.my"
+},
+{
+"domains": [
+"pkink.gov.my"
+],
+"id": "PKINK",
+"name": "Perbadanan Kemajuan Iktisad Negeri Kelantan",
+"category": "state",
+"subtype": "economic",
+"aliases": [
+"pkink"
+],
+"state": "Kelantan",
+"source": "https://www.pkink.gov.my"
+},
+{
+"domains": [
+"melaka.gov.my"
+],
+"id": "KERAJAAN_MELAKA",
+"name": "Kerajaan Negeri Melaka",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk melaka",
+"melaka state government"
+],
+"state": "Melaka",
+"source": "https://www.penang.gov.my (lists melaka.gov.my)"
+},
+{
+"domains": [
+"maim.gov.my"
+],
+"id": "MAIM",
+"name": "Majlis Agama Islam Melaka",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"maim"
+],
+"state": "Melaka",
+"source": "https://www.maim.gov.my"
+},
+{
+"domains": [
+"mcorp.gov.my"
+],
+"id": "MCORP",
+"name": "Perbadanan Melaka (MCORP, formerly PKNM)",
+"category": "state",
+"subtype": "economic",
+"aliases": [
+"mcorp",
+"pknm"
+],
+"state": "Melaka",
+"source": "https://mcorp.gov.my"
+},
+{
+"domains": [
+"izakat.com"
+],
+"id": "ZAKAT_MELAKA",
+"name": "Zakat Melaka (MAIM)",
+"category": "state",
+"subtype": "zakat",
+"aliases": [
+"zakat melaka",
+"izakat"
+],
+"state": "Melaka",
+"source": "https://www.maim.gov.my (links izakat.com as Zakat Melaka)"
+},
+{
+"domains": [
+"ns.gov.my"
+],
+"id": "KERAJAAN_NEGERI_SEMBILAN",
+"name": "Kerajaan Negeri Negeri Sembilan",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk negeri sembilan",
+"ns state government"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.penang.gov.my (lists ns.gov.my)"
+},
+{
+"domains": [
+"mains.gov.my"
+],
+"id": "MAINS",
+"name": "Majlis Agama Islam Negeri Sembilan",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"mains"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.mains.gov.my"
+},
+{
+"domains": [
+"pknns.gov.my"
+],
+"id": "PKNNS",
+"name": "Perbadanan Kemajuan Negeri, Negeri Sembilan",
+"category": "state",
+"subtype": "economic",
+"aliases": [
+"pknns"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.pknns.gov.my"
+},
+{
+"domains": [
+"sainswater.com"
+],
+"id": "SAINS",
+"name": "Syarikat Air Negeri Sembilan Sdn Bhd",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"sains",
+"air negeri sembilan"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.sainswater.com"
+},
+{
+"domains": [
+"pahang.gov.my"
+],
+"id": "KERAJAAN_PAHANG",
+"name": "Kerajaan Negeri Pahang",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk pahang",
+"pahang state government"
+],
+"state": "Pahang",
+"source": "https://www.pahang.gov.my"
+},
+{
+"domains": [
+"muip.gov.my"
+],
+"id": "MUIP",
+"name": "Majlis Ugama Islam dan Adat Resam Melayu Pahang",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"muip"
+],
+"state": "Pahang",
+"source": "https://www.maim.gov.my (lists muip.gov.my as state council)"
+},
+{
+"domains": [
+"paip.com.my"
+],
+"id": "PAIP",
+"name": "Pengurusan Air Pahang Berhad",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"paip",
+"air pahang"
+],
+"state": "Pahang",
+"source": "https://www.paip.com.my"
+},
+{
+"domains": [
+"pknp.gov.my",
+"pknp.my"
+],
+"id": "PKNP_PAHANG",
+"name": "Perbadanan Kemajuan Negeri Pahang",
+"category": "state",
+"subtype": "economic",
+"aliases": [
+"pknp pahang"
+],
+"state": "Pahang",
+"source": "https://www.pknp.gov.my"
+},
+{
+"domains": [
+"perak.gov.my"
+],
+"id": "KERAJAAN_PERAK",
+"name": "Kerajaan Negeri Perak",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk perak",
+"perak state government"
+],
+"state": "Perak",
+"source": "https://www.penang.gov.my (lists perak.gov.my)"
+},
+{
+"domains": [
+"lap.com.my"
+],
+"id": "LAP",
+"name": "Lembaga Air Perak",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"lap",
+"air perak"
+],
+"state": "Perak",
+"source": "https://www.lap.com.my"
+},
+{
+"domains": [
+"maiamp.gov.my"
+],
+"id": "MAIPK",
+"name": "Majlis Agama Islam dan Adat Melayu Perak",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"maiamp",
+"maipk"
+],
+"state": "Perak",
+"source": "https://www.maim.gov.my (lists maiamp.gov.my as state council)"
+},
+{
+"domains": [
+"pknpgroup.com.my"
+],
+"id": "PKNPK",
+"name": "Perbadanan Kemajuan Negeri Perak",
+"category": "state",
+"subtype": "economic",
+"aliases": [
+"pknpk",
+"pknp perak"
+],
+"state": "Perak",
+"source": "https://www.pknpgroup.com.my"
+},
+{
+"domains": [
+"maips.gov.my"
+],
+"id": "MAIPS",
+"name": "Majlis Agama Islam dan Adat Istiadat Melayu Perlis",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"maips"
+],
+"state": "Perlis",
+"source": "https://www.maips.gov.my"
+},
+{
+"domains": [
+"perlis.gov.my"
+],
+"id": "KERAJAAN_PERLIS",
+"name": "Pejabat Setiausaha Kerajaan Negeri Perlis",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk perlis",
+"perlis state government"
+],
+"state": "Perlis",
+"source": "https://www.perlis.gov.my"
+},
+{
+"domains": [
+"pkenps.gov.my"
+],
+"id": "PKENPS",
+"name": "Perbadanan Kemajuan Ekonomi Negeri Perlis",
+"category": "state",
+"subtype": "economic",
+"aliases": [
+"pkenps"
+],
+"state": "Perlis",
+"source": "https://www.pkenps.gov.my"
+},
+{
+"domains": [
+"penang.gov.my"
+],
+"id": "KERAJAAN_PULAU_PINANG",
+"name": "Kerajaan Negeri Pulau Pinang",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk penang",
+"penang state government"
+],
+"state": "Pulau Pinang",
+"source": "https://www.penang.gov.my"
+},
+{
+"domains": [
+"mainpp.gov.my",
+"wakafpenang.com.my"
+],
+"id": "MAINPP",
+"name": "Majlis Agama Islam Negeri Pulau Pinang (incl. Pusat Zakat)",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"mainpp",
+"zakat penang",
+"pusat zakat pulau pinang"
+],
+"state": "Pulau Pinang",
+"source": "https://www.mainpp.gov.my"
+},
+{
+"domains": [
+"pba.com.my"
+],
+"id": "PBAPP",
+"name": "Perbadanan Bekalan Air Pulau Pinang Sdn Bhd",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"pbapp",
+"pba",
+"air penang"
+],
+"state": "Pulau Pinang",
+"source": "https://www.pba.com.my"
+},
+{
+"domains": [
+"pdc.gov.my"
+],
+"id": "PDC",
+"name": "Perbadanan Pembangunan Pulau Pinang (Penang Development Corporation)",
+"category": "state",
+"subtype": "economic",
+"aliases": [
+"pdc"
+],
+"state": "Pulau Pinang",
+"source": "https://www.pdc.gov.my"
+},
+{
+"domains": [
+"water.sabah.gov.my"
+],
+"id": "SABAH_JANS",
+"name": "Jabatan Air Sabah",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"jans",
+"sabah water department"
+],
+"state": "Sabah",
+"source": "https://water.sabah.gov.my"
+},
+{
+"domains": [
+"jtu.sabah.gov.my"
+],
+"id": "SABAH_JTU",
+"name": "Jabatan Tanah dan Ukur Sabah",
+"category": "state",
+"subtype": "agency",
+"aliases": [
+"jtu sabah",
+"sabah lands and surveys"
+],
+"state": "Sabah",
+"source": "https://jtu.sabah.gov.my/homepage/"
+},
+{
+"domains": [
+"sabah.gov.my"
+],
+"id": "SABAH_GOV",
+"name": "Kerajaan Negeri Sabah",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"sabah state government"
+],
+"state": "Sabah",
+"source": "https://www.sabah.gov.my"
+},
+{
+"domains": [
+"muis.sabah.gov.my",
+"baitulmal.sabah.gov.my",
+"jheains.sabah.gov.my"
+],
+"id": "MUIS_SABAH",
+"name": "Majlis Ugama Islam Sabah",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"muis sabah",
+"baitulmal sabah",
+"jheains"
+],
+"state": "Sabah",
+"source": "https://jheains.sabah.gov.my"
+},
+{
+"domains": [
+"sabahcredit.com.my"
+],
+"id": "SABAH_CREDIT",
+"name": "Sabah Credit Corporation",
+"category": "state",
+"subtype": "agency",
+"aliases": [
+"scc"
+],
+"state": "Sabah",
+"source": "https://www.sabahcredit.com.my"
+},
+{
+"domains": [
+"sabahdevbank.com"
+],
+"id": "SABAH_DEV_BANK",
+"name": "Sabah Development Bank",
+"category": "state",
+"subtype": "agency",
+"aliases": [
+"sdb"
+],
+"state": "Sabah",
+"source": "https://sabahdevbank.com/"
+},
+{
+"domains": [
+"sesb.com.my",
+"sabahelectricity.com.my",
+"mysesb.com.my"
+],
+"id": "SESB",
+"name": "Sabah Electricity Sdn Bhd",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"sesb"
+],
+"state": "Sabah",
+"source": "https://www.sesb.com.my"
+},
+{
+"domains": [
+"yayasansabahgroup.org.my"
+],
+"id": "YAYASAN_SABAH",
+"name": "Yayasan Sabah Group",
+"category": "state",
+"subtype": "foundation",
+"aliases": [
+"yayasan sabah",
+"ysg"
+],
+"state": "Sabah",
+"source": "https://www.yayasansabahgroup.org.my/"
+},
+{
+"domains": [
+"jbalb.sarawak.gov.my"
+],
+"id": "JBALB",
+"name": "Jabatan Bekalan Air Luar Bandar Sarawak",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"jbalb",
+"rural water supply"
+],
+"state": "Sarawak",
+"source": "https://jbalb.sarawak.gov.my/web/subpage/webpage_view/128"
+},
+{
+"domains": [
+"landsurvey.sarawak.gov.my"
+],
+"id": "SARAWAK_LANDSURVEY",
+"name": "Jabatan Tanah dan Survei Sarawak",
+"category": "state",
+"subtype": "agency",
+"aliases": [
+"land and survey sarawak",
+"lss"
+],
+"state": "Sarawak",
+"source": "https://landsurvey.sarawak.gov.my/web/subpage/webpage_view/610"
+},
+{
+"domains": [
+"sarawak.gov.my",
+"paybills.sarawak.gov.my",
+"service.sarawak.gov.my"
+],
+"id": "SARAWAK_GOV",
+"name": "Kerajaan Negeri Sarawak",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"sarawak state government",
+"paybills sarawak"
+],
+"state": "Sarawak",
+"source": "https://www.sarawak.gov.my"
+},
+{
+"domains": [
+"kwb.gov.my"
+],
+"id": "KWB",
+"name": "Kuching Water Board",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"kwb"
+],
+"state": "Sarawak",
+"source": "https://www.kwb.gov.my/web/subpage/news_view/58"
+},
+{
+"domains": [
+"sarawakenergy.com"
+],
+"id": "SARAWAK_ENERGY",
+"name": "Sarawak Energy Berhad",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"seb",
+"sarawak energy"
+],
+"state": "Sarawak",
+"source": "https://sarawakenergy.com/customers/pay-your-bills"
+},
+{
+"domains": [
+"spayglobal.my"
+],
+"id": "SPAY",
+"name": "Sarawak Pay (S Pay Global)",
+"category": "state",
+"subtype": "agency",
+"aliases": [
+"spay",
+"sarawak pay"
+],
+"state": "Sarawak",
+"source": "https://spayglobal.my/modules/web/pages.php?mod=faq"
+},
+{
+"domains": [
+"sarawakwater.com"
+],
+"id": "SARAWAK_WATER",
+"name": "Sarawak Water Sdn Bhd",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"sarawak water",
+"laku"
+],
+"state": "Sarawak",
+"source": "https://apps.apple.com/my/app/sarawak-water/id6749434817"
+},
+{
+"domains": [
+"swb.gov.my"
+],
+"id": "SWB",
+"name": "Sibu Water Board",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"swb"
+],
+"state": "Sarawak",
+"source": "https://swb.gov.my/web/subpage/webpage_view/65"
+},
+{
+"domains": [
+"yayasansarawak.org.my"
+],
+"id": "YAYASAN_SARAWAK",
+"name": "Yayasan Sarawak",
+"category": "state",
+"subtype": "foundation",
+"aliases": [
+"yayasan sarawak"
+],
+"state": "Sarawak",
+"source": "https://yayasansarawak.org.my/"
+},
+{
+"domains": [
+"airselangor.com"
+],
+"id": "AIR_SELANGOR",
+"name": "Air Selangor (Pengurusan Air Selangor Sdn Bhd)",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"air selangor",
+"syabas"
+],
+"state": "Selangor",
+"source": "https://www.airselangor.com"
+},
+{
+"domains": [
+"jais.gov.my",
+"muftiselangor.gov.my"
+],
+"id": "JAIS",
+"name": "Jabatan Agama Islam Selangor",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"jais",
+"mufti selangor"
+],
+"state": "Selangor",
+"source": "https://www.jais.gov.my"
+},
+{
+"domains": [
+"selangor.gov.my"
+],
+"id": "KERAJAAN_SELANGOR",
+"name": "Kerajaan Negeri Selangor",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"selangor state government",
+"suk selangor"
+],
+"state": "Selangor",
+"source": "https://www.selangor.gov.my"
+},
+{
+"domains": [
+"zakatselangor.com.my"
+],
+"id": "LZS",
+"name": "Lembaga Zakat Selangor",
+"category": "state",
+"subtype": "zakat",
+"aliases": [
+"lzs",
+"zakat selangor"
+],
+"state": "Selangor",
+"source": "https://www.zakatselangor.com.my"
+},
+{
+"domains": [
+"mais.gov.my",
+"wakafselangor.gov.my"
+],
+"id": "MAIS",
+"name": "Majlis Agama Islam Selangor",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"mais",
+"wakaf selangor"
+],
+"state": "Selangor",
+"source": "https://www.mais.gov.my"
+},
+{
+"domains": [
+"pkns.gov.my"
+],
+"id": "PKNS",
+"name": "Perbadanan Kemajuan Negeri Selangor",
+"category": "state",
+"subtype": "economic",
+"aliases": [
+"pkns"
+],
+"state": "Selangor",
+"source": "https://www.pkns.gov.my"
+},
+{
+"domains": [
+"maidam.gov.my"
+],
+"id": "MAIDAM",
+"name": "Majlis Agama Islam dan Adat Melayu Terengganu",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"maidam",
+"zakat terengganu"
+],
+"state": "Terengganu",
+"source": "https://www.maidam.gov.my"
+},
+{
+"domains": [
+"terengganu.gov.my"
+],
+"id": "KERAJAAN_TERENGGANU",
+"name": "Pejabat Setiausaha Kerajaan Negeri Terengganu",
+"category": "state",
+"subtype": "government",
+"aliases": [
+"suk terengganu",
+"terengganu state government"
+],
+"state": "Terengganu",
+"source": "https://www.terengganu.gov.my"
+},
+{
+"domains": [
+"satuwater.com.my"
+],
+"id": "SATU",
+"name": "Syarikat Air Terengganu Sdn Bhd",
+"category": "state",
+"subtype": "utility",
+"aliases": [
+"satu",
+"air terengganu"
+],
+"state": "Terengganu",
+"source": "https://www.satuwater.com.my"
+},
+{
+"domains": [
+"jawi.gov.my",
+"muftiwp.gov.my"
+],
+"id": "JAWI",
+"name": "Jabatan Agama Islam Wilayah Persekutuan",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"jawi",
+"mufti wilayah"
+],
+"state": "Wilayah Persekutuan",
+"source": "https://www.jawi.gov.my"
+},
+{
+"domains": [
+"maiwp.gov.my"
+],
+"id": "MAIWP",
+"name": "Majlis Agama Islam Wilayah Persekutuan",
+"category": "state",
+"subtype": "religious",
+"aliases": [
+"maiwp"
+],
+"state": "Wilayah Persekutuan",
+"source": "https://www.maiwp.gov.my"
+},
+{
+"domains": [
+"zakat.com.my",
+"zakat2u.com.my",
+"wakafppz.com.my"
+],
+"id": "PPZ_MAIWP",
+"name": "Pusat Pungutan Zakat MAIWP (Hartasuci Sdn Bhd)",
+"category": "state",
+"subtype": "zakat",
+"aliases": [
+"ppz",
+"ppz-maiwp",
+"zakat wilayah"
+],
+"state": "Wilayah Persekutuan",
+"source": "https://www.zakat.com.my"
+},
+{
+"domains": [
+"astro.com.my"
+],
+"id": "ASTRO",
+"name": "Astro (MEASAT Broadcast Network Systems)",
+"category": "telco",
+"subtype": "pay TV",
+"aliases": [
+"astro",
+"my astro"
+],
+"source": "https://www.astro.com.my"
+},
+{
+"domains": [
+"celcomdigi.com"
+],
+"id": "CELCOMDIGI",
+"name": "CelcomDigi Berhad",
+"category": "telco",
+"subtype": "mobile operator",
+"aliases": [
+"celcomdigi",
+"celcom",
+"digi"
+],
+"source": "https://www.celcomdigi.com"
+},
+{
+"domains": [
+"hotlink.com.my"
+],
+"id": "HOTLINK",
+"name": "Hotlink (Maxis)",
+"category": "telco",
+"subtype": "mobile brand",
+"aliases": [
+"hotlink"
+],
+"source": "https://www.maxis.com.my"
+},
+{
+"domains": [
+"maxis.com.my"
+],
+"id": "MAXIS",
+"name": "Maxis Berhad",
+"category": "telco",
+"subtype": "mobile operator",
+"aliases": [
+"maxis"
+],
+"source": "https://www.maxis.com.my"
+},
+{
+"domains": [
+"time.com.my"
+],
+"id": "TIME_DOTCOM",
+"name": "TIME dotCom Berhad",
+"category": "telco",
+"subtype": "broadband",
+"aliases": [
+"time dotcom",
+"time fibre"
+],
+"source": "https://www.time.com.my (cited in company annual report)"
+},
+{
+"domains": [
+"tm.com.my",
+"tmone.com.my"
+],
+"id": "TELEKOM_MALAYSIA",
+"name": "Telekom Malaysia Berhad",
+"category": "telco",
+"subtype": "fixed line and broadband",
+"aliases": [
+"telekom malaysia"
+],
+"source": "https://www.tm.com.my"
+},
+{
+"domains": [
+"tunetalk.com"
+],
+"id": "TUNE_TALK",
+"name": "Tune Talk Sdn Bhd",
+"category": "telco",
+"subtype": "mobile operator",
+"aliases": [
+"tune talk",
+"tunetalk"
+],
+"source": "https://www.tunetalk.com"
+},
+{
+"domains": [
+"u.com.my"
+],
+"id": "U_MOBILE",
+"name": "U Mobile Sdn Bhd",
+"category": "telco",
+"subtype": "mobile operator",
+"aliases": [
+"u mobile",
+"umobile"
+],
+"source": "https://u.com.my"
+},
+{
+"domains": [
+"unifi.com.my"
+],
+"id": "UNIFI",
+"name": "Unifi (TM Technology Services)",
+"category": "telco",
+"subtype": "broadband",
+"aliases": [
+"unifi"
+],
+"source": "https://unifi.com.my"
+},
+{
+"domains": [
+"xox.com.my"
+],
+"id": "XOX",
+"name": "XOX Berhad (ONEXOX)",
+"category": "telco",
+"subtype": "mobile operator",
+"aliases": [
+"xox",
+"onexox"
+],
+"source": "https://www.xox.com.my"
+},
+{
+"domains": [
+"yes.my"
+],
+"id": "YES_5G",
+"name": "Yes (YTL Communications)",
+"category": "telco",
+"subtype": "mobile and broadband",
+"aliases": [
+"yes 5g",
+"ytl communications"
+],
+"source": "https://www.yes.my"
+},
+{
+"domains": [
+"redone.com.my",
+"redonemobile.com.my"
+],
+"id": "REDONE",
+"name": "redONE Network Sdn Bhd",
+"category": "telco",
+"subtype": "mobile operator",
+"aliases": [
+"redone"
+],
+"source": "https://redone.com.my/about-us/"
+},
+{
+"domains": [
+"plus.com.my"
+],
+"id": "PLUS_MALAYSIA",
+"name": "PLUS Malaysia Berhad",
+"category": "toll",
+"subtype": "expressway operator",
+"aliases": [
+"plus",
+"plusmiles",
+"plus highway",
+"plusmalaysia",
+"plus malaysia berhad"
+],
+"source": "https://www.plus.com.my"
+},
+{
+"domains": [
+"setel.com"
+],
+"id": "SETEL",
+"name": "Setel Ventures Sdn Bhd",
+"category": "toll",
+"subtype": "fuel and payments app",
+"aliases": [
+"setel",
+"setel ventures sdn bhd"
+],
+"source": "https://www.setel.com"
+},
+{
+"domains": [
+"touchngo.com.my"
+],
+"id": "TOUCH_N_GO",
+"name": "Touch 'n Go Sdn Bhd",
+"category": "toll",
+"subtype": "e-payment and RFID",
+"aliases": [
+"touch 'n go",
+"tng rfid",
+"rfid",
+"touch 'n go sdn bhd"
+],
+"source": "https://www.touchngo.com.my"
+},
+{
+"domains": [
+"mqa.gov.my"
+],
+"id": "MQA",
+"name": "Agensi Kelayakan Malaysia (MQA)",
+"category": "university",
+"subtype": "education-body",
+"aliases": [
+"mqa",
+"malaysian qualifications agency"
+],
+"source": "https://www.mqa.gov.my"
+},
+{
+"domains": [
+"jtm.gov.my"
+],
+"id": "JTM",
+"name": "Jabatan Tenaga Manusia (ILP, ADTEC)",
+"category": "university",
+"subtype": "institute",
+"aliases": [
+"jtm",
+"ilp",
+"adtec"
+],
+"source": "https://www.dosm.gov.my/uploads/files/mystats-conference/2023/scientific-papers/slide/session-1c/Presenter-3.pdf"
+},
+{
+"domains": [
+"mpm.edu.my"
+],
+"id": "MPM",
+"name": "Majlis Peperiksaan Malaysia (STPM/MUET)",
+"category": "university",
+"subtype": "education-body",
+"aliases": [
+"stpm",
+"muet"
+],
+"source": "https://www.mpm.edu.my"
+},
+{
+"domains": [
+"mypolycc.edu.my"
+],
+"id": "POLYCC",
+"name": "Politeknik dan Kolej Komuniti (JPPKK)",
+"category": "university",
+"subtype": "polytechnic",
+"aliases": [
+"polycc",
+"jppkk",
+"politeknik",
+"kolej komuniti"
+],
+"source": "https://www.mypolycc.edu.my"
+},
+{
+"domains": [
+"amu.edu.my"
+],
+"id": "AMU",
+"name": "Asia Metropolitan University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"amu",
+"asia metropolitan university"
+],
+"state": "Johor",
+"source": "https://amu.edu.my/contact-us/"
+},
+{
+"domains": [
+"raffles-university.edu.my"
+],
+"id": "RAFFLES_U",
+"name": "Raffles University Iskandar",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"raffles university",
+"raffles"
+],
+"state": "Johor",
+"source": "https://www.raffles-university.edu.my"
+},
+{
+"domains": [
+"southern.edu.my"
+],
+"id": "SOUTHERN_UC",
+"name": "Southern University College",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"southern college",
+"southern university college"
+],
+"state": "Johor",
+"source": "https://www.southern.edu.my"
+},
+{
+"domains": [
+"utm.my"
+],
+"id": "UTM",
+"name": "Universiti Teknologi Malaysia",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"utm",
+"universiti teknologi malaysia"
+],
+"state": "Johor",
+"source": "https://utm.my"
+},
+{
+"domains": [
+"uthm.edu.my"
+],
+"id": "UTHM",
+"name": "Universiti Tun Hussein Onn Malaysia",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"uthm",
+"universiti tun hussein onn malaysia"
+],
+"state": "Johor",
+"source": "https://uthm.edu.my"
+},
+{
+"domains": [
+"reading.edu.my"
+],
+"id": "READING_MY",
+"name": "University of Reading Malaysia",
+"category": "university",
+"subtype": "branch-campus",
+"aliases": [
+"reading malaysia",
+"urm"
+],
+"state": "Johor",
+"source": "https://www.reading.edu.my"
+},
+{
+"domains": [
+"aimst.edu.my"
+],
+"id": "AIMST",
+"name": "AIMST University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"aimst"
+],
+"state": "Kedah",
+"source": "https://www.aimst.edu.my"
+},
+{
+"domains": [
+"aiu.edu.my"
+],
+"id": "AIU",
+"name": "Albukhary International University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"aiu",
+"albukhary"
+],
+"state": "Kedah",
+"source": "https://www.aiu.edu.my"
+},
+{
+"domains": [
+"unishams.edu.my"
+],
+"id": "UNISHAMS",
+"name": "Universiti Islam Antarabangsa Sultan Abdul Halim Mu'adzam Shah",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"unishams"
+],
+"state": "Kedah",
+"source": "https://www.unishams.edu.my"
+},
+{
+"domains": [
+"uum.edu.my"
+],
+"id": "UUM",
+"name": "Universiti Utara Malaysia",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"uum",
+"universiti utara malaysia"
+],
+"state": "Kedah",
+"source": "https://uum.edu.my"
+},
+{
+"domains": [
+"umk.edu.my"
+],
+"id": "UMK",
+"name": "Universiti Malaysia Kelantan",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"umk",
+"universiti malaysia kelantan"
+],
+"state": "Kelantan",
+"source": "https://umk.edu.my"
+},
+{
+"domains": [
+"apu.edu.my"
+],
+"id": "APU",
+"name": "Asia Pacific University of Technology & Innovation",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"apu",
+"asia pacific university"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.apu.edu.my"
+},
+{
+"domains": [
+"globalnxt.edu.my"
+],
+"id": "GLOBALNXT",
+"name": "GlobalNxt University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"globalnxt"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.globalnxt.edu.my"
+},
+{
+"domains": [
+"help.edu.my"
+],
+"id": "HELP",
+"name": "HELP University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"help university",
+"help tertiary"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.help.edu.my"
+},
+{
+"domains": [
+"ijn.edu.my"
+],
+"id": "IJN_UC",
+"name": "IJN University College",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"ijn",
+"ijn university college"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.ijn.edu.my"
+},
+{
+"domains": [
+"imu.edu.my"
+],
+"id": "IMU",
+"name": "IMU University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"imu",
+"international medical university"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.imu.edu.my (listed on Wikipedia list of universities in Malaysia; page not fetchable, 403)"
+},
+{
+"domains": [
+"inceif.edu.my"
+],
+"id": "INCEIF",
+"name": "INCEIF University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"inceif"
+],
+"state": "Kuala Lumpur",
+"source": "https://inceif.edu.my/contact-us/"
+},
+{
+"domains": [
+"tarc.edu.my"
+],
+"id": "TAR_UMT",
+"name": "Tunku Abdul Rahman University of Management and Technology",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"tar umt",
+"tarumt",
+"tarc",
+"tar uc"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.tarc.edu.my"
+},
+{
+"domains": [
+"ucsiuniversity.edu.my"
+],
+"id": "UCSI",
+"name": "UCSI University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"ucsi"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.ucsiuniversity.edu.my/ (seen in search results)"
+},
+{
+"domains": [
+"unikl.edu.my"
+],
+"id": "UNIKL",
+"name": "Universiti Kuala Lumpur",
+"category": "university",
+"subtype": "institute",
+"aliases": [
+"unikl",
+"universiti kuala lumpur"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.unikl.edu.my"
+},
+{
+"domains": [
+"um.edu.my"
+],
+"id": "UM",
+"name": "Universiti Malaya",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"universiti malaya"
+],
+"state": "Kuala Lumpur",
+"source": "https://um.edu.my"
+},
+{
+"domains": [
+"umwales.edu.my"
+],
+"id": "UM_WALES",
+"name": "Universiti Malaya-Wales (International University of Malaya-Wales)",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"um-wales",
+"iumw",
+"umw"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.umwales.edu.my"
+},
+{
+"domains": [
+"upnm.edu.my"
+],
+"id": "UPNM",
+"name": "Universiti Pertahanan Nasional Malaysia",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"upnm",
+"universiti pertahanan nasional malaysia"
+],
+"state": "Kuala Lumpur",
+"source": "https://upnm.edu.my"
+},
+{
+"domains": [
+"uptm.edu.my"
+],
+"id": "UPTM",
+"name": "Universiti Poly-Tech Malaysia",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"uptm",
+"poly-tech"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.uptm.edu.my"
+},
+{
+"domains": [
+"unirazak.edu.my"
+],
+"id": "UNIRAZAK",
+"name": "Universiti Tun Abdul Razak",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"unirazak",
+"tun abdul razak university"
+],
+"state": "Kuala Lumpur",
+"source": "https://www.unirazak.edu.my"
+},
+{
+"domains": [
+"mmu.edu.my"
+],
+"id": "MMU",
+"name": "Multimedia University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"mmu",
+"multimedia university"
+],
+"state": "Melaka",
+"source": "https://www.mmu.edu.my"
+},
+{
+"domains": [
+"unimel.edu.my"
+],
+"id": "UNIMEL",
+"name": "Universiti Islam Melaka (UNIMEL)",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"unimel",
+"malacca islamic university"
+],
+"state": "Melaka",
+"source": "https://www.unimel.edu.my"
+},
+{
+"domains": [
+"utem.edu.my"
+],
+"id": "UTEM",
+"name": "Universiti Teknikal Malaysia Melaka",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"utem",
+"universiti teknikal malaysia melaka"
+],
+"state": "Melaka",
+"source": "https://utem.edu.my"
+},
+{
+"domains": [
+"newinti.edu.my"
+],
+"id": "INTI",
+"name": "INTI International University & Colleges",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"inti",
+"inti international university"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.newinti.edu.my"
+},
+{
+"domains": [
+"mila.edu.my"
+],
+"id": "MIU_MILA",
+"name": "MILA University (formerly Manipal International University)",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"miu",
+"mila",
+"manipal international university",
+"manipal"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.mila.edu.my ; https://miu.edu.my/admissions/how-apply"
+},
+{
+"domains": [
+"nilai.edu.my"
+],
+"id": "NILAI",
+"name": "Nilai University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"nilai"
+],
+"state": "Negeri Sembilan",
+"source": "https://www.nilai.edu.my"
+},
+{
+"domains": [
+"usim.edu.my"
+],
+"id": "USIM",
+"name": "Universiti Sains Islam Malaysia",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"usim",
+"universiti sains islam malaysia"
+],
+"state": "Negeri Sembilan",
+"source": "https://usim.edu.my"
+},
+{
+"domains": [
+"dhuautomotive.edu.my"
+],
+"id": "DHU",
+"name": "DRB-HICOM University of Automotive Malaysia",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"dhu",
+"drb-hicom university"
+],
+"state": "Pahang",
+"source": "https://www.en.dhuautomotive.edu.my/"
+},
+{
+"domains": [
+"umpsa.edu.my",
+"ump.edu.my"
+],
+"id": "UMPSA",
+"name": "Universiti Malaysia Pahang Al-Sultan Abdullah",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"umpsa",
+"ump",
+"universiti malaysia pahang"
+],
+"state": "Pahang",
+"source": "https://umpsa.edu.my"
+},
+{
+"domains": [
+"widad.edu.my"
+],
+"id": "WIDAD_UC",
+"name": "Widad University College",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"widad",
+"widad college"
+],
+"state": "Pahang",
+"source": "https://www.widad.edu.my"
+},
+{
+"domains": [
+"qiu.edu.my"
+],
+"id": "QIU",
+"name": "Quest International University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"quest",
+"qiu",
+"quest international university"
+],
+"state": "Perak",
+"source": "https://www.qiu.edu.my"
+},
+{
+"domains": [
+"upsi.edu.my"
+],
+"id": "UPSI",
+"name": "Universiti Pendidikan Sultan Idris",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"upsi",
+"universiti pendidikan sultan idris"
+],
+"state": "Perak",
+"source": "https://upsi.edu.my"
+},
+{
+"domains": [
+"usas.edu.my"
+],
+"id": "USAS",
+"name": "Universiti Sultan Azlan Shah",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"usas",
+"sultan azlan shah university"
+],
+"state": "Perak",
+"source": "https://www.usas.edu.my/"
+},
+{
+"domains": [
+"utp.edu.my"
+],
+"id": "UTP",
+"name": "Universiti Teknologi PETRONAS",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"utp",
+"universiti teknologi petronas",
+"petronas university of technology"
+],
+"state": "Perak",
+"source": "https://www.utp.edu.my"
+},
+{
+"domains": [
+"utar.edu.my"
+],
+"id": "UTAR",
+"name": "Universiti Tunku Abdul Rahman",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"utar",
+"tunku abdul rahman university"
+],
+"state": "Perak",
+"source": "https://utar.edu.my/Introduction.php"
+},
+{
+"domains": [
+"unimap.edu.my"
+],
+"id": "UNIMAP",
+"name": "Universiti Malaysia Perlis",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"unimap",
+"universiti malaysia perlis"
+],
+"state": "Perlis",
+"source": "https://unimap.edu.my"
+},
+{
+"domains": [
+"hcu.edu.my"
+],
+"id": "HCUC",
+"name": "Han Chiang University College of Communication",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"han chiang",
+"hcuc",
+"han chiang university college"
+],
+"state": "Pulau Pinang",
+"source": "https://www.hcu.edu.my"
+},
+{
+"domains": [
+"usm.my"
+],
+"id": "USM",
+"name": "Universiti Sains Malaysia",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"usm",
+"universiti sains malaysia"
+],
+"state": "Pulau Pinang",
+"source": "https://usm.my"
+},
+{
+"domains": [
+"wou.edu.my"
+],
+"id": "WOU",
+"name": "Wawasan Open University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"wou",
+"wawasan open university"
+],
+"state": "Pulau Pinang",
+"source": "https://www.wou.edu.my"
+},
+{
+"domains": [
+"ums.edu.my"
+],
+"id": "UMS",
+"name": "Universiti Malaysia Sabah",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"ums",
+"universiti malaysia sabah"
+],
+"state": "Sabah",
+"source": "https://ums.edu.my"
+},
+{
+"domains": [
+"ucsf.edu.my"
+],
+"id": "UCSF",
+"name": "University College Sabah Foundation",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"ucsf",
+"sabah foundation"
+],
+"state": "Sabah",
+"source": "https://www.ucsf.edu.my"
+},
+{
+"domains": [
+"curtin.edu.my"
+],
+"id": "CURTIN_MY",
+"name": "Curtin University Malaysia",
+"category": "university",
+"subtype": "branch-campus",
+"aliases": [
+"curtin malaysia",
+"curtin miri"
+],
+"state": "Sarawak",
+"source": "https://www.curtin.edu.my"
+},
+{
+"domains": [
+"swinburne.edu.my"
+],
+"id": "SWINBURNE_SARAWAK",
+"name": "Swinburne University of Technology Sarawak Campus",
+"category": "university",
+"subtype": "branch-campus",
+"aliases": [
+"swinburne sarawak"
+],
+"state": "Sarawak",
+"source": "https://www.swinburne.edu.my"
+},
+{
+"domains": [
+"unimas.my"
+],
+"id": "UNIMAS",
+"name": "Universiti Malaysia Sarawak",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"unimas",
+"universiti malaysia sarawak"
+],
+"state": "Sarawak",
+"source": "https://unimas.my"
+},
+{
+"domains": [
+"uts.edu.my"
+],
+"id": "UTS_SARAWAK",
+"name": "University of Technology Sarawak",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"uts",
+"university of technology sarawak"
+],
+"state": "Sarawak",
+"source": "https://uts.edu.my/about-university/"
+},
+{
+"domains": [
+"mediu.edu.my"
+],
+"id": "MEDIU",
+"name": "Al-Madinah International University (MEDIU)",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"mediu",
+"al-madinah international university"
+],
+"state": "Selangor",
+"source": "https://www.mediu.edu.my"
+},
+{
+"domains": [
+"binary.edu.my"
+],
+"id": "BINARY",
+"name": "Binary University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"binary university"
+],
+"state": "Selangor",
+"source": "https://binary.edu.my/"
+},
+{
+"domains": [
+"city.edu.my"
+],
+"id": "CITY_U",
+"name": "City University Malaysia",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"city university",
+"city u"
+],
+"state": "Selangor",
+"source": "https://city.edu.my/"
+},
+{
+"domains": [
+"firstcity.edu.my"
+],
+"id": "FIRSTCITY_UC",
+"name": "First City University College",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"first city",
+"first city university college"
+],
+"state": "Selangor",
+"source": "https://www.firstcity.edu.my"
+},
+{
+"domains": [
+"gmi.edu.my"
+],
+"id": "GMI_UC",
+"name": "German-Malaysian Institute (GMI University College of Applied Sciences)",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"gmi",
+"german-malaysian institute"
+],
+"state": "Selangor",
+"source": "https://www.gmi.edu.my"
+},
+{
+"domains": [
+"iukl.edu.my",
+"klust.edu.my"
+],
+"id": "IUKL_KLUST",
+"name": "Kuala Lumpur University of Science and Technology (formerly Infrastructure University Kuala Lumpur)",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"iukl",
+"klust",
+"infrastructure university kuala lumpur"
+],
+"state": "Selangor",
+"source": "https://iukl.edu.my/about-iukl/history/ ; https://www.klust.edu.my"
+},
+{
+"domains": [
+"limkokwing.net"
+],
+"id": "LIMKOKWING",
+"name": "Limkokwing University of Creative Technology",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"limkokwing",
+"luct"
+],
+"state": "Selangor",
+"source": "https://www.limkokwing.net/about/campus (seen in search results)"
+},
+{
+"domains": [
+"lincoln.edu.my"
+],
+"id": "LINCOLN_UC",
+"name": "Lincoln University College",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"lincoln",
+"lincoln university college"
+],
+"state": "Selangor",
+"source": "https://www.lincoln.edu.my"
+},
+{
+"domains": [
+"mahsa.edu.my"
+],
+"id": "MAHSA",
+"name": "MAHSA University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"mahsa"
+],
+"state": "Selangor",
+"source": "https://mahsa.edu.my/contact-us.php"
+},
+{
+"domains": [
+"must.edu.my"
+],
+"id": "MUST",
+"name": "Malaysia University of Science & Technology",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"must"
+],
+"state": "Selangor",
+"source": "https://www.must.edu.my"
+},
+{
+"domains": [
+"msu.edu.my"
+],
+"id": "MSU",
+"name": "Management and Science University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"msu",
+"management and science university"
+],
+"state": "Selangor",
+"source": "https://www.msu.edu.my"
+},
+{
+"domains": [
+"monash.edu.my"
+],
+"id": "MONASH_MY",
+"name": "Monash University Malaysia",
+"category": "university",
+"subtype": "branch-campus",
+"aliases": [
+"monash malaysia"
+],
+"state": "Selangor",
+"source": "https://www.monash.edu.my/IT/news-and-events/articles"
+},
+{
+"domains": [
+"newera.edu.my"
+],
+"id": "NEW_ERA_UC",
+"name": "New Era University College",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"new era",
+"new era university college"
+],
+"state": "Selangor",
+"source": "https://www.newera.edu.my"
+},
+{
+"domains": [
+"oum.edu.my"
+],
+"id": "OUM",
+"name": "Open University Malaysia",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"oum",
+"open university malaysia"
+],
+"state": "Selangor",
+"source": "https://www.oum.edu.my/"
+},
+{
+"domains": [
+"perdanauniversity.edu.my"
+],
+"id": "PERDANA_U",
+"name": "Perdana University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"perdana university"
+],
+"state": "Selangor",
+"source": "https://www.perdanauniversity.edu.my"
+},
+{
+"domains": [
+"segi.edu.my"
+],
+"id": "SEGI",
+"name": "SEGi University & Colleges",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"segi"
+],
+"state": "Selangor",
+"source": "https://www.segi.edu.my/"
+},
+{
+"domains": [
+"saito.edu.my"
+],
+"id": "SAITO_UC",
+"name": "Saito University College",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"saito"
+],
+"state": "Selangor",
+"source": "https://www.saito.edu.my"
+},
+{
+"domains": [
+"sunway.edu.my"
+],
+"id": "SUNWAY",
+"name": "Sunway University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"sunway",
+"sunway education group"
+],
+"state": "Selangor",
+"source": "https://www.sunway.edu.my"
+},
+{
+"domains": [
+"taylors.edu.my"
+],
+"id": "TAYLORS",
+"name": "Taylor's University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"taylors",
+"taylor's"
+],
+"state": "Selangor",
+"source": "https://www.taylors.edu.my"
+},
+{
+"domains": [
+"newtwintech.edu.my"
+],
+"id": "TWINTECH",
+"name": "Twintech International University College of Technology",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"twintech"
+],
+"state": "Selangor",
+"source": "https://www.newtwintech.edu.my"
+},
+{
+"domains": [
+"unitar.my"
+],
+"id": "UNITAR",
+"name": "UNITAR International University",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"unitar"
+],
+"state": "Selangor",
+"source": "https://www.unitar.my"
+},
+{
+"domains": [
+"iium.edu.my"
+],
+"id": "IIUM",
+"name": "Universiti Islam Antarabangsa Malaysia",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"iium",
+"uiam",
+"international islamic university malaysia",
+"universiti islam antarabangsa"
+],
+"state": "Selangor",
+"source": "https://iium.edu.my"
+},
+{
+"domains": [
+"uim.edu.my"
+],
+"id": "UIM",
+"name": "Universiti Islam Malaysia",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"uim",
+"islamic university of malaysia"
+],
+"state": "Selangor",
+"source": "https://uim.edu.my/v5/about/"
+},
+{
+"domains": [
+"uis.edu.my"
+],
+"id": "UIS",
+"name": "Universiti Islam Selangor",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"uis",
+"selangor islamic university"
+],
+"state": "Selangor",
+"source": "https://www.uis.edu.my/info-uis/pengenalan"
+},
+{
+"domains": [
+"ukm.my"
+],
+"id": "UKM",
+"name": "Universiti Kebangsaan Malaysia",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"ukm",
+"universiti kebangsaan malaysia"
+],
+"state": "Selangor",
+"source": "https://ukm.my"
+},
+{
+"domains": [
+"upm.edu.my"
+],
+"id": "UPM",
+"name": "Universiti Putra Malaysia",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"upm",
+"universiti putra malaysia"
+],
+"state": "Selangor",
+"source": "https://upm.edu.my"
+},
+{
+"domains": [
+"unisel.edu.my"
+],
+"id": "UNISEL",
+"name": "Universiti Selangor",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"unisel",
+"university of selangor"
+],
+"state": "Selangor",
+"source": "https://www.unisel.edu.my"
+},
+{
+"domains": [
+"uitm.edu.my"
+],
+"id": "UITM",
+"name": "Universiti Teknologi MARA",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"uitm",
+"universiti teknologi mara"
+],
+"state": "Selangor",
+"source": "https://uitm.edu.my"
+},
+{
+"domains": [
+"uniten.edu.my"
+],
+"id": "UNITEN",
+"name": "Universiti Tenaga Nasional",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"uniten",
+"national energy university"
+],
+"state": "Selangor",
+"source": "https://www.uniten.edu.my"
+},
+{
+"domains": [
+"unimy.edu.my"
+],
+"id": "UNIMY",
+"name": "University Malaysia of Computer Science & Engineering",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"unimy"
+],
+"state": "Selangor",
+"source": "https://www.unimy.edu.my"
+},
+{
+"domains": [
+"cyberjaya.edu.my"
+],
+"id": "UNI_CYBERJAYA",
+"name": "University of Cyberjaya",
+"category": "university",
+"subtype": "private",
+"aliases": [
+"cyberjaya university",
+"cucms",
+"cyberjaya university college of medical sciences"
+],
+"state": "Selangor",
+"source": "https://www.cyberjaya.edu.my"
+},
+{
+"domains": [
+"nottingham.edu.my"
+],
+"id": "NOTTINGHAM_MY",
+"name": "University of Nottingham Malaysia",
+"category": "university",
+"subtype": "branch-campus",
+"aliases": [
+"unmc",
+"nottingham malaysia"
+],
+"state": "Selangor",
+"source": "https://www.nottingham.edu.my"
+},
+{
+"domains": [
+"uow.edu.my",
+"kdu.edu.my"
+],
+"id": "UOW_MY",
+"name": "University of Wollongong Malaysia (UOW Malaysia KDU)",
+"category": "university",
+"subtype": "branch-campus",
+"aliases": [
+"uow malaysia",
+"kdu",
+"kdu university college",
+"uow malaysia kdu"
+],
+"state": "Selangor",
+"source": "https://www.uow.edu.my (kdu.edu.my 301-redirects to uow.edu.my)"
+},
+{
+"domains": [
+"xmu.edu.my"
+],
+"id": "XMUM",
+"name": "Xiamen University Malaysia",
+"category": "university",
+"subtype": "branch-campus",
+"aliases": [
+"xmum",
+"xiamen university malaysia"
+],
+"state": "Selangor",
+"source": "https://www.xmu.edu.my"
+},
+{
+"domains": [
+"umt.edu.my"
+],
+"id": "UMT",
+"name": "Universiti Malaysia Terengganu",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"umt",
+"universiti malaysia terengganu"
+],
+"state": "Terengganu",
+"source": "https://umt.edu.my"
+},
+{
+"domains": [
+"unisza.edu.my"
+],
+"id": "UNISZA",
+"name": "Universiti Sultan Zainal Abidin",
+"category": "university",
+"subtype": "public",
+"aliases": [
+"unisza",
+"universiti sultan zainal abidin"
+],
+"state": "Terengganu",
+"source": "https://unisza.edu.my"
+},
+{
+"domains": [
+"tatiuc.edu.my"
+],
+"id": "UC_TATI",
+"name": "University College TATI",
+"category": "university",
+"subtype": "university-college",
+"aliases": [
+"tati",
+"uc tati",
+"tati university college"
+],
+"state": "Terengganu",
+"source": "https://www.tatiuc.edu.my"
+},
+{
+"domains": [
+"gasmalaysia.com"
+],
+"id": "GAS_MALAYSIA",
+"name": "Gas Malaysia Berhad",
+"category": "utility",
+"subtype": "piped gas",
+"aliases": [
+"gas malaysia"
+],
+"source": "https://www.gasmalaysia.com (own press releases)"
+},
+{
+"domains": [
+"iwk.com.my"
+],
+"id": "INDAH_WATER",
+"name": "Indah Water Konsortium",
+"category": "utility",
+"subtype": "sewerage",
+"aliases": [
+"indah water",
+"iwk",
+"indah water konsortium sdn bhd"
+],
+"source": "https://www.iwk.com.my (Wikipedia infobox, company profile)"
+},
+{
+"domains": [
+"tnb.com.my",
+"mytnb.com.my"
+],
+"id": "TNB",
+"name": "Tenaga Nasional Berhad",
+"category": "utility",
+"subtype": "electricity",
+"aliases": [
+"tnb",
+"mytnb",
+"tenaga nasional",
+"tenaga nasional berhad"
+],
+"source": "https://www.tnb.com.my"
+}
+]

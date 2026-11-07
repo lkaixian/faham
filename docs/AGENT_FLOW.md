@@ -3,7 +3,8 @@
 ```mermaid
 stateDiagram-v2
   [*] --> Read
-  Read --> Verify: fields extracted
+  Read --> Agent: masked text
+  Agent --> Verify: quoted evidence
   Verify --> Explain: genuine
   Verify --> ProtectPlan: scam signals
   ProtectPlan --> Explain: warn the user
@@ -59,3 +60,15 @@ The letter is data, never instructions. It is wrapped in `<letter>` tags with a 
 
 ## Trace format
 Each step is `{stage, kind, tool?, message, flag}`, where `kind ∈ think | tool | ok | bad | warn`. The dashboard streams the steps into the reasoning console, so judges can see the agent reason and use its tools.
+
+## The agent
+
+The model-driven part (goal, plan, tools, observations, guard rails, personal-data handling, how to tweak it) is documented in **[AGENT.md](AGENT.md)**. In short, between the Read and Verify rows above, an LLM works in rounds of think, act, observe with 8 tools (some reach official agency websites and domain records), then the harness checks its quoted evidence and re-runs the rules as a floor.
+
+What `POST /api/analyze` adds for the agent:
+
+- `agent`: `{mode, rounds, plan, tools, network, signals, refused, assessment, summary, doubts, filled}`
+- `trace[].facts`: the structured result of a tool call (the page turns it into a plain sentence in the visitor's language)
+- `action.extra`: drafts the agent chose to prepare (a warning for relatives, a scam report)
+- `action.attachments`: files it made (a calendar reminder)
+- `POST /api/analyze/stream`: the same run as server-sent events, one `step` per thought or tool call, then `result`

@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 import re
 
-_URL = re.compile(r"(?:https?://|www\.)\S+", re.I)
+_URL = re.compile(r"\(?(?:https?://|www\.)\S+", re.I)  # an opening bracket right before a link goes with it
 _RANK = {"likely_scam": 2, "caution": 1, "no_signals": 0}
 _MS = set("anda yang dan untuk telah kepada sila jangan akaun bayar saya dengan ini itu tidak boleh dalam atau kami tuan puan segera".split())
 _EN = set("the you your and to is are please account pay payment this that with not from will have urgent".split())
@@ -70,7 +70,8 @@ def detect(text: str) -> str:
 
 
 def _clean(s: str, allowed: str = "", n: int = 200) -> str:
-    s = _URL.sub(lambda m: m.group(0) if allowed and m.group(0).rstrip(".,)") == allowed else "", s)
+    s = _URL.sub(lambda m: m.group(0) if allowed and m.group(0).lstrip("(").rstrip(".,)") == allowed else "", s)
+    s = re.sub(r"\(\s*\)", "", s)
     s = s.replace("—", ",").replace("–", "-")
     s = re.sub(r"\s+", " ", s).strip()
     return s if len(s) <= n else s[: n - 1] + "…"

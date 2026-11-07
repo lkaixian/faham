@@ -12,14 +12,14 @@
    - Dark theme is a swap of the color tokens below, not a second design.
 */
 :root {
-  --bg: #f6f8f8; --surface: #ffffff; --text: #14262a; --muted: #42555a; --line: #b9c6c9;
-  --accent: #0b5c63; --on-accent: #ffffff; --link: #0b5c63;
+  --bg: #f6f3fb; --surface: #ffffff; --text: #1b1433; --muted: #4d4768; --line: #a79ece;
+  --accent: #5a3b8c; --on-accent: #ffffff; --link: #5a3b8c; --plum: #2a1e4d; --lavender: #8b7cc7;
   --bad: #a3190f; --bad-bg: #fdecea; --warn: #7a4b00; --warn-bg: #fff3d1; --ok: #1d5a3a; --ok-bg: #e6f2ec;
   --r: 12px; --font: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Noto Sans Tamil", "Latha", "Nirmala UI", sans-serif;
 }
 [data-theme="dark"] {
-  --bg: #0e1719; --surface: #162326; --text: #e8f1f2; --muted: #a9bcc0; --line: #3a5156;
-  --accent: #5cc6ce; --on-accent: #06282b; --link: #8fdde2;
+  --bg: #0e0b1d; --surface: #1a1433; --text: #ece9f7; --muted: #b7b0d6; --line: #675c9c;
+  --accent: #a99be0; --on-accent: #150f2b; --link: #c9c2e3; --plum: #2a1e4d; --lavender: #8b7cc7;
   --bad: #ffb4ab; --bad-bg: #3b1a18; --warn: #ffd27a; --warn-bg: #3a2c0a; --ok: #8fdcb0; --ok-bg: #12301f;
 }
 * { box-sizing: border-box; }
@@ -50,7 +50,7 @@ main:focus { outline: none; }
 h1:focus, h2:focus { outline: none; }
 
 /* header */
-.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+.top { background: var(--surface); border-bottom: 3px solid var(--lavender); }
 .bar { display: flex; align-items: center; gap: 10px; min-height: 56px; flex-wrap: wrap; padding-block: 12px 8px; }
 .brand { font-weight: 800; font-size: 1.3rem; letter-spacing: .04em; color: var(--accent); text-decoration: none; min-height: 48px; display: inline-flex; align-items: center; }
 .brand { margin-right: auto; gap: 10px; }
@@ -75,9 +75,10 @@ h1:focus, h2:focus { outline: none; }
 .btn-big { min-height: 56px; font-size: 1.1rem; }
 .btn:disabled { opacity: .55; cursor: not-allowed; }
 .bar .btn { margin: 0; }
-.ctrls { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; flex: 1 1 0; min-width: 0; }
+.ctrls { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: 1 1 0; min-width: 0; }
+.tools { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }   /* Easy mode, theme and voice stay together on their own row */
 .ctrls .btn { min-height: 44px; padding: 0 12px; gap: 6px; }
-@media (max-width: 520px) { .ctrls { flex-basis: 100%; justify-content: flex-start; } }
+@media (max-width: 520px) { .ctrls { flex-basis: 100%; align-items: flex-start; } .tools { justify-content: flex-start; } }
 .uilang { gap: 6px; }
 .uilang .chip { min-width: 44px; padding: 0 10px; }
 
@@ -360,3 +361,145 @@ img.orig { max-height: 70vh; object-fit: contain; }
 .callres.c-caution { border: 4px solid var(--warn); }
 .mic { margin-top: 8px; min-height: 56px; }
 @media (max-width: 480px) { .paid-btn { margin-left: 0; width: 100%; } }
+
+/* ---------- easy (senior) mode: html[data-senior]. Bigger type, one thing per screen, nothing that is not needed ---------- */
+.senior-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; justify-content: space-between; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; margin: 18px 0 18px; }
+.senior-banner p { margin: 0; flex: 1 1 260px; font-weight: 600; }
+.senior-banner .btn { margin: 0; }
+html[data-senior] { font-size: 22px; }
+html[data-senior] *, html[data-senior] *::before, html[data-senior] *::after { animation: none !important; transition: none !important; }
+html[data-senior] .top nav, html[data-senior] .mode, html[data-senior] .docpane,
+html[data-senior] .trace, html[data-senior] [data-act="all"], html[data-senior] [data-act="sum"],
+html[data-senior] .hint, html[data-senior] .priv, html[data-senior] #exBox, html[data-senior] .meta,
+html[data-senior] .dropnote, html[data-senior] #upTypes, html[data-senior] #view-check .lead, html[data-senior] .foot p + p + p { display: none !important; }
+html[data-senior] .wrap { max-width: 680px; }
+html[data-senior] #main:has(#view-check:not([hidden]) #result.split:not([hidden])) { max-width: 680px; }
+html[data-senior] #result.split { display: block; }
+html[data-senior] .btn { min-height: 68px; font-size: 1.1rem; padding: 0 24px; width: 100%; margin: 8px 0; }
+html[data-senior] .bar .btn, html[data-senior] .ctrls .btn { width: auto; min-height: 56px; margin: 0; }
+html[data-senior] .chip { min-height: 56px; min-width: 64px; font-size: 1.1rem; }
+html[data-senior] .upbtns { display: flex; flex-direction: column; gap: 4px; }
+html[data-senior] textarea { min-height: 7.5rem; font-size: 1.1rem; }
+html[data-senior] #view-check h1 { font-size: 1.9rem; line-height: 1.25; }
+html[data-senior] .verdict h1 { font-size: 2rem; }
+html[data-senior] .verdict p { font-size: 1.15rem; }
+html[data-senior] .next-step { font-size: 1.35rem; line-height: 1.5; }
+html[data-senior] .snav { display: flex; flex-direction: column-reverse; gap: 0; }
+html[data-senior] .rbar { display: flex; flex-direction: column; }
+html[data-senior] .stepbar p { font-size: 1.1rem; }
+html[data-senior] .senior-banner { background: color-mix(in srgb, var(--lavender) 22%, var(--surface)); }
+html[data-senior] .skip-link, html[data-senior] #intro .btn { width: auto; }
+html[data-senior] .upbtns .btn { flex: none; }
+html[data-senior] .rbar [data-act="again"], html[data-senior] .vnote { display: none; }
+html[data-senior] textarea { height: 9rem; }
+
+/* theme switch: circular reveal (app.js drives the clip-path); the old view stays underneath, unblended */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+html.theme-fade, html.theme-fade * { transition: background-color .4s ease, color .4s ease, border-color .4s ease, fill .4s ease, stroke .4s ease !important; }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }
+
+/* legal page */
+#main h3 { font-size: 1.05rem; margin: 1.4em 0 .3em; }
+#main h2 { margin-top: 1.8em; }
+.toc ol { padding-left: 1.2em; }
+.toc a { font-weight: 600; }
+.tools .btn { flex: 1 1 auto; }
+
+/* dialogs: message popup (easy mode) and the leave-easy-mode check */
+dialog { width: min(92vw, 640px); max-height: 88vh; overflow: auto; border: 2px solid var(--line); border-radius: 14px; padding: 20px; background: var(--surface); color: var(--text); }
+dialog::backdrop { background: rgba(0, 0, 0, .55); }
+dialog h2 { margin-top: 0; }
+dialog .btn { width: 100%; margin: 8px 0 0; }
+dialog .doctext { max-height: 50vh; }
+.hl.focus { outline: 3px solid var(--accent); outline-offset: 2px; font-weight: 700; }
+html[data-senior] #seniorBannerBtn { display: none; }
+html[data-senior] #seniorFootBox { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); }
+html[data-senior] #seniorFoot { width: auto; min-height: 48px; font-size: .95rem; margin: 0; }
+html[data-senior] #exitDlg .btn-quiet { margin-top: 24px; }
+
+/* easy mode switch: header and page ease in, the button gives one ring (app.js adds .mode-pop for under a second).
+   The ids make these win over the easy-mode rule that turns animations off. */
+@keyframes modePop { from { opacity: 0; transform: translateY(10px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes modeRing { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); } to { box-shadow: 0 0 0 16px transparent; } }
+html.mode-pop .top { animation: modePop .45s ease-out both !important; }
+html.mode-pop #main { animation: modePop .55s ease-out .08s both !important; }
+html.mode-pop #seniorBtn { animation: modeRing .8s ease-out !important; }
+@media (prefers-reduced-motion: reduce) { html.mode-pop .top, html.mode-pop #main, html.mode-pop #seniorBtn { animation: none !important; } }
+
+/* ---------- DEMO watermark ----------
+   The Agentic AI Challenge (rule 4.2) requires every displayed or submitted web app to carry a clear "DEMO" or "SAMPLE" watermark.
+   A tiled diagonal mark plus a corner badge, on every page, under clicks and aria-hidden by the empty alt text. To remove it
+   after the competition, delete this block (and the matching line in docs/COMPETITION.md). */
+body::after { content: ""; position: fixed; inset: 0; z-index: 9998; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='240'%3E%3Ctext x='170' y='120' text-anchor='middle' dominant-baseline='middle' transform='rotate(-24 170 120)' font-family='Arial,Helvetica,sans-serif' font-weight='800' font-size='68' letter-spacing='8' fill='%235a3b8c' fill-opacity='.13'%3EDEMO%3C/text%3E%3C/svg%3E"); background-repeat: repeat; }
+[data-theme="dark"] body::after { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='240'%3E%3Ctext x='170' y='120' text-anchor='middle' dominant-baseline='middle' transform='rotate(-24 170 120)' font-family='Arial,Helvetica,sans-serif' font-weight='800' font-size='68' letter-spacing='8' fill='%23c9c2e3' fill-opacity='.13'%3EDEMO%3C/text%3E%3C/svg%3E"); }
+body::before { content: "DEMO"; content: "DEMO" / ""; position: fixed; right: 12px; bottom: 12px; z-index: 9999; pointer-events: none;
+  padding: 5px 14px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-weight: 800; font-size: .8rem; letter-spacing: .18em; box-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
+
+/* the one-line account of what the AI agent did, under the verdict */
+.agent-line { margin: 8px 0 0; font-size: .95rem; font-weight: 600; color: var(--accent); }
+
+/* the agent working, live: its thoughts, tool calls and findings as they happen */
+.live { list-style: none; margin: 10px 0 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: .85rem; line-height: 1.5; max-height: 14rem; overflow: auto; }
+.live li { padding: 4px 0; border-bottom: 1px dashed var(--line); animation: liveIn .25s ease-out; }
+.live li:last-child { border: 0; }
+.live .tag { display: inline-block; margin-right: 6px; padding: 0 8px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); font-weight: 700; font-size: .75rem; }
+.live .k-bad, .live .flag { color: var(--bad); }
+.live .k-ok { color: var(--ok); }
+.live .k-warn { color: var(--warn); }
+@keyframes liveIn { from { opacity: 0; transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { .live li { animation: none; } }
+
+/* the progress bar while the agent works, and the plain-language list of what it checked */
+.prog { margin-top: 12px; }
+.bar-track { height: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.bar-track i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--lavender)); border-radius: 999px; transition: width .6s ease-out; }
+.prog-pct { margin: 6px 0 0; text-align: right; font-weight: 700; font-size: .85rem; color: var(--muted); }
+.prog-steps, .did { list-style: none; margin: 8px 0 0; padding: 0; }
+.prog-steps { max-height: 15rem; overflow: auto; }
+.prog-steps li, .did li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px dashed var(--line); line-height: 1.45; }
+.prog-steps li:last-child, .did li:last-child { border: 0; }
+.prog-steps li { animation: liveIn .3s ease-out; }
+.prog-steps svg, .did svg { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
+.d-ok svg { color: var(--ok); } .d-warn svg { color: var(--warn); } .d-bad svg { color: var(--bad); } .d-info svg { color: var(--muted); }
+.d-bad { color: var(--bad); }
+.flow { list-style: none; margin: 10px 0 0; padding: 0; }
+.flow > li { position: relative; display: flex; gap: 12px; padding-bottom: 14px; }
+.flow > li:not(:last-child)::before { content: ""; position: absolute; left: 13px; top: 28px; bottom: 0; width: 2px; background: var(--line); }
+.fl-n { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .85rem; color: var(--on-accent); background: var(--accent); }
+.fl-warn .fl-n { background: var(--warn); } .fl-bad .fl-n { background: var(--bad); } .fl-ok .fl-n { background: var(--ok); }
+.flow b { display: block; margin-top: 3px; }
+.flow .did { margin-top: 2px; }
+.agent-tech { margin-bottom: 10px; padding: 10px 12px; border-left: 3px solid var(--lavender); background: var(--bg); border-radius: 6px; }
+html[data-senior] .prog-steps { display: none; }
+html[data-senior] .prog-pct { font-size: 1.1rem; }
+html[data-senior] #busyTxt { font-size: 1.3rem; }
+@media (prefers-reduced-motion: reduce) { .bar-track i { transition: none; } .prog-steps li { animation: none; } }
+
+/* phone portrait: compact header (brand + tools on one row, language row, one-line swipe nav), tighter cards */
+@media (max-width: 520px) {
+  .wrap { padding: 0 14px; }
+  .bar { gap: 6px; padding-block: 6px 0; min-height: 0; }
+  .ctrls { display: contents; }
+  .tools { order: 1; flex-wrap: nowrap; gap: 4px; }
+  .uilang { order: 2; flex-basis: 100%; }
+  .uilang .chip { flex: 1; min-width: 0; padding: 0 6px; min-height: 44px; }
+  .mode { order: 3; padding-bottom: 2px; font-size: .8rem; }
+  .brand { min-height: 44px; font-size: 1.15rem; }
+  .logo { height: 32px; }
+  .ctrls .btn { padding: 0 10px; }
+  #themeBtn span, #voiceBtn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .top nav { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; gap: 2px; padding-bottom: 6px; scrollbar-width: none; }
+  .top nav::-webkit-scrollbar { display: none; }
+  .top nav a { flex: none; scroll-snap-align: start; padding: 0 12px; white-space: nowrap; }
+  h1 { font-size: 1.45rem; margin-top: .8rem; }
+  h2 { font-size: 1.2rem; margin-top: 1.4rem; }
+  .card { padding: 14px; margin: 12px 0; }
+  .hint { flex-direction: column; gap: 6px; }
+  .verdict { padding: 14px; gap: 10px; }
+  .verdict svg { width: 36px; height: 36px; }
+  details.grp > summary, .gbody { padding-inline: 14px; }
+  .btn { margin-right: 0; }
+  .snav { position: sticky; bottom: 0; background: var(--bg); padding: 8px 0; margin: 12px 0 0; z-index: 4; }
+}

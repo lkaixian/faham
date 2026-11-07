@@ -23,6 +23,39 @@ from .scam_content import (LETTER_DRAFT, LETTER_Q, AMOUNT_PIECE, REMINDER, SCAM_
 SOURCES: dict = {k: v for k, v in json.loads((DATA_DIR / "official_sources.json").read_text(encoding="utf-8")).items() if not k.startswith("_")}
 OFFICES: dict = json.loads((DATA_DIR / "offices.json").read_text(encoding="utf-8"))
 
+# Domain-only directory of real banks, councils, states, universities and companies (see docs/DIRECTORY.md). It says who a
+# website belongs to; it carries no procedures, so steps still come from SOURCES only.
+_dir_file = DATA_DIR / "official_directory.json"
+DIRECTORY: list[dict] = json.loads(_dir_file.read_text(encoding="utf-8")) if _dir_file.exists() else []
+# Suffixes only registered to government and accredited education bodies, so a whole suffix is safe to trust (like .gov.my).
+TRUSTED_SUFFIXES = (".gov.my", ".edu.my")
+_DIR_DOMAINS = {d: e for e in DIRECTORY for d in e["domains"]}
+_GENERIC = {"bank", "islam", "islamic", "malaysia", "universiti", "university", "college", "kolej", "majlis", "negeri", "jabatan", "institut",
+            "group", "online", "digital", "mobile", "life", "care", "health", "insurance", "takaful", "finance", "capital", "credit", "media",
+            "star", "post", "fast", "smart", "asia", "global", "world", "first", "royal", "golden", "prima", "perdana", "utama", "jaya",
+            "bandar", "taman", "city", "town", "state", "holdings", "berhad", "services", "time", "grab", "yes", "unifi", "tune", "mydin", "wise", "sains", "boost", "business", "apac", "guardian"}
+
+
+def _dir_entry(host: str) -> dict | None:
+    """The directory entry whose domain is this host or a parent of it."""
+    parts = host.lower().split(".")
+    return next((_DIR_DOMAINS[".".join(parts[i:])] for i in range(len(parts) - 1) if ".".join(parts[i:]) in _DIR_DOMAINS), None)
+
+
+def _dir_find(name: str) -> dict | None:
+    """Find an entry by id, name, alias or domain; whole-word match, longest alias first (so 'maybank islamic' beats 'maybank')."""
+    low = " " + re.sub(r"[^a-z0-9.]+", " ", name.lower()).strip() + " "
+    best, blen = None, 0
+    for e in DIRECTORY:
+        for a in [e["id"], e["name"], *e.get("aliases", [])]:
+            a = re.sub(r"[^a-z0-9.]+", " ", a.lower()).strip()
+            if len(a) >= 3 and len(a) > blen and f" {a} " in low:
+                best, blen = e, len(a)
+        for d in e["domains"]:
+            if len(d) > blen and d in low:
+                best, blen = e, len(d)
+    return best
+
 
 @dataclass
 class Tool:
@@ -184,12 +217,12 @@ RED_FLAGS: list[tuple[str, str]] = [
     (r"akaun\s+(?:peribadi|maybank|cimb|public bank|rhb|bank islam)|personal account|转账到|汇款到|转到.{0,8}(?:账户|户口|帐户)|(?:账户|户口)\s*[:：]?\s*\d|(?:bayar|transfer|pindah)\w*[^.\n]{0,40}akaun[^.\n]{0,40}atas nama", "transfer_account"),
     (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only|24\s*小时|立即|马上|立刻|今天之内|24\s*மணி", "urgency"),
     (r"waran\s+tangkap|arrest|ditangkap|逮捕|通缉|拘留|கைது", "arrest"),
-    (r"akaun\s+selamat|safe\s+account|安全(?:账户|户口|帐户)|பாதுகாப்பான\s*கணக்", "safe_account"),
-    (r"pengubahan\s+wang\s+haram|money\s+laundering|洗钱|洗錢|பணமோசடி", "laundering"),
+    (r"akaun\s+selamat|safe\s+account|安全(?:账户|户口|帐户)|பாதுகாப்பு\s*கணக்கு|பாதுகாப்பான\s*கணக்", "safe_account"),
+    (r"pengubahan\s+wang\s+haram|money\s+laundering|洗钱|洗錢|பணமோசடி|பணச்?\s*சலவை", "laundering"),
     (r"dibekukan|bekukan|akaun[^.\n]{0,20}beku|account[^.\n]{0,20}(?:frozen|freeze)|冻结|凍結|முடக்க", "account_frozen"),
     (r"\btac\b|\botp\b|kata laluan|password|验证码|密码|கடவுச்சொல்", "tac_otp"),
     (r"(?:hubungi|contact|mesej|message|klik|click|tambah|add|sertai|join|chat)\W+(?:\w+\W+){0,4}(?:whatsapp|telegram|wasap)|wa\.me/|t\.me/|加.{0,6}(?:whatsapp|telegram|微信)|வாட்ஸ்அப்|டெலிகிராம்", "chat_app"),
-    (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret|(?:don'?t|do not) tell (?:anyone|anybody)|不要告诉|不可告诉|请保密|யாரிடமும்\s*சொல்ல", "secret"),
+    (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret|(?:don'?t|do not) tell (?:anyone|anybody)|不要告诉|不可告诉|不得告诉|切勿告诉|请保密|யாரிடமும்\s*சொல்ல", "secret"),
     (r"gambar\s+ic|ic\s+depan|photo of (?:your )?ic|身份证.{0,4}(?:照片|正反面|相片)|அடையாள\s*அட்டை.{0,12}படம்", "ic_photo"),
     (r"diskaun\s+\d+%", "discount"),
     (r"akaun\s+(?:bank\s+)?(?:baharu|baru)|new (?:bank )?account|(?:changed|updated) (?:bank )?account|(?:tukar|bertukar|ditukar)\w*\s+akaun|akaun[^.\n]{0,30}(?:telah|sudah)\s+(?:berubah|ditukar)", "new_account"),
@@ -198,6 +231,7 @@ RED_FLAGS: list[tuple[str, str]] = [
     (r"deposit\w*\s+(?:of\s+)?rm\s?\d[^.\n]{0,40}(?:activate|aktif|daftar|register)|rm\s?\d[\d,.]*\s+deposit[^.\n]{0,40}(?:activate|aktif|daftar|register)|yuran\s+pendaftaran|registration fee|押金|订金|வைப்புத்?\s*தொகை", "advance_fee"),
     (r"(?:army|military|tentera|soldier|军医|军人|ராணுவ)[^.\n]{0,25}(?:doctor|doktor|engineer|jurutera|医|மருத்துவர்)[^.\n]{0,40}(?:syria|afghanistan|yemen|iraq|overseas|abroad|luar negara|mission|misi|海外|国外|叙利亚|阿富汗|சிரியா|ஆப்கான்|வெளிநாடு)|(?:doctor|doktor|医生)\s*(?:army|tentera|military)[^.\n]{0,20}(?:syria|afghanistan|yemen|iraq|overseas|abroad|luar negara|mission|misi|海外|国外|叙利亚|阿富汗|சிரியா|ஆப்கான்|வெளிநாடு)|(?:send|hantar)[^.\n]{0,30}(?:money|wang|duit)[^.\n]{0,30}(?:friend'?s|kawan)[^.\n]{0,15}(?:account|akaun)|钱[^。\n]{0,6}(?:汇|转)[^。\n]{0,10}朋友[^。\n]{0,6}(?:户口|账户)|நண்பர[^.\n]{0,12}கணக்[^.\n]{0,20}பணம்[^.\n]{0,10}அனுப்பு", "romance_money"),
     (r"(?:you(?:'ve| have)?\s+won|anda\s+(?:telah\s+)?menang|congratulations[^.\n]{0,30}won)[^.\n]{0,30}(?:prize|lottery|lucky draw|rm\s?\d|cash|hadiah|cabutan|iphone|voucher)|menang[^.\n]{0,25}(?:hadiah|cabutan)|(?:won|win)[^.\n]{0,25}(?:prize|lottery|lucky draw)|中奖|中獎|லாட்டரி[^.\n]{0,25}வென்ற|பரிசு[^.\n]{0,25}வென்ற", "prize_win"),
+    (r"ignore (?:all |any )?(?:the )?(?:previous|prior|above) instructions|abaikan (?:semua )?arahan|system prompt|(?:you are|anda ialah) (?:an? )?(?:ai|language model|assistant)|(?:say|state|report|nyatakan|laporkan) (?:that )?(?:this|it|ini)(?: is| sebagai| adalah)? (?:genuine|safe|legit|sah|selamat)", "prompt_injection"),
     (r"verify your account|confirm your details|sahkan (?:akaun|maklumat)|akaun anda (?:akan )?(?:di)?(?:gantung|sekat|bekukan|tutup)|your account (?:will be|has been) (?:suspended|blocked|closed)", "credential_harvest"),
 ]
 
@@ -216,11 +250,21 @@ def _brands() -> set[str]:
     return {lab for s in SOURCES.values() for d in s["domains"] for lab in d.split(".") if len(lab) >= 3 and lab not in ("gov", "my", "com", "net", "org", "www")}
 
 
+# Look-alike names come from companies and federal bodies only. Places and campuses (selangor, perak, a university's short name) also
+# appear in innocent site names, so a name match there would wrongly condemn an ordinary link. Those links still count as "unofficial".
+_BRAND_CATS = {"bank", "insurer", "payment", "regulator", "investment", "credit", "telco", "utility", "courier", "ecommerce", "toll", "airline", "retail", "service", "federal"}
+_BRAND_MIN = {"bank": 4, "insurer": 5, "payment": 5, "investment": 5}
+_DIR_BRANDS = {lab for d, e in _DIR_DOMAINS.items() if e["category"] in _BRAND_CATS and not d.endswith(TRUSTED_SUFFIXES)
+               for lab in [d.split(".")[0]] if len(lab) >= _BRAND_MIN.get(e["category"], 6) and lab not in _GENERIC and not lab.isdigit()}
+
+
 def _lookalike(domain: str) -> bool:
     """Unofficial domain that contains or nearly spells an agency name (hasil-gov.my.com, mytax-login.xyz)."""
     tokens = re.split(r"[-.]", domain)
+    # directory names are stricter (a whole token, a long name inside, or one typo in a long name) because there are hundreds of them
     return any(b in tokens or (len(b) >= 4 and b in domain) or (len(b) >= 5 and any(len(t) >= 4 and _lev(t, b) <= 2 for t in tokens))
-               for b in _brands())
+               for b in _brands()) or any(b in tokens or (len(b) >= 6 and b in domain) or (len(b) >= 7 and any(len(t) >= 6 and _lev(t, b) <= 1 for t in tokens))
+                                          for b in _DIR_BRANDS)
 
 
 def _domains(text: str) -> list[str]:
@@ -278,9 +322,19 @@ def _family_impersonation(low: str):
     m = re.search(_FAM_EXCUSE, low)
     return m if m and re.search(_FAM_ADDRESS, low) and re.search(_FAM_MONEY, low) else None
 
+AI_SIGNALS = ("ai_payment_demand", "ai_threat", "ai_credential", "ai_remote_access", "ai_impersonation",
+              "ai_too_good", "ai_secrecy", "ai_chat_move", "ai_inconsistent", "ai_new_domain", "ai_official_mismatch")
+# What the agent's evidence can do. A quote proves the words exist, not that the agent's JUDGEMENT of them is right, so:
+#  - hard signals are objective and checkable (an unusual way to pay, a request for credentials or remote access, a website the
+#    agent verified was registered days ago). They weigh more than a rule flag (30 against 22) and can make a likely scam on their own, even on a letter with a valid reference number.
+#  - soft signals are judgement calls (impersonation, a mismatch with the agency's site, pressure, "too good", secrecy, a chat move,
+#    inconsistency). They raise caution but can never alone say "scam": a real survey sent through a Google Form looks "unusual" to a model.
+AI_HARD = {"ai_payment_demand", "ai_credential", "ai_remote_access", "ai_new_domain"}
+AI_SOFT = set(AI_SIGNALS) - AI_HARD
+
 
 @tool("scam.check", "Domain allowlist + red-flag rules. Returns verdict and evidence.")
-def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list = ()) -> dict:
+def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list = (), ai: tuple | list = ()) -> dict:
     """Verdict plus reasons. Sentences come from i18n.TEXT in `language`; each reason carries its stable `code`."""
     low = text.lower()
     r = lambda code, **kw: render(code, language, **kw)
@@ -295,6 +349,10 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     if fam:
         flags.append(("family_impersonation", r("family_impersonation"))); ev[flags[-1]] = [text[fam.start():fam.end()][:80]]
     flags += [(c, r(c)) for c in extra if c in TEXT]  # extra risk codes, e.g. email header signals
+    for c, quote in ai:  # signals the AI planner found; the planner already checked each quote against the letter
+        if c in AI_SIGNALS and (c, r(c)) not in flags:
+            flags.append((c, r(c)))
+            ev[flags[-1]] = [quote]
     good: list[tuple[str, str]] = []
     official = SOURCES.get(issuer, {}).get("domains", [])
     info: list[tuple[str, str]] = []
@@ -303,7 +361,7 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
         links = [u for u, h in _urls(text) if h == d]
         if d in SHORTENERS:
             flags.append(("shortener", r("shortener", d=d))); ev[flags[-1]] = links
-        elif d.endswith(".gov.my") or any(d == o or d.endswith("." + o) for o in official if o != ".gov.my"):
+        elif d.endswith(TRUSTED_SUFFIXES) or _dir_entry(d) or any(d == o or d.endswith("." + o) for o in official if o != ".gov.my"):
             good.append(("official_domain", r("official_domain", d=d))); ev[good[-1]] = links
         elif hit(SOCIAL):
             if not SOURCES.get(issuer, {}).get("social"):
@@ -329,9 +387,11 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     ref = REF_RE.search(text)
     if ref:
         good.append(("ref_format", r("ref_format"))); ev[good[-1]] = [ref.group(1)]
-    score = max(0, min(100, 80 + 5 * len(good) - sum(FLAG_WEIGHT.get(c, 22) for c, _ in flags)))
+    score = max(0, min(100, 80 + 5 * len(good) - sum(FLAG_WEIGHT.get(c, 12 if c in AI_SOFT else 30 if c in AI_HARD else 22) for c, _ in flags)))
     if flags or issuer == "UNKNOWN":
         score = min(score, CLEAR_FROM - 1)  # any red flag or an unknown sender can never read as clear
+    if flags and all(c in AI_SOFT for c, _ in flags):
+        score = max(score, SCAM_BELOW)  # judgement calls alone never condemn a message; the rules or hard evidence must agree
     verdict = verdict_from_score(score)  # the verdict is a pure function of the score: they cannot disagree
     R = lambda kind, c, t: {"kind": kind, "code": c, "text": t, "evidence": list(dict.fromkeys(ev.get((c, t), [])))}
     reasons = ([R("risk", c, t) for c, t in flags] + [R("ok", c, t) for c, t in good]
@@ -349,6 +409,59 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     return {"genuine": verdict != "likely_scam",  # means 'not flagged', not 'proven genuine'
             "verdict": verdict, "score": score, "red_flags": [t for _, t in flags], "good_signs": [t for _, t in good],
             "reasons": reasons, "verify_yourself": verify, "scam_type": stype}
+
+
+ODD_TLDS = (".top", ".xyz", ".icu", ".click", ".buzz", ".cfd", ".sbs", ".cyou", ".rest", ".monster", ".cam")
+ASK_WORDS = ("login", "log-in", "verify", "secure", "pay", "bayar", "akaun", "account", "update", "refund", "claim")
+
+
+def _is_official(host: str) -> bool:
+    return host.endswith(TRUSTED_SUFFIXES) or _dir_entry(host) is not None or any(host == d or host.endswith("." + d) for s in SOURCES.values() for d in s["domains"] if d != ".gov.my")
+
+
+@tool("link.inspect", "Inspect every link in the message for tricks: bare IP, punycode, @ trick, look-alike name, odd ending, shortener.")
+def inspect_links(text: str) -> list[dict]:
+    out, seen = [], set()
+    for u, host in _urls(text):
+        if not host or host in seen:
+            continue
+        seen.add(host)
+        p = urlparse(u if "://" in u else "http://" + u)
+        official, f = _is_official(host), []
+        if host.replace(".", "").isdigit():
+            f.append("the address is a bare IP number")
+        if "xn--" in host:
+            f.append("uses punycode, which can imitate letters")
+        if "@" in (p.netloc or ""):
+            f.append("has an @ in the address, which hides the real site")
+        if host in SHORTENERS:
+            f.append("is a link shortener that hides the destination")
+        if host.endswith(ODD_TLDS):
+            f.append("uses an ending common on scam sites")
+        if not official and host.count(".") >= 3:
+            f.append("has many subdomain parts")
+        known_platform = any(host == n or host.endswith("." + n) for n in SOCIAL + FORMS)
+        if not official and not known_platform and _lookalike(host):
+            f.append("looks like an agency name but is not its website")
+        if p.scheme == "http":
+            f.append("is not encrypted (http)")
+        if any(w in (p.path or "").lower() for w in ASK_WORDS):
+            f.append("the path asks you to log in, verify or pay")
+        out.append({"host": host, "official": official, "findings": f})
+    return out
+
+
+@tool("registry.lookup", "Look up the claimed agency in the official registry: its real websites and how it takes payment.")
+def registry_lookup(issuer: str) -> dict:
+    s = SOURCES.get(issuer)
+    if not s:
+        e = _dir_find(issuer) if issuer else None  # a name, alias or domain from the directory (no steps: those come from SOURCES only)
+        if not e:
+            return {"known": False}
+        return {"known": True, "name": e["name"], "domains": e["domains"], "source_url": "https://" + e["domains"][0] if e["domains"] else "https://www.malaysia.gov.my",
+                "online_steps": [], "category": e["category"]}
+    return {"known": True, "name": s["name"], "domains": s["domains"], "source_url": s["source_url"],
+            "online_steps": s.get("online_steps", [])[:3]}
 
 
 # ---------------------------------------------------------------- explain / teach
@@ -380,7 +493,7 @@ PIECES = {
 
 def _only_known_domains(generated: str, letter: str) -> bool:
     """Reject model text that names a website not in the letter or the official registry (e.g. hasil -> results)."""
-    known = set(_domains(letter)) | {d for s in SOURCES.values() for d in s["domains"]}
+    known = set(_domains(letter)) | {d for s in SOURCES.values() for d in s["domains"]} | set(_DIR_DOMAINS)
     return all(any(d == k or d.endswith("." + k) for k in known) for d in _domains(generated))
 
 

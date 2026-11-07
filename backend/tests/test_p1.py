@@ -26,7 +26,7 @@ def test_stream_order_and_fast_verdict():
     cache.ANALYSES.clear()
     t0 = time.monotonic()
     r = client.post("/api/analyze/stream", json={"text": SCAM, "language": "en"})
-    evs = parse_sse(r.text)
+    evs = [e for e in parse_sse(r.text) if e[0] != "step"]  # live agent steps are checked in test_agent_loop
     assert [n for n, _ in evs] == ["verdict", "explanation", "result"]
     assert evs[0][1]["verdict"] == "likely_scam" and evs[0][1]["scam_type"] == "macau"
     assert evs[2][1]["scam"]["verdict"] == evs[0][1]["verdict"]

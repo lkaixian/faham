@@ -121,7 +121,7 @@ Per-request extras are added after the cache, in `main._finish`: `entities` (acc
 
 ## Design decisions
 
-- **Deterministic first, LLM second.** Classification, extraction and scam checks are rules that can be tested and explained to judges. The LLM only rewrites explanations, so the demo still works offline.
+- **The agent decides, the rules are the floor.** An LLM plans, uses tools and gathers evidence ([AGENT.md](AGENT.md)); the scam rules re-run last, the model can only add concern, and every claim must quote the letter. With no model the rule pipeline runs, so the demo still works offline.
 - **The plan changes on evidence.** A scam verdict switches the agent from "help comply" to "protect and report". This is the clearest sign that FAHAM is an agent and not a chatbot.
 - **Human in the loop.** `act.draft` returns `requires_approval: true`. Nothing is sent or paid automatically.
 - **Privacy by construction.** Redaction runs before any other tool sees the text. The API stores no letters. The only server state is an in-memory cache of redacted results (1 hour) and a hash-only counter (90 days).

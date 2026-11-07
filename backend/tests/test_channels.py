@@ -201,3 +201,120 @@ def test_reply_languages_and_multi(monkeypatch):
     assert reply.summary(batch("no_signals"), "bm", "x").startswith("Tiada tanda penipuan ditemui (ini bukan bukti)")
     monkeypatch.setenv("FAHAM_PUBLIC_URL", "https://faham.example")
     assert "https://faham.example/terms" in reply.notice("en") and len(reply.notice("en").splitlines()) == 3
+
+
+def test_mailtrap_inbound_replies_then_deletes(env, monkeypatch):
+    monkeypatch.setenv("MAILTRAP_API_TOKEN", "tok")
+    monkeypatch.setenv("MAILTRAP_INBOX_ID", "15")
+    monkeypatch.setenv("SMTP_HOST", "smtp.example")
+    assert channels.email_ready()
+    now = channels.datetime.datetime.now(channels.datetime.timezone.utc)
+    old = (now - channels.datetime.timedelta(hours=5)).isoformat()
+    msgs = [{"id": "a", "received_at": now.isoformat()}, {"id": "b", "received_at": now.isoformat()},
+            {"id": "old", "received_at": old}]
+    calls = []
+
+    def fake_mt(method, path):
+        calls.append((method, path))
+        if method == "GET" and path == "/messages":
+            return {"data": msgs, "last_id": None}
+        if method == "GET":
+            return {"raw_message_url": "https://files.example/" + path.rsplit("/", 1)[1]}
+        return {}
+    monkeypatch.setattr(channels, "_mt", fake_mt)
+    monkeypatch.setattr(channels, "_mt_raw", lambda url: url.encode())
+    monkeypatch.setattr(channels, "process_email", lambda raw: raw.endswith(b"/a"))  # only "a" gets a reply
+    channels._poll_mailtrap()
+    assert ("DELETE", "/messages/a") in calls and ("DELETE", "/messages/b") not in calls
+    assert not any("old" in p for _, p in calls)  # too old after a restart: untouched
+    calls.clear()
+    channels._poll_mailtrap()  # same ids again: nothing fetched twice
+    assert calls == [("GET", "/messages")]
+
+
+def test_mailtrap_raw_link_must_be_https_and_named_host(monkeypatch):
+    for bad in ("http://files.example/x", "https://10.0.0.5/x", "file:///etc/passwd", "https://localhost/x"):
+        with pytest.raises(ValueError):
+            channels._mt_raw(bad)
+
+
+def _capture_smtp(monkeypatch):
+    seen = {}
+
+    class FakeSMTP:
+        def __init__(self, host, port, timeout=0):
+            seen.update(cls=type(self).__name__, host=host, port=port, starttls=False)
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def starttls(self): seen["starttls"] = True
+        def login(self, u, p): seen["user"] = u
+        def send_message(self, m): seen["msg"] = m
+
+    class FakeSSL(FakeSMTP):
+        pass
+    monkeypatch.setattr(channels.smtplib, "SMTP", FakeSMTP)
+    monkeypatch.setattr(channels.smtplib, "SMTP_SSL", FakeSSL)
+    return seen
+
+
+def test_smtp_starttls_on_587_and_forced_tls_on_465(monkeypatch):
+    seen = _capture_smtp(monkeypatch)
+    for k, v in dict(SMTP_HOST="live.smtp.mailtrap.io", SMTP_USER="apismtp@mailtrap.io", SMTP_PASSWORD="p",
+                     SMTP_FROM="FAHAM <faham@larmkx.com>").items():
+        monkeypatch.setenv(k, v)
+    monkeypatch.setenv("SMTP_PORT", "587")
+    channels._smtp_send("user@example.org", "Re: x", "hello", "<orig@mail>")
+    assert seen["cls"] == "FakeSMTP" and seen["starttls"] and seen["user"] == "apismtp@mailtrap.io"
+    m = seen["msg"]
+    assert m["Date"] and m["Message-ID"].endswith("@larmkx.com>") and m["In-Reply-To"] == m["References"] == "<orig@mail>"
+    monkeypatch.setenv("SMTP_PORT", "465")
+    channels._smtp_send("user@example.org", "Re: x", "hello", "")
+    assert seen["cls"] == "FakeSSL" and seen["port"] == 465 and seen["starttls"] is False
+
+
+def test_email_webhook_reply_mode(env, monkeypatch):
+    c, _, _ = env
+    monkeypatch.setenv("EMAIL_WEBHOOK_SECRET", "s3")
+    got = []
+    monkeypatch.setattr(channels, "process_email", lambda raw: got.append(raw) or True)
+    h = {"X-FAHAM-Secret": "s3"}
+    assert c.post("/api/channels/email?reply=1", content=b"mail", headers=h).status_code == 503  # no SMTP yet
+    monkeypatch.setenv("SMTP_HOST", "smtp.example")
+    assert c.post("/api/channels/email?reply=1", content=b"mail", headers={"X-FAHAM-Secret": "bad"}).status_code == 403
+    r = c.post("/api/channels/email?reply=1", content=b"mail", headers=h)
+    assert r.status_code == 200 and r.json() == {"ok": True} and got == [b"mail"]
+
+
+def _mail_batch():
+    sc = NS(verdict="likely_scam", verify_yourself=["Taip alamat rasmi <b>sendiri</b>", "Telefon talian rasmi", "tiga", "empat"],
+            reasons=[NS(kind="risk", text="sebab <script>x</script> http://evil.example/x"), NS(kind="risk", text="Domain tidak rasmi"),
+                     NS(kind="ok", text="baik"), NS(kind="info", text="info")])
+    ok = NS(verdict="no_signals", verify_yourself=[], reasons=[NS(kind="info", text="x")])
+    mk = lambda s: NS(scam=s, route=NS(source_url="https://www.hasil.gov.my"))
+    return NS(files=[NS(name="secret-name.pdf", kind="eml", result=mk(sc)), NS(name="invoice.pdf", kind="pdf", result=mk(ok))])
+
+
+def test_reply_email_html_is_safe_and_structured(monkeypatch):
+    from app import mail_html
+    monkeypatch.setenv("FAHAM_PUBLIC_URL", "https://faham.example")
+    for lang in ("bm", "en", "zh", "ta"):
+        h, t = mail_html.html_body(_mail_batch(), lang), mail_html.text(_mail_batch(), lang)
+        assert "FAHAM" in h and "cid:faham-logo" in h and "NSRC 997" in h and "https://faham.example/terms" in h
+        assert "<script>" not in h and "evil.example" not in h and "secret-name" not in h and "invoice" not in h and "secret-name" not in t
+        assert "genuine" not in (h + t).lower() and "https://www.hasil.gov.my" in h
+    en = mail_html.text(_mail_batch(), "en")
+    assert "The email itself: Likely a scam" in en and "Attachment 1: No scam signs found" in en  # not "File 1 / File 2"
+    assert "File 1" not in en and "&lt;b&gt;sendiri&lt;/b&gt;" in mail_html.html_body(_mail_batch(), "en")  # tags in the text are escaped in HTML
+    assert "<html" in mail_html.html_body(NS(files=[]), "en") and "could not read" in mail_html.text(NS(files=[]), "en")
+
+
+def test_reply_email_is_multipart_with_inline_logo(monkeypatch):
+    from app import mail_html
+    seen = _capture_smtp(monkeypatch)
+    monkeypatch.setenv("SMTP_HOST", "smtp.example")
+    monkeypatch.setenv("SMTP_FROM", "faham@larmkx.com")
+    channels._smtp_send("u@example.org", "Re: x", mail_html.text(_mail_batch(), "en"), "", mail_html.html_body(_mail_batch(), "en"))
+    m = seen["msg"]
+    kinds = [p.get_content_type() for p in m.walk()]
+    assert m.get_content_type() == "multipart/alternative" and "text/plain" in kinds and "text/html" in kinds and "image/png" in kinds
+    assert "multipart/related" in kinds and any(p.get("Content-ID") == "<faham-logo>" for p in m.walk())

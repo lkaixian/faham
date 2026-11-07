@@ -176,3 +176,9 @@ def test_endpoint_txt_and_health():
     assert h["upload"]["max_mb"] == 25 and "eml" in h["upload"]["types"] and "channels" in h
     assert not {"zip", "mp3", "wav"} & set(h["upload"]["types"]) and "audio_available" not in h["upload"]
     assert "whatsapp" not in h["channels"] and "messenger" in h["channels"]
+
+
+def test_file_stream_sends_steps_then_result():
+    r = client.post("/api/analyze-file/stream?language=en", content=SCAM_TXT.encode(), headers={"X-Filename": "m.txt", "Content-Type": "text/plain"})
+    assert r.status_code == 200
+    assert r.text.count("event: step") > 1 and "event: result" in r.text
