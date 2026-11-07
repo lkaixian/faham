@@ -77,6 +77,36 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "要你“验证”户口或个人资料",
         "ta": "உங்கள் கணக்கு அல்லது விவரங்களை 'சரிபார்க்க' சொல்கிறது",
     },
+    "safe_account": {
+        "en": "Mentions a 'safe account' (real authorities never use one)",
+        "bm": "Menyebut 'akaun selamat' (pihak berkuasa sebenar tidak pernah guna)",
+        "zh": "提到“安全账户”（真正的执法机构从不使用）",
+        "ta": "'பாதுகாப்பான கணக்கு' என்கிறது (உண்மையான அதிகாரிகள் இதைப் பயன்படுத்துவதில்லை)",
+    },
+    "laundering": {
+        "en": "Accuses you of money laundering or a crime",
+        "bm": "Menuduh anda terlibat pengubahan wang haram atau jenayah",
+        "zh": "指控你涉嫌洗钱或犯罪",
+        "ta": "பணமோசடி அல்லது குற்றத்தில் ஈடுபட்டதாகக் குற்றம் சாட்டுகிறது",
+    },
+    "account_frozen": {
+        "en": "Threatens to freeze your account",
+        "bm": "Mengugut akan membekukan akaun anda",
+        "zh": "威胁要冻结你的户口",
+        "ta": "உங்கள் கணக்கை முடக்குவோம் என்று மிரட்டுகிறது",
+    },
+    "family_impersonation": {
+        "en": "Pretends to be a family member with a new number and asks for money",
+        "bm": "Berpura-pura ahli keluarga dengan nombor baru dan minta wang",
+        "zh": "假扮家人，说换了新号码并要钱",
+        "ta": "புதிய எண்ணுடன் குடும்ப உறுப்பினர் போல நடித்துப் பணம் கேட்கிறது",
+    },
+    "call_old_number": {
+        "en": "Call this person on their OLD number first, before sending any money",
+        "bm": "Telefon orang ini pada nombor LAMA mereka dahulu, sebelum menghantar sebarang wang",
+        "zh": "汇款之前，先打这个人的旧号码确认",
+        "ta": "பணம் அனுப்பும் முன், முதலில் அவரின் பழைய எண்ணை அழைக்கவும்",
+    },
     "shortener": {
         "en": "Shortened link ({d}) instead of an official site",
         "bm": "Pautan pendek ({d}) dan bukan laman web rasmi",

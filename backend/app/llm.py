@@ -35,7 +35,7 @@ RESIDUAL_PII = re.compile(r"[\w.+-]+@[\w-]+\.\w|\b\d{6}-?\d{2}-?\d{4}\b|(?:\d[ -
 def _ilmu(system: str, user: str) -> str | None:
     req = urllib.request.Request(
         config.ILMU_BASE_URL + "/chat/completions",
-        data=json.dumps({"model": config.MODELS["ilmu"], "max_tokens": 400, "messages": [
+        data=json.dumps({"model": config.MODELS["ilmu"], "max_tokens": 400, "temperature": 0, "messages": [
             {"role": "system", "content": system}, {"role": "user", "content": user}]}).encode(),
         headers={"Content-Type": "application/json", "Authorization": "Bearer " + config.ILMU_API_KEY})
     with urllib.request.urlopen(req, timeout=30) as r:
@@ -46,7 +46,7 @@ def _anthropic(system: str, user: str) -> str | None:
     import anthropic  # optional dependency
 
     msg = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY).messages.create(
-        model=config.MODELS["anthropic"], max_tokens=400, system=system,
+        model=config.MODELS["anthropic"], max_tokens=400, temperature=0, system=system,
         messages=[{"role": "user", "content": user}])
     return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip() or None
 

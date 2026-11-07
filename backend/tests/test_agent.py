@@ -110,7 +110,7 @@ def test_practice_agent_agrees_with_label():
     for i in items:
         assert i["agent"]["genuine"] == (not i["is_scam"]), i["text"]
         assert i["agent"]["verdict"] in (("likely_scam", "caution") if i["is_scam"] else ("no_signals", "caution")), i["text"]
-        assert set(i["agent"]) == {"genuine", "verdict", "score", "red_flags", "good_signs", "reasons", "verify_yourself"}
+        assert set(i["agent"]) == {"genuine", "verdict", "score", "red_flags", "good_signs", "reasons", "verify_yourself", "scam_type"}
 
 
 def test_verdict_levels_reasons_and_verify():

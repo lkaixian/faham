@@ -60,6 +60,8 @@ class ScamVerdict(BaseModel):
     good_signs: list[str] = []
     reasons: list[Reason] = []
     verify_yourself: list[str] = []
+    scam_type: Optional[Literal["macau", "family_impersonation", "parcel", "job", "love", "investment",
+                                "phishing_refund", "apk_install", "other"]] = None  # set when the verdict is not "no_signals"
 
 
 class Route(BaseModel):

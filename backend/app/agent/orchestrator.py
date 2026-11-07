@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from ..models import (Action, AnalyzeRequest, AnalyzeResponse, Fields, Lesson,
                       Route, ScamVerdict, TraceStep)
+from .. import cache
 from . import tools as T
 
 
@@ -40,6 +41,10 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
     tr.call("read", "ocr.read", f"{len(raw.split())} words read")
     redacted, counts = T.TOOLS["privacy.redact"].fn(raw)
     tr.call("read", "privacy.redact", "masked: " + ", ".join(f"{k} ×{v}" for k, v in counts.items()) + " — only redacted text is processed")
+    # Same redacted text + language (+ postcode, extra signals) gives the same answer: serve it from cache for up to an hour.
+    key = cache.fingerprint(redacted, req.language, req.postcode or "", tuple(extra_signals))
+    if (hit := cache.ANALYSES.get(key)) is not None:
+        return hit.model_copy(deep=True)
     issuer, conf = T.TOOLS["classify.issuer"].fn(redacted)
     tr.call("read", "classify.issuer", f"issuer = {issuer} (confidence {conf})")
     f = T.TOOLS["extract.fields"].fn(redacted)
@@ -68,11 +73,12 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
     tr.call("explain", "llm.explain", "plain-language explanation ready")
 
     # ---- TEACH
-    lesson = T.TOOLS["teach.lesson"].fn(issuer, genuine)
+    stype = verdict.get("scam_type")
+    lesson = T.TOOLS["teach.lesson"].fn(issuer, genuine, req.language, stype)
     tr.call("teach", "teach.lesson", f"lesson card + {len(lesson['terms'])} Kamus Surat terms: {', '.join(lesson['terms'])}")
 
     # ---- ROUTE
-    route = T.TOOLS["gov.retrieve"].fn(issuer, genuine)
+    route = T.TOOLS["gov.retrieve"].fn(issuer, genuine, req.language, stype)
     office = T.TOOLS["office.locate"].fn(issuer if genuine else "PDRM", req.postcode)
     if office:
         route["walkin_steps"] = [f"Nearest: {office['name']} · hours: {office['hours']} · booking: {office['booking']}"] + route["walkin_steps"]
@@ -85,12 +91,12 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
         tr.call("route", name, msg)
 
     # ---- ACT (human-in-the-loop)
-    act = T.TOOLS["act.draft"].fn(issuer, f, genuine)
+    act = T.TOOLS["act.draft"].fn(issuer, f, genuine, req.language)
     tr.call("act", "act.draft", "draft prepared" + (f" · reminder {act['reminder']}" if act["reminder"] else ""))
     tr.note("act", "warn", "⏸ waiting for user approval — nothing is sent or paid automatically")
 
     src = T.SOURCES.get(issuer, {})
-    return AnalyzeResponse(
+    resp = AnalyzeResponse(
         redacted_text=redacted,
         fields=Fields(issuer=issuer, letter_type=src.get("letter_type", "Unknown") if genuine else "Suspicious message",
                       amount=f["amount"], deadline=f["deadline"], reference=f["reference"]),
@@ -103,3 +109,5 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
         action=Action(draft=act["draft"], reminder=act["reminder"]),
         trace=tr.steps,
     )
+    cache.ANALYSES.set(key, resp.model_copy(deep=True))
+    return resp
