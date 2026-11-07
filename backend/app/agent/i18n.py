@@ -114,6 +114,12 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "此文档在打开时会从其他网站获取内容或运行命令（远程模板或 DDE 字段）",
         "ta": "இந்த ஆவணம் திறக்கும்போது வேறொரு இணையதளத்திலிருந்து ஒன்றை இழுக்கிறது அல்லது கட்டளையை இயக்குகிறது (தொலை வார்ப்புரு அல்லது DDE புலம்)",
     },
+    "file_archive_closed": {
+        "en": "This kind of archive (.rar, .7z) is not opened by Tulen, so we cannot tell what is inside. Ask the sender what it is, and scan it with your phone or computer security app before opening",
+        "bm": "Jenis arkib ini (.rar, .7z) tidak dibuka oleh Tulen, jadi kami tidak dapat tahu isinya. Tanya penghantar apa ia, dan imbas dengan aplikasi keselamatan telefon atau komputer anda sebelum membukanya",
+        "zh": "Tulen 不会打开这类压缩包（.rar、.7z），所以无法得知里面是什么。请向发送者确认内容，并在打开前用手机或电脑的安全软件扫描",
+        "ta": "இந்த வகைக் காப்பகத்தை (.rar, .7z) Tulen திறப்பதில்லை, அதனால் உள்ளே என்ன இருக்கிறது என்று சொல்ல முடியாது. அனுப்பியவரிடம் அது என்ன என்று கேளுங்கள்; திறப்பதற்கு முன் உங்கள் தொலைபேசி அல்லது கணினியின் பாதுகாப்புச் செயலியால் சோதியுங்கள்",
+    },
     "file_zip_tricks": {
         "en": "The archive is built in an unusual way (odd paths, overlapping or appended parts) that hides its contents from checkers",
         "bm": "Arkib dibina dengan cara luar biasa (laluan pelik, bahagian bertindih atau ditambah) untuk menyembunyikan isinya daripada pemeriksa",

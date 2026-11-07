@@ -113,7 +113,8 @@ def inspect(filename: str | None, data: bytes, via_chat: bool = False) -> tuple[
     elif data[:8] == office.OLE_MAGIC:
         label, extra = "Old Office file", office.scan_ole(data)
     elif data[:6] in (b"7z\xbc\xaf\x27\x1c",) or data[:5] == b"Rar!\x1a":
-        scan["unreadable"], label = True, "archive that Tulen cannot open"
+        extra.append("file_archive_closed")
+        label = "archive that Tulen cannot open"
     elif data[:2] == b"MZ":
         label = "Windows program"
     else:

@@ -189,7 +189,7 @@
   function fromApi(d, lang) {
     const f = d.fields, r = d.route;
     return applyScam({
-      sample: false, lang, redacted: String(d.redacted_text || ""), explain: { [lang]: String(d.explanation || "").split(/\n+/).filter(Boolean) },
+      sample: false, lang, redacted: String(d.redacted_text || "").replace(/․/g, "."), explain: { [lang]: String(d.explanation || "").split(/\n+/).filter(Boolean) },
       fields: { issuer: f.issuer, type: f.letter_type, amount: f.amount, deadline: f.deadline, reference: f.reference },
       kenapa: { q: d.lesson.question, a: d.lesson.answer }, terms: d.lesson.terms || [],
       entities: d.entities || null, others: d.others_checked || 0, scamType: (d.scam && d.scam.scam_type) || null,

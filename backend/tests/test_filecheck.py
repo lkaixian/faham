@@ -127,7 +127,8 @@ def test_unreadable_is_a_weak_signal():
     odd = patch_cd(zipped({"a.txt": "hi"}), 0, 10, "<H", 99)  # unknown compression method (Konfety-style)
     assert "file_unreadable" in codes("a.zip", odd)
     assert "file_unreadable" in codes("x.zip", b"PK\x03\x04" + b"junk" * 10)
-    assert "file_unreadable" in codes("x.7z", bytes.fromhex("377abcaf271c") + b"0" * 20)
+    assert codes("x.7z", bytes.fromhex("377abcaf271c") + b"0" * 20) == ["file_archive_closed"]  # not broken, just not opened
+    assert codes("SQLYOG_12.5.1.rar", bytes.fromhex("526172211a0700") + b"0" * 50) == ["file_archive_closed"]
     assert verdict("x.zip", b"PK\x03\x04" + b"junk" * 10) == "caution"
 
 
