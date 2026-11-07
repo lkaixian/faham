@@ -335,3 +335,29 @@ def test_the_same_words_with_new_tool_calls_are_not_a_repeat(monkeypatch):
     monkeypatch.setattr(loop.llm.config, "llm_chain", lambda: ["model"])
     d = loop.run("Pinjaman peribadi RHB, balas YA.", "en", None, Trace())
     assert len(asked) == 3 and d.rounds == 3 and d.assessment == "caution"
+
+
+def test_a_model_that_plans_the_official_check_but_keeps_repeating_round_one_gets_it_run_for_it(monkeypatch):
+    """Seen with an RHB loan SMS: the plan said 'fetch the official RHB page' but rounds 2 and 3 repeated round 1."""
+    from app.agent.orchestrator import Trace
+    stub_net(monkeypatch)
+    asked = []
+    round1 = {"thought": "Unsolicited loan SMS from RHB. Look up RHB, then fetch its page to see if it uses SMS offers.",
+              "plan": ["lookup", "fetch official page", "conclude"],
+              "actions": [{"tool": "classify_issuer"}, {"tool": "run_rules"}, {"tool": "lookup_registry", "args": {"issuer": "RHB"}}], "finish": None}
+    finish = {"thought": "The official site has a fraud alerts page and does not mention SMS loan offers.", "plan": [], "actions": [],
+              "finish": {"assessment": "likely_scam", "summary": "RHB does not approve loans by SMS reply.", "signals": [], "doubts": [], "drafts": []}}
+    seq = iter([dict(round1), dict(round1), dict(finish)])  # round 2 repeats round 1 word for word
+    monkeypatch.setattr(loop, "_ask", lambda *a, **k: asked.append(1) or next(seq))
+    monkeypatch.setattr(loop.llm.config, "llm_chain", lambda: ["model"])
+    tr = Trace()
+    d = loop.run("RHB Bank: Anda layak pinjaman peribadi RM30,000. Balas YA untuk teruskan.", "en", None, tr)
+    assert "fetch_official_page" in d.used and d.net == 1 and d.fetched
+    assert any(s.tool == "fetch_official_page" and "run by Tulen" in s.message for s in tr.steps)
+    assert d.assessment == "likely_scam" and len(asked) == 3  # it then concluded from the evidence it was given
+    # when the model takes the step itself, Tulen does not duplicate it
+    asked.clear()
+    step2 = {"thought": "Now the official page.", "plan": [], "actions": [{"tool": "fetch_official_page", "args": {"url": "https://rhbgroup.com", "look_for": ["loan"]}}], "finish": None}
+    seq = iter([dict(round1), step2, dict(finish)])
+    d2 = loop.run("RHB Bank: Anda layak pinjaman peribadi RM30,000. Balas YA untuk teruskan.", "en", None, Trace())
+    assert d2.net == 1 and d2.used.count("fetch_official_page") == 1
