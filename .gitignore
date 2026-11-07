@@ -15,3 +15,5 @@ backend/var/
 *.sqlite3
 .env.*
 !.env.example
+
+demo-files/

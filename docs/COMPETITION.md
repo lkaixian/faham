@@ -77,32 +77,9 @@ Check with the team before you write "all code is original": say what was genera
 
 **Good demo moments:** a tax-refund scam asking for AnyDesk and gift cards (watch it look up LHDN, inspect the link, check the site, find evidence and prepare a warning for relatives); a genuine notice (it checks the official domain and concludes calmly); a message containing "ignore all previous instructions" (flagged); and the real DOSM survey email (it checks that `forms.gle` exists and stays at caution).
 
-## Video storyboard (aim for 4:30, never over 5:00)
+## Video storyboard and recording checklist
 
-Say the English words with Malay subtitles, or speak Malay. Keep the watermark visible all the way through.
-
-| Time | Show | Say (idea) |
-|---|---|---|
-| 0:00 | A scary fictional letter | Scam letters copy real agencies. People who are older or less confident cannot tell. |
-| 0:20 | Paste a SAMPEL scam message and press run. Stay on the live progress timeline: the goal, the plan, then each tool call appearing as it happens (look up the agency, inspect the link, check the domain) with what it found | Watch the agent work, not a spinner. It states a goal, makes a plan, picks a tool, reads the result and revises the plan. Personal details are masked before any step. |
-| 1:00 | The plan switching after a surprising finding, then the result beside the message with evidence highlighted | It changed its plan because of what it found. Then it says why: the marked words and links. The rules re-run last as a floor, so it can raise concern but never lower it. It never says "genuine". |
-| 1:40 | A letter that looks official | It shows no scam signs, but tells you how to check on your own. |
-| 2:10 | Upload a SAMPEL PDF or Word file | PDF, Word, email and photos all work. |
-| 2:40 | Forward a made-up email to the Tulen address; show the reply arriving | This is the autonomous part: it answers on its own, in the sender's language. |
-| 3:25 | Easy mode, language switch, voice | Large text and three steps for older users, in four languages, read aloud. |
-| 4:00 | Privacy: masking first, nothing stored, approval before any action | Responsible AI: the person stays in control. |
-| 4:25 | Declaration slide: models and tools used | What we used and why. |
-| 4:45 | Close | Tulen atau tipu? Semak dulu. |
-
-## Recording checklist (rule 5.4: no real personal data)
-
-- Use the built-in SAMPEL letters and the Practice mode. Do **not** open `TEST1.pdf`: it contains a real email address.
-- For the email demo, use a throwaway mailbox you can show, with a made-up name. Do not show your own inbox.
-- Hide `.env`, API keys, Mailtrap and Cloudflare dashboards, and bookmarks.
-- Show the DEMO watermark and the address bar.
-- Record at 1080p, narrate clearly, and trim the video under 5:00.
-- Upload to YouTube (unlisted is fine) or Google Drive/OneDrive with "Anyone with the link", then open it in a private window to prove it plays.
-- Run the demo on the same public address you will pitch on, and rebuild first (`docker compose up -d --build`).
+Moved to [DEMO_VIDEO_PLAN.md](DEMO_VIDEO_PLAN.md): the storyboard (about 4:35), narration with Malay subtitles, the demo files (`scripts/make_demo_files.py`), the recording checklist for rules 4.2 and 5.4, roles, the 7 to 9 Nov timeline, and fallbacks. The pitch outline below is for 19 November.
 
 ## Pitch outline (10 minutes, then 5 minutes of questions)
 
