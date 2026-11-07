@@ -27,6 +27,7 @@
         <div class="pstep"><h3 class="h3">${esc(t("pd_s4_h"))}</h3>
           <ul class="ob-list">${t("pd_ready").map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
         <p class="muted">${esc(t("pd_off"))}</p>
+        <p class="muted">${esc(t("foot_src"))}</p>
         <button class="btn btn-quiet btn-big" type="button" id="pdClose">${esc(t("pd_close"))}</button>
       </section></div>`;
   }

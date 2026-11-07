@@ -110,7 +110,7 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
     route = T.TOOLS["gov.retrieve"].fn(issuer, genuine, req.language, stype)
     office = T.TOOLS["office.locate"].fn(issuer if genuine else "PDRM", req.postcode)
     if office:
-        route["walkin_steps"] = [f"Nearest: {office['name']} · hours: {office['hours']} · booking: {office['booking']}"] + route["walkin_steps"]
+        route["walkin_steps"] = [f"Nearest: {office['name']} · hours: {office['hours']} · booking: {office['booking']} · sample data, verify on the official site"] + route["walkin_steps"]
     online_first = genuine and bool(route["online_steps"])
     tr.think("route", "Decision: genuine and online steps exist -> online first, walk-in as backup." if online_first
              else "Decision: " + ("no online steps" if genuine else "likely scam; never use links in the message") + " -> walk-in / official channel first.")
