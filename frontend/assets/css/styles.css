@@ -507,7 +507,7 @@ html[data-senior] #busyTxt { font-size: 1.3rem; }
 }
 .fp { overflow-wrap: anywhere; font: .85rem/1.5 ui-monospace, Consolas, monospace; }
 
-/* ---------- Phone layer (max-width 640px): one big Menu button, plum header, gold highlights ----------
+/* ---------- Phone and small-tablet layer (max-width 960px): one big Menu button, plum header, gold highlights ----------
    Reasons: the old header was 320px tall on a phone and its page links scrolled sideways out of sight.
    Now: a 64px sticky header, ONE "Menu" button (icon and word) that opens a full-screen sheet of big tiles,
    a red "Already paid" strip that is always one tap away, and a hero card so the first screen says what to do.
@@ -515,7 +515,7 @@ html[data-senior] #busyTxt { font-size: 1.3rem; }
 .menu-btn, .paid-strip-wrap, .sheet { display: none; }
 .top nav a svg { display: none; }
 .hero { display: contents; }
-@media (max-width: 640px) {
+@media (max-width: 960px) {
   html { font-size: 19px; }
   body { background: linear-gradient(180deg, #e7def6 0, var(--bg) 320px) no-repeat, var(--bg); }
   [data-theme="dark"] body { background: linear-gradient(180deg, #241a47 0, var(--bg) 320px) no-repeat, var(--bg); }
@@ -590,7 +590,7 @@ html[data-senior] #busyTxt { font-size: 1.3rem; }
   #form .btn-primary { width: 100%; min-height: 62px; font-size: 1.2rem; margin-right: 0; }
   #form .btn-secondary, #form .btn-quiet { min-height: 54px; }
 }
-@media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
+@media (max-width: 960px) and (prefers-reduced-motion: no-preference) {
   .menu-btn, .sheet nav a, .btn-primary { transition: transform .12s ease, box-shadow .12s ease; }
   .sheet:not([hidden]) { animation: sheetIn .22s ease-out; }
   @keyframes sheetIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }

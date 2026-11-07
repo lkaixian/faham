@@ -6,7 +6,7 @@
   const btn = $("#menuBtn"), sheet = $("#menuSheet"), closeBtn = $("#menuClose"), strip = $("#paidStrip");
   const header = $("header.top"), bar = $(".top .bar"), nav = $(".top nav"), ctrls = $(".top .ctrls"), mode = $("#mode");
   if (!btn || !sheet || !header || !bar || !nav || !ctrls) return;
-  const mq = matchMedia("(max-width: 640px)");
+  const mq = matchMedia("(max-width: 960px)");
   const behind = () => [header, $("#main"), $(".foot"), strip && strip.parentElement].filter(Boolean);
 
   function place() {  // phone: everything in the sheet. Desktop: back where it was.
