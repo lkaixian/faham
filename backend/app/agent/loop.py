@@ -86,6 +86,16 @@ class Dossier:
 
 
 # ------------------------------------------------------------------ small helpers
+def _trim(text: str, n: int) -> str:
+    """Cut at the last sentence end, else the last word, so a line never stops mid-phrase."""
+    text = " ".join(text.split())
+    if len(text) <= n:
+        return text
+    cut = text[:n]
+    end = max(cut.rfind(". "), cut.rfind("; "))
+    return cut[:end + 1] if end > n // 2 else cut.rsplit(" ", 1)[0].rstrip(",;:") + "…"
+
+
 def _json(text: str | None) -> dict | None:
     m = re.search(r"\{.*\}", text or "", re.S)
     try:
@@ -342,8 +352,9 @@ def _prompt(d: Dossier, history: list[dict], last: bool) -> str:
     rounds = "\n".join(f"[round {h['round']}] you thought: {h['thought']}\n" + "\n".join("  observed: " + o for o in h["obs"]) for h in history) or "(none yet)"
     fmt = ('{"thought": "what you think and why", "plan": ["step", "step"], "actions": [{"tool": "name", "args": {}}], "finish": null}\n'
            'When you can conclude, use "actions": [] and "finish": {"assessment": "likely_scam | caution | no_signals", "summary": "one or two sentences of reasoning", '
-           '"signals": [{"category": "...", "quote": "exact words from the message"}], "doubts": ["what could make you wrong"], "drafts": ["family_warning"]}')
-    return (f"Goal context: reply language {d.language}; postcode {'given' if d.postcode else 'not given'}.\nTools (up to {MAX_PER_ROUND} per round):\n{tools}\n"
+           '"signals": [{"category": "...", "quote": "exact words from the message"}], "doubts": ["what could make you wrong, one short sentence each"], "drafts": ["family_warning"]}')
+    return (f"Today's date is {date.today():%d %B %Y}. Judge every date in the message against it (an event a few days ago or ahead is ordinary); never guess the date from memory.\n"
+            f"Goal context: reply language {d.language}; postcode {'given' if d.postcode else 'not given'}.\nTools (up to {MAX_PER_ROUND} per round):\n{tools}\n"
             f"Signal categories you may report:\n{cats}\nFormat:\n{fmt}\n"
             + ("This is your LAST round: you must finish now.\n" if last else "") +
             f"\nWhat has happened so far:\n{rounds}\n\n<letter>\n{_numbers(d.letter[:MAX_LETTER])}\n</letter>")
@@ -382,7 +393,7 @@ def _finish(d: Dossier, fin: dict, tr) -> None:
     a = fin.get("assessment")
     d.assessment = a if a in ("likely_scam", "caution", "no_signals") else None
     d.summary = str(fin.get("summary", ""))[:300] or None
-    d.doubts = [str(x)[:160] for x in (fin.get("doubts") if isinstance(fin.get("doubts"), list) else [])[:3]]
+    d.doubts = [_trim(str(x), 200) for x in (fin.get("doubts") if isinstance(fin.get("doubts"), list) else [])[:3]]
     for s in (fin.get("signals") if isinstance(fin.get("signals"), list) else [])[:6]:
         cat = s.get("category") if isinstance(s, dict) else None
         quote = _span(d.letter, s.get("quote")) if isinstance(s, dict) else None
