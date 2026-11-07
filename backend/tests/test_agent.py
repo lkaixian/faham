@@ -238,3 +238,12 @@ def test_zh_ta_scam_words():
     assert "secret" in codes("யாரிடமும் சொல்ல வேண்டாம்")
     assert "safe_account" in codes("பாதுகாப்பு கணக்கு")
     assert not codes("您好，您的税务申报表已收到，谢谢。")
+
+
+def test_unsolicited_loan_offer_that_asks_for_a_reply_is_a_mild_flag_not_a_verdict():
+    sms = "RHB Bank: Anda layak mendapat pinjaman peribadi RM30,000. Balas YA untuk teruskan."
+    r = T.scam_check(sms, "UNKNOWN", "en")
+    assert any(x["code"] == "loan_offer" for x in r["reasons"] if x["kind"] == "risk")
+    assert r["verdict"] == "caution"  # one weak sign on its own never condemns a message
+    assert any(x["code"] == "loan_offer" for x in T.scam_check("Loan offer RM20,000 approved. Reply YES to claim", "UNKNOWN", "en")["reasons"])
+    assert not any(x["code"] == "loan_offer" for x in T.scam_check("Penyata pinjaman PTPTN anda untuk bulan ini. Sila bayar sebelum 30 November.", "PTPTN", "en")["reasons"])

@@ -295,7 +295,7 @@ def test_tool_steps_carry_facts_for_the_plain_language_timeline(monkeypatch):
     assert f["fetch_official_page"]["host"] == "www.hasil.gov.my" and f["fetch_official_page"]["found"] == ["MyTax"] and f["fetch_official_page"]["missing"] == ["AnyDesk"]
 
 
-def test_an_agent_that_repeats_itself_is_stopped_after_two_rounds(monkeypatch):
+def test_an_agent_that_repeats_itself_is_told_once_then_stopped(monkeypatch):
     """Rounds that give the same thought and ask for the same tool again only burn tokens (seen with a RAR upload)."""
     from app.agent.orchestrator import Trace
     asked = []
@@ -310,11 +310,28 @@ def test_an_agent_that_repeats_itself_is_stopped_after_two_rounds(monkeypatch):
     monkeypatch.setattr(loop.llm.config, "llm_chain", lambda: ["model"])
     tr = Trace()
     d = loop.run("Sila bayar RM 100 segera kepada akaun peribadi.", "en", None, tr)
-    assert len(asked) == 2 and d.rounds == 2  # round 1 runs the tool, round 2 repeats it and is stopped
-    assert any("repeated" in s.message or "already made" in s.message for s in tr.steps)
-    # the same thought with a different tool call is a new idea, but the same call with new words is still a repeat
+    assert len(asked) == 3 and d.rounds == 3  # round 1 runs the tool, round 2 repeats it and is told to conclude, round 3 still will not: stopped
+    assert any("told to conclude" in s.message for s in tr.steps) and any("without a conclusion" in s.message for s in tr.steps)
+    # a model that takes the hint and concludes keeps its own conclusion
     asked.clear()
-    seq = iter([dict(same, thought="First idea."), dict(same, thought="A different sentence entirely.")])
+    seq = iter([dict(same, thought="First idea."), dict(same, thought="Again."),
+                {"thought": "Concluding.", "plan": [], "actions": [], "finish": {"assessment": "caution", "summary": "s", "signals": [], "doubts": [], "drafts": []}}])
     monkeypatch.setattr(loop, "_ask", lambda *a, **k: asked.append(1) or next(seq))
-    loop.run("Sila bayar RM 100 segera.", "en", None, Trace())
-    assert len(asked) == 2
+    d2 = loop.run("Sila bayar RM 100 segera.", "en", None, Trace())
+    assert len(asked) == 3 and d2.assessment == "caution"
+
+
+def test_the_same_words_with_new_tool_calls_are_not_a_repeat(monkeypatch):
+    """A model may repeat its thought while it works through its plan (lookup, then the official page). Only repeated CALLS stop it."""
+    from app.agent.orchestrator import Trace
+    asked = []
+    thought = "I will check who the sender claims to be, then compare with the official site."
+    steps = iter([
+        {"thought": thought, "plan": ["a"], "actions": [{"tool": "run_rules", "args": {}}], "finish": None},
+        {"thought": thought, "plan": ["a"], "actions": [{"tool": "inspect_links", "args": {}}], "finish": None},  # same words, a NEW call
+        {"thought": "Done.", "plan": ["a"], "actions": [], "finish": {"assessment": "caution", "summary": "s", "signals": [], "doubts": [], "drafts": []}},
+    ])
+    monkeypatch.setattr(loop, "_ask", lambda *a, **k: asked.append(1) or next(steps))
+    monkeypatch.setattr(loop.llm.config, "llm_chain", lambda: ["model"])
+    d = loop.run("Pinjaman peribadi RHB, balas YA.", "en", None, Trace())
+    assert len(asked) == 3 and d.rounds == 3 and d.assessment == "caution"

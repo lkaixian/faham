@@ -223,6 +223,7 @@ FORMS = ("forms.gle", "docs.google.com", "forms.office.com", "typeform.com")
 SHORTENERS = {"bit.ly", "tinyurl.com", "t.co", "goo.gl", "s.id", "cutt.ly", "shorturl.at", "rb.gy"}
 
 RED_FLAGS: list[tuple[str, str]] = [
+    (r"(?:pinjaman|loan|pembiayaan|financing)[^\n]{0,100}(?:balas|reply|respond)\W{0,3}(?:ya|yes|y)\b|(?:balas|reply)\W{0,3}(?:ya|yes)\b[^\n]{0,60}(?:pinjaman|loan)|贷款[^。\n]{0,40}回复", "loan_offer"),
     (r"akaun\s+(?:peribadi|maybank|cimb|public bank|rhb|bank islam)|personal account|转账到|汇款到|转到.{0,8}(?:账户|户口|帐户)|(?:账户|户口)\s*[:：]?\s*\d|(?:bayar|transfer|pindah)\w*[^.\n]{0,40}akaun[^.\n]{0,40}atas nama", "transfer_account"),
     (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only|24\s*小时|立即|马上|立刻|今天之内|24\s*மணி", "urgency"),
     (r"waran\s+tangkap|arrest|ditangkap|逮捕|通缉|拘留|கைது", "arrest"),
@@ -308,7 +309,7 @@ def _social_handles(text: str) -> list[str]:
 
 # Fixed thresholds: score 0-100 is "how safe it looks". Below SCAM_BELOW is a likely scam, from CLEAR_FROM up is "no signals".
 SCAM_BELOW, CLEAR_FROM = 60, 80
-FLAG_WEIGHT = {"family_impersonation": 55, "safe_account": 30, "laundering": 25}  # default weight is 22
+FLAG_WEIGHT = {"family_impersonation": 55, "safe_account": 30, "laundering": 25, "loan_offer": 12}  # default weight is 22
 
 
 def verdict_from_score(score: int) -> str:

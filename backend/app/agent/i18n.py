@@ -240,6 +240,12 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "说你中了从没参加过的奖（典型骗局开场）",
         "ta": "நீங்கள் பங்கேற்காத பரிசை வென்றதாகக் கூறுகிறது (பொதுவான மோசடி தொடக்கம்)",
     },
+    "loan_offer": {
+        "en": "An unexpected loan offer that asks you to reply, a common scam opener",
+        "bm": "Tawaran pinjaman yang tidak dijangka dan meminta anda membalas, pembuka penipuan yang biasa",
+        "zh": "突如其来的贷款优惠并要求你回复，是常见的诈骗开场",
+        "ta": "எதிர்பாராத கடன் சலுகை, பதிலளிக்கச் சொல்கிறது; இது பொதுவான மோசடித் தொடக்கம்",
+    },
     "safe_account": {
         "en": "Mentions a 'safe account' (real authorities never use one)",
         "bm": "Menyebut 'akaun selamat' (pihak berkuasa sebenar tidak pernah guna)",
