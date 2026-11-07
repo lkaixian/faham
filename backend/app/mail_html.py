@@ -124,7 +124,7 @@ def html_body(batch, language: str, with_logo: bool = True) -> str:
         main = "".join(parts)
     terms = _terms_url()
     terms_a = f' &nbsp;·&nbsp; <a href="{e(terms, quote=True)}" style="color:{LAV}">{e(reply.t(L, "n3"))}</a>' if terms else ""
-    logo = f'<img src="cid:{CID}" width="31" height="40" alt="" style="display:block;border:0">' if with_logo else ""
+    logo = f'<img src="cid:{CID}" width="120" height="36" alt="Tulen" style="display:block;border:0">' if with_logo else ""
     return f"""<!doctype html>
 <html lang="{ {'bm': 'ms', 'en': 'en', 'zh': 'zh', 'ta': 'ta'}[L] }"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light"><title>{e(S[L]["title"])}</title></head>
@@ -134,9 +134,7 @@ def html_body(batch, language: str, with_logo: bool = True) -> str:
  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;border-collapse:collapse;background:#ffffff;border-radius:12px;overflow:hidden">
   <tr><td style="background:{INK};padding:20px 28px;border-bottom:4px solid {LAV}">
    <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-    <td style="padding-right:12px">{logo}</td>
-    <td><div style="font-size:22px;font-weight:800;letter-spacing:.08em;color:#ffffff">Tulen</div>
-     <div style="font-size:12px;color:#cfc8ea;margin-top:2px">Tulen atau tipu? Semak dulu.</div></td>
+    <td>{logo}<div style="font-size:12px;color:#cfc8ea;margin-top:6px">Tulen atau tipu? Semak dulu.</div></td>
    </tr></table>
   </td></tr>
   <tr><td style="padding:28px 28px 8px">{verdict_box}{main}</td></tr>

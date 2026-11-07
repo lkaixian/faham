@@ -329,7 +329,7 @@ img.orig { max-height: 70vh; object-fit: contain; }
 #intro.static, #intro.static.hide { transition: none; }
 #neural { position: absolute; inset: 0; width: 100%; height: 100%; }
 .intro-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 24px; max-width: 720px; }
-.intro-inner .logo { width: 76px; height: auto; }
+.intro-inner .logo { width: min(280px, 72vw); height: auto; }
 .intro-kicker { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
 .intro-title { margin: 0; font-size: clamp(2rem, 7vw, 3.6rem); line-height: 1.1; min-height: 1.2em; }
 .intro-title .caret { display: inline-block; width: 4px; height: .85em; margin-left: 6px; background: var(--accent); vertical-align: -0.08em; animation: introBlink 1s steps(1) infinite; }
@@ -487,10 +487,10 @@ html[data-senior] #busyTxt { font-size: 1.3rem; }
   .uilang .chip { flex: 1; min-width: 0; padding: 0 6px; min-height: 44px; }
   .mode { order: 3; padding-bottom: 2px; font-size: .8rem; }
   .brand { min-height: 44px; font-size: 1.15rem; }
-  .logo { height: 32px; }
+  .logo { height: 30px; }
   .ctrls .btn { padding: 0 10px; }
   #themeBtn span, #voiceBtn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .top nav { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; gap: 2px; padding-bottom: 6px; scrollbar-width: none; }
+  .top nav { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: 14px; gap: 2px; padding-bottom: 6px; scrollbar-width: none; }
   .top nav::-webkit-scrollbar { display: none; }
   .top nav a { flex: none; scroll-snap-align: start; padding: 0 12px; white-space: nowrap; }
   h1 { font-size: 1.45rem; margin-top: .8rem; }

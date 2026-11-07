@@ -9,7 +9,7 @@ const SHELL = [
   "./", "index.html", "embed.html", "manifest.webmanifest",
   "assets/css/styles.css",
   "assets/js/config.js", "assets/js/data.js", "assets/js/i18n.js", "assets/js/app.js", "assets/js/safety.js", "assets/js/intro.js",
-  "assets/img/logo-mark-light.png", "assets/img/logo-mark-dark.png", "assets/img/icon-192.png", "assets/img/icon-512.png",
+  "assets/img/tulen-wordmark-light.png", "assets/img/tulen-wordmark-dark.png", "assets/img/icon-192.png", "assets/img/icon-512.png",
 ];
 
 self.addEventListener("install", (e) => {
