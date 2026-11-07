@@ -456,3 +456,30 @@ html[data-senior] .prog-steps { display: none; }
 html[data-senior] .prog-pct { font-size: 1.1rem; }
 html[data-senior] #busyTxt { font-size: 1.3rem; }
 @media (prefers-reduced-motion: reduce) { .bar-track i { transition: none; } .prog-steps li { animation: none; } }
+
+/* phone portrait: compact header (brand + tools on one row, language row, one-line swipe nav), tighter cards */
+@media (max-width: 520px) {
+  .wrap { padding: 0 14px; }
+  .bar { gap: 6px; padding-block: 6px 0; min-height: 0; }
+  .ctrls { display: contents; }
+  .tools { order: 1; flex-wrap: nowrap; gap: 4px; }
+  .uilang { order: 2; flex-basis: 100%; }
+  .uilang .chip { flex: 1; min-width: 0; padding: 0 6px; min-height: 44px; }
+  .mode { order: 3; padding-bottom: 2px; font-size: .8rem; }
+  .brand { min-height: 44px; font-size: 1.15rem; }
+  .logo { height: 32px; }
+  .ctrls .btn { padding: 0 10px; }
+  #themeBtn span, #voiceBtn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .top nav { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; gap: 2px; padding-bottom: 6px; scrollbar-width: none; }
+  .top nav::-webkit-scrollbar { display: none; }
+  .top nav a { flex: none; scroll-snap-align: start; padding: 0 12px; white-space: nowrap; }
+  h1 { font-size: 1.45rem; margin-top: .8rem; }
+  h2 { font-size: 1.2rem; margin-top: 1.4rem; }
+  .card { padding: 14px; margin: 12px 0; }
+  .hint { flex-direction: column; gap: 6px; }
+  .verdict { padding: 14px; gap: 10px; }
+  .verdict svg { width: 36px; height: 36px; }
+  details.grp > summary, .gbody { padding-inline: 14px; }
+  .btn { margin-right: 0; }
+  .snav { position: sticky; bottom: 0; background: var(--bg); padding: 8px 0; margin: 12px 0 0; z-index: 4; }
+}
