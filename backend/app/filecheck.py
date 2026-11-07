@@ -29,6 +29,15 @@ except ImportError:  # pragma: no cover
 MAX_ENTRIES, MAX_NAMES, MAX_MANIFEST = 5000, 20, 5 * 1024 * 1024
 BUDGET_BYTES = 16 * 1024 * 1024  # all decompression for one request, however many members
 MEMBER_CAP, SNIFF, HEAD_PROBES, DEEP_MEMBERS = 4 * 1024 * 1024, 8, 50, 10
+# What each signal weighs (tools.scam_check turns these into points). Weak ones are real but common in innocent files (an APK exists, a
+# zip is encrypted, a lure-like name): weight 12 and they can never alone give "likely scam". Strong ones are deliberate evasion, a
+# disguised or downloading script, a takeover-style app: weight 30. Info lines are notes for the reader and never score. Every code
+# needs four-language text in i18n.TEXT; tests/test_filecheck_deep.py checks that each code the code base emits is listed here.
+FILE_WEAK = {"file_script", "file_apk", "file_encrypted", "file_unreadable", "file_disk_image", "file_name_trick", "file_lure_name",
+             "file_apk_perms", "file_macro", "file_archive_closed", "file_exe_packed"}
+FILE_STRONG = {"file_script_disguised", "file_zip_tricks", "file_apk_takeover", "file_apk_brand", "file_macro_hidden", "file_office_remote",
+               "file_script_dropper"}
+FILE_INFO = {"file_checked", "file_out_of_scope"}
 KNOWN_APPS = json.loads((DATA_DIR / "known_apps.json").read_text(encoding="utf-8"))["apps"]
 EXEC = {"exe", "scr", "msi", "bat", "cmd", "com", "pif", "ps1", "vbs", "vbe", "wsf", "wsh", "hta", "js", "jse", "jar", "dll"}
 DISK = {"iso", "img", "lnk"}

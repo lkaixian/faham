@@ -13,7 +13,8 @@ from datetime import datetime, timezone
 from typing import Callable
 from urllib.parse import urlparse
 
-from .. import llm
+from .. import llm, sandbox
+from ..filecheck import FILE_INFO, FILE_STRONG, FILE_WEAK
 from ..config import DATA_DIR
 from .i18n import TEXT, render
 from .registry_i18n import localize
@@ -75,18 +76,26 @@ def tool(name: str, description: str):
 
 
 # ---------------------------------------------------------------- read
+def tesseract(image_bytes: bytes) -> str:
+    """OCR in THIS process. Only the sandbox child calls this (sandbox.ocr_isolated): an image is hostile input."""
+    try:
+        import io
+
+        import pytesseract
+        from PIL import Image
+
+        Image.MAX_IMAGE_PIXELS = 40_000_000  # PIL refuses (at twice this) an image built to blow up memory
+        return pytesseract.image_to_string(Image.open(io.BytesIO(image_bytes)), lang="msa+eng")
+    except Exception:  # OCR not installed or the image is bad: the caller falls back to the given text
+        return ""
+
+
 @tool("ocr.read", "Image or PDF to text. Falls back to the given text.")
 def ocr_read(text: str | None = None, image_bytes: bytes | None = None) -> str:
     if image_bytes:
-        try:
-            import io
-
-            import pytesseract
-            from PIL import Image
-
-            return pytesseract.image_to_string(Image.open(io.BytesIO(image_bytes)), lang="msa+eng")
-        except Exception:  # OCR not installed — caller must supply text
-            pass
+        got = sandbox.ocr_isolated(image_bytes)  # in a limited child process, never in the API process
+        if got:
+            return got
     return text or ""
 
 
@@ -331,12 +340,7 @@ AI_SIGNALS = ("ai_payment_demand", "ai_threat", "ai_credential", "ai_remote_acce
 #    inconsistency). They raise caution but can never alone say "scam": a real survey sent through a Google Form looks "unusual" to a model.
 AI_HARD = {"ai_payment_demand", "ai_credential", "ai_remote_access", "ai_new_domain"}
 AI_SOFT = set(AI_SIGNALS) - AI_HARD
-# File signals (filecheck.py). Weak ones are real but common in innocent files (an APK exists, a zip is encrypted, a lure-like
-# name), so like the soft AI signals they weigh 12 and can never alone give "likely scam". Strong ones are deliberate evasion
-# or a disguised script and weigh 30.
-FILE_WEAK = {"file_script", "file_apk", "file_encrypted", "file_unreadable", "file_disk_image", "file_name_trick", "file_lure_name", "file_apk_perms", "file_macro", "file_archive_closed", "file_exe_packed"}
-FILE_STRONG = {"file_script_disguised", "file_zip_tricks", "file_apk_takeover", "file_apk_brand", "file_macro_hidden", "file_office_remote", "file_script_dropper"}
-FILE_INFO = {"file_checked", "file_out_of_scope"}  # notes for the reader, not signs: they are shown as info and never score
+# File signals come from filecheck.py, which owns the lists (weak: weight 12 and a floor, like the soft AI signals; strong: 30; info: shown, never scored).
 SOFT, HARD = AI_SOFT | FILE_WEAK, AI_HARD | FILE_STRONG
 
 

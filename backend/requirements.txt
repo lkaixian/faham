@@ -1,10 +1,10 @@
-fastapi>=0.110
-uvicorn[standard]>=0.29
-pydantic>=2.6
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.8
 httpx>=0.27
-pypdf>=4
+pypdf>=6  # parses hostile PDFs (in the sandbox child): keep current
 rarfile>=4.2  # lists RAR archives in pure Python; no outside tool is ever run
-pillow>=10
+pillow>=11.3  # decodes hostile images for OCR (in the sandbox child): keep current
 # Optional — enable real OCR on images/PDFs
 # pytesseract>=0.3.10
 # Optional — enable an LLM provider for richer explanations

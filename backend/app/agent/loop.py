@@ -17,6 +17,8 @@ Guard rails, because the message is untrusted and models make things up:
 """
 from __future__ import annotations
 
+import http.client
+import ipaddress
 import json
 import logging
 import re
@@ -169,6 +171,38 @@ class _Text(HTMLParser):
             self.parts.append(data)
 
 
+def _public_ips(host: str, port: int) -> list[str]:
+    """Resolve once and refuse the host unless EVERY address is public. Refuses anything that is not a public internet address (loopback, private ranges, link-local and cloud
+    metadata addresses, multicast). A trusted-looking name (any .edu.my host, say) can still be pointed at an internal address."""
+    ips = [i[4][0] for i in socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)]
+    try:
+        addrs = [ipaddress.ip_address(ip.split("%")[0]) for ip in ips]
+        ok = bool(addrs) and all(a.is_global and not a.is_multicast for a in addrs)  # is_global alone lets multicast through
+    except ValueError:
+        ok = False
+    if not ok:
+        raise ToolError("that address is not a public website")
+    return ips
+
+
+class _SafeHTTPS(http.client.HTTPSConnection):
+    def connect(self):  # connect to the address just checked, not to a second DNS answer: no rebinding window
+        err = OSError("no address to connect to")
+        for ip in _public_ips(self.host, self.port):  # each one is already checked; fall through if one family has no route
+            try:
+                sock = socket.create_connection((ip, self.port), self.timeout, self.source_address)
+                self.sock = self._context.wrap_socket(sock, server_hostname=self.host)
+                return
+            except OSError as e:
+                err = e
+        raise err
+
+
+class _SafeHandler(urllib.request.HTTPSHandler):
+    def https_open(self, req):
+        return self.do_open(_SafeHTTPS, req, context=self._context)
+
+
 class _Hop(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         u = urllib.parse.urlparse(newurl)
@@ -224,7 +258,7 @@ def t_lookup_registry(d: Dossier, issuer: str | None = None) -> str:
 
 
 def _http_get(url: str) -> tuple[bytes, int, str]:
-    with urllib.request.build_opener(_Hop).open(urllib.request.Request(url, headers=UA), timeout=8) as r:
+    with urllib.request.build_opener(_Hop, _SafeHandler).open(urllib.request.Request(url, headers=UA), timeout=8) as r:
         return r.read(700_000), r.status, r.headers.get("Content-Type", "")
 
 
@@ -275,7 +309,7 @@ def _resolves(domain: str) -> list[str]:
 def _registered(domain: str) -> date | None:
     try:
         req = urllib.request.Request("https://rdap.org/domain/" + urllib.parse.quote(domain), headers=UA)
-        with urllib.request.urlopen(req, timeout=8) as r:
+        with urllib.request.build_opener(_SafeHandler).open(req, timeout=8) as r:  # public addresses only, on every redirect too
             events = json.load(r).get("events", [])
         for e in events:
             if e.get("eventAction") == "registration":

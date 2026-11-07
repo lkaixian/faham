@@ -11,7 +11,7 @@ Tulen (formerly FAHAM; the repo, env vars and URL keep that name): a scam and au
 - `backend/app/data/*.json`: `official_sources.json`, `official_directory.json` (domains only, see `docs/DIRECTORY.md`), `offices.json` (demo), `practice.json`.
 - `frontend/`: static HTML/CSS/JS, no build step. Falls back to a fully in-browser demo mode when the API is unreachable (`assets/js/data.js` holds the sample letters).
 - `backend/app/agent/scam_content.py`: scam types and their lesson, route and draft in 4 languages. `cache.py`, `limiter.py`, `counter.py`, `mcp_server.py`. `frontend/assets/js/safety.js`: offline safety tools; `frontend/sw.js`: service worker.
-- `backend/app/filecheck.py`, `apk.py`, `office.py`, `payload.py`, `data/known_apps.json`: static file-safety checks (ZIP, RAR, APK, scripts, programs, Office macros). Tulen is not an antivirus: never run, extract to disk or store a file; every decompression is bounded and charged to one `Budget` per request; weak signals can never alone give likely_scam (see FILE_WEAK/FILE_STRONG/FILE_INFO in `tools.py`). `sandbox.py` + `inspect_worker.py` run the inspection in a limited child process with no secrets; rarfile only lists RAR and never runs an outside tool.
+- `backend/app/filecheck.py`, `apk.py`, `office.py`, `payload.py`, `data/known_apps.json`: static file-safety checks (ZIP, RAR, APK, scripts, programs, Office macros). Tulen is not an antivirus: never run, extract to disk or store a file; every decompression is bounded and charged to one `Budget` per request; weak signals can never alone give likely_scam (see FILE_WEAK/FILE_STRONG/FILE_INFO in `tools.py`). `sandbox.py` + `inspect_worker.py` run ALL untrusted parsing (inspection, letter extraction, OCR) in a limited child process with no secrets; rarfile only lists RAR and never runs an outside tool.
 - `backend/tests/eval/`: labelled dataset and the recall / false-positive gate (see `docs/EVAL.md`).
 - `docs/`: ARCHITECTURE, AGENT_FLOW, API, PRIVACY_SAFETY, DEPLOY, EVAL, PITCH_PLAN, NOTES.
 
@@ -38,7 +38,8 @@ After changing anything under `frontend/assets`, run `python scripts/bust_cache.
 5. **Procedures come from the registry.** Do not invent agency steps. Add an issuer by adding an entry to `official_sources.json` (`keywords`, `domains`, `source_url`, steps, lesson, terms).
 6. **Add a tool** with `@tool("name", "desc")` in `tools.py`, call it from `orchestrator.run()`, and log it with `tr.call(stage, name, msg)`. Add a test in `tests/test_agent.py`.
 7. **Guidance, not legal advice.** Keep the disclaimer. Have a native speaker review zh/ta strings before the demo.
-8. Trace step shape is `{stage, kind, tool?, message, flag}`; the frontend console renders it. Do not change it without updating `app.js`.
+8. **Hostile bytes are parsed only in the sandbox child.** Web routes and channels call `ingest.extract_safe`, never `ingest.extract`; OCR goes through the `ocr.read` tool, never `pytesseract` directly; file-signal tiers live in `filecheck.py` only. Outbound fetches by the agent go through `loop._SafeHandler` (public addresses only). `tests/test_hardening.py` pins all of this.
+9. Trace step shape is `{stage, kind, tool?, message, flag}`; the frontend console renders it. Do not change it without updating `app.js`.
 
 ## Conventions
 

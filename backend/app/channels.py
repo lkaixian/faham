@@ -181,7 +181,7 @@ def handle(channel: str, sender: str, mid: str, text: str,
         _set(h, True, lang)
         docs = [ingest.Doc(name="message", kind="text", text=text)] if text.strip() else []
         for name, ctype, data in media():
-            docs += ingest.extract(name, ctype, data)
+            docs += ingest.extract_safe(name, ctype, data)
         if not docs:
             return
         send(reply.summary(ingest.analyze_files(docs, lang, None), lang, channel))
@@ -314,7 +314,7 @@ def process_email(raw: bytes) -> bool:
         return False  # forged or automated senders get nothing (no backscatter)
     if _count("e:" + _hid("email", sender.lower())) > 1:
         return False
-    docs = ingest.extract("message.eml", "message/rfc822", raw)
+    docs = ingest.extract_safe("message.eml", "message/rfc822", raw)
     lang = reply.detect(" ".join(d.text for d in docs if d.text)[:2000])
     batch = ingest.analyze_files(docs, lang, None)
     _smtp_send(sender, _subject(msg), mail_html.text(batch, lang), str(msg.get("Message-ID", "")), mail_html.html_body(batch, lang))
@@ -446,7 +446,7 @@ async def email_hook(request: Request, bg: BackgroundTasks):
         bg.add_task(_reply_task, raw)
         return {"ok": True}
     def work():
-        docs = ingest.extract("message.eml", "message/rfc822", raw)
+        docs = ingest.extract_safe("message.eml", "message/rfc822", raw)
         return ingest.analyze_files(docs, reply.detect(" ".join(d.text for d in docs if d.text)[:2000]), None)
     try:
         return await run_in_threadpool(work)

@@ -5,6 +5,7 @@ sizes are logged, never contents or file names.
 """
 from __future__ import annotations
 
+import base64
 import hashlib
 import io
 import logging
@@ -17,7 +18,6 @@ from email.parser import BytesParser
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 
-from .agent import orchestrator
 from . import filecheck, office, sandbox
 from .models import AnalyzeRequest, BatchResponse, BatchSummary, FileResult
 
@@ -334,7 +334,26 @@ def extract(filename: str | None, content_type: str | None, data: bytes, *,
     return [Doc(name, "image", "", image=data)]
 
 
+def extract_safe(filename: str | None, content_type: str | None, data: bytes, *, via_chat: bool = False) -> list[Doc]:
+    """`extract` in a limited child process (see sandbox.py): what the web routes and channels call, so no hostile file is
+    ever parsed inside the API process. A crash, hang or overload becomes an IngestError, never a 500 and never a pass."""
+    if sandbox.IN_WORKER:
+        return extract(filename, content_type, data, via_chat=via_chat)
+    try:
+        out = sandbox.extract_isolated(filename, content_type, data, via_chat)
+    except sandbox.Busy:
+        raise IngestError(503, "Tulen is reading other files right now. Please try again in a moment.")
+    except sandbox.Failed:
+        raise IngestError(422, "This file could not be read safely.")
+    if "error" in out:
+        raise IngestError(int(out["error"]["status"]), str(out["error"]["detail"]))
+    return [Doc(name=str(d["name"])[:200], kind=str(d["kind"]), text=str(d["text"]), warnings=[str(w) for w in d["warnings"]][:20],
+                signals=[str(c) for c in d["signals"]][:40], sha256=str(d.get("sha256") or "")[:64],
+                image=base64.b64decode(d["image"]) if d.get("image") else None) for d in out["docs"][:50]]
+
+
 def analyze_files(docs: list[Doc], language: str, postcode: str | None, sink=None) -> BatchResponse:
+    from .agent import orchestrator  # late: the sandbox child imports this module and must stay light
     files: list[FileResult] = []
     for n, d in enumerate(docs):
         fr = FileResult(name=d.name, kind=d.kind, status="ok", warnings=list(d.warnings), sha256=d.sha256 or None)

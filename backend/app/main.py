@@ -190,10 +190,10 @@ async def _file_body(request: Request) -> bytearray:
 
 
 def _file_run(request: Request, buf: bytearray, language: str, postcode: str | None, sink=None):
-    docs = ingest.extract(unquote(request.headers.get("x-filename", "")) or None,
-                          request.headers.get("content-type"), bytes(buf),
-                          via_chat=request.headers.get("x-via-chat") == "1")
-    return ingest.analyze_files(docs, language, postcode, sink)
+    with limiter.LIMITER.slot(patience=config.QUEUE_PATIENCE):  # the same fairness and cost cap as /api/analyze
+        docs = ingest.extract_safe(unquote(request.headers.get("x-filename", "")) or None, request.headers.get("content-type"),
+                                   bytes(buf), via_chat=request.headers.get("x-via-chat") == "1")
+        return ingest.analyze_files(docs, language, postcode, sink)
 
 
 @app.post("/api/analyze-file", response_model=BatchResponse)
@@ -205,6 +205,8 @@ async def analyze_file(request: Request, language: Language = Query("bm"),
         return await run_in_threadpool(_file_run, request, buf, language, postcode)
     except ingest.IngestError as e:
         raise HTTPException(e.status, e.detail)
+    except limiter.Busy:
+        raise HTTPException(503, "Tulen is busy. Please try again in a moment.", headers={"Retry-After": "5"})
 
 
 @app.post("/api/analyze-file/stream")
@@ -219,6 +221,8 @@ async def analyze_file_stream(request: Request, language: Language = Query("bm")
             q.put(("result", _file_run(request, buf, language, postcode, lambda s: q.put(("step", s))).model_dump_json()))
         except ingest.IngestError as e:
             q.put(("error", json.dumps({"status": e.status, "detail": e.detail})))
+        except limiter.Busy:
+            q.put(("error", json.dumps({"status": 503, "detail": "Tulen is busy. Please try again in a moment."})))
         except Exception:
             q.put(("error", json.dumps({"status": 500, "detail": "analysis failed"})))
         q.put(None)

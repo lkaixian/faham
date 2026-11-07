@@ -2,6 +2,10 @@ name: CI
 on:
   push:
   pull_request:
+  schedule:
+    - cron: "0 3 * * 1"  # weekly: a new advisory should fail a build even when nobody pushed
+permissions:
+  contents: read  # the workflow token can read the repo and nothing else
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
@@ -17,3 +21,12 @@ jobs:
       - run: pytest -q
       - name: Scam-detection eval (recall >= 0.9, false-positive rate <= 0.1)
         run: python -m tests.eval.run --min-recall 0.9 --max-fpr 0.1
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Known vulnerabilities in the runtime dependencies
+        run: pip install pip-audit && pip-audit -r backend/requirements.txt
