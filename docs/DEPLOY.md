@@ -28,7 +28,7 @@ If you host the API on a different origin, add exactly that origin to `connect-s
 | `FAHAM_LLM_PROVIDER` | `none` | `ilmu`, `anthropic`, or a comma list. `none` = rules and templates only |
 | `FAHAM_MAX_CONCURRENT` | `4` | Analyses running at once. Others wait and get "you are number N" events |
 | `FAHAM_QUEUE_PATIENCE` | `60` | Seconds a request may wait before 503 + `Retry-After` |
-| `FAHAM_LLM_RETRIES`, `FAHAM_LLM_BACKOFF` | `3`, see `config.py` | Retry and exponential backoff for transient LLM errors |
+| `FAHAM_LLM_RETRIES`, `FAHAM_LLM_BACKOFF` | `3`, `0.4` (seconds, doubles each retry) | Retry and exponential backoff for transient LLM errors |
 | `FAHAM_COUNTER_DB` | `backend/var/counters.sqlite3` | Hash-only "others checked" counter. Put it on a persistent volume if you want it to survive restarts |
 
 ## Cloudflare: turn these two things off
