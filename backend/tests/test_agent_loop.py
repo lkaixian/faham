@@ -156,7 +156,7 @@ def test_an_agent_that_skips_steps_is_backfilled_and_says_so(monkeypatch):
 
 
 def test_an_agent_that_never_concludes_is_stopped(monkeypatch):
-    prompts = scripted(monkeypatch, *[j(thought="more", actions=[{"tool": "run_rules"}])] * 10)
+    prompts = scripted(monkeypatch, *[j(thought=f"idea number {i}", actions=[{"tool": "run_rules", "args": {"round": i}}]) for i in range(10)])  # new thoughts, new calls: not a repeat
     r = analyse(SCAM)
     assert r["agent"]["rounds"] == loop.MAX_ROUNDS and len(prompts) == loop.MAX_ROUNDS
     assert "LAST round" in prompts[-1] and r["scam"]["verdict"] == "likely_scam"
@@ -293,3 +293,28 @@ def test_tool_steps_carry_facts_for_the_plain_language_timeline(monkeypatch):
     assert f["classify_issuer"]["issuer"] == "LHDN" and f["inspect_links"]["total"] == 1 and f["inspect_links"]["odd"] == 1
     assert f["domain_intel"] == {"domain": "hasil-refund.top", "resolves": True, "age_days": 6}
     assert f["fetch_official_page"]["host"] == "www.hasil.gov.my" and f["fetch_official_page"]["found"] == ["MyTax"] and f["fetch_official_page"]["missing"] == ["AnyDesk"]
+
+
+def test_an_agent_that_repeats_itself_is_stopped_after_two_rounds(monkeypatch):
+    """Rounds that give the same thought and ask for the same tool again only burn tokens (seen with a RAR upload)."""
+    from app.agent.orchestrator import Trace
+    asked = []
+    same = {"thought": "I need to look inside the archive for a message.", "plan": ["extract fields"],
+            "actions": [{"tool": "extract_fields", "args": {}}], "finish": None}
+
+    def fake_ask(system, prompt, tries=2):
+        asked.append(1)
+        return dict(same)
+
+    monkeypatch.setattr(loop, "_ask", fake_ask)
+    monkeypatch.setattr(loop.llm.config, "llm_chain", lambda: ["model"])
+    tr = Trace()
+    d = loop.run("Sila bayar RM 100 segera kepada akaun peribadi.", "en", None, tr)
+    assert len(asked) == 2 and d.rounds == 2  # round 1 runs the tool, round 2 repeats it and is stopped
+    assert any("repeated" in s.message or "already made" in s.message for s in tr.steps)
+    # the same thought with a different tool call is a new idea, but the same call with new words is still a repeat
+    asked.clear()
+    seq = iter([dict(same, thought="First idea."), dict(same, thought="A different sentence entirely.")])
+    monkeypatch.setattr(loop, "_ask", lambda *a, **k: asked.append(1) or next(seq))
+    loop.run("Sila bayar RM 100 segera.", "en", None, Trace())
+    assert len(asked) == 2

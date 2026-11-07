@@ -144,6 +144,24 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "这看起来是普通文件或软件，不是机构发来的信函。Tulen 只能判断信函和诈骗投递的迹象，请向发送者确认这是什么",
         "ta": "இது ஒரு சாதாரண கோப்பு அல்லது மென்பொருள் போலத் தெரிகிறது, அமைப்பிடமிருந்து வந்த கடிதம் அல்ல. கடிதங்களையும் மோசடி அனுப்பும் அறிகுறிகளையும் மட்டுமே Tulen மதிப்பிட முடியும்; அனுப்பியவரிடம் அது என்ன என்று கேளுங்கள்",
     },
+    "file_explain_scam": {
+        "en": "This file shows signs of a scam delivery: {risks}. Do not open or install it. Delete it, and ask the sender, another way, whether they really sent it.",
+        "bm": "Fail ini menunjukkan tanda penghantaran penipuan: {risks}. Jangan buka atau pasangnya. Padamkannya, dan tanya penghantar, melalui cara lain, sama ada mereka benar-benar menghantarnya.",
+        "zh": "这个文件有诈骗投递的迹象：{risks}。不要打开或安装。请删除它，并通过其他方式向发送者确认他们是否真的发了这个文件。",
+        "ta": "இந்தக் கோப்பு மோசடி அனுப்புதலின் அறிகுறிகளைக் காட்டுகிறது: {risks}. திறக்கவோ நிறுவவோ வேண்டாம். அதை நீக்கிவிட்டு, அனுப்பியவர் உண்மையில் அனுப்பினாரா என்று வேறு வழியில் கேளுங்கள்.",
+    },
+    "file_explain_caution": {
+        "en": "Tulen found things worth checking in this file: {risks}. This is not a virus scan. Do not open it unless you expected it and the sender confirms it another way.",
+        "bm": "Tulen menjumpai perkara yang patut disemak dalam fail ini: {risks}. Ini bukan imbasan virus. Jangan buka melainkan anda menjangkakannya dan penghantar mengesahkannya melalui cara lain.",
+        "zh": "Tulen 在这个文件里发现了值得核实的地方：{risks}。这不是病毒扫描。除非你预期会收到，并且发送者已通过其他方式确认，否则不要打开。",
+        "ta": "இந்தக் கோப்பில் சரிபார்க்க வேண்டிய விஷயங்களை Tulen கண்டது: {risks}. இது வைரஸ் ஸ்கேன் அல்ல. நீங்கள் எதிர்பார்த்ததாக இருந்து அனுப்பியவர் வேறு வழியில் உறுதிப்படுத்தினால் தவிர திறக்க வேண்டாம்.",
+    },
+    "file_explain_scope": {
+        "en": "Tulen found no signs of scam delivery, but this does not look like a letter from an agency, and Tulen cannot judge what a file does. Ask the sender what it is before you open it.",
+        "bm": "Tulen tidak menjumpai tanda penghantaran penipuan, tetapi ini tidak kelihatan seperti surat daripada agensi, dan Tulen tidak dapat menilai apa yang dilakukan oleh sesuatu fail. Tanya penghantar apa ia sebelum anda membukanya.",
+        "zh": "Tulen 没有发现诈骗投递的迹象，但这看起来不是机构发来的信函，Tulen 也无法判断文件会做什么。打开之前请先向发送者确认这是什么。",
+        "ta": "மோசடி அனுப்புதலின் அறிகுறிகள் எதையும் Tulen காணவில்லை, ஆனால் இது ஒரு அமைப்பிடமிருந்து வந்த கடிதம் போலத் தெரியவில்லை, மேலும் ஒரு கோப்பு என்ன செய்யும் என்பதை Tulen மதிப்பிட முடியாது. திறப்பதற்கு முன் அது என்ன என்று அனுப்பியவரிடம் கேளுங்கள்.",
+    },
     "file_zip_tricks": {
         "en": "The archive is built in an unusual way (odd paths, overlapping or appended parts) that hides its contents from checkers",
         "bm": "Arkib dibina dengan cara luar biasa (laluan pelik, bahagian bertindih atau ditambah) untuk menyembunyikan isinya daripada pemeriksa",

@@ -189,7 +189,7 @@
   function fromApi(d, lang) {
     const f = d.fields, r = d.route;
     return applyScam({
-      sample: false, lang, redacted: String(d.redacted_text || "").replace(/․/g, "."), explain: { [lang]: String(d.explanation || "").split(/\n+/).filter(Boolean) },
+      sample: false, isFile: f.letter_type === "File", lang, redacted: String(d.redacted_text || "").replace(/․/g, "."), explain: { [lang]: String(d.explanation || "").split(/\n+/).filter(Boolean) },
       fields: { issuer: f.issuer, type: f.letter_type, amount: f.amount, deadline: f.deadline, reference: f.reference },
       kenapa: { q: d.lesson.question, a: d.lesson.answer }, terms: d.lesson.terms || [],
       entities: d.entities || null, others: d.others_checked || 0, scamType: (d.scam && d.scam.scam_type) || null,
@@ -431,7 +431,7 @@
   $("#pasteBox").addEventListener("paste", () => setTimeout(() => $("#checkBtn").scrollIntoView({ block: "nearest" }), 0));
   /* ---------- files: up to 10, one request each (POST /api/analyze-file, raw bytes) ---------- */
   const MAX_FILES = 10, MB = 1048576;
-  const EXT = { pdf: "pdf", docx: "docx", txt: "text", md: "text", eml: "eml", png: "image", jpg: "image", jpeg: "image", webp: "image", gif: "image",
+  const EXT = { pdf: "pdf", docx: "docx", xlsx: "docx", txt: "text", md: "text", eml: "eml", png: "image", jpg: "image", jpeg: "image", webp: "image", gif: "image",
     ...Object.fromEntries("zip apk 7z rar exe scr msi bat cmd ps1 vbs vbe wsf hta js jse jar lnk iso img docm dotm xlsm xlsb pptm doc xls".split(" ").map((e) => [e, "file"])) };   // checked by name and listing only, never opened
   const MACRO = /^(doc|dot|docm|dotm|xlsm|xlsb|pptm|xlam)$/;          // old Word and macro files get their own message
   let queue = [], qid = 0;                                            // { id, file, ext, kind, st: wait|send|read|done|fail, pct, msg }
@@ -756,6 +756,7 @@
     const chip = (k, val) => `<span class="fact"><span>${esc(t(k))}</span><b>${esc(val ? tr(val) : t("not_found"))}</b></span>`;
     const facts = (a) => `<div class="facts">${a.map(([k, v]) => chip(k, v)).join("")}</div>`;
     const A = [["f_amount", f.amount], ["f_deadline", f.deadline]], B = [["f_from", f.issuer], ["f_ref", f.reference]];
+    if (r.isFile) return `<div ${lg}>${ps.map((p) => `<p>${esc(p)}</p>`).join("")}</div>`;   // a file has no amount, deadline or sender to list
     const reexplain = !r.sample && r.lang !== state.xl && state.last;
     const re = reexplain ? `<p class="muted">${esc(t("x_note", { a: langName(r.lang) }))}</p><button class="btn btn-secondary" type="button" data-act="reexplain"><span>${esc(t("x_btn", { b: langName(state.xl) }))}</span></button>` : "";
     return (short ? `${facts(A)}<p ${lg}>${esc(sn.slice(0, 3).join(" "))}</p>${more((sn.length > 3 ? `<p ${lg}>${esc(sn.slice(3).join(" "))}</p>` : "") + facts(B))}`
@@ -798,7 +799,7 @@
       { id: "why", h: "h_why", html: whyHtml(r, 3), say: () => [r.reasons.slice(0, 3).map(reasonText).join(" "), rl(r)] }
     ];
     if (humanSteps(r.trace).length > 3) out.push({ id: "agent", h: "h_agent", html: didHtml(r), say: () => [t("did_intro"), state.lang] });
-    if (ps.length || f.amount || f.deadline) out.push({ id: "says", h: "h_says", html: saysHtml(r, true), say: () => [sentences(ps).slice(0, 3).join(" "), paraLang(r)] });
+    if (ps.length || f.amount || f.deadline) out.push({ id: "says", h: r.isFile ? "h_says_file" : "h_says", html: saysHtml(r, true), say: () => [sentences(ps).slice(0, 3).join(" "), paraLang(r)] });
     if (["online", "walkin"].some((k) => (r.route[k].steps || []).length)) out.push({ id: "todo", h: "h_todo", html: todoHtml(r), say: () => [route().slice(0, 4).join(" "), "en"] });
     if (v !== "no_signals") out.splice(2, 0, { id: "help", h: "h_help", html: helpHtml(r), say: () => [t("hp_fam_p"), state.lang] });
     out.push({ id: "draft", h: "h_draft", html: draftHtml(r), say: () => [`${t("rem_label")} ${reminderText(r)}`, state.lang] });

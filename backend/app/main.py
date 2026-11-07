@@ -66,7 +66,7 @@ def health():
             "llm_configured": config.llm_ready(), "tools": list(TOOLS),
             "tts_available": tts.available(), "tts_languages": list(tts.LANGS),
             "upload": {"max_mb": ingest.MAX_BODY // 1024 // 1024,
-                       "types": ["pdf", "docx", "txt", "md", "eml", "png", "jpg"]},
+                       "types": ["pdf", "docx", "xlsx", "txt", "md", "eml", "png", "jpg"]},
             "channels": channels.status()}
 
 

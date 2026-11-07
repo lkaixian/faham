@@ -208,3 +208,100 @@ def test_a_crashing_or_hanging_child_is_reported_not_raised(monkeypatch):
     monkeypatch.setattr(sandbox.subprocess, "run", lambda cmd, **kw: Bad())
     assert sandbox.inspect_isolated("a.zip", b"x", False)[2] == ["file_unreadable"]
     assert make_axml("a.b.c")  # keeps the shared builder imported for the next test file
+
+
+# ---------------------------------------------------------------- files have their own flow (no agent, no letter content)
+def no_model(monkeypatch):
+    """Any call into the agent or the explainer fails the test: a file must never reach a model."""
+    def boom(*a, **k):
+        raise AssertionError("a file reached the AI agent or the explainer")
+    from app import llm
+    from app.agent import loop as lp
+    monkeypatch.setattr(lp, "_ask", boom)
+    monkeypatch.setattr(llm, "complete", boom)
+    monkeypatch.setattr(llm, "chat", boom)
+    monkeypatch.setitem(__import__("app.agent.tools", fromlist=["TOOLS"]).TOOLS["llm.explain"].__dict__, "fn", boom)
+
+
+def test_a_file_never_reaches_the_agent_or_the_explainer(monkeypatch):
+    no_model(monkeypatch)
+    f = api("bil.pdf.exe", make_pe())
+    assert f["status"] == "ok"
+    x = f["result"]
+    assert x["scam"]["verdict"] == "likely_scam" and x["fields"]["letter_type"] == "File"
+    assert x["agent"]["mode"] != "ai" and x["agent"]["rounds"] == 0
+    tools_used = {s["tool"] for s in x["trace"] if s.get("tool")}
+    assert "file.inspect" in tools_used and not tools_used & {"classify.issuer", "extract.fields", "office.locate"}  # no letter steps
+
+
+def test_the_file_result_is_about_files_not_about_an_agency(monkeypatch):
+    no_model(monkeypatch)
+    x = api("bil.pdf.exe", make_pe(), chat=True)["result"]
+    assert x["lesson"]["question"] == "Why did I get this file?" and "ZIP files, programs, scripts" in x["lesson"]["answer"]
+    assert x["scam"]["scam_type"] == "whatsapp_file"
+    first = x["route"]["online_steps"][0]
+    assert first.startswith("Do not open the file") and "agency counter" not in " ".join(x["route"]["walkin_steps"])
+    assert x["explanation"].startswith("This file shows signs of a scam delivery:")
+    assert x["fields"]["amount"] is None and x["fields"]["deadline"] is None and x["action"]["reminder"] is None
+    assert "SCAM REPORT" in x["action"]["draft"]
+    app_x = api("app.apk", apk("com.x.card", [SMS, OVL]))["result"]
+    assert app_x["scam"]["scam_type"] == "apk_install"  # an app keeps its own lesson
+
+
+def test_caution_and_out_of_scope_files_get_matching_words_in_every_language(monkeypatch):
+    no_model(monkeypatch)
+    z = zipped({"jan.pdf": b"%PDF-1.4"})
+    scope = api("p.zip", z)["result"]["explanation"]
+    assert scope.startswith("Tulen found no signs of scam delivery") and "not look like a letter" in scope and "safe" not in scope.lower().replace("scam delivery", "")
+    caution = api("setup.exe", make_pe())["result"]["explanation"]
+    assert caution.startswith("Tulen found things worth checking") and "not a virus scan" in caution
+    r = client.post("/api/analyze-file?language=bm", content=z, headers={"X-Filename": "p.zip"})
+    assert "Tulen tidak menjumpai tanda" in r.json()["files"][0]["result"]["explanation"]
+    r = client.post("/api/analyze-file?language=zh", content=make_pe(), headers={"X-Filename": "setup.exe"})
+    assert "不是病毒扫描" in r.json()["files"][0]["result"]["explanation"]
+
+
+def test_letters_still_take_the_letter_flow():
+    x = api("letter.docx", docx_zip())["result"]
+    assert x["fields"]["letter_type"] != "File" and x["lesson"]["question"] != "Why did I get this file?"
+
+
+# ---------------------------------------------------------------- .xlsx is a letter format too, macros first
+NS_S = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+
+
+def xlsx(cells, extra=None, rels=None):
+    sst = f'<sst xmlns="{NS_S}">' + "".join(f"<si><t>{c}</t></si>" for c in cells) + "</sst>"
+    files = {"[Content_Types].xml": "<x/>", "xl/workbook.xml": f'<workbook xmlns="{NS_S}"/>', "xl/sharedStrings.xml": sst}
+    files.update(extra or {})
+    if rels:
+        files["xl/worksheets/_rels/sheet1.xml.rels"] = rels
+    return zipped(files)
+
+
+def test_xlsx_text_and_links_are_read_like_a_letter():
+    from app import ingest
+    link = '<Relationships><Relationship Id="r1" Type="http://x/relationships/hyperlink" Target="http://evil.example/pay" TargetMode="External"/></Relationships>'
+    d = ingest.extract("notis.xlsx", None, xlsx(["Notis LHDN", "Bayar RM 500 sebelum 30 November"], rels=link))[0]
+    assert d.kind == "xlsx" and "Notis LHDN" in d.text and "Bayar RM 500" in d.text and "evil.example/pay" in d.text
+    assert ingest.extract("empty.xlsx", None, xlsx([]))[0].text.strip() == ""
+
+
+def test_a_workbook_with_macros_takes_the_file_flow_before_anything_is_read(monkeypatch):
+    from app import ingest
+    macro = xlsx(["Notis LHDN"], extra={"xl/vbaProject.bin": "x"})
+    assert ingest.detect("book.xlsx", None, macro) == "file_risk"  # macros are checked first, whatever the extension says
+    assert ingest.detect("book.xlsm", None, xlsx(["a"])) == "file_risk"
+    assert ingest.detect("book.xlsx", None, xlsx(["a"])) == "xlsx"
+    no_model(monkeypatch)
+    x = api("book.xlsx", macro, chat=True)["result"]
+    assert x["fields"]["letter_type"] == "File" and x["scam"]["verdict"] == "likely_scam"  # hidden macro sent by chat
+
+
+def test_other_office_formats_are_still_refused():
+    from app import ingest
+    import pytest
+    pptx = zipped({"[Content_Types].xml": "<x/>", "ppt/presentation.xml": "<a/>"})
+    with pytest.raises(ingest.IngestError) as e:
+        ingest.extract("a.pptx", None, pptx)
+    assert e.value.status == 415 and "DOCX" in e.value.detail and "XLSX" in e.value.detail

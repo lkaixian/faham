@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 
 SCAM_TYPES = ("macau", "family_impersonation", "parcel", "job", "love", "investment",
-              "phishing_refund", "apk_install", "other")
+              "phishing_refund", "apk_install", "whatsapp_file", "other")
 
 _RULES: list[tuple[str, str]] = [
     ("family_impersonation", r"__family__"),  # set by scam_check, not by regex here
@@ -46,7 +46,20 @@ LETTER_Q = {
     "ta": "எனக்கு ஏன் இந்தக் கடிதம் வந்தது?",
 }
 
+FILE_Q = {
+    "bm": "Kenapa saya dapat fail ini?",
+    "en": "Why did I get this file?",
+    "zh": "我为什么会收到这个文件？",
+    "ta": "எனக்கு ஏன் இந்தக் கோப்பு வந்தது?",
+}
+
 LESSON_A: dict[str, dict[str, str]] = {
+    "whatsapp_file": {
+        "en": "Scammers send ZIP files, programs, scripts and Office files with macros by chat or email, often from a hijacked contact, hoping you open them on your phone or computer. Once opened, they can steal passwords and bank details. Open a file only if you expected it and the sender confirms it another way.",
+        "bm": "Penipu menghantar fail ZIP, program, skrip dan fail Office bermakro melalui sembang atau e-mel, selalunya daripada kenalan yang akaunnya telah diambil alih, supaya anda membukanya di telefon atau komputer. Setelah dibuka, ia boleh mencuri kata laluan dan butiran bank. Buka fail hanya jika anda menjangkakannya dan penghantar mengesahkannya melalui cara lain.",
+        "zh": "骗子会通过聊天或电邮发送 ZIP 文件、程序、脚本和带宏的 Office 文件，常常来自被盗用的联系人，希望你在手机或电脑上打开。一旦打开，就可能窃取密码和银行资料。只有在你预期会收到、并且已通过其他方式向发送者确认后才打开文件。",
+        "ta": "மோசடிக்காரர்கள் ZIP கோப்புகள், நிரல்கள், ஸ்கிரிப்ட்கள் மற்றும் மேக்ரோ உள்ள Office கோப்புகளை அரட்டை அல்லது மின்னஞ்சல் வழியாக அனுப்புகிறார்கள்; பெரும்பாலும் கைப்பற்றப்பட்ட நண்பரின் கணக்கிலிருந்து. திறந்தவுடன் அவை கடவுச்சொற்களையும் வங்கி விவரங்களையும் திருடலாம். நீங்கள் எதிர்பார்த்த கோப்பாக இருந்து, அனுப்பியவர் வேறு வழியில் உறுதிப்படுத்தினால் மட்டுமே திறக்கவும்.",
+    },
     "macau": {
         "en": "Real police, courts, LHDN and banks never ask you to move money to a 'safe account' and never phone to arrest you. Scammers use fear and secrecy so you do not ask anyone.",
         "bm": "Polis, mahkamah, LHDN dan bank sebenar tidak pernah suruh anda pindahkan wang ke 'akaun selamat' atau telefon untuk menangkap anda. Penipu guna rasa takut dan rahsia supaya anda tidak bertanya sesiapa.",
@@ -106,6 +119,12 @@ LESSON_A: dict[str, dict[str, str]] = {
 TERMS = ["Waran tangkap", "NSRC 997", "Domain rasmi"]
 
 FIRST_STEP: dict[str, dict[str, str]] = {
+    "whatsapp_file": {
+        "en": "Do not open the file. Ask the sender, by a call or another chat, whether they really sent it. If you already opened it, disconnect the device from the internet and call your bank.",
+        "bm": "Jangan buka fail itu. Tanya penghantar, melalui panggilan atau sembang lain, sama ada mereka benar-benar menghantarnya. Jika anda sudah membukanya, putuskan sambungan peranti daripada internet dan telefon bank anda.",
+        "zh": "不要打开该文件。通过电话或其他聊天方式向发送者确认他们是否真的发了这个文件。如果已经打开，请让设备断开网络并致电你的银行。",
+        "ta": "கோப்பைத் திறக்காதீர்கள். அனுப்பியவர் உண்மையில் அனுப்பினாரா என்று அழைப்பு அல்லது வேறு அரட்டை வழியாகக் கேளுங்கள். ஏற்கனவே திறந்திருந்தால், சாதனத்தை இணையத்திலிருந்து துண்டித்து உங்கள் வங்கியை அழையுங்கள்.",
+    },
     "macau": {
         "en": "Hang up or stop replying. Real police, courts, LHDN and banks never ask you to move money to a 'safe account'.",
         "bm": "Putuskan panggilan atau berhenti membalas. Polis, mahkamah, LHDN dan bank sebenar tidak pernah suruh pindah wang ke 'akaun selamat'.",
@@ -219,7 +238,7 @@ REMINDER = {"bm": "7 hari sebelum {d}", "en": "7 days before {d}", "zh": "{d} �
 
 def scam_lesson(scam_type: str, language: str) -> dict:
     t = scam_type if scam_type in LESSON_A else "other"
-    return {"question": LESSON_Q[language], "answer": LESSON_A[t][language], "terms": TERMS}
+    return {"question": (FILE_Q if t == "whatsapp_file" else LESSON_Q)[language], "answer": LESSON_A[t][language], "terms": TERMS}
 
 
 def scam_route(scam_type: str, language: str, source_date: str) -> dict:

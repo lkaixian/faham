@@ -39,6 +39,7 @@ After changing anything under `frontend/assets`, run `python scripts/bust_cache.
 6. **Add a tool** with `@tool("name", "desc")` in `tools.py`, call it from `orchestrator.run()`, and log it with `tr.call(stage, name, msg)`. Add a test in `tests/test_agent.py`.
 7. **Guidance, not legal advice.** Keep the disclaimer. Have a native speaker review zh/ta strings before the demo.
 8. **Hostile bytes are parsed only in the sandbox child.** Web routes and channels call `ingest.extract_safe`, never `ingest.extract`; OCR goes through the `ocr.read` tool, never `pytesseract` directly; file-signal tiers live in `filecheck.py` only. Outbound fetches by the agent go through `loop._SafeHandler` (public addresses only). `tests/test_hardening.py` pins all of this.
+   Files that are not letters take `orchestrator.run_file`, never the agent loop: no model sees a file name.
 9. Trace step shape is `{stage, kind, tool?, message, flag}`; the frontend console renders it. Do not change it without updating `app.js`.
 
 ## Conventions

@@ -81,8 +81,10 @@ def detect(filename: str | None, content_type: str | None, data: bytes) -> str:
             return "file_risk"  # macros are reported as signs, never executed
         if "word/document.xml" in names:
             return "docx"
+        if "xl/workbook.xml" in names:
+            return "xlsx"
         if "[Content_Types].xml" in names:
-            raise IngestError(415, "Only Word (DOCX) is accepted from Office formats")
+            raise IngestError(415, "Only Word (DOCX) and Excel (XLSX) are accepted from Office formats")
         return "file_risk"  # a zip or an APK: inspect the listing, never open it
     if data[:6] == bytes.fromhex("377abcaf271c") or data[:5] == bytes.fromhex("526172211a") or data[:2] == b"MZ" or ext in CHECK_ONLY:
         return "file_risk"
@@ -197,6 +199,23 @@ def _docx(name: str, data: bytes) -> Doc:
     urls = [r.get("Target", "") for r in rels if r.get("Type", "").endswith("/hyperlink")
             and r.get("TargetMode") == "External"] if rels is not None else []
     return Doc(name, "docx", "\n".join(paras) + "\n" + _links(urls))
+
+
+S = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+
+
+def _xlsx(name: str, data: bytes) -> Doc:
+    """The text cells of a workbook (its shared strings) and the web links in its sheets. Macros were ruled out before this runs."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as z:
+            names = z.namelist()
+            sst = _safe_xml(_read_member(z, "xl/sharedStrings.xml", MAX_XML)) if "xl/sharedStrings.xml" in names else None
+            rels = [_safe_xml(_read_member(z, n, MAX_XML)) for n in names if n.startswith("xl/worksheets/_rels/") and n.endswith(".rels")][:20]
+    except zipfile.BadZipFile:
+        raise IngestError(422, "The XLSX file is damaged")
+    cells = ["".join(t.text or "" for t in si.iter(S + "t")) for si in (sst if sst is not None else [])][:20000]
+    urls = [r.get("Target", "") for root in rels for r in root if r.get("Type", "").endswith("/hyperlink") and r.get("TargetMode") == "External"]
+    return Doc(name, "xlsx", "\n".join(c for c in cells if c.strip())[:20000] + "\n" + _links(urls))
 
 
 def _text(name: str, data: bytes) -> Doc:
@@ -323,6 +342,10 @@ def extract(filename: str | None, content_type: str | None, data: bytes, *,
                     sha256=hashlib.sha256(data).hexdigest())]
     if kind == "pdf":
         return [_pdf(name, data)]
+    if kind == "xlsx":
+        d = _xlsx(name, data)
+        d.signals += office.scan_ooxml(data, _ext(filename), via_chat)  # a remote link or template in an otherwise normal workbook
+        return [d]
     if kind == "docx":
         d = _docx(name, data)
         d.signals += office.scan_ooxml(data, _ext(filename), via_chat)  # remote template or DDE in an otherwise normal letter
@@ -367,7 +390,8 @@ def analyze_files(docs: list[Doc], language: str, postcode: str | None, sink=Non
             req = AnalyzeRequest.model_construct(text=d.text[:20000], image_b64=None, language=language,
                                                  postcode=postcode, sample_id=None)
             try:
-                fr.result = orchestrator.run(req, d.image if not d.text.strip() else None, d.signals, sink=sink)
+                fr.result = (orchestrator.run_file(d.text, d.signals, language, sink) if d.kind == "file_risk"
+                             else orchestrator.run(req, d.image if not d.text.strip() else None, d.signals, sink=sink))  # a file gets its own flow
             except orchestrator.OCRUnavailable:
                 fr.status, fr.detail = "error", "Could not read text from this image. OCR is not available."
             except Exception as e:  # one bad file must not fail the batch

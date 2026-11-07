@@ -75,6 +75,48 @@ def _report(lang: str, issuer: str, verdict: dict) -> str:
     return "\n".join([render("report_intro", lang, who=who)] + [f"- {x}" for x in risks] + ["", render("report_outro", lang)])
 
 
+def run_file(text: str, signals: list[str], language: str, sink=None) -> AnalyzeResponse:
+    """The flow for a FILE that is not a letter (ZIP, RAR, APK, script, program, Office file with macros). There is no AI agent and no
+    letter explanation: the verdict comes from the file signs alone, so it is fast, deterministic, costs no model tokens and gives
+    attacker-chosen file names no chance to steer a model. The lesson, steps and draft are about file scams, not about an agency."""
+    tr = Trace(sink)
+    tr.think("read", "This is a file, not a letter: work out what it is and how it reached you. It is never opened or run.")
+    redacted, counts = T.TOOLS["privacy.redact"].fn(text)  # a file name can hold an IC number or a phone number
+    tr.call("read", "privacy.redact", "masked: " + (", ".join(f"{k} ×{v}" for k, v in counts.items() if v) or "nothing to mask"))
+    tr.call("read", "file.inspect", "type, name, what is listed inside, signs found (rule-based, no AI agent for files)")
+    memo = _Memo()
+    verdict = memo.call("scam.check", redacted, "UNKNOWN", language, tuple(signals), ())
+    en = memo.call("scam.check", redacted, "UNKNOWN", "en", tuple(signals), ())
+    tr.call("verify", "scam.check", "file signs · scoring rules")
+    for r in en["red_flags"]:
+        tr.note("verify", "bad", "✗ " + r)
+    v = verdict["verdict"]
+    tr.note("verify", "bad" if v == "likely_scam" else "warn", f"verdict: {'LIKELY SCAM' if v == 'likely_scam' else 'CAUTION'} ({verdict['score']}/100)", flag=v == "likely_scam")
+    risks = [x["text"] for x in verdict["reasons"] if x["kind"] == "risk"]
+    explanation = render("file_explain_scam" if v == "likely_scam" else "file_explain_caution" if risks else "file_explain_scope", language, risks="; ".join(risks[:4]))
+    tr.call("explain", "llm.explain", "plain-language explanation ready (written from the signs found)")
+    stype = verdict.get("scam_type") if verdict.get("scam_type") in ("apk_install", "whatsapp_file") else "whatsapp_file"
+    lesson = T.TOOLS["teach.lesson"].fn("UNKNOWN", False, language, stype)
+    tr.call("teach", "teach.lesson", "why files like this are sent")
+    route = T.TOOLS["gov.retrieve"].fn("UNKNOWN", False, language, stype)
+    tr.call("route", "gov.retrieve", "what to do now, and who to call")
+    act = T.TOOLS["act.draft"].fn("UNKNOWN", {"amount": None, "deadline": None, "reference": None}, verdict["genuine"], language)
+    tr.call("act", "act.draft", "draft prepared")
+    tr.note("act", "warn", "⏸ waiting for user approval — nothing is sent or paid automatically")
+    return AnalyzeResponse(
+        redacted_text=redacted,
+        fields=Fields(issuer="Unknown", letter_type="File"),
+        scam=ScamVerdict(**verdict),
+        explanation=explanation,
+        lesson=Lesson(**lesson),
+        route=Route(online_steps=route["online_steps"], walkin_steps=route["walkin_steps"],
+                    prepare_online=route["prepare_online"], prepare_walkin=route["prepare_walkin"],
+                    source_url=route["source_url"], retrieved_at=f"{route['retrieved_at']} (cached)", confidence=route["confidence"]),
+        action=Action(draft=act["draft"], reminder=None, extra=[], attachments=[]),
+        trace=tr.steps,
+    )
+
+
 def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tuple | list = (), sink=None) -> AnalyzeResponse:
     tr = Trace(sink)
 

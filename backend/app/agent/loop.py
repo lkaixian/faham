@@ -459,6 +459,8 @@ def run(letter: str, language: str, postcode: str | None, tr) -> Dossier:
         tr.note("plan", "warn", "No AI model available: the rule pipeline runs without the agent")
         return d
     start, history = time.monotonic(), []
+    seen: set[str] = set()  # tool calls already made (name + arguments), and the last thought: a model that repeats itself is stopped
+    prev_thought = ""
     tr.think("plan", "Goal: decide whether this message is real, gather evidence with tools, then prepare safe next steps.")
     for rnd in range(1, MAX_ROUNDS + 1):
         last = rnd == MAX_ROUNDS or time.monotonic() - start > BUDGET_S
@@ -468,6 +470,11 @@ def run(letter: str, language: str, postcode: str | None, tr) -> Dossier:
             break
         d.mode, d.rounds = "ai", rnd
         thought = str(out.get("thought", ""))[:1200]
+        same = bool(thought) and re.sub(r"\W+", " ", thought.lower()).strip() == prev_thought
+        prev_thought = re.sub(r"\W+", " ", thought.lower()).strip()
+        if same and not isinstance(out.get("finish"), dict):
+            tr.note("agent", "warn", "The agent repeated its last thought word for word, so it was stopped (the rules still give the verdict)")
+            break
         tr.think("plan" if rnd == 1 else "agent", f"Round {rnd}: {thought}")
         plan = [str(x)[:300] for x in (out.get("plan") if isinstance(out.get("plan"), list) else [])[:6]]
         if plan and plan != d.plan:
@@ -480,6 +487,11 @@ def run(letter: str, language: str, postcode: str | None, tr) -> Dossier:
         if not acts or last:
             tr.note("agent", "warn", "The agent stopped without a conclusion")
             break
+        calls = [json.dumps([a.get("tool"), a.get("args")], sort_keys=True, default=str) for a in acts[:MAX_PER_ROUND] if isinstance(a, dict)]
+        if calls and all(c in seen for c in calls):
+            tr.note("agent", "warn", "The agent asked for tool calls it had already made, so it was stopped (the rules still give the verdict)")
+            break
+        seen.update(calls)
         obs = []
         for a in acts[:MAX_PER_ROUND]:
             name = a.get("tool") if isinstance(a, dict) else None

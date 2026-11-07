@@ -417,8 +417,8 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     if fam:  # the one check that beats this scam: hear their real voice on the number you already have
         verify.insert(0, r("call_old_number"))
     stype = detect_scam_type(low, family=bool(fam)) if verdict != "no_signals" else None
-    if verdict != "no_signals" and any(c.startswith("file_apk") for c, _ in flags):
-        stype = "apk_install"  # the lesson for apps sent in a message; file names never reach the text rules
+    if verdict != "no_signals" and any(c in FILE_WEAK | FILE_STRONG for c, _ in flags):  # file names never reach the text rules
+        stype = "apk_install" if any(c.startswith("file_apk") for c, _ in flags) else "whatsapp_file"
     return {"genuine": verdict != "likely_scam",  # means 'not flagged', not 'proven genuine'
             "verdict": verdict, "score": score, "red_flags": [t for _, t in flags], "good_signs": [t for _, t in good],
             "reasons": reasons, "verify_yourself": verify, "scam_type": stype}

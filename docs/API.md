@@ -64,7 +64,7 @@ data: { ...the full AnalyzeResponse... }
 
 
 ## `POST /api/analyze-file` and `/api/analyze-file/stream`
-Raw file bytes as the body. Headers: `X-Filename` (URL-encoded), `Content-Type`, and optional `X-Via-Chat: 1` (the person got the file on WhatsApp, SMS or a link). PDF, DOCX, text, email and images are read as letters. ZIP, RAR, APK, 7z, scripts, programs, disk images, shortcuts and macro-enabled Office files are inspected instead of read (see PRIVACY_SAFETY.md, "Files that can carry malware"): never run or stored, and the result is a normal one whose reasons are the signs found, plus an info line saying what was and was not checked. Each such file result carries `sha256`, a fingerprint for the person to look up themselves; it is `null` for letters. Response: `BatchResponse`.
+Raw file bytes as the body. Headers: `X-Filename` (URL-encoded), `Content-Type`, and optional `X-Via-Chat: 1` (the person got the file on WhatsApp, SMS or a link). PDF, DOCX, text, email and images are read as letters. ZIP, RAR, APK, 7z, scripts, programs, disk images, shortcuts and macro-enabled Office files are inspected instead of read (see PRIVACY_SAFETY.md, "Files that can carry malware"): never run or stored, and the result is a normal one whose reasons are the signs found, plus an info line saying what was and was not checked. Such files get their own, fast flow with no AI agent (`fields.letter_type` is `"File"`, `scam.scam_type` is `apk_install` or `whatsapp_file`). Each such file result carries `sha256`, a fingerprint for the person to look up themselves; it is `null` for letters. Response: `BatchResponse`.
 
 ## `GET /api/practice?n=5`
 Returns `n` fictional messages for Spot-the-scam:
