@@ -18,10 +18,10 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
-from . import channels, config, ingest, limiter, tts
+from . import channels, config, counter, ingest, limiter, tts
 from .agent import orchestrator
-from .agent.tools import TOOLS, classify_issuer, redact, scam_check
-from .models import AnalyzeRequest, AnalyzeResponse, BatchResponse, Language, PracticeItem, TTSRequest
+from .agent.tools import TOOLS, classify_issuer, extract_entities, redact, scam_check
+from .models import Entities, AnalyzeRequest, AnalyzeResponse, BatchResponse, Language, PracticeItem, TTSRequest
 
 def _warm_cache() -> None:
     """Pre-run the bundled sample messages so the first tap on an example is instant. Skipped when an LLM is
@@ -96,13 +96,24 @@ def _decode_image(b64: str | None) -> bytes | None:
     return image
 
 
+def _finish(req: AnalyzeRequest, res: AnalyzeResponse) -> AnalyzeResponse:
+    """Add the per-request extras to a (possibly cached) analysis: the Semak Mule details come from this request's
+    own text and are not cached; the "others checked" counter stores only a fingerprint of the redacted text."""
+    res = res.model_copy(deep=True)
+    if res.scam.verdict != "no_signals" and req.text.strip():
+        res.entities = Entities(**extract_entities(req.text))
+    if not req.sample_id:
+        res.others_checked = counter.COUNTER.hit(res.redacted_text)
+    return res
+
+
 @app.post("/api/analyze", response_model=AnalyzeResponse)
 def analyze(req: AnalyzeRequest):
     """Run the full agent. The letter is processed in memory and not stored. Waits its turn when busy."""
     image = _decode_image(req.image_b64)
     try:
         with limiter.LIMITER.slot(patience=config.QUEUE_PATIENCE):
-            return orchestrator.run(req, image)
+            return _finish(req, orchestrator.run(req, image))
     except orchestrator.OCRUnavailable as e:
         raise HTTPException(422, str(e))
     except limiter.Busy:
@@ -136,7 +147,7 @@ def analyze_stream(req: AnalyzeRequest):
             try:
                 if (q := orchestrator.quick_verdict(req)) is not None:
                     yield _sse("verdict", q)
-                res = orchestrator.run(req, image)
+                res = _finish(req, orchestrator.run(req, image))
                 yield _sse("explanation", {"text": res.explanation})
                 yield _sse("result", res.model_dump())
             except orchestrator.OCRUnavailable as e:

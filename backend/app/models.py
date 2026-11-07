@@ -86,6 +86,13 @@ class Action(BaseModel):
     requires_approval: bool = True
 
 
+class Entities(BaseModel):
+    """Details found in the message, for display and the Semak Mule shortcut only. Never stored."""
+    accounts: list[str] = []
+    phones: list[str] = []
+    companies: list[str] = []
+
+
 class AnalyzeResponse(BaseModel):
     redacted_text: str
     fields: Fields
@@ -95,6 +102,8 @@ class AnalyzeResponse(BaseModel):
     route: Route
     action: Action
     trace: list[TraceStep]
+    entities: Optional[Entities] = None  # raw details from this request only; not cached, not stored
+    others_checked: int = 0  # how many other people checked a similar message (fingerprint counter)
     disclaimer: str = "FAHAM gives guidance, not legal advice. Verify on the official source shown."
 
 

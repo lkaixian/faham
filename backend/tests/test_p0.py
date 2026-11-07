@@ -82,6 +82,7 @@ def test_same_text_same_verdict_and_cached():
     a = client.post("/api/analyze", json={"text": text, "language": "en"}).json()
     assert len(cache.ANALYSES) == 1
     b = client.post("/api/analyze", json={"text": text, "language": "en"}).json()
+    a.pop("others_checked"), b.pop("others_checked")  # the counter is meant to change between checks
     assert a == b
     assert "012-345 6789" not in str(list(cache.ANALYSES._d.keys())) and "012-345 6789" not in a["redacted_text"]
     c = client.post("/api/analyze", json={"text": text, "language": "bm"}).json()

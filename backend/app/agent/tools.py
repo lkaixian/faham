@@ -151,6 +151,27 @@ def extract_fields(text: str) -> dict:
     }
 
 
+# ---------------------------------------------------------------- entities (for the Semak Mule shortcut)
+_ACCT = re.compile(r"(?<![\d-])(?:\d[ -]?){10,16}(?![\d-])")
+_COMPANY = re.compile(r"\b(?:[A-Z][\w&.'-]*\s+){1,4}(?:Sdn\.?\s*Bhd\.?|Bhd\.?|Berhad|Enterprise|Trading|Resources|Holdings|Services|Solutions|Ventures)\b|(?:Syarikat|Kedai|Company|Co\.)\s+(?:[A-Z][\w&.'-]*\s?){1,4}")
+
+
+def extract_entities(raw: str) -> dict:
+    """Bank accounts, phone numbers and company names found in the RAW message, for display only.
+
+    Called on the request text after the analysis and never cached or stored: the user sees their own message's
+    details so they can type them into the official Semak Mule check. IC numbers are never returned."""
+    digits = lambda x: re.sub(r"\D", "", x)
+    ics = {digits(m) for m in IC_RE.findall(raw)}
+    phones = [m.group(0).strip() for m in PHONE_RE.finditer(raw)]
+    pd = {digits(p) for p in phones}
+    accounts = [re.sub(r"\s+", " ", m).strip() for m in _ACCT.findall(raw)]
+    accounts = [a for a in accounts if digits(a) not in ics and digits(a) not in pd and len(digits(a)) >= 10]
+    companies = [re.sub(r"\s+", " ", m.group(0)).strip(" .,") for m in _COMPANY.finditer(raw)]
+    uniq = lambda xs: list(dict.fromkeys(xs))[:5]
+    return {"accounts": uniq(accounts), "phones": uniq(phones), "companies": uniq(companies)}
+
+
 # ---------------------------------------------------------------- verify
 URL_RE = re.compile(r"\b((?:https?://)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:/[^\s]*)?)", re.IGNORECASE)
 # Social/mail/form hosts: seen in genuine footers and email print-outs, so they are noted, not scored as scam signs.

@@ -10,3 +10,6 @@ Thumbs.db
 .idea/
 node_modules/
 .codegraph/
+
+backend/var/
+*.sqlite3
