@@ -6,6 +6,20 @@
   <title>FAHAM</title>
   <meta name="description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
   <meta name="theme-color" content="#0b5c63" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="FAHAM" />
+  <meta property="og:title" content="FAHAM: semak surat dan mesej, kesan penipuan" />
+  <meta property="og:description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
+  <meta property="og:image" content="https://lkaixian.github.io/faham/assets/img/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Logo FAHAM: faham surat, faham langkah" />
+  <meta property="og:url" content="https://lkaixian.github.io/faham/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FAHAM: semak surat dan mesej, kesan penipuan" />
+  <meta name="twitter:description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
+  <meta name="twitter:image" content="https://lkaixian.github.io/faham/assets/img/og-image.png" />
   <link rel="icon" href="assets/img/favicon-32.png" type="image/png" sizes="32x32" />
   <link rel="icon" href="assets/img/favicon-48.png" type="image/png" sizes="48x48" />
   <link rel="icon" href="assets/img/favicon-256.png" type="image/png" sizes="256x256" />
@@ -16,23 +30,23 @@
   <div id="intro" role="dialog" aria-modal="true" aria-label="FAHAM">
     <canvas id="neural" aria-hidden="true"></canvas>
     <div class="intro-inner">
-      <img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="" width="76" height="98" />
-      <img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="" width="76" height="98" />
+      <img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="FAHAM logo" width="76" height="98" />
+      <img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="FAHAM logo" width="76" height="98" />
       <div class="intro-kicker">Agentic AI · Festival Idea Putrajaya 2026</div>
       <h1 class="intro-title" aria-live="polite"><span id="typed"></span><span class="caret" aria-hidden="true"></span></h1>
-      <p class="intro-sub" id="introSub"><b>Faham surat. Faham langkah. Faham hak anda.</b><br />Understand any official letter, spot scams, and know what to do next.</p>
+      <p class="intro-sub" id="introSub"><b>Faham surat. Faham langkah. Faham hak anda.</b><br /><span lang="en">Understand any official letter, spot scams, and know what to do next.</span></p>
       <div class="intro-boot" id="boot" aria-hidden="true"></div>
       <div class="intro-actions" id="introActions">
-        <button class="btn btn-primary btn-big" id="enterBtn" type="button">Masuk / Enter</button>
+        <button class="btn btn-primary btn-big" id="enterBtn" type="button"><span lang="ms">Masuk</span> / <span lang="en">Enter</span></button>
       </div>
     </div>
-    <button class="btn btn-quiet skip-link" id="skipIntro" type="button">Langkau / Skip</button>
+    <button class="btn btn-quiet skip-link" id="skipIntro" type="button"><span lang="ms">Langkau</span> / <span lang="en">Skip</span></button>
   </div>
   <a class="skip" href="#main" data-i18n="skip"></a>
 
   <header class="top">
     <div class="wrap bar">
-      <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="" width="31" height="40" /><span>FAHAM</span></a>
+      <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="FAHAM logo" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="FAHAM logo" width="31" height="40" /><span aria-hidden="true">FAHAM</span></a>
       <div class="ctrls">
         <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
         <button class="btn btn-quiet" id="themeBtn" type="button" aria-pressed="false">

@@ -1061,6 +1061,8 @@
   $("#hint").hidden = !!store.get("checked", false);
   state.practice.order = D.practice.map((_, i) => i).sort(() => Math.random() - 0.5).slice(0, 6);
   renderPractice(); route(true); renderUp(); checkApi();
+  // PWA: cache the app shell so the offline safety tools open with no signal. sw.js never caches /api/ or other origins.
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !EMBED) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
   if (EMBED) {                                   // tell the page that holds the iframe how tall we are
     const tell = () => parent !== window && parent.postMessage({ type: "faham:height", height: Math.ceil(document.body.getBoundingClientRect().height) }, "*");
     new ResizeObserver(tell).observe(document.body); tell();
