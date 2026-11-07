@@ -32,7 +32,7 @@
       </section></div>`;
   }
   function openPaid(from) {
-    opener = from || document.activeElement;
+    opener = from && from.offsetParent ? from : $("#menuBtn") && $("#menuBtn").offsetParent ? $("#menuBtn") : document.activeElement;  // the paid button may sit in a closed menu
     renderPaid(); paid.hidden = false;
     [...document.body.children].forEach((el) => { if (el !== paid && !["SCRIPT"].includes(el.tagName) && el.id !== "toast") el.inert = true; });
     document.documentElement.style.overflow = "hidden";

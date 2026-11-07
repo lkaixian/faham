@@ -1106,7 +1106,7 @@
   function route(first) {
     const v = EMBED || state.senior ? "check" : VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
     VIEWS.forEach((n) => ($("#view-" + n).hidden = n !== v));
-    $$(".top nav a").forEach((a) => (a.getAttribute("href") === "#" + v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+    $$("header.top nav a, #menuSheet nav a").forEach((a) => (a.getAttribute("href") === "#" + v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
     document.title = "Tulen: " + t("ti_" + v);
     if (!first) stopSpeak();
     if (v === "dictionary") { renderGlossary(); renderLevel(); }
