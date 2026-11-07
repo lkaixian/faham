@@ -229,3 +229,12 @@ def test_reasons_carry_evidence_snippets():
     assert ev["urgency"] == ["dalam 24 jam"] and ev["unofficial_domain"] == ["https://hasil-gov.my.com/bayar"]
     assert ev["ref_format"] == ["LHDN/SAMPEL/TT2025/0001"] and ev["official_domain"] == ["https://www.hasil.gov.my"]
     assert all(s in t for r in v["reasons"] for s in r["evidence"])
+
+
+def test_zh_ta_scam_words():
+    def codes(t):
+        return {r["code"] for r in T.scam_check(t, "PDRM", "zh")["reasons"] if r["kind"] == "risk"}
+    assert {"safe_account", "arrest", "secret"} <= codes("你涉嫌洗钱，请转入安全账户，否则将被逮捕。不要告诉任何人。")
+    assert "secret" in codes("யாரிடமும் சொல்ல வேண்டாம்")
+    assert "safe_account" in codes("பாதுகாப்பு கணக்கு")
+    assert not codes("您好，您的税务申报表已收到，谢谢。")

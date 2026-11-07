@@ -190,12 +190,13 @@ FORMS = ("forms.gle", "docs.google.com", "forms.office.com", "typeform.com")
 SHORTENERS = {"bit.ly", "tinyurl.com", "t.co", "goo.gl", "s.id", "cutt.ly", "shorturl.at", "rb.gy"}
 
 RED_FLAGS: list[tuple[str, str]] = [
-    (r"akaun\s+(?:peribadi|maybank|cimb|public bank|rhb|bank islam)|personal account|(?:bayar|transfer|pindah)\w*[^.\n]{0,40}akaun[^.\n]{0,40}atas nama", "transfer_account"),
-    (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only", "urgency"),
-    (r"waran\s+tangkap|arrest|ditangkap", "arrest"),
-    (r"\btac\b|\botp\b|kata laluan|password", "tac_otp"),
+    (r"akaun\s+(?:peribadi|maybank|cimb|public bank|rhb|bank islam)|personal account|(?:bayar|transfer|pindah)\w*[^.\n]{0,40}akaun[^.\n]{0,40}atas nama|(?:转|汇)(?:入|到|至)[^。\n]{0,20}(?:账户|账号|户口|帐户)|கணக்கிற்கு\s*(?:பணம்\s*)?(?:அனுப்ப|செலுத்த)", "transfer_account"),
+    (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only|24\s*小时|二十四小时|今[天日]内|24\s*மணி", "urgency"),
+    (r"waran\s+tangkap|arrest|ditangkap|逮捕|拘捕|通缉|கைது", "arrest"),
+    (r"\btac\b|\botp\b|kata laluan|password|验证码|密码|கடவுச்சொல்|ஓடிபி", "tac_otp"),
     (r"(?:hubungi|contact|mesej|message|klik|click|tambah|add|sertai|join|chat)\W+(?:\w+\W+){0,4}(?:whatsapp|telegram|wasap)|wa\.me/|t\.me/", "chat_app"),
-    (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret", "secret"),
+    (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret|不要告诉|不得告诉|不可告诉|切勿告诉|请?保密|யாரிடமும்\s+சொல்ல\w*\s+வேண்டாம்|ரகசியம\w*", "secret"),
+    (r"akaun\s+selamat|pencucian\s+wang|safe account|money laundering|安全[账帐]户|安全户口|安全账号|洗钱|பாதுகாப்பு\s*கணக்கு|பணச்?\s*சலவை", "safe_account"),
     (r"gambar\s+ic|ic\s+depan|photo of (?:your )?ic", "ic_photo"),
     (r"diskaun\s+\d+%", "discount"),
     (r"akaun\s+(?:bank\s+)?(?:baharu|baru)|new (?:bank )?account|(?:changed|updated) (?:bank )?account|(?:tukar|bertukar|ditukar)\w*\s+akaun|akaun[^.\n]{0,30}(?:telah|sudah)\s+(?:berubah|ditukar)", "new_account"),

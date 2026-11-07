@@ -29,6 +29,12 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "以逮捕来威胁",
         "ta": "கைது செய்வோம் என்று மிரட்டுகிறது",
     },
+    "safe_account": {
+        "en": "Talks of a \"safe account\" or money laundering, a known scam script",
+        "bm": "Menyebut \"akaun selamat\" atau pengubahan wang haram, skrip penipuan yang dikenali",
+        "zh": "提到“安全账户”或洗钱，这是常见的诈骗话术",
+        "ta": "\"பாதுகாப்பு கணக்கு\" அல்லது பணச் சலவை பற்றிப் பேசுகிறது; இது அறியப்பட்ட மோசடி வழக்கம்",
+    },
     "tac_otp": {
         "en": "Asks for a TAC, OTP or password",
         "bm": "Meminta TAC, OTP atau kata laluan",
