@@ -10,7 +10,9 @@ FAHAM: an agent that reads official Malaysian letters (LHDN, JPJ, PDRM, PTPTN, c
 - `backend/app/models.py`: Pydantic contracts. `llm.py`: optional Anthropic call. `config.py`: env vars.
 - `backend/app/data/*.json`: `official_sources.json`, `official_directory.json` (domains only, see `docs/DIRECTORY.md`), `offices.json` (demo), `practice.json`.
 - `frontend/`: static HTML/CSS/JS, no build step. Falls back to a fully in-browser demo mode when the API is unreachable (`assets/js/data.js` holds the sample letters).
-- `docs/`: ARCHITECTURE, AGENT_FLOW, API, PRIVACY_SAFETY, PITCH_PLAN, NOTES.
+- `backend/app/agent/scam_content.py`: scam types and their lesson, route and draft in 4 languages. `cache.py`, `limiter.py`, `counter.py`, `mcp_server.py`. `frontend/assets/js/safety.js`: offline safety tools; `frontend/sw.js`: service worker.
+- `backend/tests/eval/`: labelled dataset and the recall / false-positive gate (see `docs/EVAL.md`).
+- `docs/`: ARCHITECTURE, AGENT_FLOW, API, PRIVACY_SAFETY, DEPLOY, EVAL, PITCH_PLAN, NOTES.
 
 ## Commands
 
@@ -22,14 +24,14 @@ python -m http.server 5500 -d frontend      # dashboard
 docker compose up --build                   # web :8080, api :8000
 ```
 
-CI runs `pytest -q` on Python 3.12 for every push. `pages.yml` deploys `frontend/` to GitHub Pages from `main`.
+CI runs `pytest -q` and `python -m tests.eval.run --min-recall 0.9 --max-fpr 0.1` on Python 3.12 for every push. `pages.yml` deploys `frontend/` to GitHub Pages from `main`.
 
 After changing anything under `frontend/assets`, run `python scripts/bust_cache.py` (it fingerprints the CSS and JS links so Cloudflare never serves an old copy next to a new page). `pytest` fails if you forget.
 
 ## Rules for working here
 
 1. **The agent decides, the rules are the floor.** `agent/loop.py` runs an LLM in rounds of think, act, observe with a goal, a revisable plan and eight tools (some reach outside FAHAM: an agency's real web page, a domain's registration date). The scam rules are one of its tools and always re-run last as a floor. The model can raise concern, never lower it; every signal needs a quote that really appears in the letter, and the words shown to the user are ours. It must stay optional: with no model or no usable answer the plain rule pipeline runs, so the offline demo always works. Only masked text reaches any model.
-2. **Redact before anything else.** Every tool after `privacy.redact` and every LLM call gets redacted text only. Never log or store raw letters. The API is stateless.
+2. **Redact before anything else.** Every tool after `privacy.redact` and every LLM call gets redacted text only. Never log or store raw letters. The only server state is the redacted-result cache (`cache.py`, memory, 1 h) and the hash-only counter (`counter.py`). Both are documented in `docs/PRIVACY_SAFETY.md`; do not add more.
 3. **Human approval gate.** `act.draft` never sends or pays. `requires_approval` stays `True`.
 4. **Fictional data only.** Letters, names, ICs, accounts, phones and links are fake and marked SAMPEL/FIKTIF. No working links or real numbers in scam examples.
 5. **Procedures come from the registry.** Do not invent agency steps. Add an issuer by adding an entry to `official_sources.json` (`keywords`, `domains`, `source_url`, steps, lesson, terms).

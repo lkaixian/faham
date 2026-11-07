@@ -16,6 +16,8 @@ Paste a message, upload a file, or pick a practice example. For each one the age
 
 Also included: **Easy mode** (a switch in the header, on the first page and in the welcome dialog: bigger text, one thing per screen, three short steps, no menus), **Spot the scam** practice, **Family** mode, and **Connect** (website embed, Messenger and email forwarding).
 
+Safety tools: **I already paid** (works offline, 4 languages), **Someone just called me** (4 questions), a **Semak Mule** shortcut (shows the account, phone and company found in the message and opens the police portal in a new tab; FAHAM never calls it), a privacy-safe **"others checked"** count, **voice input**, and a **WhatsApp warning** for family. The app is installable (PWA) and live results stream in, rules verdict first.
+
 ## What the verdict means
 
 | Verdict | Meaning |
@@ -77,12 +79,14 @@ More detail: [Architecture](docs/ARCHITECTURE.md) · [**Agent (read this)**](doc
 frontend/   static web app, no build step (config.js sets API_BASE); embed.html for websites
 backend/
   app/main.py            routes: /api/health /api/tools /api/analyze /api/analyze-file /api/practice /api/tts
-  app/agent/             loop.py (the agent), orchestrator.py, tools.py (rules, registry), i18n.py (verdict text, 4 languages)
+  app/agent/             loop.py (the agent), orchestrator.py, tools.py (rules, registry), scam_content.py (scam types), i18n.py (verdict text, 4 languages)
+  app/cache.py limiter.py counter.py   result cache, fair queue, hash-only counter
+  app/mcp_server.py      optional MCP server (stdio)
   app/ingest.py          file reading: PDF, DOCX, TXT, MD, EML, images
   app/channels.py        Messenger webhook and email forwarding
   app/llm.py, tts.py     ILMU and Anthropic text, ILMU read-aloud
   app/data/              official_sources.json, offices.json (demo), practice.json
-  tests/                 pytest (test_agent_loop.py covers the agent)
+  tests/                 pytest (test_agent_loop.py covers the agent); tests/eval/ holds the scam-detection eval (88 messages, 4 languages)
   evals/run_suite.py     measures the live agent on real documents
 docs/       design notes and research
 ```
@@ -118,10 +122,13 @@ If port 8080 is busy, put `WEB_PORT=8081` in a root `.env` file. The API image r
 
 The code is baked into the API image, so after changing backend code run `docker compose up -d --build`; a restart is not enough.
 
-### Tests
+### Tests and eval
 ```bash
 cd backend && pytest -q
+python -m tests.eval.run --min-recall 0.9 --max-fpr 0.1   # precision, recall, false-positive rate, latency
+python -m app.mcp_server                                  # optional MCP server on stdio
 ```
+The eval gate fails CI if scam recall is below 0.9 or the legit false-positive rate is above 0.1. Read [docs/EVAL.md](docs/EVAL.md) before quoting a number: it is a small synthetic set.
 
 ## Configuration
 Copy `.env.example` to `.env` in the repo root (one file for Docker Compose and the API). Never commit it.
@@ -134,6 +141,9 @@ Copy `.env.example` to `.env` in the repo root (one file for Docker Compose and 
 | `ILMU_API_KEY` / `ILMU_BASE_URL` | empty / `https://api.ilmu.ai/v1` | Needed for ILMU text and voice |
 | `ANTHROPIC_API_KEY` | empty | Needed when the provider is `anthropic` |
 | `FAHAM_LLM_MODEL_ILMU` / `FAHAM_LLM_MODEL_ANTHROPIC` | `ilmu-mini-v3.3` / `claude-sonnet-5-5` | Model per provider. Check ILMU `GET /v1/models` for current names |
+| `FAHAM_MAX_CONCURRENT` / `FAHAM_QUEUE_PATIENCE` | `4` / `60` | Analyses at once; seconds a request may wait before 503 |
+| `FAHAM_LLM_RETRIES` / `FAHAM_LLM_BACKOFF` | `3` / `0.4` (seconds, doubles each retry) | Retries with exponential backoff for LLM errors, then the rules-only answer |
+| `FAHAM_COUNTER_DB` | `backend/var/counters.sqlite3` | Hash-only "others checked" counter |
 | `FAHAM_TTS_MODEL` / `FAHAM_TTS_VOICE` | `ilmu-tts-v2.1` / `voice_1` | Read-aloud for BM, EN and 中文. Tamil uses the browser voice. About RM 0.08 per 1,000 characters |
 
 Messenger and email forwarding have their own variables and stay off until set. See [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md).
@@ -173,7 +183,7 @@ The address changes every time the container restarts. Stop it with `docker comp
 
 ## Important
 - All sample letters, names, IC numbers and accounts here are **fictional** (marked SAMPEL · FIKTIF). Never commit real people's letters.
-- FAHAM gives **guidance, not legal advice**. Steps come from a cached official-source registry dated in the response; office data is demo data.
+- FAHAM gives **guidance, not legal advice**. Steps come from a cached official-source registry; every source is shown with its last-checked date and flagged as sample data, and office data is demo data.
 - Not yet tested live: Messenger and email forwarding against real Meta and mail servers, and OCR on scanned documents.
 - Chinese and Tamil text needs native-speaker review, and the Terms and Code of Conduct need a legal read, before the demo.
 - Known gaps and next steps are tracked in [docs/NOTES.md](docs/NOTES.md).

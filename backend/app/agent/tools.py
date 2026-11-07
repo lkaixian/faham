@@ -16,6 +16,9 @@ from urllib.parse import urlparse
 from .. import llm
 from ..config import DATA_DIR
 from .i18n import TEXT, render
+from .registry_i18n import localize
+from .scam_content import (LETTER_DRAFT, LETTER_Q, AMOUNT_PIECE, REMINDER, SCAM_REPORT_DRAFT, VERIFY_NOTE_DRAFT,
+                           detect_scam_type, scam_lesson, scam_route)
 
 SOURCES: dict = {k: v for k, v in json.loads((DATA_DIR / "official_sources.json").read_text(encoding="utf-8")).items() if not k.startswith("_")}
 OFFICES: dict = json.loads((DATA_DIR / "offices.json").read_text(encoding="utf-8"))
@@ -95,7 +98,7 @@ EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 # Whole line is masked: starts with "No." or has Jalan/Lorong/Taman, plus a 5-digit postcode on it or the next line.
 ADDRESS_RE = re.compile(r"^[ \t]*(?:No\.|[^\n]*?\b(?:Jalan|Lorong|Taman)\b)[^\n]*?(?:\b\d{5}\b|\n[ \t]*\d{5}\b)[^\n]*", re.IGNORECASE | re.MULTILINE)
 # ponytail: 1-3 letters + 1-4 digits; may over-mask odd uppercase tokens (RM excluded). Tighten with a state-prefix list if it bites.
-PLATE_RE = re.compile(r"(?<![\w/-])(?!RM\b)[A-Z]{1,3} ?[1-9]\d{0,3}(?: ?[A-Z])?(?![\w/-])")
+PLATE_RE = re.compile(r"(?<![\w/-])(?!RM ?\d)(?!RM\b)[A-Z]{1,3} ?[1-9]\d{0,3}(?: ?[A-Z])?(?![\w/-])")
 NAME_RE = re.compile(r"((?:Kepada|Nama)\s*:\s*)([^,\n\[]+)", re.IGNORECASE)
 # Malay/Indian name forms anywhere in the text: ALI BIN ABU, SITI BINTI HASAN, RAJU A/L MUTHU.
 PATRONYM_RE = re.compile(r"\b(?:[A-Z][A-Z'.@]+[ \t]+){1,3}(?:BIN|BINTI|BT|B\.|A/L|A/P|S/O|D/O|ANAK)[ \t]+[A-Z][A-Z'.@]+(?:[ \t]+[A-Z][A-Z'.@]+){0,3}")
@@ -181,6 +184,27 @@ def extract_fields(text: str) -> dict:
     }
 
 
+# ---------------------------------------------------------------- entities (for the Semak Mule shortcut)
+_ACCT = re.compile(r"(?<![\d-])(?:\d[ -]?){10,16}(?![\d-])")
+_COMPANY = re.compile(r"\b(?:[A-Z][\w&.'-]*\s+){1,4}(?:Sdn\.?\s*Bhd\.?|Bhd\.?|Berhad|Enterprise|Trading|Resources|Holdings|Services|Solutions|Ventures)\b|(?:Syarikat|Kedai|Company|Co\.)\s+(?:[A-Z][\w&.'-]*\s?){1,4}")
+
+
+def extract_entities(raw: str) -> dict:
+    """Bank accounts, phone numbers and company names found in the RAW message, for display only.
+
+    Called on the request text after the analysis and never cached or stored: the user sees their own message's
+    details so they can type them into the official Semak Mule check. IC numbers are never returned."""
+    digits = lambda x: re.sub(r"\D", "", x)
+    ics = {digits(m) for m in IC_RE.findall(raw)}
+    phones = [m.group(0).strip() for m in PHONE_RE.finditer(raw)]
+    pd = {digits(p) for p in phones}
+    accounts = [re.sub(r"\s+", " ", m).strip() for m in _ACCT.findall(raw)]
+    accounts = [a for a in accounts if digits(a) not in ics and digits(a) not in pd and len(digits(a)) >= 10]
+    companies = [re.sub(r"\s+", " ", m.group(0)).strip(" .,") for m in _COMPANY.finditer(raw)]
+    uniq = lambda xs: list(dict.fromkeys(xs))[:5]
+    return {"accounts": uniq(accounts), "phones": uniq(phones), "companies": uniq(companies)}
+
+
 # ---------------------------------------------------------------- verify
 URL_RE = re.compile(r"\b((?:https?://)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:/[^\s]*)?)", re.IGNORECASE)
 # Social/mail/form hosts: seen in genuine footers and email print-outs, so they are noted, not scored as scam signs.
@@ -190,17 +214,23 @@ FORMS = ("forms.gle", "docs.google.com", "forms.office.com", "typeform.com")
 SHORTENERS = {"bit.ly", "tinyurl.com", "t.co", "goo.gl", "s.id", "cutt.ly", "shorturl.at", "rb.gy"}
 
 RED_FLAGS: list[tuple[str, str]] = [
-    (r"akaun\s+(?:peribadi|maybank|cimb|public bank|rhb|bank islam)|personal account|(?:bayar|transfer|pindah)\w*[^.\n]{0,40}akaun[^.\n]{0,40}atas nama|(?:转|汇)(?:入|到|至)[^。\n]{0,20}(?:账户|账号|户口|帐户)|கணக்கிற்கு\s*(?:பணம்\s*)?(?:அனுப்ப|செலுத்த)", "transfer_account"),
-    (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only|24\s*小时|二十四小时|今[天日]内|24\s*மணி", "urgency"),
-    (r"waran\s+tangkap|arrest|ditangkap|逮捕|拘捕|通缉|கைது", "arrest"),
-    (r"\btac\b|\botp\b|kata laluan|password|验证码|密码|கடவுச்சொல்|ஓடிபி", "tac_otp"),
-    (r"(?:hubungi|contact|mesej|message|klik|click|tambah|add|sertai|join|chat)\W+(?:\w+\W+){0,4}(?:whatsapp|telegram|wasap)|wa\.me/|t\.me/", "chat_app"),
-    (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret|不要告诉|不得告诉|不可告诉|切勿告诉|请?保密|யாரிடமும்\s+சொல்ல\w*\s+வேண்டாம்|ரகசியம\w*", "secret"),
-    (r"akaun\s+selamat|pencucian\s+wang|safe account|money laundering|安全[账帐]户|安全户口|安全账号|洗钱|பாதுகாப்பு\s*கணக்கு|பணச்?\s*சலவை", "safe_account"),
-    (r"gambar\s+ic|ic\s+depan|photo of (?:your )?ic", "ic_photo"),
+    (r"akaun\s+(?:peribadi|maybank|cimb|public bank|rhb|bank islam)|personal account|转账到|汇款到|转到.{0,8}(?:账户|户口|帐户)|(?:账户|户口)\s*[:：]?\s*\d|(?:bayar|transfer|pindah)\w*[^.\n]{0,40}akaun[^.\n]{0,40}atas nama", "transfer_account"),
+    (r"24\s*jam|24\s*hours|dalam\s+(?:masa\s+)?\d+\s*jam|hari ini sahaja|today only|24\s*小时|立即|马上|立刻|今天之内|24\s*மணி", "urgency"),
+    (r"waran\s+tangkap|arrest|ditangkap|逮捕|通缉|拘留|கைது", "arrest"),
+    (r"akaun\s+selamat|safe\s+account|安全(?:账户|户口|帐户)|பாதுகாப்பு\s*கணக்கு|பாதுகாப்பான\s*கணக்", "safe_account"),
+    (r"pengubahan\s+wang\s+haram|money\s+laundering|洗钱|洗錢|பணமோசடி|பணச்?\s*சலவை", "laundering"),
+    (r"dibekukan|bekukan|akaun[^.\n]{0,20}beku|account[^.\n]{0,20}(?:frozen|freeze)|冻结|凍結|முடக்க", "account_frozen"),
+    (r"\btac\b|\botp\b|kata laluan|password|验证码|密码|கடவுச்சொல்", "tac_otp"),
+    (r"(?:hubungi|contact|mesej|message|klik|click|tambah|add|sertai|join|chat)\W+(?:\w+\W+){0,4}(?:whatsapp|telegram|wasap)|wa\.me/|t\.me/|加.{0,6}(?:whatsapp|telegram|微信)|வாட்ஸ்அப்|டெலிகிராம்", "chat_app"),
+    (r"jangan\s+beritahu|(?:simpan|jaga|kekalkan)\s+(?:ini\s+)?\brahsia\b|keep (?:it )?secret|(?:don'?t|do not) tell (?:anyone|anybody)|不要告诉|不可告诉|不得告诉|切勿告诉|请保密|யாரிடமும்\s*சொல்ல", "secret"),
+    (r"gambar\s+ic|ic\s+depan|photo of (?:your )?ic|身份证.{0,4}(?:照片|正反面|相片)|அடையாள\s*அட்டை.{0,12}படம்", "ic_photo"),
     (r"diskaun\s+\d+%", "discount"),
     (r"akaun\s+(?:bank\s+)?(?:baharu|baru)|new (?:bank )?account|(?:changed|updated) (?:bank )?account|(?:tukar|bertukar|ditukar)\w*\s+akaun|akaun[^.\n]{0,30}(?:telah|sudah)\s+(?:berubah|ditukar)", "new_account"),
     (r"https?://(?:[^\s/]*@|\[email\])|https?://\d{1,3}(?:\.\d{1,3}){3}", "hidden_link"),
+    (r"dijamin\s+(?:untung|keuntungan|pulangan)|guaranteed\s+(?:profit|return|income)|(?:profit|untung|keuntungan|pulangan)[^.\n]{0,25}(?:every month|sebulan|setiap bulan|per month)|保证[^。\n]{0,8}(?:赚|收益|回报|盈利)|每月[^。\n]{0,4}赚|லாபம்\s*உறுதி|உறுதி[^.\n]{0,12}லாபம்", "guaranteed_returns"),
+    (r"deposit\w*\s+(?:of\s+)?rm\s?\d[^.\n]{0,40}(?:activate|aktif|daftar|register)|rm\s?\d[\d,.]*\s+deposit[^.\n]{0,40}(?:activate|aktif|daftar|register)|yuran\s+pendaftaran|registration fee|押金|订金|வைப்புத்?\s*தொகை", "advance_fee"),
+    (r"(?:army|military|tentera|soldier|军医|军人|ராணுவ)[^.\n]{0,25}(?:doctor|doktor|engineer|jurutera|医|மருத்துவர்)[^.\n]{0,40}(?:syria|afghanistan|yemen|iraq|overseas|abroad|luar negara|mission|misi|海外|国外|叙利亚|阿富汗|சிரியா|ஆப்கான்|வெளிநாடு)|(?:doctor|doktor|医生)\s*(?:army|tentera|military)[^.\n]{0,20}(?:syria|afghanistan|yemen|iraq|overseas|abroad|luar negara|mission|misi|海外|国外|叙利亚|阿富汗|சிரியா|ஆப்கான்|வெளிநாடு)|(?:send|hantar)[^.\n]{0,30}(?:money|wang|duit)[^.\n]{0,30}(?:friend'?s|kawan)[^.\n]{0,15}(?:account|akaun)|钱[^。\n]{0,6}(?:汇|转)[^。\n]{0,10}朋友[^。\n]{0,6}(?:户口|账户)|நண்பர[^.\n]{0,12}கணக்[^.\n]{0,20}பணம்[^.\n]{0,10}அனுப்பு", "romance_money"),
+    (r"(?:you(?:'ve| have)?\s+won|anda\s+(?:telah\s+)?menang|congratulations[^.\n]{0,30}won)[^.\n]{0,30}(?:prize|lottery|lucky draw|rm\s?\d|cash|hadiah|cabutan|iphone|voucher)|menang[^.\n]{0,25}(?:hadiah|cabutan)|(?:won|win)[^.\n]{0,25}(?:prize|lottery|lucky draw)|中奖|中獎|லாட்டரி[^.\n]{0,25}வென்ற|பரிசு[^.\n]{0,25}வென்ற", "prize_win"),
     (r"ignore (?:all |any )?(?:the )?(?:previous|prior|above) instructions|abaikan (?:semua )?arahan|system prompt|(?:you are|anda ialah) (?:an? )?(?:ai|language model|assistant)|(?:say|state|report|nyatakan|laporkan) (?:that )?(?:this|it|ini)(?: is| sebagai| adalah)? (?:genuine|safe|legit|sah|selamat)", "prompt_injection"),
     (r"verify your account|confirm your details|sahkan (?:akaun|maklumat)|akaun anda (?:akan )?(?:di)?(?:gantung|sekat|bekukan|tutup)|your account (?:will be|has been) (?:suspended|blocked|closed)", "credential_harvest"),
 ]
@@ -267,6 +297,31 @@ def _social_handles(text: str) -> list[str]:
     return list(dict.fromkeys(out))
 
 
+# Fixed thresholds: score 0-100 is "how safe it looks". Below SCAM_BELOW is a likely scam, from CLEAR_FROM up is "no signals".
+SCAM_BELOW, CLEAR_FROM = 60, 80
+FLAG_WEIGHT = {"family_impersonation": 55, "safe_account": 30, "laundering": 25}  # default weight is 22
+
+
+def verdict_from_score(score: int) -> str:
+    return "likely_scam" if score < SCAM_BELOW else "no_signals" if score >= CLEAR_FROM else "caution"
+
+
+# "Hi mak, this is my new number": a new-number or broken-phone excuse, a family address and a money ask, all three.
+_FAM_EXCUSE = (r"nombor\s+(?:baru|baharu)|no\.?\s*(?:ni|ini)\s+(?:nombor\s+)?baru|(?:telefon|phone|handphone|hp|fon)\s+(?:saya\s+|aku\s+)?(?:rosak|hilang|jatuh)|"
+               r"new\s+(?:phone\s+)?number|changed\s+(?:my\s+)?number|(?:lost|broke|broken|damaged|dropped)\s+(?:my\s+)?phone|phone\s+(?:is\s+|was\s+|got\s+)?(?:broken|lost|damaged|stolen)|"
+               r"新号码|新號碼|换了(?:新)?号|手机(?:坏|丢|掉|摔)|号码换了|"
+               r"புதிய\s*(?:எண்|நம்பர்)|போன்\s*(?:உடைந்|தொலைந்|கெட்)|எண்ணை\s*மாற்றி")
+_FAM_ADDRESS = (r"\b(?:mak|emak|ibu|mama|ayah|abah|abang|kakak|kak|along|angah|mum|mom|mummy|dad|papa|pak\s*cik|mak\s*cik|auntie|uncle)\b|"
+                r"妈|爸|哥|姐|阿姨|叔叔|அம்மா|அப்பா|அண்ணா|அக்கா")
+_FAM_MONEY = (r"transfer|pindah|bayar|duit|wang\b|rm\s?\d|send\s+(?:me\s+)?(?:money|rm)|tolong\s+(?:bayar|hantar|topup|top up)|urgent|"
+              r"转账|汇款|转钱|付款|借钱|钱|பணம்|அனுப்ப|கட்ட")
+
+
+def _family_impersonation(low: str):
+    """Match of the new-number excuse when all three parts are present, else None."""
+    m = re.search(_FAM_EXCUSE, low)
+    return m if m and re.search(_FAM_ADDRESS, low) and re.search(_FAM_MONEY, low) else None
+
 AI_SIGNALS = ("ai_payment_demand", "ai_threat", "ai_credential", "ai_remote_access", "ai_impersonation",
               "ai_too_good", "ai_secrecy", "ai_chat_move", "ai_inconsistent", "ai_new_domain", "ai_official_mismatch")
 # What the agent's evidence can do. A quote proves the words exist, not that the agent's JUDGEMENT of them is right, so:
@@ -290,6 +345,9 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
         if m:
             flags.append((k, r(k)))
             ev[flags[-1]] = [text[m.start():m.end()][:80]]
+    fam = _family_impersonation(low)
+    if fam:
+        flags.append(("family_impersonation", r("family_impersonation"))); ev[flags[-1]] = [text[fam.start():fam.end()][:80]]
     flags += [(c, r(c)) for c in extra if c in TEXT]  # extra risk codes, e.g. email header signals
     for c, quote in ai:  # signals the AI planner found; the planner already checked each quote against the letter
         if c in AI_SIGNALS and (c, r(c)) not in flags:
@@ -329,11 +387,12 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     ref = REF_RE.search(text)
     if ref:
         good.append(("ref_format", r("ref_format"))); ev[good[-1]] = [ref.group(1)]
-    score = max(0, min(100, 80 + 5 * len(good) - sum(12 if c in AI_SOFT else 30 if c in AI_HARD else 22 for c, _ in flags)))
-    # Three levels: rules can rule a scam in, never prove a letter genuine.
-    verdict = "likely_scam" if score < 60 else "no_signals" if issuer != "UNKNOWN" and not flags and score >= 80 else "caution"
-    if verdict == "likely_scam" and flags and all(c in AI_SOFT for c, _ in flags):
-        verdict, score = "caution", 60  # judgement calls alone never condemn a message; the rules or hard evidence must agree
+    score = max(0, min(100, 80 + 5 * len(good) - sum(FLAG_WEIGHT.get(c, 12 if c in AI_SOFT else 30 if c in AI_HARD else 22) for c, _ in flags)))
+    if flags or issuer == "UNKNOWN":
+        score = min(score, CLEAR_FROM - 1)  # any red flag or an unknown sender can never read as clear
+    if flags and all(c in AI_SOFT for c, _ in flags):
+        score = max(score, SCAM_BELOW)  # judgement calls alone never condemn a message; the rules or hard evidence must agree
+    verdict = verdict_from_score(score)  # the verdict is a pure function of the score: they cannot disagree
     R = lambda kind, c, t: {"kind": kind, "code": c, "text": t, "evidence": list(dict.fromkeys(ev.get((c, t), [])))}
     reasons = ([R("risk", c, t) for c, t in flags] + [R("ok", c, t) for c, t in good]
                + [R("info", c, t) for c, t in info]
@@ -344,9 +403,12 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     verify = [r("type_url", site=src.get("source_url") or "https://www.malaysia.gov.my"),
               r("call_official", who=src.get("name") or r("the_agency")),
               r("check_ref"), r("no_pay_tac")]
+    if fam:  # the one check that beats this scam: hear their real voice on the number you already have
+        verify.insert(0, r("call_old_number"))
+    stype = detect_scam_type(low, family=bool(fam)) if verdict != "no_signals" else None
     return {"genuine": verdict != "likely_scam",  # means 'not flagged', not 'proven genuine'
             "verdict": verdict, "score": score, "red_flags": [t for _, t in flags], "good_signs": [t for _, t in good],
-            "reasons": reasons, "verify_yourself": verify}
+            "reasons": reasons, "verify_yourself": verify, "scam_type": stype}
 
 
 ODD_TLDS = (".top", ".xyz", ".icu", ".click", ".buzz", ".cfd", ".sbs", ".cyou", ".rest", ".monster", ".cam")
@@ -452,28 +514,29 @@ def explain(redacted_text: str, issuer: str, fields: dict, genuine: bool, langua
     ) + " " + CHECK_SENTENCE[language]
 
 
-@tool("teach.lesson", "Create the 'Kenapa saya dapat surat ini?' card and glossary terms.")
-def teach(issuer: str, genuine: bool) -> dict:
-    key = issuer if genuine else "PDRM"
-    src = SOURCES.get(key) or SOURCES["PDRM"]
+@tool("teach.lesson", "Create the 'Kenapa saya dapat surat ini?' card and glossary terms, in the user's language.")
+def teach(issuer: str, genuine: bool, language: str = "en", scam_type: str | None = None) -> dict:
     if not genuine:
-        return {"question": "Kenapa saya dapat mesej ini?",
-                "answer": "Scammers copy official words and add a short deadline so you act before you think or ask someone.",
-                "terms": ["Waran tangkap", "NSRC 997", "Domain rasmi"]}
-    return {"question": src["lesson"]["q"], "answer": src["lesson"]["a"], "terms": src["terms"]}
+        return scam_lesson(scam_type or "other", language)  # lesson follows the scam type, not a fixed police story
+    src = SOURCES.get(issuer) or SOURCES["PDRM"]
+    return {"question": LETTER_Q[language], "answer": localize(issuer, src, language)["lesson_a"], "terms": src["terms"]}
 
 
 # ---------------------------------------------------------------- route / act
-@tool("gov.retrieve", "Get current steps from the official source registry.")
-def retrieve(issuer: str, genuine: bool) -> dict:
-    src = SOURCES.get(issuer) if genuine else SOURCES["PDRM"]
+@tool("gov.retrieve", "Get current steps from the official source registry (or scam-reporting steps for a scam).")
+def retrieve(issuer: str, genuine: bool, language: str = "en", scam_type: str | None = None) -> dict:
+    if not genuine:  # a scam never gets the impersonated agency's steps: report it and protect yourself
+        return scam_route(scam_type or "other", language, SOURCES["PDRM"]["retrieved_at"])
+    src = SOURCES.get(issuer)
     if not src:
         return {"online_steps": ["Find the agency's official .gov.my site yourself and check there."],
                 "walkin_steps": ["Visit the agency counter with the letter and IC."],
                 "prepare_online": ["IC number"], "prepare_walkin": ["IC (original)", "This letter"],
                 "source_url": "https://www.malaysia.gov.my", "retrieved_at": SOURCES["PDRM"]["retrieved_at"], "confidence": "Low"}
     # Production: fetch src["source_url"] here and refresh steps; cached steps are the fallback.
-    return {k: src[k] for k in ("online_steps", "walkin_steps", "prepare_online", "prepare_walkin", "source_url", "retrieved_at")} | {"confidence": "Medium"}  # cached registry, not a live fetch
+    loc = localize(issuer, src, language)
+    return {k: loc[k] for k in ("online_steps", "walkin_steps", "prepare_online", "prepare_walkin")} | {
+        "source_url": src["source_url"], "retrieved_at": src["retrieved_at"], "confidence": "Medium"}  # cached registry, not a live fetch
 
 
 @tool("office.locate", "Nearest office, hours and booking info from postcode (demo data).")
@@ -486,16 +549,16 @@ def locate(issuer: str, postcode: str | None) -> dict | None:
     return offices[0] if offices else None
 
 
-@tool("act.draft", "Prepare a reply draft and a reminder. Never sends — needs user approval.")
-def draft(issuer: str, fields: dict, genuine: bool) -> dict:
+@tool("act.draft", "Prepare a reply draft and a reminder. Never sends: needs user approval.")
+def draft(issuer: str, fields: dict, genuine: bool, language: str = "bm") -> dict:
     if not genuine:
-        return {"draft": "LAPORAN SCAM (draf)\nSaluran: SMS / WhatsApp / e-mel\nKandungan: [ringkasan mesej]\nTindakan saya: Tidak membuat bayaran. Tidak klik pautan.\n[Nama penuh]",
-                "reminder": None}
+        return {"draft": SCAM_REPORT_DRAFT[language], "reminder": None}
+    if issuer not in SOURCES:  # no known agency: never invent an agency letter
+        return {"draft": VERIFY_NOTE_DRAFT[language], "reminder": None}
     ref = fields.get("reference") or "[rujukan]"
-    body = (f"Kepada: {SOURCES.get(issuer, {}).get('name', '[agensi]')}\nPerkara: Pertanyaan / Permohonan berkaitan rujukan {ref}\n\n"
-            f"Tuan/Puan,\nSaya merujuk kepada notis {ref}" + (f" berjumlah {fields['amount']}" if fields.get("amount") else "") +
-            ".\n[Nyatakan permohonan anda]\n\nSekian, terima kasih.\n[Nama penuh]")
-    reminder = f"7 days before {fields['deadline']}" if fields.get("deadline") else None
+    amount = AMOUNT_PIECE[language].format(a=fields["amount"]) if fields.get("amount") else ""
+    body = LETTER_DRAFT[language].format(agency=SOURCES[issuer]["name"], ref=ref, amount=amount)
+    reminder = REMINDER[language].format(d=fields["deadline"]) if fields.get("deadline") else None
     return {"draft": body, "reminder": reminder}
 
 

@@ -29,12 +29,6 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "以逮捕来威胁",
         "ta": "கைது செய்வோம் என்று மிரட்டுகிறது",
     },
-    "safe_account": {
-        "en": "Talks of a \"safe account\" or money laundering, a known scam script",
-        "bm": "Menyebut \"akaun selamat\" atau pengubahan wang haram, skrip penipuan yang dikenali",
-        "zh": "提到“安全账户”或洗钱，这是常见的诈骗话术",
-        "ta": "\"பாதுகாப்பு கணக்கு\" அல்லது பணச் சலவை பற்றிப் பேசுகிறது; இது அறியப்பட்ட மோசடி வழக்கம்",
-    },
     "tac_otp": {
         "en": "Asks for a TAC, OTP or password",
         "bm": "Meminta TAC, OTP atau kata laluan",
@@ -82,6 +76,60 @@ TEXT: dict[str, dict[str, str]] = {
         "bm": "Mahu anda 'sahkan' akaun atau maklumat anda",
         "zh": "要你“验证”户口或个人资料",
         "ta": "உங்கள் கணக்கு அல்லது விவரங்களை 'சரிபார்க்க' சொல்கிறது",
+    },
+    "guaranteed_returns": {
+        "en": "Promises guaranteed or very high profit (real investments cannot)",
+        "bm": "Menjanjikan untung dijamin atau sangat tinggi (pelaburan sebenar tidak boleh)",
+        "zh": "承诺保证赚钱或超高回报（真正的投资做不到）",
+        "ta": "உறுதியான அல்லது மிக அதிக லாபம் என்று வாக்களிக்கிறது (உண்மையான முதலீடு இப்படி இருக்காது)",
+    },
+    "advance_fee": {
+        "en": "Asks you to pay a deposit or fee first to start or register",
+        "bm": "Minta anda bayar deposit atau yuran dahulu untuk mula atau mendaftar",
+        "zh": "要你先付押金或费用才能开始或登记",
+        "ta": "தொடங்க அல்லது பதிவு செய்ய முதலில் வைப்புத் தொகை அல்லது கட்டணம் கேட்கிறது",
+    },
+    "romance_money": {
+        "en": "A stranger far away asks you to send money, or to use a friend's account",
+        "bm": "Orang tidak dikenali di tempat jauh minta anda hantar wang, atau guna akaun kawannya",
+        "zh": "远方的陌生人要你汇款，或汇到他朋友的户口",
+        "ta": "தொலைவிலுள்ள அறிமுகமில்லாதவர் பணம் அனுப்பச் சொல்கிறார், அல்லது நண்பரின் கணக்கைப் பயன்படுத்தச் சொல்கிறார்",
+    },
+    "prize_win": {
+        "en": "Says you won a prize you never entered for (a classic scam opening)",
+        "bm": "Kata anda menang hadiah yang tidak pernah anda sertai (cara biasa penipu)",
+        "zh": "说你中了从没参加过的奖（典型骗局开场）",
+        "ta": "நீங்கள் பங்கேற்காத பரிசை வென்றதாகக் கூறுகிறது (பொதுவான மோசடி தொடக்கம்)",
+    },
+    "safe_account": {
+        "en": "Mentions a 'safe account' (real authorities never use one)",
+        "bm": "Menyebut 'akaun selamat' (pihak berkuasa sebenar tidak pernah guna)",
+        "zh": "提到“安全账户”（真正的执法机构从不使用）",
+        "ta": "'பாதுகாப்பான கணக்கு' என்கிறது (உண்மையான அதிகாரிகள் இதைப் பயன்படுத்துவதில்லை)",
+    },
+    "laundering": {
+        "en": "Accuses you of money laundering or a crime",
+        "bm": "Menuduh anda terlibat pengubahan wang haram atau jenayah",
+        "zh": "指控你涉嫌洗钱或犯罪",
+        "ta": "பணமோசடி அல்லது குற்றத்தில் ஈடுபட்டதாகக் குற்றம் சாட்டுகிறது",
+    },
+    "account_frozen": {
+        "en": "Threatens to freeze your account",
+        "bm": "Mengugut akan membekukan akaun anda",
+        "zh": "威胁要冻结你的户口",
+        "ta": "உங்கள் கணக்கை முடக்குவோம் என்று மிரட்டுகிறது",
+    },
+    "family_impersonation": {
+        "en": "Pretends to be a family member with a new number and asks for money",
+        "bm": "Berpura-pura ahli keluarga dengan nombor baru dan minta wang",
+        "zh": "假扮家人，说换了新号码并要钱",
+        "ta": "புதிய எண்ணுடன் குடும்ப உறுப்பினர் போல நடித்துப் பணம் கேட்கிறது",
+    },
+    "call_old_number": {
+        "en": "Call this person on their OLD number first, before sending any money",
+        "bm": "Telefon orang ini pada nombor LAMA mereka dahulu, sebelum menghantar sebarang wang",
+        "zh": "汇款之前，先打这个人的旧号码确认",
+        "ta": "பணம் அனுப்பும் முன், முதலில் அவரின் பழைய எண்ணை அழைக்கவும்",
     },
     "shortener": {
         "en": "Shortened link ({d}) instead of an official site",

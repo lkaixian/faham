@@ -34,3 +34,11 @@ def llm_chain() -> list[str]:
 
 def llm_ready() -> bool:
     return bool(llm_chain())
+
+# Analyses running at once; the rest queue in order. Each analysis may call the LLM, so keep this small.
+MAX_CONCURRENT = int(os.getenv("FAHAM_MAX_CONCURRENT", "4"))
+LLM_RETRIES = int(os.getenv("FAHAM_LLM_RETRIES", "3"))
+LLM_BACKOFF = float(os.getenv("FAHAM_LLM_BACKOFF", "0.4"))  # seconds; doubles each retry
+QUEUE_PATIENCE = float(os.getenv("FAHAM_QUEUE_PATIENCE", "60"))  # seconds a request may wait in line before 503
+
+COUNTER_DB = os.getenv("FAHAM_COUNTER_DB", str(Path(__file__).resolve().parent.parent / "var" / "counters.sqlite3"))  # fingerprint + count + timestamps only

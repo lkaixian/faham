@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from ..models import (Action, AgentInfo, AnalyzeRequest, AnalyzeResponse, Attachment, ExtraDraft, Fields, Lesson,
                       Route, ScamVerdict, TraceStep)
+from .. import cache
 from . import loop
 from . import tools as T
 from .i18n import render
@@ -40,6 +41,34 @@ class Trace:
         self._add(TraceStep(stage=stage, kind=kind, message=msg, flag=flag))
 
 
+def quick_verdict(req: AnalyzeRequest) -> dict | None:
+    """Rules-only verdict for the SSE stream's first event (no LLM, no OCR). None if the request has only an image."""
+    if not req.text.strip():
+        return None
+    redacted, _ = T.redact(req.text)
+    issuer, _ = T.classify_issuer(redacted)
+    v = T.scam_check(redacted, issuer, req.language)
+    f = T.extract_fields(redacted)
+    return {"verdict": v["verdict"], "score": v["score"], "scam_type": v["scam_type"], "issuer": issuer,
+            "fields": f, "reasons": v["reasons"], "verify_yourself": v["verify_yourself"]}
+
+
+class _Memo:
+    """Tool calls with the same name and arguments run once per analysis (the planner may ask twice)."""
+
+    def __init__(self) -> None:
+        self.seen: dict[tuple, object] = {}
+        self.skipped = 0
+
+    def call(self, name: str, *args):
+        k = (name, repr(args))
+        if k in self.seen:
+            self.skipped += 1
+            return self.seen[k]
+        self.seen[k] = T.TOOLS[name].fn(*args)
+        return self.seen[k]
+
+
 def _report(lang: str, issuer: str, verdict: dict) -> str:
     who = T.SOURCES.get(issuer, {}).get("name") or render("the_agency", lang)
     risks = [r["text"] for r in verdict["reasons"] if r["kind"] == "risk"]
@@ -56,6 +85,10 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
     tr.call("read", "ocr.read", f"{len(raw.split())} words read")
     redacted, counts = T.TOOLS["privacy.redact"].fn(raw)
     tr.call("read", "privacy.redact", "masked: " + ", ".join(f"{k} ×{v}" for k, v in counts.items()) + " — only redacted text is processed")
+    # Same redacted text + language (+ postcode, extra signals) gives the same answer: serve it from cache for up to an hour.
+    key = cache.fingerprint(redacted, req.language, req.postcode or "", tuple(extra_signals))
+    if (hit := cache.ANALYSES.get(key)) is not None:
+        return hit.model_copy(deep=True)
 
     # ---- AGENT: plan, use tools, observe, decide (or nothing, if no model is available)
     d = loop.run(redacted, req.language, req.postcode, tr)
@@ -74,8 +107,9 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
     # ---- VERIFY: the rules always run last as a floor; the agent's evidence (quotes that really appear) can only add concern
     tr.think("verify", "Final check: the rules run on the message together with the evidence the agent found." if d.signals
              else "Before explaining anything, I must check this is not a scam.")
-    verdict = T.TOOLS["scam.check"].fn(redacted, issuer, req.language, extra_signals, d.signals)
-    en = verdict if req.language == "en" else T.TOOLS["scam.check"].fn(redacted, issuer, "en", extra_signals, d.signals)  # trace stays English
+    memo = _Memo()
+    verdict = memo.call("scam.check", redacted, issuer, req.language, tuple(extra_signals), tuple(d.signals))
+    en = memo.call("scam.check", redacted, issuer, "en", tuple(extra_signals), tuple(d.signals))  # trace stays English; same args as above run once
     tr.call("verify", "scam.check", "domain allowlist · red-flag rules · reference pattern" + (" · agent evidence" if d.signals else ""))
     for g in en["good_signs"]:
         tr.note("verify", "ok", "✓ " + g)
@@ -97,14 +131,15 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
     tr.call("explain", "llm.explain", "plain-language explanation ready")
 
     # ---- TEACH
-    lesson = T.TOOLS["teach.lesson"].fn(issuer, genuine)
+    stype = verdict.get("scam_type")
+    lesson = T.TOOLS["teach.lesson"].fn(issuer, genuine, req.language, stype)
     tr.call("teach", "teach.lesson", f"lesson card + {len(lesson['terms'])} Kamus Surat terms: {', '.join(lesson['terms'])}")
 
     # ---- ROUTE
-    route = T.TOOLS["gov.retrieve"].fn(issuer, genuine)
+    route = T.TOOLS["gov.retrieve"].fn(issuer, genuine, req.language, stype)
     office = T.TOOLS["office.locate"].fn(issuer if genuine else "PDRM", req.postcode)
     if office:
-        route["walkin_steps"] = [f"Nearest: {office['name']} · hours: {office['hours']} · booking: {office['booking']}"] + route["walkin_steps"]
+        route["walkin_steps"] = [f"Nearest: {office['name']} · hours: {office['hours']} · booking: {office['booking']} · sample data, verify on the official site"] + route["walkin_steps"]
     online_first = genuine and bool(route["online_steps"])
     tr.think("route", "Decision: genuine and online steps exist -> online first, walk-in as backup." if online_first
              else "Decision: " + ("no online steps" if genuine else "likely scam; never use links in the message") + " -> walk-in / official channel first.")
@@ -114,7 +149,7 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
         tr.call("route", name, msg)
 
     # ---- ACT (human-in-the-loop): the base draft, plus what the agent chose to prepare. Nothing is sent or paid.
-    act = T.TOOLS["act.draft"].fn(issuer, f, genuine)
+    act = T.TOOLS["act.draft"].fn(issuer, f, genuine, req.language)
     tr.call("act", "act.draft", "draft prepared" + (f" · reminder {act['reminder']}" if act["reminder"] else ""))
     extra = []
     for kind, title, text in d.extras:
@@ -136,7 +171,7 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
     tr.note("act", "warn", "⏸ waiting for user approval — nothing is sent or paid automatically")
 
     src = T.SOURCES.get(issuer, {})
-    return AnalyzeResponse(
+    resp = AnalyzeResponse(
         redacted_text=redacted,
         fields=Fields(issuer=issuer, letter_type=src.get("letter_type", "Unknown") if genuine else "Suspicious message",
                       amount=f["amount"], deadline=f["deadline"], reference=f["reference"]),
@@ -152,3 +187,5 @@ def run(req: AnalyzeRequest, image_bytes: bytes | None = None, extra_signals: tu
                         signals=len(d.signals), refused=d.refused, assessment=d.assessment, summary=d.summary,
                         doubts=d.doubts, filled=filled),
     )
+    cache.ANALYSES.set(key, resp.model_copy(deep=True))
+    return resp

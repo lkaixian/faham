@@ -33,6 +33,8 @@ def scripted(monkeypatch, *replies):
 
 
 def analyse(text, lang="en", **extra):
+    from app import cache
+    cache.ANALYSES.clear()  # the same letter is analysed under different scripted agents
     r = client.post("/api/analyze", json={"text": text, "language": lang, **extra})
     assert r.status_code == 200, r.text
     return r.json()

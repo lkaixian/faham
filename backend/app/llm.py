@@ -10,6 +10,8 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
+import urllib.error
 import urllib.request
 
 from . import config
@@ -35,7 +37,7 @@ RESIDUAL_PII = re.compile(r"[\w.+-]+@[\w-]+\.\w|\b\d{6}-?\d{2}-?\d{4}\b|(?:\d[ -
 def _ilmu(system: str, user: str, max_tokens: int = 400) -> str | None:
     req = urllib.request.Request(
         config.ILMU_BASE_URL + "/chat/completions",
-        data=json.dumps({"model": config.MODELS["ilmu"], "max_tokens": max_tokens, "messages": [
+        data=json.dumps({"model": config.MODELS["ilmu"], "max_tokens": max_tokens, "temperature": 0, "messages": [
             {"role": "system", "content": system}, {"role": "user", "content": user}]}).encode(),
         headers={"Content-Type": "application/json", "Authorization": "Bearer " + config.ILMU_API_KEY})
     with urllib.request.urlopen(req, timeout=30) as r:
@@ -46,12 +48,26 @@ def _anthropic(system: str, user: str, max_tokens: int = 400) -> str | None:
     import anthropic  # optional dependency
 
     msg = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY).messages.create(
-        model=config.MODELS["anthropic"], max_tokens=max_tokens, system=system,
+        model=config.MODELS["anthropic"], max_tokens=max_tokens, temperature=0, system=system,
         messages=[{"role": "user", "content": user}])
     return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip() or None
 
 
 PROVIDERS = {"ilmu": _ilmu, "anthropic": _anthropic}
+
+
+def _retry(fn, system: str, user: str):
+    """Retry transient failures (timeouts, 429, 5xx) with exponential backoff. Auth errors fail at once."""
+    for i in range(max(1, config.LLM_RETRIES)):
+        try:
+            return fn(system, user)
+        except urllib.error.HTTPError as exc:
+            if exc.code in (400, 401, 403, 404) or i == config.LLM_RETRIES - 1:
+                raise
+        except Exception:
+            if i == config.LLM_RETRIES - 1:
+                raise
+        time.sleep(config.LLM_BACKOFF * 2 ** i)
 
 
 def complete(prompt: str, language: str) -> str | None:
@@ -62,7 +78,7 @@ def complete(prompt: str, language: str) -> str | None:
     user = f"Language: {LANG_NAMES.get(language, 'English')}\n\n<letter>\n{prompt}\n</letter>"
     for name in chain:
         try:
-            if out := PROVIDERS[name](SYSTEM_PROMPT, user):
+            if out := _retry(PROVIDERS[name], SYSTEM_PROMPT, user):
                 return out
         except Exception as exc:  # network, auth, missing package
             log.warning("LLM %s failed, trying next: %s", name, type(exc).__name__)

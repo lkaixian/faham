@@ -15,3 +15,5 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements-dev.txt
       - run: pytest -q
+      - name: Scam-detection eval (recall >= 0.9, false-positive rate <= 0.1)
+        run: python -m tests.eval.run --min-recall 0.9 --max-fpr 0.1

@@ -10,5 +10,8 @@ Thumbs.db
 .idea/
 node_modules/
 .codegraph/
+
+backend/var/
+*.sqlite3
 .env.*
 !.env.example

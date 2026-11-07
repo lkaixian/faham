@@ -6,33 +6,47 @@
   <title>FAHAM</title>
   <meta name="description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
   <meta name="theme-color" content="#5a3b8c" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="FAHAM" />
+  <meta property="og:title" content="FAHAM: semak surat dan mesej, kesan penipuan" />
+  <meta property="og:description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
+  <meta property="og:image" content="https://lkaixian.github.io/faham/assets/img/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Logo FAHAM: faham surat, faham langkah" />
+  <meta property="og:url" content="https://lkaixian.github.io/faham/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FAHAM: semak surat dan mesej, kesan penipuan" />
+  <meta name="twitter:description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
+  <meta name="twitter:image" content="https://lkaixian.github.io/faham/assets/img/og-image.png" />
   <link rel="icon" href="assets/img/favicon-32.png" type="image/png" sizes="32x32" />
   <link rel="icon" href="assets/img/favicon-48.png" type="image/png" sizes="48x48" />
   <link rel="icon" href="assets/img/favicon-256.png" type="image/png" sizes="256x256" />
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
-  <link rel="stylesheet" href="assets/css/styles.css?v=7ee5807c" />
+  <link rel="stylesheet" href="assets/css/styles.css?v=6f4edc18" />
 </head>
 <body>
   <div id="intro" role="dialog" aria-modal="true" aria-label="FAHAM">
     <canvas id="neural" aria-hidden="true"></canvas>
     <div class="intro-inner">
-      <img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="" width="76" height="98" />
-      <img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="" width="76" height="98" />
+      <img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="FAHAM logo" width="76" height="98" />
+      <img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="FAHAM logo" width="76" height="98" />
       <div class="intro-kicker">Agentic AI · Festival Idea Putrajaya 2026</div>
       <h1 class="intro-title" aria-live="polite"><span id="typed"></span><span class="caret" aria-hidden="true"></span></h1>
-      <p class="intro-sub" id="introSub"><b>Faham surat. Faham langkah. Faham hak anda.</b><br />Understand any official letter, spot scams, and know what to do next.</p>
+      <p class="intro-sub" id="introSub"><b>Faham surat. Faham langkah. Faham hak anda.</b><br /><span lang="en">Understand any official letter, spot scams, and know what to do next.</span></p>
       <div class="intro-boot" id="boot" aria-hidden="true"></div>
       <div class="intro-actions" id="introActions">
-        <button class="btn btn-primary btn-big" id="enterBtn" type="button">Masuk / Enter</button>
+        <button class="btn btn-primary btn-big" id="enterBtn" type="button"><span lang="ms">Masuk</span> / <span lang="en">Enter</span></button>
       </div>
     </div>
-    <button class="btn btn-quiet skip-link" id="skipIntro" type="button">Langkau / Skip</button>
+    <button class="btn btn-quiet skip-link" id="skipIntro" type="button"><span lang="ms">Langkau</span> / <span lang="en">Skip</span></button>
   </div>
   <a class="skip" href="#main" data-i18n="skip"></a>
 
   <header class="top">
     <div class="wrap bar">
-      <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="" width="31" height="40" /><span>FAHAM</span></a>
+      <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="FAHAM logo" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="FAHAM logo" width="31" height="40" /><span aria-hidden="true">FAHAM</span></a>
       <div class="ctrls">
         <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
         <div class="tools">
@@ -57,8 +71,10 @@
       <a href="#practice" data-i18n="nav_practice"></a>
       <a href="#dictionary" data-i18n="nav_dict"></a>
       <a href="#family" data-i18n="nav_family"></a>
+      <a href="#call" data-i18n="nav_call"></a>
       <a href="#connect" data-i18n="nav_connect"></a>
       <a href="#about" data-i18n="nav_about"></a>
+      <button class="btn paid-btn" id="paidBtn" type="button" data-i18n="pd_btn"></button>
     </nav>
   </header>
 
@@ -82,6 +98,7 @@
         <form id="form" class="card" novalidate>
           <label for="pasteBox" data-i18n="f_paste"></label>
           <textarea id="pasteBox" rows="7" maxlength="20000" aria-describedby="vhint cnt" data-i18n-ph="f_ph"></textarea>
+          <button class="btn btn-secondary mic" id="micBtn" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span></span></button>
           <div class="meta"><span class="vh" id="vhint" role="status"></span><span class="cnt" id="cnt"></span></div>
           <p class="muted priv"><span data-i18n="f_priv"></span> <a href="#about" data-i18n="f_priv_a"></a></p>
 
@@ -204,6 +221,13 @@
       </div>
     </section>
 
+    <!-- ===== CALL ===== -->
+    <section class="view" id="view-call" hidden>
+      <h1 tabindex="-1" data-i18n="cl_h1"></h1>
+      <p class="lead" data-i18n="cl_lead"></p>
+      <div id="callBody"></div>
+    </section>
+
     <!-- ===== CONNECT ===== -->
     <section class="view" id="view-connect" hidden>
       <h1 tabindex="-1" data-i18n="cn_h1"></h1>
@@ -254,6 +278,17 @@
       <button class="btn btn-quiet" id="obAgain" type="button" data-i18n="ob_again"></button>
       <p class="muted" id="clearMsg" role="status"></p>
 
+      <h2 id="privacy" data-i18n="pv_h"></h2>
+      <ul>
+        <li data-i18n="pv_1"></li>
+        <li data-i18n="pv_2"></li>
+        <li data-i18n="pv_3"></li>
+        <li data-i18n="pv_4"></li>
+        <li data-i18n="pv_5"></li>
+        <li data-i18n="pv_6"></li>
+      </ul>
+      <p class="muted" data-i18n="pv_upd"></p>
+
       <h2 data-i18n="a_guid_h"></h2>
       <p data-i18n="a_guid_p"></p>
 
@@ -266,6 +301,7 @@
   <footer class="wrap foot">
     <p><span data-i18n="foot_scam"></span> <a href="tel:997">NSRC 997</a>.</p>
     <p data-i18n="foot_disc"></p>
+    <p class="muted" data-i18n="foot_src"></p>
     <p><a href="terms.html" data-i18n="tm_h1"></a></p>
     <div id="seniorFootBox" hidden><button class="btn btn-quiet" id="seniorFoot" type="button"></button></div>
   </footer>
@@ -281,12 +317,13 @@
     <button class="btn btn-quiet" id="exitGo" type="button"></button>
   </dialog>
   <div class="ob" id="ob" role="dialog" aria-modal="true" aria-labelledby="obH" hidden></div>
+  <div id="paid" role="dialog" aria-modal="true" aria-labelledby="pdH" hidden></div>
   <div id="toast" role="status" aria-live="polite"></div>
 
   <script src="assets/js/config.js?v=0d0784f3"></script>
   <script src="assets/js/data.js?v=a4702ead"></script>
-  <script src="assets/js/i18n.js?v=55fc4a92"></script>
-  <script src="assets/js/app.js?v=67c58d0f"></script>
+  <script src="assets/js/i18n.js?v=c3acfd44"></script>
+  <script src="assets/js/app.js?v=407459fa"></script>
   <script src="assets/js/intro.js?v=0d20ed6c"></script>
 </body>
 </html>

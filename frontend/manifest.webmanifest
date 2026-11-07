@@ -1,0 +1,22 @@
+{
+  "name": "FAHAM: semak surat dan mesej",
+  "short_name": "FAHAM",
+  "description": "Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat.",
+  "lang": "ms",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f8f8",
+  "theme_color": "#5a3b8c",
+  "categories": ["utilities", "security"],
+  "icons": [
+    { "src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/img/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Ada panggilan", "short_name": "Panggilan", "url": "./#call", "icons": [{ "src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ]
+}
