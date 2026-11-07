@@ -8,6 +8,16 @@ services:
     environment:
       CLOUDFLARE_TUNNEL_TOKEN: ""     # the API never needs the tunnel token; keep it out of that container
       FAHAM_ALLOWED_ORIGINS: http://localhost:${WEB_PORT:-8080},http://127.0.0.1:${WEB_PORT:-8080}
+    # Hardening: the API reads hostile files (see backend/app/sandbox.py). It cannot write outside RAM-backed /tmp and /app/var,
+    # has no extra Linux capabilities, and is capped in memory and process count.
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/var:uid=10001,gid=10001
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 1536m
+    pids_limit: 200
   web:
     image: nginx:alpine
     ports: ["${WEB_PORT:-8080}:80"]

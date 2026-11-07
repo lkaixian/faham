@@ -120,6 +120,30 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "Tulen 不会打开这类压缩包（.rar、.7z），所以无法得知里面是什么。请向发送者确认内容，并在打开前用手机或电脑的安全软件扫描",
         "ta": "இந்த வகைக் காப்பகத்தை (.rar, .7z) Tulen திறப்பதில்லை, அதனால் உள்ளே என்ன இருக்கிறது என்று சொல்ல முடியாது. அனுப்பியவரிடம் அது என்ன என்று கேளுங்கள்; திறப்பதற்கு முன் உங்கள் தொலைபேசி அல்லது கணினியின் பாதுகாப்புச் செயலியால் சோதியுங்கள்",
     },
+    "file_exe_packed": {
+        "en": "The program is packed or scrambled, which hides what it does. Some legitimate tools do this too, but scam programs often do",
+        "bm": "Program ini dimampatkan atau dikelirukan, yang menyembunyikan fungsinya. Sesetengah alat sah juga berbuat begitu, tetapi program penipuan sering berbuat begitu",
+        "zh": "该程序经过加壳或混淆，会隐藏它的真实作用。一些正规工具也会这样，但诈骗程序更常见",
+        "ta": "இந்த நிரல் பொதியப்பட்டுள்ளது அல்லது குழப்பப்பட்டுள்ளது, அது என்ன செய்கிறது என்பதை மறைக்கிறது. சில முறையான கருவிகளும் இப்படிச் செய்யும், ஆனால் மோசடி நிரல்கள் அடிக்கடி செய்கின்றன",
+    },
+    "file_script_dropper": {
+        "en": "This script downloads something from the internet and starts it, the way scam scripts install spyware",
+        "bm": "Skrip ini memuat turun sesuatu dari internet dan menjalankannya, cara skrip penipuan memasang perisian pengintip",
+        "zh": "此脚本会从网上下载内容并启动它，诈骗脚本就是这样安装间谍软件的",
+        "ta": "இந்த ஸ்கிரிப்ட் இணையத்திலிருந்து ஏதோ ஒன்றைப் பதிவிறக்கி இயக்குகிறது; மோசடி ஸ்கிரிப்ட்கள் உளவு மென்பொருளை இப்படித்தான் நிறுவுகின்றன",
+    },
+    "file_checked": {
+        "en": "What we checked: the file's name and type, what is listed inside, and what an app asks permission for. What we did not check: the program's code. This is not a virus scan",
+        "bm": "Apa yang kami semak: nama dan jenis fail, apa yang tersenarai di dalam, dan kebenaran yang diminta oleh aplikasi. Apa yang tidak kami semak: kod program. Ini bukan imbasan virus",
+        "zh": "我们检查了：文件名和类型、里面列出的内容，以及应用要求的权限。我们没有检查：程序的代码。这不是病毒扫描",
+        "ta": "நாங்கள் சரிபார்த்தவை: கோப்பின் பெயர் மற்றும் வகை, உள்ளே பட்டியலிடப்பட்டவை, செயலி கேட்கும் அனுமதிகள். சரிபார்க்காதவை: நிரலின் குறியீடு. இது வைரஸ் ஸ்கேன் அல்ல",
+    },
+    "file_out_of_scope": {
+        "en": "This looks like an ordinary file or software, not a letter from an agency. Tulen can only judge letters and the signs of scam delivery, so ask the sender what it is",
+        "bm": "Ini kelihatan seperti fail atau perisian biasa, bukan surat daripada agensi. Tulen hanya boleh menilai surat dan tanda-tanda penghantaran penipuan, jadi tanya penghantar apa ia",
+        "zh": "这看起来是普通文件或软件，不是机构发来的信函。Tulen 只能判断信函和诈骗投递的迹象，请向发送者确认这是什么",
+        "ta": "இது ஒரு சாதாரண கோப்பு அல்லது மென்பொருள் போலத் தெரிகிறது, அமைப்பிடமிருந்து வந்த கடிதம் அல்ல. கடிதங்களையும் மோசடி அனுப்பும் அறிகுறிகளையும் மட்டுமே Tulen மதிப்பிட முடியும்; அனுப்பியவரிடம் அது என்ன என்று கேளுங்கள்",
+    },
     "file_zip_tricks": {
         "en": "The archive is built in an unusual way (odd paths, overlapping or appended parts) that hides its contents from checkers",
         "bm": "Arkib dibina dengan cara luar biasa (laluan pelik, bahagian bertindih atau ditambah) untuk menyembunyikan isinya daripada pemeriksa",

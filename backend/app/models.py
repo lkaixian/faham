@@ -152,6 +152,7 @@ class FileResult(BaseModel):
     status: Literal["ok", "skipped", "error"]
     detail: Optional[str] = None
     warnings: list[str] = []
+    sha256: Optional[str] = None  # fingerprint of an inspected file, for the person to look up on a scanner they choose
     result: Optional[AnalyzeResponse] = None
 
 

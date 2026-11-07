@@ -514,7 +514,7 @@
   function toItem(f, lang, file) {
     const it = { name: f.name, kind: f.kind, status: f.status, detail: f.detail, warnings: f.warnings || [], r: null };
     if (f.status === "ok" && f.result) {
-      try { it.r = Object.assign(fromApi(f.result, lang), { file: { name: f.name, kind: f.kind }, warnings: it.warnings, fromBatch: true, blob: /^(pdf|image)$/.test(EXT[(file.name.split(".").pop() || "").toLowerCase()]) ? file : null }); } catch (e) { it.detail = "unreadable result"; }
+      try { it.r = Object.assign(fromApi(f.result, lang), { file: { name: f.name, kind: f.kind }, sha: /^[0-9a-f]{64}$/.test(f.sha256 || "") ? f.sha256 : "", warnings: it.warnings, fromBatch: true, blob: /^(pdf|image)$/.test(EXT[(file.name.split(".").pop() || "").toLowerCase()]) ? file : null }); } catch (e) { it.detail = "unreadable result"; }
     }
     return it;
   }
@@ -840,7 +840,8 @@
     pages = buildPages(r);
     const head = rbar(r.fromBatch ? "list" : "again", r.fromBatch ? "sm_back" : "r_again") +
       (r.sample ? `<p class="note">${esc(t("sample_note"))}${state.lang !== "en" ? " " + esc(t("sample_lang")) : ""}</p>` : "") +
-      (r.file ? `<p class="muted fname">${esc(t("f_name", { n: r.file.name }))}</p>` : "");
+      (r.file ? `<p class="muted fname">${esc(t("f_name", { n: r.file.name }))}</p>` : "") +
+      (r.sha ? `<p class="muted">${esc(t("fh_sha"))}: <code class="fp">${r.sha}</code></p><p class="muted"><a href="https://www.virustotal.com/gui/file/${r.sha}" target="_blank" rel="noopener noreferrer">${esc(t("fh_vt"))}</a> ${esc(t("fh_note"))}</p>` : "");
     const allBtn = `<button class="btn btn-quiet alink" type="button" data-act="all">${esc(t(state.all ? "all_off" : "all_on"))}</button>`;
     let body;
     if (state.all) {

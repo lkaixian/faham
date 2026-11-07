@@ -5,6 +5,7 @@ sizes are logged, never contents or file names.
 """
 from __future__ import annotations
 
+import hashlib
 import io
 import logging
 import re
@@ -17,7 +18,7 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse
 
 from .agent import orchestrator
-from . import filecheck, office
+from . import filecheck, office, sandbox
 from .models import AnalyzeRequest, BatchResponse, BatchSummary, FileResult
 
 log = logging.getLogger("faham.ingest")
@@ -45,6 +46,7 @@ class Doc:
     image: bytes | None = None
     warnings: list[str] = field(default_factory=list)
     signals: list[str] = field(default_factory=list)
+    sha256: str = ""  # of an inspected file (never of a letter), shown to the person so they can look it up themselves
 
 
 def _skipped(name: str, reason: str) -> Doc:
@@ -315,9 +317,10 @@ def extract(filename: str | None, content_type: str | None, data: bytes, *,
     log.info("ingest kind=%s bytes=%d depth=%d", kind, len(data), depth)
     name = re.sub(r"[\x00-\x1f]", "", (filename or "file").replace("\\", "/").rsplit("/", 1)[-1])[:100] or "file"
     if kind == "file_risk":
-        label, inner, codes, facts = filecheck.inspect(filename, data, via_chat)
-        return [Doc(name, kind, filecheck.describe(filename, label, inner, via_chat, facts), signals=codes,
-                    warnings=["Tulen checked the file name and the list of files inside. It did not open or run anything."])]
+        label, inner, codes, facts = sandbox.inspect_isolated(filename, data, via_chat)  # in a limited child process
+        info = ["file_checked"] + ([] if codes else ["file_out_of_scope"])  # what was and was not looked at; no sign found
+        return [Doc(name, kind, filecheck.describe(filename, label, inner, via_chat, facts), signals=codes + info,
+                    sha256=hashlib.sha256(data).hexdigest())]
     if kind == "pdf":
         return [_pdf(name, data)]
     if kind == "docx":
@@ -334,7 +337,7 @@ def extract(filename: str | None, content_type: str | None, data: bytes, *,
 def analyze_files(docs: list[Doc], language: str, postcode: str | None, sink=None) -> BatchResponse:
     files: list[FileResult] = []
     for n, d in enumerate(docs):
-        fr = FileResult(name=d.name, kind=d.kind, status="ok", warnings=list(d.warnings))
+        fr = FileResult(name=d.name, kind=d.kind, status="ok", warnings=list(d.warnings), sha256=d.sha256 or None)
         if d.kind == "skipped":
             fr.status, fr.detail, fr.warnings = "skipped", (d.warnings or ["Skipped"])[0], []
         elif n >= MAX_DOCS:

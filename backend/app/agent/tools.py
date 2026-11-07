@@ -334,8 +334,9 @@ AI_SOFT = set(AI_SIGNALS) - AI_HARD
 # File signals (filecheck.py). Weak ones are real but common in innocent files (an APK exists, a zip is encrypted, a lure-like
 # name), so like the soft AI signals they weigh 12 and can never alone give "likely scam". Strong ones are deliberate evasion
 # or a disguised script and weigh 30.
-FILE_WEAK = {"file_script", "file_apk", "file_encrypted", "file_unreadable", "file_disk_image", "file_name_trick", "file_lure_name", "file_apk_perms", "file_macro", "file_archive_closed"}
-FILE_STRONG = {"file_script_disguised", "file_zip_tricks", "file_apk_takeover", "file_apk_brand", "file_macro_hidden", "file_office_remote"}
+FILE_WEAK = {"file_script", "file_apk", "file_encrypted", "file_unreadable", "file_disk_image", "file_name_trick", "file_lure_name", "file_apk_perms", "file_macro", "file_archive_closed", "file_exe_packed"}
+FILE_STRONG = {"file_script_disguised", "file_zip_tricks", "file_apk_takeover", "file_apk_brand", "file_macro_hidden", "file_office_remote", "file_script_dropper"}
+FILE_INFO = {"file_checked", "file_out_of_scope"}  # notes for the reader, not signs: they are shown as info and never score
 SOFT, HARD = AI_SOFT | FILE_WEAK, AI_HARD | FILE_STRONG
 
 
@@ -354,14 +355,14 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     fam = _family_impersonation(low)
     if fam:
         flags.append(("family_impersonation", r("family_impersonation"))); ev[flags[-1]] = [text[fam.start():fam.end()][:80]]
-    flags += [(c, r(c)) for c in extra if c in TEXT]  # extra risk codes, e.g. email header signals
+    flags += [(c, r(c)) for c in extra if c in TEXT and c not in FILE_INFO]  # extra risk codes, e.g. email header signals
     for c, quote in ai:  # signals the AI planner found; the planner already checked each quote against the letter
         if c in AI_SIGNALS and (c, r(c)) not in flags:
             flags.append((c, r(c)))
             ev[flags[-1]] = [quote]
     good: list[tuple[str, str]] = []
     official = SOURCES.get(issuer, {}).get("domains", [])
-    info: list[tuple[str, str]] = []
+    info: list[tuple[str, str]] = [(c, r(c)) for c in extra if c in FILE_INFO]
     for d in dict.fromkeys(_domains(text)):  # each host once
         hit = lambda names: any(d == n or d.endswith("." + n) for n in names)
         links = [u for u, h in _urls(text) if h == d]
