@@ -1,4 +1,4 @@
-"""FAHAM orchestrator.
+"""Tulen orchestrator.
 
 read (fixed: text out of the file, personal details masked) -> the AGENT (loop.py: plans, uses tools, reasons, decides)
 -> build the answer from what the agent found: verdict (rules re-run as a floor, plus the agent's quoted evidence),

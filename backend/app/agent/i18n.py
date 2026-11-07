@@ -29,6 +29,61 @@ TEXT: dict[str, dict[str, str]] = {
         "zh": "以逮捕来威胁",
         "ta": "கைது செய்வோம் என்று மிரட்டுகிறது",
     },
+    # ---- file checks (filecheck.py). zh and ta are drafts for native review
+    "file_script": {
+        "en": "A program or script file (.exe, .vbs, .bat and similar). Real agencies do not send letters in this form",
+        "bm": "Fail program atau skrip (.exe, .vbs, .bat dan seumpamanya). Agensi sebenar tidak menghantar surat dalam bentuk ini",
+        "zh": "程序或脚本文件（.exe、.vbs、.bat 等）。真正的机构不会用这种文件发送信函",
+        "ta": "நிரல் அல்லது ஸ்கிரிப்ட் கோப்பு (.exe, .vbs, .bat போன்றவை). உண்மையான அமைப்புகள் கடிதங்களை இப்படி அனுப்புவதில்லை",
+    },
+    "file_script_disguised": {
+        "en": "A program or script made to look like a document, or sent over chat. This is a common way to take over a computer",
+        "bm": "Program atau skrip yang dibuat menyerupai dokumen, atau dihantar melalui sembang. Ini cara biasa untuk menguasai komputer",
+        "zh": "伪装成文档的程序或脚本，或通过聊天发送。这是控制电脑的常见手法",
+        "ta": "ஆவணம் போலத் தோன்றும்படி செய்யப்பட்ட நிரல் அல்லது ஸ்கிரிப்ட், அல்லது அரட்டையில் வந்தது. கணினியைக் கைப்பற்றும் பொதுவான வழி இது",
+    },
+    "file_apk": {
+        "en": "An Android app file (.apk). Real apps come from Google Play, not from a message",
+        "bm": "Fail aplikasi Android (.apk). Aplikasi sebenar datang dari Google Play, bukan dari mesej",
+        "zh": "安卓应用文件（.apk）。正规应用来自 Google Play，而不是来自信息",
+        "ta": "ஆண்ட்ராய்டு செயலி கோப்பு (.apk). உண்மையான செயலிகள் Google Play-யிலிருந்து வரும், செய்தியிலிருந்து அல்ல",
+    },
+    "file_encrypted": {
+        "en": "The archive is password protected, so Tulen cannot see what is inside",
+        "bm": "Arkib ini dilindungi kata laluan, jadi Tulen tidak dapat melihat isinya",
+        "zh": "压缩包有密码保护，Tulen 无法查看里面的内容",
+        "ta": "இந்தக் காப்பகம் கடவுச்சொல்லால் பாதுகாக்கப்பட்டுள்ளது, அதனால் உள்ளே என்ன இருக்கிறது என்பதை Tulen பார்க்க முடியாது",
+    },
+    "file_unreadable": {
+        "en": "Tulen could not read this file properly. Scam files sometimes break checkers on purpose",
+        "bm": "Tulen tidak dapat membaca fail ini dengan betul. Fail penipuan kadangkala sengaja merosakkan pemeriksa",
+        "zh": "Tulen 无法正常读取此文件。诈骗文件有时故意让检查工具出错",
+        "ta": "இந்தக் கோப்பை Tulen சரியாகப் படிக்க முடியவில்லை. மோசடிக் கோப்புகள் சில நேரம் வேண்டுமென்றே சரிபார்ப்பைக் குலைக்கும்",
+    },
+    "file_disk_image": {
+        "en": "A disk image or shortcut file (.iso, .img, .lnk). Official letters never come in these",
+        "bm": "Fail imej cakera atau pintasan (.iso, .img, .lnk). Surat rasmi tidak datang dalam bentuk ini",
+        "zh": "磁盘映像或快捷方式文件（.iso、.img、.lnk）。正式信函不会用这些格式",
+        "ta": "வட்டு பிம்பம் அல்லது குறுக்குவழிக் கோப்பு (.iso, .img, .lnk). அதிகாரப்பூர்வ கடிதங்கள் இப்படி வருவதில்லை",
+    },
+    "file_name_trick": {
+        "en": "The file name uses hidden characters to look like something else",
+        "bm": "Nama fail menggunakan aksara tersembunyi supaya kelihatan seperti fail lain",
+        "zh": "文件名使用了隐藏字符，让它看起来像另一种文件",
+        "ta": "கோப்பின் பெயர் மறைந்த எழுத்துகளைப் பயன்படுத்தி வேறு கோப்பு போலத் தோன்றுகிறது",
+    },
+    "file_lure_name": {
+        "en": "The file name copies an agency, bank, parcel or invitation, a common lure",
+        "bm": "Nama fail meniru agensi, bank, bungkusan atau jemputan, umpan yang biasa",
+        "zh": "文件名冒充机构、银行、包裹或请柬，这是常见的诱饵",
+        "ta": "கோப்பின் பெயர் ஒரு அமைப்பு, வங்கி, பார்சல் அல்லது அழைப்பிதழைப் போல நடிக்கிறது; இது பொதுவான தூண்டில்",
+    },
+    "file_zip_tricks": {
+        "en": "The archive is built in an unusual way (odd paths, overlapping or appended parts) that hides its contents from checkers",
+        "bm": "Arkib dibina dengan cara luar biasa (laluan pelik, bahagian bertindih atau ditambah) untuk menyembunyikan isinya daripada pemeriksa",
+        "zh": "压缩包的结构不寻常（路径异常、部分重叠或被附加），用来向检查工具隐藏内容",
+        "ta": "காப்பகம் வழக்கத்துக்கு மாறாக உருவாக்கப்பட்டுள்ளது (விசித்திரமான பாதைகள், ஒன்றன் மேல் ஒன்று அல்லது சேர்க்கப்பட்ட பகுதிகள்), உள்ளடக்கத்தைச் சரிபார்ப்பிலிருந்து மறைக்க",
+    },
     "tac_otp": {
         "en": "Asks for a TAC, OTP or password",
         "bm": "Meminta TAC, OTP atau kata laluan",

@@ -1,4 +1,4 @@
-# How the FAHAM agent works
+# How the Tulen agent works
 
 This is the one document to read if you want to understand, annotate or change the agent. Everything here matches the code as of 7 November 2026. Where a number or a name is a **setting you can change**, it is marked **[knob]** and listed again in [the tweak guide](#10-tweak-guide).
 
@@ -8,7 +8,7 @@ Contents: [1. At a glance](#1-at-a-glance) · [2. Where the code is](#2-where-th
 
 ## 1. At a glance
 
-FAHAM gives a language model a **goal** and a set of **tools** and lets it work in rounds of *think, act, observe* until it can justify a conclusion. Plain code (the "harness") wraps the model: it hides personal details first, limits what the model may do, checks everything the model claims, and re-runs the scam rules last as a safety floor. The model can **add concern, never remove it**.
+Tulen gives a language model a **goal** and a set of **tools** and lets it work in rounds of *think, act, observe* until it can justify a conclusion. Plain code (the "harness") wraps the model: it hides personal details first, limits what the model may do, checks everything the model claims, and re-runs the scam rules last as a safety floor. The model can **add concern, never remove it**.
 
 ```mermaid
 flowchart TD
@@ -30,7 +30,7 @@ flowchart TD
 | Can it browse or search the web? | It can **fetch a page from an official agency website** and **look up a website's registration date**. It cannot run a web search or open arbitrary sites |
 | Can it create tools? | **No.** It can only call the 8 tools in a fixed list |
 | What if no model is available? | The plain rule pipeline runs; the answer has the same shape |
-| Where do you read what it did? | The progress screen, the "What FAHAM checked" list, and the English technical log at the bottom of a result |
+| Where do you read what it did? | The progress screen, the "What Tulen checked" list, and the English technical log at the bottom of a result |
 
 ---
 
@@ -47,7 +47,7 @@ flowchart TD
 | `backend/app/main.py` | API routes, including `POST /api/analyze/stream` (live steps) |
 | `backend/evals/run_suite.py` | Measures the agent on real documents and extra hard cases |
 | `backend/tests/test_agent_loop.py` | Tests for the loop and its guard rails (scripted model, mocked network) |
-| `frontend/assets/js/app.js` | `human()` turns tool results into plain sentences for the progress bar and the "What FAHAM checked" list |
+| `frontend/assets/js/app.js` | `human()` turns tool results into plain sentences for the progress bar and the "What Tulen checked" list |
 
 ---
 
@@ -122,7 +122,7 @@ A failed or unreadable model answer is retried **once** [knob `_ask`]. If it sti
 |---|---|---|---|---|
 | `classify_issuer` | none | Works out which agency the message claims to be from (keywords and domains vs the registry) | No | |
 | `extract_fields` | none | Pulls out the amount, deadline and reference number | No | |
-| `run_rules` | none | Runs FAHAM's scam rules and returns the rules' verdict and why | No | Same rules as the floor |
+| `run_rules` | none | Runs Tulen's scam rules and returns the rules' verdict and why | No | Same rules as the floor |
 | `inspect_links` | none | Looks at every link: bare IP, punycode, `@` trick, shortener, odd ending (`.top`, `.xyz`...), look-alike of an agency name, plain `http`, a path that asks you to log in or pay | No | No page is opened |
 | `lookup_registry` | `issuer` (optional) | The registry entry: real websites, official source, how the agency takes payment | No | Only agencies in `official_sources.json` |
 | `fetch_official_page` | `url`, `look_for` (up to 5 words) | **Downloads a page from the agency's real website** and checks whether it mentions the given words | **Yes**: the URL only | https only; registry domains or `.gov.my` only; redirects off those are refused; 8 s; 700 KB; counts against the 4 outside lookups |
@@ -154,7 +154,7 @@ Because a registry tool shows up in `/api/tools`, that endpoint lists 12, not 8.
 
 ## 6. How it searches and uses tools
 
-**FAHAM does not run a web search.** It has two ways to reach beyond the message, and both are narrow on purpose.
+**Tulen does not run a web search.** It has two ways to reach beyond the message, and both are narrow on purpose.
 
 **`fetch_official_page`** (to check what the agency really says)
 1. The model chooses a URL, usually the `official source` it just got from `lookup_registry`, and up to 5 words to look for ("gift card", "MyTax", "refund").
@@ -289,7 +289,7 @@ Kepada: AHMAD BIN CONTOH, No. KP 900101-01-1234, hubungi 012-3456789, ahmad@cont
 | Official agency websites | The URL the agent chose (never the message) | No |
 | DNS and `rdap.org` | A domain name that appears in the message | The domain only |
 | Cloudflare (tunnel, email routing, Worker) and Mailtrap (email replies) | The email itself, in transit, for the email channel; the reply text | Yes, by design of the email channel ([`docs/INTEGRATIONS.md`](INTEGRATIONS.md)) |
-| FAHAM's own logs | No message content. In-memory counters use hashed sender ids | No |
+| Tulen's own logs | No message content. In-memory counters use hashed sender ids | No |
 
 ### 9.4 Known gaps (honest list)
 

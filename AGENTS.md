@@ -1,6 +1,6 @@
 # AGENTS.md
 
-FAHAM: an agent that reads official Malaysian letters (LHDN, JPJ, PDRM, PTPTN, courts, councils, banks), checks for scams, explains in BM/EN/中文/தமிழ், teaches the rule behind it, routes the user, and drafts a reply for approval. Entry for the Agentic AI Challenge, Festival Idea Putrajaya, 19 Nov 2026. Research and open issues: `docs/NOTES.md`.
+Tulen (formerly FAHAM; the repo, env vars and URL keep that name): a scam and authenticity agent for official Malaysian letters and messages (LHDN, JPJ, PDRM, PTPTN, courts, councils, banks). It investigates whether the message is real, shows its evidence, explains in BM/EN/中文/தமிழ், teaches the rule behind it, routes the user, and drafts a reply for approval. Entry for the Agentic AI Challenge, Festival Idea Putrajaya, 19 Nov 2026. Research and open issues: `docs/NOTES.md`.
 
 ## Layout
 
@@ -30,7 +30,7 @@ After changing anything under `frontend/assets`, run `python scripts/bust_cache.
 
 ## Rules for working here
 
-1. **The agent decides, the rules are the floor.** `agent/loop.py` runs an LLM in rounds of think, act, observe with a goal, a revisable plan and eight tools (some reach outside FAHAM: an agency's real web page, a domain's registration date). The scam rules are one of its tools and always re-run last as a floor. The model can raise concern, never lower it; every signal needs a quote that really appears in the letter, and the words shown to the user are ours. It must stay optional: with no model or no usable answer the plain rule pipeline runs, so the offline demo always works. Only masked text reaches any model.
+1. **The agent decides, the rules are the floor.** `agent/loop.py` runs an LLM in rounds of think, act, observe with a goal, a revisable plan and eight tools (some reach outside Tulen: an agency's real web page, a domain's registration date). The scam rules are one of its tools and always re-run last as a floor. The model can raise concern, never lower it; every signal needs a quote that really appears in the letter, and the words shown to the user are ours. It must stay optional: with no model or no usable answer the plain rule pipeline runs, so the offline demo always works. Only masked text reaches any model.
 2. **Redact before anything else.** Every tool after `privacy.redact` and every LLM call gets redacted text only. Never log or store raw letters. The only server state is the redacted-result cache (`cache.py`, memory, 1 h) and the hash-only counter (`counter.py`). Both are documented in `docs/PRIVACY_SAFETY.md`; do not add more.
 3. **Human approval gate.** `act.draft` never sends or pays. `requires_approval` stays `True`.
 4. **Fictional data only.** Letters, names, ICs, accounts, phones and links are fake and marked SAMPEL/FIKTIF. No working links or real numbers in scam examples.

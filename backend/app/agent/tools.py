@@ -1,4 +1,4 @@
-"""FAHAM agent tools.
+"""Tulen agent tools.
 
 Each tool is a plain, typed function registered in TOOLS so the orchestrator
 can call it by name and log the call in the reasoning trace. Tools are
@@ -331,6 +331,12 @@ AI_SIGNALS = ("ai_payment_demand", "ai_threat", "ai_credential", "ai_remote_acce
 #    inconsistency). They raise caution but can never alone say "scam": a real survey sent through a Google Form looks "unusual" to a model.
 AI_HARD = {"ai_payment_demand", "ai_credential", "ai_remote_access", "ai_new_domain"}
 AI_SOFT = set(AI_SIGNALS) - AI_HARD
+# File signals (filecheck.py). Weak ones are real but common in innocent files (an APK exists, a zip is encrypted, a lure-like
+# name), so like the soft AI signals they weigh 12 and can never alone give "likely scam". Strong ones are deliberate evasion
+# or a disguised script and weigh 30.
+FILE_WEAK = {"file_script", "file_apk", "file_encrypted", "file_unreadable", "file_disk_image", "file_name_trick", "file_lure_name"}
+FILE_STRONG = {"file_script_disguised", "file_zip_tricks"}
+SOFT, HARD = AI_SOFT | FILE_WEAK, AI_HARD | FILE_STRONG
 
 
 @tool("scam.check", "Domain allowlist + red-flag rules. Returns verdict and evidence.")
@@ -387,10 +393,10 @@ def scam_check(text: str, issuer: str, language: str = "en", extra: tuple | list
     ref = REF_RE.search(text)
     if ref:
         good.append(("ref_format", r("ref_format"))); ev[good[-1]] = [ref.group(1)]
-    score = max(0, min(100, 80 + 5 * len(good) - sum(FLAG_WEIGHT.get(c, 12 if c in AI_SOFT else 30 if c in AI_HARD else 22) for c, _ in flags)))
+    score = max(0, min(100, 80 + 5 * len(good) - sum(FLAG_WEIGHT.get(c, 12 if c in SOFT else 30 if c in HARD else 22) for c, _ in flags)))
     if flags or issuer == "UNKNOWN":
         score = min(score, CLEAR_FROM - 1)  # any red flag or an unknown sender can never read as clear
-    if flags and all(c in AI_SOFT for c, _ in flags):
+    if flags and all(c in SOFT for c, _ in flags):
         score = max(score, SCAM_BELOW)  # judgement calls alone never condemn a message; the rules or hard evidence must agree
     verdict = verdict_from_score(score)  # the verdict is a pure function of the score: they cannot disagree
     R = lambda kind, c, t: {"kind": kind, "code": c, "text": t, "evidence": list(dict.fromkeys(ev.get((c, t), [])))}

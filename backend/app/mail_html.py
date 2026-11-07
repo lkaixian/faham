@@ -17,17 +17,17 @@ LOGO = Path(__file__).parent / "data" / "logo-mark.png"
 CID = "faham-logo"
 
 S = {
-    "bm": dict(title="Keputusan semakan FAHAM", msg="E-mel ini", att="Lampiran", sum="Ringkasan",
-               auto="Ini balasan automatik. FAHAM tidak dapat melihat siapa penghantar sebenar mesej anda, atau pautan sebenar di sebalik butang.",
+    "bm": dict(title="Keputusan semakan Tulen", msg="E-mel ini", att="Lampiran", sum="Ringkasan",
+               auto="Ini balasan automatik. Tulen tidak dapat melihat siapa penghantar sebenar mesej anda, atau pautan sebenar di sebalik butang.",
                pre="Keputusan semakan untuk mesej yang anda hantar", rep="Lapor penipuan:"),
-    "en": dict(title="FAHAM check result", msg="The email itself", att="Attachment", sum="Summary",
-               auto="This is an automatic reply. FAHAM cannot see who really sent your message, or the real link behind a button.",
+    "en": dict(title="Tulen check result", msg="The email itself", att="Attachment", sum="Summary",
+               auto="This is an automatic reply. Tulen cannot see who really sent your message, or the real link behind a button.",
                pre="The check result for the message you sent", rep="Report a scam:"),
-    "zh": dict(title="FAHAM 检查结果", msg="邮件本身", att="附件", sum="摘要",
-               auto="这是自动回复。FAHAM 无法看到您收到的信息的真正发送者，也看不到按钮背后的真实链接。",
+    "zh": dict(title="Tulen 检查结果", msg="邮件本身", att="附件", sum="摘要",
+               auto="这是自动回复。Tulen 无法看到您收到的信息的真正发送者，也看不到按钮背后的真实链接。",
                pre="您发送的信息的检查结果", rep="举报诈骗："),
-    "ta": dict(title="FAHAM சரிபார்ப்பு முடிவு", msg="மின்னஞ்சல்", att="இணைப்பு", sum="சுருக்கம்",
-               auto="இது தானியங்கி பதில். உங்கள் செய்தியை உண்மையில் அனுப்பியவர் யார் என்பதையும், பொத்தானின் பின்னுள்ள உண்மையான இணைப்பையும் FAHAM பார்க்க முடியாது.",
+    "ta": dict(title="Tulen சரிபார்ப்பு முடிவு", msg="மின்னஞ்சல்", att="இணைப்பு", sum="சுருக்கம்",
+               auto="இது தானியங்கி பதில். உங்கள் செய்தியை உண்மையில் அனுப்பியவர் யார் என்பதையும், பொத்தானின் பின்னுள்ள உண்மையான இணைப்பையும் Tulen பார்க்க முடியாது.",
                pre="நீங்கள் அனுப்பிய செய்திக்கான சரிபார்ப்பு முடிவு", rep="மோசடியைப் புகாரளிக்க:"),
 }
 PAL = {"likely_scam": ("#a3190f", "#fdecea"), "caution": ("#7a4b00", "#fff3d1"), "no_signals": ("#1d5a3a", "#e6f2ec")}
@@ -135,8 +135,8 @@ def html_body(batch, language: str, with_logo: bool = True) -> str:
   <tr><td style="background:{INK};padding:20px 28px;border-bottom:4px solid {LAV}">
    <table role="presentation" cellpadding="0" cellspacing="0"><tr>
     <td style="padding-right:12px">{logo}</td>
-    <td><div style="font-size:22px;font-weight:800;letter-spacing:.08em;color:#ffffff">FAHAM</div>
-     <div style="font-size:12px;color:#cfc8ea;margin-top:2px">Faham surat. Faham langkah. Faham hak anda.</div></td>
+    <td><div style="font-size:22px;font-weight:800;letter-spacing:.08em;color:#ffffff">Tulen</div>
+     <div style="font-size:12px;color:#cfc8ea;margin-top:2px">Tulen atau tipu? Semak dulu.</div></td>
    </tr></table>
   </td></tr>
   <tr><td style="padding:28px 28px 8px">{verdict_box}{main}</td></tr>
@@ -144,7 +144,7 @@ def html_body(batch, language: str, with_logo: bool = True) -> str:
   <tr><td style="background:{INK};padding:22px 28px;border-top:4px solid {LAV}">
    <p style="margin:0 0 8px;font-size:12px;line-height:1.6;color:#cfc8ea">{e(reply.t(L, "n1"))}</p>
    <p style="margin:0 0 12px;font-size:12px;line-height:1.6;color:#cfc8ea">{e(reply.t(L, "n2"))}</p>
-   <p style="margin:0;font-size:12px;color:#ffffff"><b>FAHAM</b> &nbsp;·&nbsp; {e(reply.t(L, "foot"))}{terms_a}</p>
+   <p style="margin:0;font-size:12px;color:#ffffff"><b>Tulen</b> &nbsp;·&nbsp; {e(reply.t(L, "foot"))}{terms_a}</p>
    <p style="margin:8px 0 0;font-size:12px;color:#cfc8ea">{e(S[L]["rep"])} <a href="tel:997" style="color:#ffffff;font-weight:700">NSRC 997</a></p>
   </td></tr>
  </table>

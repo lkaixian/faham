@@ -7,25 +7,25 @@
     "draft": "These documents are a draft written for a prototype. They may change, and they have not been reviewed by a lawyer.",
     "summary_h": "In short",
     "summary": [
-      "FAHAM helps you spot scam signs in letters and messages and understand what they say. It is guidance, not advice, and it can be wrong.",
+      "Tulen helps you spot scam signs in letters and messages and understand what they say. It is guidance, not advice, and it can be wrong.",
       "A result of \"no scam signs found\" is not proof that something is real. Always check with the official agency yourself.",
       "We do not keep your letters. We hide personal details first, but not perfectly, so send only what you need to.",
       "Some other services help us (AI, voice, email). They are listed below.",
-      "Be decent, and do not use FAHAM to harm or deceive anyone."
+      "Be decent, and do not use Tulen to harm or deceive anyone."
     ],
     "parts": [
       {
         "h": "Terms of Use",
         "sections": [
-          { "h": "About FAHAM and these terms", "p": [
-            "FAHAM is an independent, free project run by the FAHAM team. It is not a government body, and it is not connected to LHDN, JPJ, PDRM, PTPTN, any court, council, bank or other agency. Agency names are used only to say whose letter we think it is.",
-            "By using FAHAM you agree to these Terms of Use, the Privacy Notice and the Code of Conduct below. If you do not agree, please do not use it."
+          { "h": "About Tulen and these terms", "p": [
+            "Tulen is an independent, free project run by the Tulen team. It is not a government body, and it is not connected to LHDN, JPJ, PDRM, PTPTN, any court, council, bank or other agency. Agency names are used only to say whose letter we think it is.",
+            "By using Tulen you agree to these Terms of Use, the Privacy Notice and the Code of Conduct below. If you do not agree, please do not use it."
           ] },
           { "h": "Who may use it", "p": [
-            "Anyone may use FAHAM. If you are under 18, please use it with a parent or guardian.",
+            "Anyone may use Tulen. If you are under 18, please use it with a parent or guardian.",
             "Use it for your own letters and messages, or for someone else's only with their permission."
           ] },
-          { "h": "What FAHAM does and does not do", "ul": [
+          { "h": "What Tulen does and does not do", "ul": [
             "It reads the text, photo, document or email you send, hides personal details, looks for scam signs using rules and lists of official websites, and explains the result in four languages.",
             "It can draft a reply or reminder for you to approve. It never sends, pays or contacts anyone for you.",
             "It cannot prove that a message is real, find every scam, see who truly sent a message, or see the real link behind a button.",
@@ -33,7 +33,7 @@
           ] },
           { "h": "Your responsibilities", "ul": [
             "Check with the official agency, using a website address you type yourself or a phone number from its official website, before you pay, click or reply.",
-            "Never share your TAC, OTP or passwords with anyone, including through FAHAM.",
+            "Never share your TAC, OTP or passwords with anyone, including through Tulen.",
             "If you have already paid or shared details, call your bank and the National Scam Response Centre (NSRC) on 997 straight away.",
             "The decisions you make are yours."
           ] },
@@ -43,11 +43,11 @@
             "Do not send illegal content."
           ] },
           { "h": "Website, email, Messenger and embeds", "p": [
-            "FAHAM can be used on its website, on a partner's page that embeds it, by forwarding an email to its address, and through Messenger if it is switched on.",
+            "Tulen can be used on its website, on a partner's page that embeds it, by forwarding an email to its address, and through Messenger if it is switched on.",
             "Replies by email and chat are automatic. We reply to a sender about once an hour, and we do not reply to messages that look forged or automated. Reply STOP or BERHENTI in a chat to stop. Using a channel also means you follow that channel's own rules (for example, Meta's for Messenger)."
           ] },
           { "h": "Other services that help us", "p": [
-            "To work, FAHAM uses other services. Each has its own terms, and we may change them over time.",
+            "To work, Tulen uses other services. Each has its own terms, and we may change them over time.",
             "Masked text may go to an AI provider (ILMU, and Anthropic as a back-up) to write the explanation. ILMU also makes the spoken voice. Web traffic and incoming email pass through Cloudflare. Email replies are sent through Mailtrap. Messenger is run by Meta."
           ] },
           { "h": "Acceptable use", "p": [
@@ -55,27 +55,27 @@
           ], "ul": [
             "overload the service, scrape it, or try to get around its limits or its hiding of personal details;",
             "probe, attack or try to break into it, or look for other people's data;",
-            "pretend to be an agency, a person or FAHAM;",
+            "pretend to be an agency, a person or Tulen;",
             "use it to make, test or improve scam material, or to deceive or harass anyone."
           ] },
           { "h": "Our content and software", "p": [
-            "The FAHAM source code is released under the MIT licence in its public repository. The FAHAM name and logo may not be used in a way that suggests endorsement or that copies us.",
+            "The Tulen source code is released under the MIT licence in its public repository. The Tulen name and logo may not be used in a way that suggests endorsement or that copies us.",
             "Practice examples are made up. Steps and links for agencies come from their official websites, are shown with the date we last checked, and may be out of date. Check the source shown."
           ] },
           { "h": "Availability and changes", "p": [
-            "FAHAM is a prototype offered as is. We may change, limit, pause or stop it at any time, and we do not promise it will always be available."
+            "Tulen is a prototype offered as is. We may change, limit, pause or stop it at any time, and we do not promise it will always be available."
           ] },
           { "h": "No warranty", "p": [
-            "FAHAM is provided \"as is\" and \"as available\", without promises that it is accurate, complete, up to date, uninterrupted, or right for your purpose."
+            "Tulen is provided \"as is\" and \"as available\", without promises that it is accurate, complete, up to date, uninterrupted, or right for your purpose."
           ] },
           { "h": "Limit on our liability", "p": [
-            "As far as the law allows, the FAHAM team is not liable for loss or damage that comes from using FAHAM or relying on it, including loss from a scam, a missed deadline, a wrong result, or a service that is down. Nothing here takes away rights that the law of Malaysia does not allow to be taken away."
+            "As far as the law allows, the Tulen team is not liable for loss or damage that comes from using Tulen or relying on it, including loss from a scam, a missed deadline, a wrong result, or a service that is down. Nothing here takes away rights that the law of Malaysia does not allow to be taken away."
           ] },
           { "h": "Blocking misuse", "p": [
             "We may slow down, block or refuse requests that look like misuse, without notice."
           ] },
           { "h": "Changes to these terms", "p": [
-            "We will post the new version here with its date. If you keep using FAHAM after a change, you accept it. Bigger changes will be shown again in the welcome screen."
+            "We will post the new version here with its date. If you keep using Tulen after a change, you accept it. Bigger changes will be shown again in the welcome screen."
           ] },
           { "h": "Law and language", "p": [
             "These terms are governed by the laws of Malaysia, and the courts of Malaysia can hear disputes about them.",
@@ -88,7 +88,7 @@
       },
       {
         "h": "Privacy Notice",
-        "intro": "This notice explains what happens to information when you use FAHAM. It is written to follow the aims of Malaysia's Personal Data Protection Act 2010. We do not claim to be certified or registered under it.",
+        "intro": "This notice explains what happens to information when you use Tulen. It is written to follow the aims of Malaysia's Personal Data Protection Act 2010. We do not claim to be certified or registered under it.",
         "sections": [
           { "h": "What we handle", "ul": [
             "The text, photo, document or email you send for checking.",
@@ -116,12 +116,12 @@
           ] },
           { "h": "Your choices and rights", "ul": [
             "You can choose not to send anything, or stop a chat by replying STOP or BERHENTI.",
-            "In About, the button \"Clear my data\" removes everything FAHAM stored on your device.",
+            "In About, the button \"Clear my data\" removes everything Tulen stored on your device.",
             "You may ask what we hold about you, or ask us to correct or delete it. We hold very little, but we will tell you what we can find. Use the contact in the Terms."
           ] },
           { "h": "Security and children", "ul": [
             "Traffic uses HTTPS, personal details are hidden first, requests are limited, and logs hold no message content. No system is perfect, so please do not send more than you need to.",
-            "If you are under 18, please use FAHAM with a parent or guardian."
+            "If you are under 18, please use Tulen with a parent or guardian."
           ] },
           { "h": "Complaints", "p": [
             "Please contact us first. You may also complain to Malaysia's Personal Data Protection Department (www.pdp.gov.my)."
@@ -130,18 +130,18 @@
       },
       {
         "h": "Code of Conduct",
-        "intro": "This code applies to everyone who uses FAHAM (the website, embeds, email and Messenger) and to everyone who takes part in the project's repository, issues and discussions. It is not a rulebook to argue over. Treat it in good faith.",
+        "intro": "This code applies to everyone who uses Tulen (the website, embeds, email and Messenger) and to everyone who takes part in the project's repository, issues and discussions. It is not a rulebook to argue over. Treat it in good faith.",
         "sections": [
           { "h": "What we ask of you", "ul": [
             "Be respectful. Disagree without insults.",
-            "Be honest. Do not pass FAHAM's results off as an official decision, and do not pretend to be an agency or another person.",
+            "Be honest. Do not pass Tulen's results off as an official decision, and do not pretend to be an agency or another person.",
             "Protect other people's information. Do not send or publish someone else's letters, ID details or contact details without their permission.",
             "Use the service fairly, and stop when asked."
           ] },
           { "h": "What is not acceptable", "ul": [
-            "Harassment, threats, hate or abuse, in any language, including using FAHAM to send them.",
-            "Impersonating an agency, a person, or FAHAM.",
-            "Using FAHAM to create, test or improve scams, or to get scam messages past checks.",
+            "Harassment, threats, hate or abuse, in any language, including using Tulen to send them.",
+            "Impersonating an agency, a person, or Tulen.",
+            "Using Tulen to create, test or improve scams, or to get scam messages past checks.",
             "Publishing someone's private information, or tracking or pressuring a person.",
             "Illegal content.",
             "Attacking, overloading or scraping the service, or getting around its limits.",
@@ -162,7 +162,7 @@
             "Found a security problem? Do not post it publicly. Say in an issue that you have a security report and we will arrange a private way to receive it. Please do not access other people's data while testing."
           ] },
           { "h": "Where this comes from", "p": [
-            "This code was written for FAHAM, with ideas drawn from the Contributor Covenant 2.1, the Mozilla Community Participation Guidelines, the Ubuntu Code of Conduct, the Wikimedia Universal Code of Conduct, the Python Software Foundation Code of Conduct and the GitHub Acceptable Use Policies. The wording is our own."
+            "This code was written for Tulen, with ideas drawn from the Contributor Covenant 2.1, the Mozilla Community Participation Guidelines, the Ubuntu Code of Conduct, the Wikimedia Universal Code of Conduct, the Python Software Foundation Code of Conduct and the GitHub Acceptable Use Policies. The wording is our own."
           ] }
         ]
       }
@@ -174,25 +174,25 @@
     "draft": "Dokumen ini ialah draf yang ditulis untuk prototaip. Ia mungkin berubah dan belum disemak oleh peguam.",
     "summary_h": "Ringkasnya",
     "summary": [
-      "FAHAM membantu anda mengesan tanda penipuan dalam surat dan mesej serta memahami isinya. Ia panduan, bukan nasihat, dan boleh tersilap.",
+      "Tulen membantu anda mengesan tanda penipuan dalam surat dan mesej serta memahami isinya. Ia panduan, bukan nasihat, dan boleh tersilap.",
       "Keputusan \"tiada tanda penipuan ditemui\" bukan bukti sesuatu itu sah. Sentiasa semak sendiri dengan agensi rasmi.",
       "Kami tidak menyimpan surat anda. Kami menutup butiran peribadi dahulu, tetapi tidak sempurna, jadi hantar hanya apa yang perlu.",
       "Beberapa perkhidmatan lain membantu kami (AI, suara, e-mel). Senarainya ada di bawah.",
-      "Berlaku sopan, dan jangan gunakan FAHAM untuk mencederakan atau menipu sesiapa."
+      "Berlaku sopan, dan jangan gunakan Tulen untuk mencederakan atau menipu sesiapa."
     ],
     "parts": [
       {
         "h": "Terma Penggunaan",
         "sections": [
-          { "h": "Tentang FAHAM dan terma ini", "p": [
-            "FAHAM ialah projek percuma yang bebas, dikendalikan oleh pasukan FAHAM. Ia bukan badan kerajaan dan tiada kaitan dengan LHDN, JPJ, PDRM, PTPTN, mana-mana mahkamah, majlis, bank atau agensi lain. Nama agensi digunakan hanya untuk menyatakan surat itu kita rasa daripada siapa.",
-            "Dengan menggunakan FAHAM, anda bersetuju dengan Terma Penggunaan, Notis Privasi dan Kod Tatakelakuan di bawah. Jika tidak bersetuju, sila jangan gunakannya."
+          { "h": "Tentang Tulen dan terma ini", "p": [
+            "Tulen ialah projek percuma yang bebas, dikendalikan oleh pasukan Tulen. Ia bukan badan kerajaan dan tiada kaitan dengan LHDN, JPJ, PDRM, PTPTN, mana-mana mahkamah, majlis, bank atau agensi lain. Nama agensi digunakan hanya untuk menyatakan surat itu kita rasa daripada siapa.",
+            "Dengan menggunakan Tulen, anda bersetuju dengan Terma Penggunaan, Notis Privasi dan Kod Tatakelakuan di bawah. Jika tidak bersetuju, sila jangan gunakannya."
           ] },
           { "h": "Siapa boleh menggunakannya", "p": [
-            "Sesiapa sahaja boleh menggunakan FAHAM. Jika anda di bawah 18 tahun, sila gunakannya bersama ibu bapa atau penjaga.",
+            "Sesiapa sahaja boleh menggunakan Tulen. Jika anda di bawah 18 tahun, sila gunakannya bersama ibu bapa atau penjaga.",
             "Gunakan untuk surat dan mesej anda sendiri, atau milik orang lain hanya dengan kebenaran mereka."
           ] },
-          { "h": "Apa yang FAHAM lakukan dan tidak lakukan", "ul": [
+          { "h": "Apa yang Tulen lakukan dan tidak lakukan", "ul": [
             "Ia membaca teks, gambar, dokumen atau e-mel yang anda hantar, menutup butiran peribadi, mencari tanda penipuan menggunakan peraturan dan senarai laman web rasmi, dan menerangkan keputusan dalam empat bahasa.",
             "Ia boleh menyediakan draf balasan atau peringatan untuk anda luluskan. Ia tidak pernah menghantar, membayar atau menghubungi sesiapa bagi pihak anda.",
             "Ia tidak boleh membuktikan sesuatu mesej itu sah, menemui setiap penipuan, melihat siapa penghantar sebenar, atau melihat pautan sebenar di sebalik butang.",
@@ -200,7 +200,7 @@
           ] },
           { "h": "Tanggungjawab anda", "ul": [
             "Semak dengan agensi rasmi, menggunakan alamat laman web yang anda taip sendiri atau nombor telefon daripada laman web rasminya, sebelum anda membayar, mengklik atau membalas.",
-            "Jangan kongsi TAC, OTP atau kata laluan dengan sesiapa, termasuk melalui FAHAM.",
+            "Jangan kongsi TAC, OTP atau kata laluan dengan sesiapa, termasuk melalui Tulen.",
             "Jika anda sudah membayar atau berkongsi butiran, hubungi bank anda dan Pusat Respons Scam Kebangsaan (NSRC) di 997 dengan segera.",
             "Keputusan yang anda buat adalah tanggungjawab anda."
           ] },
@@ -210,11 +210,11 @@
             "Jangan hantar kandungan yang menyalahi undang-undang."
           ] },
           { "h": "Laman web, e-mel, Messenger dan benaman", "p": [
-            "FAHAM boleh digunakan di laman webnya, di halaman rakan kongsi yang membenamkannya, dengan memajukan e-mel ke alamatnya, dan melalui Messenger jika dihidupkan.",
+            "Tulen boleh digunakan di laman webnya, di halaman rakan kongsi yang membenamkannya, dengan memajukan e-mel ke alamatnya, dan melalui Messenger jika dihidupkan.",
             "Balasan melalui e-mel dan sembang adalah automatik. Kami membalas seseorang penghantar kira-kira sekali sejam, dan kami tidak membalas mesej yang kelihatan palsu atau automatik. Balas STOP atau BERHENTI dalam sembang untuk berhenti. Menggunakan sesuatu saluran juga bermakna anda mematuhi peraturan saluran itu (contohnya Meta untuk Messenger)."
           ] },
           { "h": "Perkhidmatan lain yang membantu kami", "p": [
-            "Untuk berfungsi, FAHAM menggunakan perkhidmatan lain. Setiap satu mempunyai terma sendiri, dan kami mungkin menukarnya dari semasa ke semasa.",
+            "Untuk berfungsi, Tulen menggunakan perkhidmatan lain. Setiap satu mempunyai terma sendiri, dan kami mungkin menukarnya dari semasa ke semasa.",
             "Teks yang ditutup mungkin dihantar kepada penyedia AI (ILMU, dan Anthropic sebagai sandaran) untuk menulis penerangan. ILMU juga menghasilkan suara. Trafik web dan e-mel masuk melalui Cloudflare. Balasan e-mel dihantar melalui Mailtrap. Messenger dikendalikan oleh Meta."
           ] },
           { "h": "Penggunaan yang boleh diterima", "p": [
@@ -222,27 +222,27 @@
           ], "ul": [
             "membebankan perkhidmatan, mengikisnya, atau cuba mengelak had atau penutupan butiran peribadinya;",
             "menyiasat, menyerang atau cuba menceroboh, atau mencari data orang lain;",
-            "menyamar sebagai agensi, seseorang atau FAHAM;",
+            "menyamar sebagai agensi, seseorang atau Tulen;",
             "menggunakannya untuk membuat, menguji atau memperbaiki bahan penipuan, atau untuk menipu atau mengganggu sesiapa."
           ] },
           { "h": "Kandungan dan perisian kami", "p": [
-            "Kod sumber FAHAM dikeluarkan di bawah lesen MIT dalam repositori awamnya. Nama dan logo FAHAM tidak boleh digunakan dengan cara yang menunjukkan sokongan atau meniru kami.",
+            "Kod sumber Tulen dikeluarkan di bawah lesen MIT dalam repositori awamnya. Nama dan logo Tulen tidak boleh digunakan dengan cara yang menunjukkan sokongan atau meniru kami.",
             "Contoh latihan adalah rekaan. Langkah dan pautan agensi datang daripada laman web rasmi mereka, ditunjukkan dengan tarikh kami menyemaknya, dan mungkin sudah lapuk. Semak sumber yang ditunjukkan."
           ] },
           { "h": "Ketersediaan dan perubahan", "p": [
-            "FAHAM ialah prototaip yang ditawarkan seadanya. Kami boleh mengubah, mengehadkan, menjeda atau menghentikannya pada bila-bila masa, dan kami tidak berjanji ia sentiasa tersedia."
+            "Tulen ialah prototaip yang ditawarkan seadanya. Kami boleh mengubah, mengehadkan, menjeda atau menghentikannya pada bila-bila masa, dan kami tidak berjanji ia sentiasa tersedia."
           ] },
           { "h": "Tiada jaminan", "p": [
-            "FAHAM disediakan \"seadanya\" dan \"mengikut ketersediaan\", tanpa janji bahawa ia tepat, lengkap, terkini, tidak terganggu, atau sesuai untuk tujuan anda."
+            "Tulen disediakan \"seadanya\" dan \"mengikut ketersediaan\", tanpa janji bahawa ia tepat, lengkap, terkini, tidak terganggu, atau sesuai untuk tujuan anda."
           ] },
           { "h": "Had liabiliti kami", "p": [
-            "Setakat yang dibenarkan undang-undang, pasukan FAHAM tidak bertanggungjawab atas kerugian atau kerosakan yang timbul daripada penggunaan atau pergantungan pada FAHAM, termasuk kerugian akibat penipuan, tarikh akhir yang terlepas, keputusan yang salah, atau perkhidmatan yang tidak tersedia. Tiada apa di sini menghapuskan hak yang undang-undang Malaysia tidak benarkan dihapuskan."
+            "Setakat yang dibenarkan undang-undang, pasukan Tulen tidak bertanggungjawab atas kerugian atau kerosakan yang timbul daripada penggunaan atau pergantungan pada Tulen, termasuk kerugian akibat penipuan, tarikh akhir yang terlepas, keputusan yang salah, atau perkhidmatan yang tidak tersedia. Tiada apa di sini menghapuskan hak yang undang-undang Malaysia tidak benarkan dihapuskan."
           ] },
           { "h": "Menyekat penyalahgunaan", "p": [
             "Kami boleh memperlahankan, menyekat atau menolak permintaan yang kelihatan sebagai penyalahgunaan, tanpa notis."
           ] },
           { "h": "Perubahan pada terma ini", "p": [
-            "Kami akan menyiarkan versi baharu di sini dengan tarikhnya. Jika anda terus menggunakan FAHAM selepas perubahan, anda menerimanya. Perubahan yang lebih besar akan ditunjukkan semula pada skrin alu-aluan."
+            "Kami akan menyiarkan versi baharu di sini dengan tarikhnya. Jika anda terus menggunakan Tulen selepas perubahan, anda menerimanya. Perubahan yang lebih besar akan ditunjukkan semula pada skrin alu-aluan."
           ] },
           { "h": "Undang-undang dan bahasa", "p": [
             "Terma ini tertakluk kepada undang-undang Malaysia, dan mahkamah Malaysia boleh mendengar pertikaian mengenainya.",
@@ -255,7 +255,7 @@
       },
       {
         "h": "Notis Privasi",
-        "intro": "Notis ini menerangkan apa yang berlaku kepada maklumat apabila anda menggunakan FAHAM. Ia ditulis untuk mengikut matlamat Akta Perlindungan Data Peribadi 2010 Malaysia. Kami tidak mendakwa diperakui atau berdaftar di bawahnya.",
+        "intro": "Notis ini menerangkan apa yang berlaku kepada maklumat apabila anda menggunakan Tulen. Ia ditulis untuk mengikut matlamat Akta Perlindungan Data Peribadi 2010 Malaysia. Kami tidak mendakwa diperakui atau berdaftar di bawahnya.",
         "sections": [
           { "h": "Apa yang kami kendalikan", "ul": [
             "Teks, gambar, dokumen atau e-mel yang anda hantar untuk disemak.",
@@ -283,12 +283,12 @@
           ] },
           { "h": "Pilihan dan hak anda", "ul": [
             "Anda boleh memilih untuk tidak menghantar apa-apa, atau menghentikan sembang dengan membalas STOP atau BERHENTI.",
-            "Dalam Tentang, butang \"Padam data saya\" memadam semua yang FAHAM simpan pada peranti anda.",
+            "Dalam Tentang, butang \"Padam data saya\" memadam semua yang Tulen simpan pada peranti anda.",
             "Anda boleh bertanya apa yang kami simpan tentang anda, atau meminta kami membetulkan atau memadamnya. Kami menyimpan sangat sedikit, tetapi kami akan memberitahu apa yang kami temui. Gunakan hubungan dalam Terma."
           ] },
           { "h": "Keselamatan dan kanak-kanak", "ul": [
             "Trafik menggunakan HTTPS, butiran peribadi ditutup dahulu, permintaan dihadkan, dan log tidak mengandungi kandungan mesej. Tiada sistem yang sempurna, jadi sila jangan hantar lebih daripada yang perlu.",
-            "Jika anda di bawah 18 tahun, sila gunakan FAHAM bersama ibu bapa atau penjaga."
+            "Jika anda di bawah 18 tahun, sila gunakan Tulen bersama ibu bapa atau penjaga."
           ] },
           { "h": "Aduan", "p": [
             "Sila hubungi kami dahulu. Anda juga boleh membuat aduan kepada Jabatan Perlindungan Data Peribadi Malaysia (www.pdp.gov.my)."
@@ -297,18 +297,18 @@
       },
       {
         "h": "Kod Tatakelakuan",
-        "intro": "Kod ini terpakai kepada semua orang yang menggunakan FAHAM (laman web, benaman, e-mel dan Messenger) dan semua orang yang mengambil bahagian dalam repositori, isu dan perbincangan projek. Ia bukan buku peraturan untuk dipertikaikan. Fahamilah ia dengan niat baik.",
+        "intro": "Kod ini terpakai kepada semua orang yang menggunakan Tulen (laman web, benaman, e-mel dan Messenger) dan semua orang yang mengambil bahagian dalam repositori, isu dan perbincangan projek. Ia bukan buku peraturan untuk dipertikaikan. Fahamilah ia dengan niat baik.",
         "sections": [
           { "h": "Apa yang kami harapkan daripada anda", "ul": [
             "Berhormat. Berbeza pendapat tanpa menghina.",
-            "Jujur. Jangan jadikan keputusan FAHAM sebagai keputusan rasmi, dan jangan menyamar sebagai agensi atau orang lain.",
+            "Jujur. Jangan jadikan keputusan Tulen sebagai keputusan rasmi, dan jangan menyamar sebagai agensi atau orang lain.",
             "Lindungi maklumat orang lain. Jangan hantar atau siarkan surat, butiran IC atau butiran hubungan orang lain tanpa kebenaran mereka.",
             "Gunakan perkhidmatan dengan adil, dan berhenti apabila diminta."
           ] },
           { "h": "Apa yang tidak boleh diterima", "ul": [
-            "Gangguan, ugutan, kebencian atau penderaan, dalam apa-apa bahasa, termasuk menggunakan FAHAM untuk menghantarnya.",
-            "Menyamar sebagai agensi, seseorang atau FAHAM.",
-            "Menggunakan FAHAM untuk membuat, menguji atau memperbaiki penipuan, atau supaya mesej penipuan lepas daripada semakan.",
+            "Gangguan, ugutan, kebencian atau penderaan, dalam apa-apa bahasa, termasuk menggunakan Tulen untuk menghantarnya.",
+            "Menyamar sebagai agensi, seseorang atau Tulen.",
+            "Menggunakan Tulen untuk membuat, menguji atau memperbaiki penipuan, atau supaya mesej penipuan lepas daripada semakan.",
             "Menyiarkan maklumat peribadi seseorang, atau menjejak atau menekan seseorang.",
             "Kandungan yang menyalahi undang-undang.",
             "Menyerang, membebankan atau mengikis perkhidmatan, atau mengelak hadnya.",
@@ -329,7 +329,7 @@
             "Menemui masalah keselamatan? Jangan siarkan secara terbuka. Nyatakan dalam isu bahawa anda ada laporan keselamatan dan kami akan mengatur cara persendirian untuk menerimanya. Sila jangan capai data orang lain semasa menguji."
           ] },
           { "h": "Dari mana ini datang", "p": [
-            "Kod ini ditulis untuk FAHAM, dengan idea daripada Contributor Covenant 2.1, Mozilla Community Participation Guidelines, Ubuntu Code of Conduct, Wikimedia Universal Code of Conduct, Python Software Foundation Code of Conduct dan GitHub Acceptable Use Policies. Perkataannya adalah milik kami sendiri."
+            "Kod ini ditulis untuk Tulen, dengan idea daripada Contributor Covenant 2.1, Mozilla Community Participation Guidelines, Ubuntu Code of Conduct, Wikimedia Universal Code of Conduct, Python Software Foundation Code of Conduct dan GitHub Acceptable Use Policies. Perkataannya adalah milik kami sendiri."
           ] }
         ]
       }
@@ -341,13 +341,13 @@
     "draft": "这些文件是为原型编写的草稿，可能会更改，尚未经律师审阅。",
     "note": "完整条款以英文和马来文发布；如有差异，以英文版为准。下面是中文要点，其后附英文全文。",
     "points": [
-      "FAHAM 帮助您发现信件和信息中的诈骗迹象并看懂内容。它只是指引，不是专业意见，也可能出错。",
+      "Tulen 帮助您发现信件和信息中的诈骗迹象并看懂内容。它只是指引，不是专业意见，也可能出错。",
       "“未发现诈骗迹象”并不代表信息是真的。请务必自行向官方机构核实。",
       "我们不保存您的信件。我们会先遮盖个人资料，但并不完美，所以请只发送必要的内容。",
       "有些其他服务会协助我们（AI、语音、电邮），详情见英文全文。",
-      "FAHAM 不提供法律、税务或财务意见，也不会替您付款或联系任何人。",
+      "Tulen 不提供法律、税务或财务意见，也不会替您付款或联系任何人。",
       "未满 18 岁的用户请在父母或监护人陪同下使用。",
-      "请勿发送他人的信件，除非得到对方许可。请勿用 FAHAM 制作、测试或改进诈骗内容，也不要冒充机构。",
+      "请勿发送他人的信件，除非得到对方许可。请勿用 Tulen 制作、测试或改进诈骗内容，也不要冒充机构。",
       "如已付款或已提供资料，请立即联系银行并致电全国诈骗应对中心 997。"
     ]
   },
@@ -357,13 +357,13 @@
     "draft": "இந்த ஆவணங்கள் ஒரு முன்மாதிரிக்காக எழுதப்பட்ட வரைவு. இவை மாறக்கூடும்; வழக்கறிஞரால் இன்னும் மதிப்பாய்வு செய்யப்படவில்லை.",
     "note": "முழு விதிமுறைகள் ஆங்கிலத்திலும் மலாய் மொழியிலும் வெளியிடப்படுகின்றன; வேறுபாடு இருந்தால் ஆங்கிலப் பதிப்பே செல்லும். தமிழ் முக்கிய குறிப்புகள் கீழே; அதன் பின் ஆங்கில முழு உரை.",
     "points": [
-      "கடிதங்களிலும் செய்திகளிலும் மோசடி அறிகுறிகளைக் கண்டறியவும் அவற்றைப் புரிந்துகொள்ளவும் FAHAM உதவுகிறது. இது வழிகாட்டுதல் மட்டுமே, ஆலோசனை அல்ல; தவறாகவும் இருக்கலாம்.",
+      "கடிதங்களிலும் செய்திகளிலும் மோசடி அறிகுறிகளைக் கண்டறியவும் அவற்றைப் புரிந்துகொள்ளவும் Tulen உதவுகிறது. இது வழிகாட்டுதல் மட்டுமே, ஆலோசனை அல்ல; தவறாகவும் இருக்கலாம்.",
       "\"மோசடி அறிகுறிகள் இல்லை\" என்பது அது உண்மையானது என்பதற்கான ஆதாரம் அல்ல. எப்போதும் அதிகாரப்பூர்வ நிறுவனத்திடம் நீங்களே சரிபார்க்கவும்.",
       "உங்கள் கடிதங்களை நாங்கள் சேமிப்பதில்லை. தனிப்பட்ட விவரங்களை முதலில் மறைக்கிறோம், ஆனால் முழுமையாக அல்ல; எனவே தேவையானதை மட்டும் அனுப்பவும்.",
       "எங்களுக்கு உதவும் வேறு சேவைகள் (AI, குரல், மின்னஞ்சல்) உள்ளன; விவரம் ஆங்கில முழு உரையில்.",
-      "FAHAM சட்ட, வரி, நிதி ஆலோசனை வழங்காது; உங்களுக்காகப் பணம் செலுத்தவோ யாரையும் தொடர்புகொள்ளவோ செய்யாது.",
+      "Tulen சட்ட, வரி, நிதி ஆலோசனை வழங்காது; உங்களுக்காகப் பணம் செலுத்தவோ யாரையும் தொடர்புகொள்ளவோ செய்யாது.",
       "18 வயதுக்குக் கீழுள்ளவர்கள் பெற்றோர் அல்லது பாதுகாவலருடன் பயன்படுத்தவும்.",
-      "மற்றவர்களின் கடிதங்களை அவர்களின் அனுமதியின்றி அனுப்ப வேண்டாம். மோசடிகளை உருவாக்க, சோதிக்க அல்லது மேம்படுத்த FAHAM ஐப் பயன்படுத்த வேண்டாம்; நிறுவனம்போல் நடிக்க வேண்டாம்.",
+      "மற்றவர்களின் கடிதங்களை அவர்களின் அனுமதியின்றி அனுப்ப வேண்டாம். மோசடிகளை உருவாக்க, சோதிக்க அல்லது மேம்படுத்த Tulen ஐப் பயன்படுத்த வேண்டாம்; நிறுவனம்போல் நடிக்க வேண்டாம்.",
       "ஏற்கெனவே பணம் செலுத்தியிருந்தால் அல்லது விவரங்களைப் பகிர்ந்திருந்தால், உடனே வங்கியையும் NSRC 997 ஐயும் அழைக்கவும்."
     ]
   }

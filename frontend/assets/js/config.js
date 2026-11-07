@@ -1,4 +1,4 @@
-/* FAHAM frontend config.
+/* Tulen frontend config.
    API_BASE is where /api/... lives:
    - localhost: the API container on :8000 directly
    - github.io: "" (no API; the site runs in sample mode)

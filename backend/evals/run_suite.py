@@ -4,7 +4,7 @@
 
 The agent is not deterministic, so run it a few times. Reports, per document and in total: whether the verdict is right
 (a notice must not be called a scam; a scam template must be), whether the fields came out right, and what the agent did
-(rounds, tools, lookups outside FAHAM, evidence it added, proposals the guard rails refused, seconds).
+(rounds, tools, lookups outside Tulen, evidence it added, proposals the guard rails refused, seconds).
 Stdlib only. Needs a model key in the API's environment for the agent to run; otherwise it reports rule-only results.
 """
 import json
@@ -59,5 +59,5 @@ print(f"  genuine notices not called a scam: {sum(1 for r in notices if r['verdi
 print(f"  scam templates called a scam:      {sum(1 for r in scams if r['verdict'] == 'likely_scam')}/{len(scams)}")
 print(f"  agent ran (mode ai): {sum(1 for r in rows if r['mode'] == 'ai')}/{n}   mean seconds: {sum(r['secs'] for r in rows) / n:.1f}   "
       f"mean rounds: {sum(r['rounds'] for r in rows) / n:.1f}   mean tools: {sum(r['tools'] for r in rows) / n:.1f}   "
-      f"lookups outside FAHAM: {sum(r['net'] for r in rows)}")
+      f"lookups outside Tulen: {sum(r['net'] for r in rows)}")
 print(f"  evidence the agent added to genuine notices (false-alarm pressure): {sum(r['signals'] for r in notices)}   refused by guard rails: {sum(r['refused'] for r in rows)}")

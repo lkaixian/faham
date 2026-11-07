@@ -260,7 +260,7 @@ def _capture_smtp(monkeypatch):
 def test_smtp_starttls_on_587_and_forced_tls_on_465(monkeypatch):
     seen = _capture_smtp(monkeypatch)
     for k, v in dict(SMTP_HOST="live.smtp.mailtrap.io", SMTP_USER="apismtp@mailtrap.io", SMTP_PASSWORD="p",
-                     SMTP_FROM="FAHAM <faham@larmkx.com>").items():
+                     SMTP_FROM="Tulen <faham@larmkx.com>").items():
         monkeypatch.setenv(k, v)
     monkeypatch.setenv("SMTP_PORT", "587")
     channels._smtp_send("user@example.org", "Re: x", "hello", "<orig@mail>")
@@ -299,7 +299,7 @@ def test_reply_email_html_is_safe_and_structured(monkeypatch):
     monkeypatch.setenv("FAHAM_PUBLIC_URL", "https://faham.example")
     for lang in ("bm", "en", "zh", "ta"):
         h, t = mail_html.html_body(_mail_batch(), lang), mail_html.text(_mail_batch(), lang)
-        assert "FAHAM" in h and "cid:faham-logo" in h and "NSRC 997" in h and "https://faham.example/terms" in h
+        assert "Tulen" in h and "cid:faham-logo" in h and "NSRC 997" in h and "https://faham.example/terms" in h
         assert "<script>" not in h and "evil.example" not in h and "secret-name" not in h and "invoice" not in h and "secret-name" not in t
         assert "genuine" not in (h + t).lower() and "https://www.hasil.gov.my" in h
     en = mail_html.text(_mail_batch(), "en")

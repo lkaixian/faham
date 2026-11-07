@@ -26,10 +26,10 @@
     if (!legal) return;
     var L = legal[lang] || legal.en, full = L.parts ? L : legal.en;
     document.documentElement.lang = HTML_LANG[lang];
-    document.title = L.title + " · FAHAM";
+    document.title = L.title + " · Tulen";
     document.getElementById("tmTitle").textContent = L.title;
     document.getElementById("tmDraft").textContent = L.draft;
-    document.getElementById("tmBack").textContent = (T[lang] && T[lang].tm_back) || "Back to FAHAM";
+    document.getElementById("tmBack").textContent = (T[lang] && T[lang].tm_back) || "Back to Tulen";
     document.getElementById("uiChips").innerHTML = Object.keys(NAME).map(function (k) {
       return '<button type="button" class="chip" data-l="' + k + '" lang="' + HTML_LANG[k] + '" aria-pressed="' + (k === lang) + '">' + NAME[k] + "</button>";
     }).join("");

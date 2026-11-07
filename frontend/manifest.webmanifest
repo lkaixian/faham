@@ -1,7 +1,7 @@
 {
-  "name": "FAHAM: semak surat dan mesej",
-  "short_name": "FAHAM",
-  "description": "Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat.",
+  "name": "Tulen: semak surat dan mesej",
+  "short_name": "Tulen",
+  "description": "Tampal surat, SMS atau WhatsApp yang merisaukan. Tulen cari tanda penipuan dan tunjuk apa yang perlu dibuat.",
   "lang": "ms",
   "dir": "ltr",
   "start_url": "./",

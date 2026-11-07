@@ -58,7 +58,7 @@ def test_lang_attributes_and_logo_alt_text():
         h = (FE / name).read_text(encoding="utf-8")
         assert re.search(r"<html lang=\"(ms|en|zh|ta)\"", h), name
         for img in re.findall(r"<img[^>]*class=\"logo[^>]*>", h):
-            assert 'alt="FAHAM logo"' in img, (name, img)
+            assert 'alt="Tulen logo"' in img, (name, img)
     js = (FE / "assets/js/app.js").read_text(encoding="utf-8")
     assert "document.documentElement.lang = HTML_LANG[state.lang]" in js  # follows the chosen language
 

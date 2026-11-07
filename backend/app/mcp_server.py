@@ -1,11 +1,11 @@
-"""Optional MCP server: lets an MCP client (Claude Desktop, an IDE, another agent) ask FAHAM to check a message.
+"""Optional MCP server: lets an MCP client (Claude Desktop, an IDE, another agent) ask Tulen to check a message.
 
     cd backend && python -m app.mcp_server
 
 Transport: stdio, one JSON-RPC 2.0 message per line (the MCP stdio transport). No third-party package is needed.
 Tools:
   faham_check_message(text, language)  -> verdict, score, scam type, reasons, things to verify, official steps
-  faham_list_scam_types()              -> the scam types FAHAM recognises
+  faham_list_scam_types()              -> the scam types Tulen recognises
 
 Safety rules are the same as the web app:
   * the text goes through the normal pipeline, so personal details are redacted before any LLM call;
@@ -43,7 +43,7 @@ TOOLS = [
     },
     {
         "name": "faham_list_scam_types",
-        "description": "List the scam types FAHAM recognises.",
+        "description": "List the scam types Tulen recognises.",
         "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False},
     },
 ]
@@ -102,7 +102,7 @@ def handle(msg: dict) -> dict | None:
         except ValueError as e:  # bad arguments are a tool error the model can read and correct
             return ok({"content": [{"type": "text", "text": str(e)}], "isError": True})
         except Exception:  # never echo the input or a traceback that could contain it
-            return ok({"content": [{"type": "text", "text": "FAHAM could not check this message."}], "isError": True})
+            return ok({"content": [{"type": "text", "text": "Tulen could not check this message."}], "isError": True})
     return err(-32601, f"method not found: {method}")
 
 

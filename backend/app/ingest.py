@@ -17,6 +17,7 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse
 
 from .agent import orchestrator
+from . import filecheck
 from .models import AnalyzeRequest, BatchResponse, BatchSummary, FileResult
 
 log = logging.getLogger("faham.ingest")
@@ -26,7 +27,8 @@ MAX_XML = 10 * 1024 * 1024
 MAX_PDF_PAGES, MAX_PDF_IMAGES = 20, 3
 MAX_ATTACH, MAX_DEPTH, MAX_DOCS = 5, 2, 10
 UNSUPPORTED = "This file type is not supported. Use PDF, Word (.docx), text, Markdown, email (.eml) or an image."
-REJECT_EXT = {"doc", "docm", "xlsm", "xlsx", "xls", "pptx", "ppt", "exe", "js", "html", "htm"}
+REJECT_EXT = {"doc", "docm", "xlsm", "xlsx", "xls", "pptx", "ppt", "html", "htm"}
+CHECK_ONLY = filecheck.EXEC | filecheck.DISK | {"apk"}  # not read as letters: only the name, the listing and the magic bytes are inspected
 
 
 class IngestError(Exception):
@@ -69,14 +71,18 @@ def detect(filename: str | None, content_type: str | None, data: bytes) -> str:
             with zipfile.ZipFile(io.BytesIO(data)) as z:
                 names = set(z.namelist())
         except zipfile.BadZipFile:
-            raise IngestError(422, "The file is damaged")
+            if ext == "docx":
+                raise IngestError(422, "The file is damaged")
+            return "file_risk"  # a broken archive is itself a sign (some scam files break parsers on purpose)
         if any(n.lower().endswith("vbaproject.bin") for n in names):
             raise IngestError(415, "Files with macros are not accepted")
         if "word/document.xml" in names:
             return "docx"
         if "[Content_Types].xml" in names:
             raise IngestError(415, "Only Word (DOCX) is accepted from Office formats")
-        raise IngestError(415, UNSUPPORTED)
+        return "file_risk"  # a zip or an APK: inspect the listing, never open it
+    if data[:6] == bytes.fromhex("377abcaf271c") or data[:5] == bytes.fromhex("526172211a") or data[:2] == b"MZ" or ext in CHECK_ONLY:
+        return "file_risk"
     if data[:3] == b"ID3" or data[:2] in (b"\xff\xfb", b"\xff\xf3", b"\xff\xf2", b"\xff\xe3") \
             or data[:4] in (b"OggS", b"fLaC", b"\x1a\x45\xdf\xa3") or data[4:8] == b"ftyp" \
             or (data[:4] == b"RIFF" and data[8:12] == b"WAVE"):
@@ -291,7 +297,7 @@ def _eml(name: str, data: bytes, depth: int) -> list[Doc]:
             out.append(_skipped(label, f"Only the first {MAX_ATTACH} attachments are read"))
             continue
         try:
-            out += extract(part.get_filename(), part.get_content_type(), part.get_payload(decode=True) or b"", depth=depth + 1)
+            out += extract(part.get_filename(), part.get_content_type(), part.get_payload(decode=True) or b"", depth=depth + 1, via_chat=True)
         except IngestError as e:
             out.append(_skipped(label, e.detail))
     return out
@@ -299,7 +305,7 @@ def _eml(name: str, data: bytes, depth: int) -> list[Doc]:
 
 # ------------------------------------------------------------------ public API
 def extract(filename: str | None, content_type: str | None, data: bytes, *,
-            depth: int = 0) -> list[Doc]:
+            depth: int = 0, via_chat: bool = False) -> list[Doc]:
     if depth > MAX_DEPTH:
         raise IngestError(422, "Files are nested too deeply")
     if not data:
@@ -307,6 +313,10 @@ def extract(filename: str | None, content_type: str | None, data: bytes, *,
     kind = detect(filename, content_type, data)
     log.info("ingest kind=%s bytes=%d depth=%d", kind, len(data), depth)
     name = re.sub(r"[\x00-\x1f]", "", (filename or "file").replace("\\", "/").rsplit("/", 1)[-1])[:100] or "file"
+    if kind == "file_risk":
+        label, inner, codes = filecheck.inspect(filename, data, via_chat)
+        return [Doc(name, kind, filecheck.describe(filename, label, inner, via_chat), signals=codes,
+                    warnings=["Tulen checked the file name and the list of files inside. It did not open or run anything."])]
     if kind == "pdf":
         return [_pdf(name, data)]
     if kind == "docx":

@@ -1,9 +1,11 @@
-# Pitch and plan
+# Pitch and plan: Tulen
 
-**Pitch line:** "Every scary letter becomes a 60-second lesson, so people need help less each time."
+**Pitch line:** "Is this letter genuine? Tulen investigates it, shows its evidence, and teaches the tell-tale signs, so people spot the next scam on their own."
+
+**Scope:** a scam and authenticity agent for official Malaysian letters and messages. The scam check leads; the explanation, lesson, route and drafted reply follow it. Messages from senders outside the registry get an honest "cannot confirm" rather than a guess. The theme table below shows how each part fits Edutainment & Innovation.
 
 ## Theme fit: Edutainment & Innovation
-| Theme word | What FAHAM does | What to show in the video |
+| Theme word | What Tulen does | What to show in the video |
 |---|---|---|
 | Education | "Kenapa saya dapat surat ini?" card after the action plan | A sample letter turned into a lesson card |
 | Education | A personal Kamus Surat | The glossary growing after the second letter |

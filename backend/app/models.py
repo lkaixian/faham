@@ -1,4 +1,4 @@
-"""Typed request/response models for the FAHAM API."""
+"""Typed request/response models for the Tulen API."""
 from __future__ import annotations
 
 from typing import Literal, Optional
@@ -134,7 +134,7 @@ class AnalyzeResponse(BaseModel):
     entities: Optional[Entities] = None  # raw details from this request only; not cached, not stored
     others_checked: int = 0  # how many other people checked a similar message (fingerprint counter)
     agent: AgentInfo = AgentInfo()
-    disclaimer: str = "FAHAM gives guidance, not legal advice. Verify on the official source shown."
+    disclaimer: str = "Tulen gives guidance, not legal advice. Verify on the official source shown."
 
 
 class PracticeItem(BaseModel):

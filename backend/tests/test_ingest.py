@@ -100,16 +100,16 @@ def test_docm_and_legacy_doc_rejected():
 
 
 def test_bad_magic_rejected():
-    for name, data in [("a.exe", b"MZ\x90\x00\x03"), ("a.bin", b"\x00\x01\x02\x03" * 10), ("a.pdf", b"not a pdf at all but text")]:
+    for name, data in [("a.bin", b"\x00\x01\x02\x03" * 10), ("a.pdf", b"not a pdf at all but text")]:
         with pytest.raises(ingest.IngestError) as e:
             ingest.extract(name, None, data)
         assert e.value.status == 415
 
 
-def test_zip_and_audio_unsupported_415():
+def test_audio_unsupported_415():
     mp3 = b"ID3\x03\x00\x00\x00\x00\x00\x00" + b"\x00" * 20
     wav = b"RIFF\x00\x00\x00\x00WAVEfmt "
-    for name, data in (("m.zip", zipped({"a.txt": LHDN_TXT})), ("v.mp3", mp3), ("v.wav", wav)):
+    for name, data in (("v.mp3", mp3), ("v.wav", wav)):
         with pytest.raises(ingest.IngestError) as e:
             ingest.extract(name, None, data)
         assert e.value.status == 415 and "not supported" in e.value.detail
@@ -119,7 +119,7 @@ def test_zip_and_audio_unsupported_415():
     msg.set_content("hi there, see attached")
     msg.add_attachment(zipped({"a.txt": "x"}), maintype="application", subtype="zip", filename="a.zip")
     docs = ingest.extract("m.eml", None, msg.as_bytes())
-    assert docs[1].kind == "skipped" and "not supported" in docs[1].warnings[0]
+    assert docs[1].kind == "file_risk"  # a zip is no longer refused: its listing is inspected (see test_filecheck.py)
 
 
 def eml(**h) -> bytes:

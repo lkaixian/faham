@@ -1,4 +1,4 @@
-# FAHAM deep research
+# Tulen deep research
 
 Date: 2026-11-06. Competition: 19 Nov 2026 (13 days). Code facts come from reading this repo. External facts come from web searches whose sources are mostly law-firm and news commentary, not primary texts; each is marked **[verify]** where it must be checked against the gazetted Act or an official page before it goes in the pitch. Nothing here is legal advice.
 
@@ -75,8 +75,8 @@ OCR evidence: Tesseract ships a fast Malay (`msa`) model, version 4.1.0 in Fedor
 ### 2024 amendments (Act A1727)
 Per [Ecovis](https://www.ecovis.com.my/malaysias-new-personal-data-protection-act-obligations-pdpa/), [DataGuidance](https://www.dataguidance.com/opinion/malaysia-personal-data-protection-amendment-act) and [GLT Law](https://gltlaw.my/personal-data-protection-2024-what-you-need-to-know/): phased commencement through 2025; mandatory data protection officer for qualifying controllers and processors; breach notification to the Commissioner within 72 hours and to affected people within 7 days where significant harm is likely; processors become directly liable for the Security Principle; higher penalties. Sources disagree on whether the breach duty sits in the Act or a Commissioner circular. **[verify against the gazetted text and the Commissioner's guidelines before quoting].** From my own knowledge, not confirmed by these searches: biometric data was added to sensitive personal data, the cross-border transfer whitelist was replaced by conditions, and a data portability right was added **[verify]**.
 
-### Seven principles mapped to FAHAM
-| Principle | Requirement in short | FAHAM design | Gap or action |
+### Seven principles mapped to Tulen
+| Principle | Requirement in short | Tulen design | Gap or action |
 |---|---|---|---|
 | General | Consent for processing | User pastes or scans their own letter; processing in memory | Add an explicit consent tick before the first run |
 | Notice and choice | Tell people what is collected, why, and to whom disclosed | None yet | Add a short notice in BM and EN on the input screen: purpose, redaction, LLM disclosure |
@@ -95,7 +95,7 @@ Per [Ecovis](https://www.ecovis.com.my/malaysias-new-personal-data-protection-ac
 
 ## 5. Fit to the theme (Edutainment & Innovation) and the Agentic AI track
 
-| Judging angle | What FAHAM shows | Strength | Weak spot to fix |
+| Judging angle | What Tulen shows | Strength | Weak spot to fix |
 |---|---|---|---|
 | Education | "Kenapa saya dapat surat ini?" card, Kamus Surat, plain-language rewrite | Teaching is the product; metric is less help needed on repeat letters | Metric is not measured. Track per-issuer reuse locally and show it in the video as a prototype counter, labelled illustrative |
 | Entertainment | Spot-the-scam rounds, XP and levels | Gives repeat use | Items are static; run each through `scam.check` live so the practice is the agent |

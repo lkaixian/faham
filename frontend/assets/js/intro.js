@@ -1,4 +1,4 @@
-/* FAHAM welcome intro: a neural-network canvas, typed greeting and a short "agent boot" log.
+/* Tulen welcome intro: a neural-network canvas, typed greeting and a short "agent boot" log.
    Ported from the earlier dashboard prototype. Shows once per browser session, never on embed pages,
    and becomes a static card when the user prefers reduced motion. */
 (function () {
@@ -91,7 +91,7 @@
   const sub = document.getElementById("introSub");
   const actions = document.getElementById("introActions");
   const enter = document.getElementById("enterBtn");
-  const phrases = ["Selamat datang ke FAHAM", "Welcome to FAHAM"];
+  const phrases = ["Selamat datang ke Tulen", "Welcome to Tulen"];
   const bootLines = [
     "> loading agent tools: read, verify, explain, teach, route, act",
     "> connecting official source registry (.gov.my)",

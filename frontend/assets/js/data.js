@@ -1,5 +1,5 @@
 /* =========================================================
-   FAHAM: example content
+   Tulen: example content
    ALL LETTERS BELOW ARE FICTIONAL SAMPLES. No real names,
    IC numbers, accounts or cases. Procedures are illustrative
    and must be retrieved from official sites at runtime.
@@ -47,7 +47,7 @@ const TR = {
   "Notis Peringatan": [null, "Reminder notice", "提醒通知", "நினைவூட்டல் அறிவிப்பு"],
   "Suspicious notice": ["Notis mencurigakan", null, "可疑通知", "சந்தேகத்துக்குரிய அறிவிப்பு"],
   "Pemula": [null, "Beginner", "初学者", "தொடக்க நிலை"], "Celik Surat": [null, "Letter Savvy", "识信达人", "கடிதம் அறிந்தவர்"],
-  "Bijak Surat": [null, "Letter Wise", "信件通", "கடிதத் திறமையாளர்"], "Pakar FAHAM": [null, "FAHAM Expert", "FAHAM 专家", "FAHAM நிபுணர்"],
+  "Bijak Surat": [null, "Letter Wise", "信件通", "கடிதத் திறமையாளர்"], "Pakar Tulen": [null, "Tulen Expert", "Tulen 专家", "Tulen நிபுணர்"],
   /* glossary sources and practice labels */
   "General": X("Umum", "一般", "பொது"), "Scam": X("Penipuan", "诈骗", "மோசடி"), "Court / PDRM": ["Mahkamah / PDRM", null, "法庭 / PDRM", "நீதிமன்றம் / PDRM"],
   "Email": X("E-mel", "电邮", "மின்னஞ்சல்"), "App": X("Aplikasi", "应用程序", "செயலி"), "Letter": X("Surat", "信件", "கடிதம்"), "Chat": X("Sembang", "聊天", "அரட்டை"),
@@ -151,7 +151,7 @@ window.FAHAM_DATA = {
       terms: ["Taksiran", "PCB", "Tahun Taksiran", "Kenaikan", "Rayuan"],
       route: {
         online: {
-          steps: ["Open the official MyTax portal (mytax.hasil.gov.my) and log in with your IC number.", "Choose ByrHASIL → Bayaran (payment) and select FPX online banking or card.", "Enter your income tax number, year of assessment 2025 and the amount RM 1,240.00.", "Save the payment receipt PDF; FAHAM files it in your reminder."],
+          steps: ["Open the official MyTax portal (mytax.hasil.gov.my) and log in with your IC number.", "Choose ByrHASIL → Bayaran (payment) and select FPX online banking or card.", "Enter your income tax number, year of assessment 2025 and the amount RM 1,240.00.", "Save the payment receipt PDF; Tulen files it in your reminder."],
           prepare: ["IC number", "Income tax number", "Reference no.", "Online banking"]
         },
         walkin: {
@@ -205,7 +205,7 @@ window.FAHAM_DATA = {
       terms: ["Saman", "Kompaun", "Pemilik berdaftar", "AwAS"],
       route: {
         online: {
-          steps: ["Open the official MyJPJ app or jpj.gov.my and log in.", "Go to Semakan Saman (check summons) and confirm the vehicle number and reference.", "Pay the compound by FPX or card inside the official app.", "Keep the e-receipt; FAHAM marks this letter as cleared."],
+          steps: ["Open the official MyJPJ app or jpj.gov.my and log in.", "Go to Semakan Saman (check summons) and confirm the vehicle number and reference.", "Pay the compound by FPX or card inside the official app.", "Keep the e-receipt; Tulen marks this letter as cleared."],
           prepare: ["IC number", "Vehicle no.", "Reference no.", "Online banking"]
         },
         walkin: {
@@ -258,7 +258,7 @@ window.FAHAM_DATA = {
       terms: ["Tunggakan", "Bayaran balik", "Penstrukturan semula"],
       route: {
         online: {
-          steps: ["Open the official myPTPTN app and log in.", "Check the arrears amount matches RM 450.00.", "Pay by FPX, or choose the option to apply for restructuring / salary deduction.", "Save the receipt; FAHAM sets a monthly reminder from now."],
+          steps: ["Open the official myPTPTN app and log in.", "Check the arrears amount matches RM 450.00.", "Pay by FPX, or choose the option to apply for restructuring / salary deduction.", "Save the receipt; Tulen sets a monthly reminder from now."],
           prepare: ["IC number", "Loan account no.", "Online banking"]
         },
         walkin: {
@@ -371,6 +371,6 @@ window.FAHAM_DATA = {
     { name: "Pemula", min: 0 },
     { name: "Celik Surat", min: 60 },
     { name: "Bijak Surat", min: 140 },
-    { name: "Pakar FAHAM", min: 240 }
+    { name: "Pakar Tulen", min: 240 }
   ]
 };

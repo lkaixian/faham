@@ -1,4 +1,4 @@
-# Deploying FAHAM
+# Deploying Tulen
 
 Last updated: 7 November 2026.
 
@@ -37,7 +37,7 @@ If the site is behind Cloudflare, check the dashboard for these. They are dashbo
 this repository can switch them off, and this repository cannot tell whether they are on.
 
 1. **Web Analytics (the JavaScript beacon).** Cloudflare can inject `static.cloudflareinsights.com/beacon.min.js` into every page.
-   FAHAM's privacy notice says there are no analytics beacons and no tracking cookies. Switch it off under
+   Tulen's privacy notice says there are no analytics beacons and no tracking cookies. Switch it off under
    *Analytics & Logs, Web Analytics* (delete the site, or turn off automatic setup). The CSP would block the script anyway
    and fill the console with errors, but do not rely on that. Test: open the site, view source, search for `cloudflareinsights`.
    `backend/tests/test_p3.py` checks that this repository's HTML contains no beacon, but injection happens at the edge, so check the live page.

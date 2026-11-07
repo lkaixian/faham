@@ -21,7 +21,7 @@ Written 6 November 2026. The published text is `frontend/assets/legal.json` (sho
 
 **Not reviewed.** The Citizen Code of Conduct site did not load (DNS failure). No Automattic or other CC0 terms template was searched or read. Add them if you want a wider comparison.
 
-## What is specific to FAHAM
+## What is specific to Tulen
 
 These points are in the text because a generic template would miss them:
 
@@ -53,7 +53,7 @@ Established from the regulator's pages (in Malay): the seven principles in secti
 
 1. Whether a free service with no accounts counts as a "commercial transaction" under the Act. The regulator's text we could read says the Act applies to processing "in respect of commercial transactions".
 2. What a privacy notice must contain, and whether it must be in Malay and English. We publish both languages to be safe.
-3. Rules on children and consent. We ask under-18s to use FAHAM with a guardian, which is a precaution, not a legal test.
+3. Rules on children and consent. We ask under-18s to use Tulen with a guardian, which is a precaution, not a legal test.
 4. Cross-border transfer conditions, because Cloudflare, Mailtrap, Anthropic and Meta may process data abroad.
 5. Whether a data protection officer, breach notification or registration applies to a project this size.
 6. Governing law and courts: the text says Malaysia. A lawyer should confirm that wording.

@@ -1,4 +1,4 @@
-/* FAHAM front end: vanilla JS, no build step.
+/* Tulen front end: vanilla JS, no build step.
    Flow: form or example -> POST /api/analyze (or local sample when offline) -> one result object -> renderResult.
    UI strings live in i18n.js (window.FAHAM_T); t() and data-i18n attributes read from it. */
 (function () {
@@ -66,6 +66,7 @@
     f_pdf: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 14h2a1.5 1.5 0 0 0 0-3H9v6"/>',
     f_docx: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5m-10 6 1 3 1.5-4L13 17l1-3"/>',
     f_text: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 15h7M9 18h4"/>',
+    f_file: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M12 11v5M12 18.5v.5"/>',
     f_eml: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
     f_image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m4 18 5-5 4 4 3-3 4 4"/>',
     f_file: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>',
@@ -264,7 +265,7 @@
       return result ? { data: result } : { error: t("e_net"), retry: true };
     } catch (e) { clearTimeout(to); return { error: t("e_net"), retry: true }; }
   }
-  /* ---------- what the agent did, in plain words (live progress and the "What FAHAM checked" list) ---------- */
+  /* ---------- what the agent did, in plain words (live progress and the "What Tulen checked" list) ---------- */
   const DID_ICON = { ok: "ok", warn: "info", bad: "risk", info: "info" };
   const list = (a) => (a.filter(Boolean).length > 3 ? a.filter(Boolean).slice(0, 3).concat("…") : a.filter(Boolean)).join(", ");
   // One finished step -> { k: "ok" | "warn" | "bad" | "info", x: sentence in the page language } or null if it is not worth a line.
@@ -430,7 +431,8 @@
   $("#pasteBox").addEventListener("paste", () => setTimeout(() => $("#checkBtn").scrollIntoView({ block: "nearest" }), 0));
   /* ---------- files: up to 10, one request each (POST /api/analyze-file, raw bytes) ---------- */
   const MAX_FILES = 10, MB = 1048576;
-  const EXT = { pdf: "pdf", docx: "docx", txt: "text", md: "text", eml: "eml", png: "image", jpg: "image", jpeg: "image", webp: "image", gif: "image" };
+  const EXT = { pdf: "pdf", docx: "docx", txt: "text", md: "text", eml: "eml", png: "image", jpg: "image", jpeg: "image", webp: "image", gif: "image",
+    ...Object.fromEntries("zip apk 7z rar exe scr msi bat cmd ps1 vbs vbe wsf hta js jse jar lnk iso img".split(" ").map((e) => [e, "file"])) };   // checked by name and listing only, never opened
   const MACRO = /^(doc|dot|docm|dotm|xlsm|xlsb|pptm|xlam)$/;          // old Word and macro files get their own message
   let queue = [], qid = 0;                                            // { id, file, ext, kind, st: wait|send|read|done|fail, pct, msg }
   const kb = (n) => (n < MB ? Math.max(1, Math.round(n / 1024)) + " KB" : (n / MB).toFixed(1) + " MB");
@@ -484,6 +486,7 @@
     x.open("POST", `${CFG.API_BASE}/api/analyze-file${plain ? "" : "/stream"}?${qs}`);
     x.timeout = 120000;
     x.setRequestHeader("X-Filename", encodeURIComponent(q.file.name));
+    if ($("#viaChat").checked) x.setRequestHeader("X-Via-Chat", "1");
     x.setRequestHeader("Content-Type", q.file.type || "application/octet-stream");
     let seen = 0, result = null, fail = 0;
     const pump = () => {
@@ -572,7 +575,7 @@
     const steps = (a) => `<ol class="steps">${a.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>`;
     const card = (h, body) => `<section class="card"><h2 class="h3">${esc(h)}</h2>${body}</section>`;
     const origin = /^https?:/.test(location.origin) ? location.origin : "https://your-faham-site.example";   // labelled placeholder when opened from a file
-    const code = `<iframe id="faham" src="${origin}/embed.html" title="FAHAM" width="100%" height="700" style="border:0"></iframe>\n<script>\naddEventListener("message", function (e) {\n  if (e.origin === "${origin}" && e.data && e.data.type === "faham:height") document.getElementById("faham").style.height = e.data.height + "px";\n});\n</script>`;
+    const code = `<iframe id="faham" src="${origin}/embed.html" title="Tulen" width="100%" height="700" style="border:0"></iframe>\n<script>\naddEventListener("message", function (e) {\n  if (e.origin === "${origin}" && e.data && e.data.type === "faham:height") document.getElementById("faham").style.height = e.data.height + "px";\n});\n</script>`;
     const say = [t("cn_lead")];
     const parts = [];
     if (ms.configured && safeUrl(ms.link)) {
@@ -694,7 +697,7 @@
   function summaryText(r) {
     const f = r.fields, v = r.verdict;
     const line = (k, x) => (x ? `${t(k)}: ${tr(x)}` : "");
-    return ["FAHAM", t("v_" + v), t("vs_" + v), "", line("f_from", f.issuer), line("f_amount", f.amount), line("f_deadline", f.deadline), line("f_ref", f.reference), "",
+    return ["Tulen", t("v_" + v), t("vs_" + v), "", line("f_from", f.issuer), line("f_amount", f.amount), line("f_deadline", f.deadline), line("f_ref", f.reference), "",
       t("h_verify") + ":", ...verifyOf(r).map((x, i) => `${i + 1}. ${clean(x)}`), "", ...paras(r).map(clean), "", t("disc")].filter((x, i, a) => x !== "" || a[i - 1] !== "").join("\n");
   }
 
@@ -767,7 +770,7 @@
     <pre class="draft" lang="ms">${esc(r.draft)}</pre>
     <button class="btn btn-primary" type="button" data-act="copy"><span>${esc(t("copy"))}</span></button>
 <p class="note"><b>${esc(t("draft_note_b"))}</b> ${esc(t("draft_note"))}</p>${(r.extra || []).map((x, i) => `<h3>${esc(x.title)}</h3><p class="muted">${esc(t("ag_chosen"))}</p><pre class="draft">${esc(x.text)}</pre><button class="btn btn-secondary" type="button" data-act="copyx" data-i="${i}"><span>${esc(t("copy"))}</span></button>`).join("")}${(r.files || []).map((x, i) => `<p><button class="btn btn-secondary" type="button" data-act="dl" data-i="${i}"><span>${esc(t("ag_dl"))}</span></button></p>`).join("")}`;
-  /* Semak Mule shortcut, "others checked", family alert and the paid button. Details are shown as text only; FAHAM never calls Semak Mule. */
+  /* Semak Mule shortcut, "others checked", family alert and the paid button. Details are shown as text only; Tulen never calls Semak Mule. */
   const waLink = (r) => "https://wa.me/?text=" + encodeURIComponent(t("hp_fam_msg", { t: t("hp_t_" + (r.scamType || "other")) }));
   function helpHtml(r) {
     const e = r.entities || {}, rows = [["hp_acc", e.accounts], ["hp_ph", e.phones], ["hp_co", e.companies]].filter(([, a]) => a && a.length);
@@ -1102,7 +1105,7 @@
     const v = EMBED || state.senior ? "check" : VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "check";
     VIEWS.forEach((n) => ($("#view-" + n).hidden = n !== v));
     $$(".top nav a").forEach((a) => (a.getAttribute("href") === "#" + v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
-    document.title = "FAHAM: " + t("ti_" + v);
+    document.title = "Tulen: " + t("ti_" + v);
     if (!first) stopSpeak();
     if (v === "dictionary") { renderGlossary(); renderLevel(); }
     if (v === "family") renderFamily();

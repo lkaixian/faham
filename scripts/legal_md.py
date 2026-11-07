@@ -27,6 +27,6 @@ def doc(title, parts, lead):
 
 terms, privacy, coc = en["parts"]
 summary = f"**{en['summary_h']}**\n\n" + "\n".join(f"- {x}" for x in en["summary"])
-(root / "CODE_OF_CONDUCT.md").write_text(doc("FAHAM Code of Conduct", [coc], ""), encoding="utf-8")
-(root / "docs/TERMS_AND_PRIVACY.md").write_text(doc("FAHAM Terms of Use and Privacy Notice", [terms, privacy], summary), encoding="utf-8")
+(root / "CODE_OF_CONDUCT.md").write_text(doc("Tulen Code of Conduct", [coc], ""), encoding="utf-8")
+(root / "docs/TERMS_AND_PRIVACY.md").write_text(doc("Tulen Terms of Use and Privacy Notice", [terms, privacy], summary), encoding="utf-8")
 print("written")

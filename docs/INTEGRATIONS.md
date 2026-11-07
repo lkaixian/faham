@@ -67,10 +67,10 @@ Supported files: PDF, Word (.docx), text, Markdown, email (.eml), images. ZIP an
 
 | Party | Sees |
 |---|---|
-| Meta (Messenger) | Every message, file and FAHAM's reply, under Meta's terms. |
+| Meta (Messenger) | Every message, file and Tulen's reply, under Meta's terms. |
 | Mail providers | The forwarded email and the reply |
 | ILMU | Masked explanation text only (LLM explanation and read-aloud) |
-| FAHAM server | Content in memory during processing only; salted hashes of sender ids in memory |
+| Tulen server | Content in memory during processing only; salted hashes of sender ids in memory |
 
 ## PDPA 2010 notes (not legal advice, verify with counsel)
 
@@ -94,7 +94,7 @@ Not tested: anything live. No real Meta app, Page, webhook delivery, media downl
 
 ```
 sender -> faham@yourdomain (Cloudflare Email Routing) -> Mailtrap Inbound inbox
-        FAHAM polls the inbox over Mailtrap's API -> analyses -> replies over Mailtrap SMTP
+        Tulen polls the inbox over Mailtrap's API -> analyses -> replies over Mailtrap SMTP
 ```
 
 | Setting | Value |
@@ -107,7 +107,7 @@ sender -> faham@yourdomain (Cloudflare Email Routing) -> Mailtrap Inbound inbox
 
 How it behaves:
 - The worker lists the newest messages (`GET /api/inbound/inboxes/{id}/messages`), downloads the raw `.eml` from the signed link Mailtrap returns (https only, no redirects, 25 MB cap), analyses it and replies to the sender.
-- A message FAHAM answered is **deleted** from Mailtrap straight away, so letters are not kept there. Anything it did not answer (Cloudflare's address-verification mail, bounces, forged or automated senders) stays so you can read it in the Mailtrap inbox.
+- A message Tulen answered is **deleted** from Mailtrap straight away, so letters are not kept there. Anything it did not answer (Cloudflare's address-verification mail, bounces, forged or automated senders) stays so you can read it in the Mailtrap inbox.
 - After a restart, mail older than two hours is left alone so nobody is answered twice.
 - Delivery from Cloudflare Email Routing to a `...@inbound-mailtrap.io` address is not described in Mailtrap's docs and has **not been tested here**. If Cloudflare refuses it, enable "Inbound domain receiving" on a subdomain such as `inbox.yourdomain` instead (Mailtrap gives the MX record; keep Email Routing on the root domain, since two MX sets on one name conflict).
 - Not tested against live Mailtrap yet: the API shapes come from its documentation (list, get message with `raw_message_url`, delete).
@@ -119,7 +119,7 @@ If your Mailtrap plan only sends, receive with Cloudflare Email Routing and a Wo
 
 ```
 sender -> faham@yourdomain -> Cloudflare Email Routing -> Email Worker -> POST /api/channels/email?reply=1
-        FAHAM analyses it and replies from SMTP_FROM through Mailtrap SMTP
+        Tulen analyses it and replies from SMTP_FROM through Mailtrap SMTP
 ```
 
 1. Set `EMAIL_WEBHOOK_SECRET` in `.env` (a long random string) and the `SMTP_*` settings. Rebuild: `docker compose up -d`.

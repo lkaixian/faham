@@ -34,12 +34,12 @@ Response (abridged):
   "trace": [{ "stage": "read", "kind": "tool", "tool": "ocr.read", "message": "93 words read", "flag": false }],
   "entities": { "accounts": ["8001234567"], "phones": ["012-3456789"], "companies": [] },
   "others_checked": 3,
-  "disclaimer": "FAHAM gives guidance, not legal advice. ..."
+  "disclaimer": "Tulen gives guidance, not legal advice. ..."
 }
 ```
 `scam.scam_type` is `macau | family_impersonation | parcel | job | love | investment | phishing_refund | apk_install | other`, or `null` when the verdict is `no_signals`. Lesson, route and draft follow it, in the requested language.
 
-`entities` (only when the verdict is not `no_signals`) are bank accounts, phone numbers and company names taken from this request's own text, so the user can type them into the official Semak Mule portal. FAHAM does not call Semak Mule and stores nothing. IC numbers are never returned. `others_checked` is how many people checked a similar message (a one-way fingerprint counter, 90-day retention; `0` for bundled samples).
+`entities` (only when the verdict is not `no_signals`) are bank accounts, phone numbers and company names taken from this request's own text, so the user can type them into the official Semak Mule portal. Tulen does not call Semak Mule and stores nothing. IC numbers are never returned. `others_checked` is how many people checked a similar message (a one-way fingerprint counter, 90-day retention; `0` for bundled samples).
 
 `route.retrieved_at` is the date of the saved registry copy and ends with `(cached)`: it is not a live lookup. Office lines are labelled `sample data`.
 

@@ -1,4 +1,4 @@
-"""FAHAM API — FastAPI entrypoint.
+"""Tulen API — FastAPI entrypoint.
 
 Run:  uvicorn app.main:app --reload --port 8000
 Docs: http://localhost:8000/docs
@@ -45,7 +45,7 @@ async def lifespan(_app):
 
 app = FastAPI(
     lifespan=lifespan,
-    title="FAHAM Agent API",
+    title="Tulen Agent API",
     version="0.1.0",
     description="Agentic AI that reads official Malaysian letters, checks for scams, explains, teaches and prepares the next step.",
 )
@@ -53,7 +53,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=config.ALLOWED_ORIGINS + (["null"] if config.ALLOW_NULL_ORIGIN else []),
     allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type", "X-Filename"],
+    allow_headers=["Content-Type", "X-Filename", "X-Via-Chat"],
 )
 app.include_router(channels.router)
 
@@ -118,7 +118,7 @@ def analyze(req: AnalyzeRequest):
     except orchestrator.OCRUnavailable as e:
         raise HTTPException(422, str(e))
     except limiter.Busy:
-        raise HTTPException(503, "FAHAM is busy. Please try again in a moment.", headers={"Retry-After": "5"})
+        raise HTTPException(503, "Tulen is busy. Please try again in a moment.", headers={"Retry-After": "5"})
 
 
 def _sse(event: str, data) -> str:
@@ -142,7 +142,7 @@ def analyze_stream(req: AnalyzeRequest):
                 if not got:
                     yield _sse("queue", {"position": lim.position(ticket), "waiting": lim.waiting()})
                     if time.monotonic() - t0 > config.QUEUE_PATIENCE:
-                        yield _sse("error", {"status": 503, "detail": "FAHAM is busy. Please try again in a moment."})
+                        yield _sse("error", {"status": 503, "detail": "Tulen is busy. Please try again in a moment."})
                         return
                 first = False
             try:
@@ -191,7 +191,8 @@ async def _file_body(request: Request) -> bytearray:
 
 def _file_run(request: Request, buf: bytearray, language: str, postcode: str | None, sink=None):
     docs = ingest.extract(unquote(request.headers.get("x-filename", "")) or None,
-                          request.headers.get("content-type"), bytes(buf))
+                          request.headers.get("content-type"), bytes(buf),
+                          via_chat=request.headers.get("x-via-chat") == "1")
     return ingest.analyze_files(docs, language, postcode, sink)
 
 

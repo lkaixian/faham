@@ -59,7 +59,7 @@ A fixed six-stage pipeline, not a planner. `orchestrator.run()` calls tools in a
 
 ## Scope check against the project plan
 
-Source: the Claude Doc "FAHAM – Agentic AI Challenge 2026 Plan" (read 2026-11-06, rev 7). The repo's `README.md` and `PITCH_PLAN.md` were written from it. Track chosen: Agentic AI (19 Nov); Creative Technology & Innovation (18 Nov) is the alternative. Theme: Edutainment & Innovation.
+Source: the Claude Doc "Tulen – Agentic AI Challenge 2026 Plan" (read 2026-11-06, rev 7). The repo's `README.md` and `PITCH_PLAN.md` were written from it. Track chosen: Agentic AI (19 Nov); Creative Technology & Innovation (18 Nov) is the alternative. Theme: Edutainment & Innovation.
 
 | Plan item | In the repo | Gap |
 |---|---|---|

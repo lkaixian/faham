@@ -1,9 +1,9 @@
-# FAHAM: Agentic AI letter companion
+# Tulen: Agentic AI scam and authenticity checker for Malaysian official letters
 
-> **Faham surat. Faham langkah. Faham hak anda.**
-> Every scary letter becomes a 60-second lesson, so people need help less each time.
+> **Tulen atau tipu? Semak dulu.** (Genuine or fake? Check first.)
+> Is this letter or message real? An agent that investigates it, shows its evidence, and teaches the tell-tale signs, so people spot the next scam on their own.
 
-FAHAM is an entry for the **Agentic AI Challenge** at **Festival Idea Putrajaya 2026** (19 Nov 2026, theme: *Edutainment & Innovation*). It helps people who struggle with official letters and messages from LHDN, JPJ, PDRM, PTPTN, courts, councils and banks, and it protects them from scams that copy those agencies.
+Tulen is an entry for the **Agentic AI Challenge** at **Festival Idea Putrajaya 2026** (19 Nov 2026, theme: *Edutainment & Innovation*). It checks whether a letter or message that claims to come from LHDN, JPJ, PDRM, PTPTN, courts, councils or banks is real, protects people from scams that copy those agencies, and then explains what to do next.
 
 Paste a message, upload a file, or pick a practice example. For each one the agent:
 
@@ -16,7 +16,7 @@ Paste a message, upload a file, or pick a practice example. For each one the age
 
 Also included: **Easy mode** (a switch in the header, on the first page and in the welcome dialog: bigger text, one thing per screen, three short steps, no menus), **Spot the scam** practice, **Family** mode, and **Connect** (website embed, Messenger and email forwarding).
 
-Safety tools: **I already paid** (works offline, 4 languages), **Someone just called me** (4 questions), a **Semak Mule** shortcut (shows the account, phone and company found in the message and opens the police portal in a new tab; FAHAM never calls it), a privacy-safe **"others checked"** count, **voice input**, and a **WhatsApp warning** for family. The app is installable (PWA) and live results stream in, rules verdict first.
+Safety tools: **I already paid** (works offline, 4 languages), **Someone just called me** (4 questions), a **Semak Mule** shortcut (shows the account, phone and company found in the message and opens the police portal in a new tab; Tulen never calls it), a privacy-safe **"others checked"** count, **voice input**, and a **WhatsApp warning** for family. The app is installable (PWA) and live results stream in, rules verdict first.
 
 ## What the verdict means
 
@@ -24,13 +24,13 @@ Safety tools: **I already paid** (works offline, 4 languages), **Someone just ca
 |---|---|
 | `likely_scam` | Strong scam signs found. Do not pay, click or reply |
 | `caution` | Mixed or unknown issuer. Verify before acting |
-| `no_signals` | Known issuer and no red flags. **Still verify yourself**: FAHAM cannot see who really sent it |
+| `no_signals` | Known issuer and no red flags. **Still verify yourself**: Tulen cannot see who really sent it |
 
 Every result lists its reasons (risk, good sign, note), and the message sits beside the result with the matching parts highlighted (the original PDF or image has its own tab) and **steps to verify on your own**, independent of the letter. Social media and form links are shown as notes. If an agency has official accounts in the registry (`social` in `official_sources.json`), a different account claiming to be that agency is a red flag.
 
 ## How the agent works (short version)
 
-FAHAM gives a language model a goal and a set of tools and lets it work in rounds of **think, act, observe** until it can justify a conclusion. Plain code around it hides personal details first, limits what the model can do, checks every claim it makes, and re-runs the scam rules last as a safety floor.
+Tulen gives a language model a goal and a set of tools and lets it work in rounds of **think, act, observe** until it can justify a conclusion. Plain code around it hides personal details first, limits what the model can do, checks every claim it makes, and re-runs the scam rules last as a safety floor.
 
 | | |
 |---|---|
@@ -183,7 +183,7 @@ The address changes every time the container restarts. Stop it with `docker comp
 
 ## Important
 - All sample letters, names, IC numbers and accounts here are **fictional** (marked SAMPEL · FIKTIF). Never commit real people's letters.
-- FAHAM gives **guidance, not legal advice**. Steps come from a cached official-source registry; every source is shown with its last-checked date and flagged as sample data, and office data is demo data.
+- Tulen gives **guidance, not legal advice**. Steps come from a cached official-source registry; every source is shown with its last-checked date and flagged as sample data, and office data is demo data.
 - Not yet tested live: Messenger and email forwarding against real Meta and mail servers, and OCR on scanned documents.
 - Chinese and Tamil text needs native-speaker review, and the Terms and Code of Conduct need a legal read, before the demo.
 - Known gaps and next steps are tracked in [docs/NOTES.md](docs/NOTES.md).

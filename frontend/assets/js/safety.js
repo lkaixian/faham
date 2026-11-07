@@ -1,4 +1,4 @@
-/* FAHAM safety tools that must work with no server and no internet:
+/* Tulen safety tools that must work with no server and no internet:
    1. "I already paid" emergency card, 2. "Someone just called me" guided mode, 3. voice input.
    All text comes from i18n.js (bm, en, zh, ta). Nothing here sends data anywhere. */
 (function () {

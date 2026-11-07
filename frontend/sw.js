@@ -1,4 +1,4 @@
-/* FAHAM service worker. Purpose: the pages and the offline safety tools (I already paid, Someone just called)
+/* Tulen service worker. Purpose: the pages and the offline safety tools (I already paid, Someone just called)
    must open with no signal. Rules:
    - Only same-origin GET requests for the app shell are cached.
    - /api/ and any cross-origin request (the backend, the LLM, fonts) are never touched, so no letter text,

@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAHAM</title>
-  <meta name="description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
+  <title>Tulen</title>
+  <meta name="description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. Tulen cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
   <meta name="theme-color" content="#5a3b8c" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="FAHAM" />
-  <meta property="og:title" content="FAHAM: semak surat dan mesej, kesan penipuan" />
-  <meta property="og:description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
+  <meta property="og:site_name" content="Tulen" />
+  <meta property="og:title" content="Tulen: semak surat dan mesej, kesan penipuan" />
+  <meta property="og:description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. Tulen cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
   <meta property="og:image" content="https://lkaixian.github.io/faham/assets/img/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Logo FAHAM: faham surat, faham langkah" />
+  <meta property="og:image:alt" content="Logo Tulen: tulen atau tipu, semak dulu" />
   <meta property="og:url" content="https://lkaixian.github.io/faham/" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="FAHAM: semak surat dan mesej, kesan penipuan" />
-  <meta name="twitter:description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. FAHAM cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
+  <meta name="twitter:title" content="Tulen: semak surat dan mesej, kesan penipuan" />
+  <meta name="twitter:description" content="Tampal surat, SMS atau WhatsApp yang merisaukan. Tulen cari tanda penipuan dan tunjuk apa yang perlu dibuat, dalam BM, English, 中文 atau தமிழ்." />
   <meta name="twitter:image" content="https://lkaixian.github.io/faham/assets/img/og-image.png" />
   <link rel="icon" href="assets/img/favicon-32.png" type="image/png" sizes="32x32" />
   <link rel="icon" href="assets/img/favicon-48.png" type="image/png" sizes="48x48" />
@@ -27,14 +27,14 @@
   <link rel="stylesheet" href="assets/css/styles.css?v=6f4edc18" />
 </head>
 <body>
-  <div id="intro" role="dialog" aria-modal="true" aria-label="FAHAM">
+  <div id="intro" role="dialog" aria-modal="true" aria-label="Tulen">
     <canvas id="neural" aria-hidden="true"></canvas>
     <div class="intro-inner">
-      <img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="FAHAM logo" width="76" height="98" />
-      <img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="FAHAM logo" width="76" height="98" />
+      <img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="Tulen logo" width="76" height="98" />
+      <img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="Tulen logo" width="76" height="98" />
       <div class="intro-kicker">Agentic AI · Festival Idea Putrajaya 2026</div>
       <h1 class="intro-title" aria-live="polite"><span id="typed"></span><span class="caret" aria-hidden="true"></span></h1>
-      <p class="intro-sub" id="introSub"><b>Faham surat. Faham langkah. Faham hak anda.</b><br /><span lang="en">Understand any official letter, spot scams, and know what to do next.</span></p>
+      <p class="intro-sub" id="introSub"><b>Tulen atau tipu? Semak dulu.</b><br /><span lang="en">Is this letter or message genuine? Check it, see the evidence, and know what to do next.</span></p>
       <div class="intro-boot" id="boot" aria-hidden="true"></div>
       <div class="intro-actions" id="introActions">
         <button class="btn btn-primary btn-big" id="enterBtn" type="button"><span lang="ms">Masuk</span> / <span lang="en">Enter</span></button>
@@ -46,7 +46,7 @@
 
   <header class="top">
     <div class="wrap bar">
-      <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="FAHAM logo" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="FAHAM logo" width="31" height="40" /><span aria-hidden="true">FAHAM</span></a>
+      <a class="brand" href="#check"><img class="logo logo-l" src="assets/img/logo-mark-light.png" alt="Tulen logo" width="31" height="40" /><img class="logo logo-d" src="assets/img/logo-mark-dark.png" alt="Tulen logo" width="31" height="40" /><span aria-hidden="true">Tulen</span></a>
       <div class="ctrls">
         <div class="chips uilang" id="uiChips" role="group" data-i18n-aria="ui_lang"></div>
         <div class="tools">
@@ -111,6 +111,8 @@
             </div>
             <p class="muted dropnote" data-i18n="u_drop"></p>
             <p class="muted" id="upTypes"></p>
+            <p class="muted" data-i18n="u_file_note"></p>
+            <label class="tick"><input type="checkbox" id="viaChat" /><span data-i18n="u_chat"></span></label>
             <input type="file" id="fileBox" multiple hidden />
             <input type="file" id="photoBox" accept="image/*" capture="environment" hidden />
           </div>
@@ -320,10 +322,10 @@
   <div id="paid" role="dialog" aria-modal="true" aria-labelledby="pdH" hidden></div>
   <div id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/js/config.js?v=0d0784f3"></script>
-  <script src="assets/js/data.js?v=a4702ead"></script>
-  <script src="assets/js/i18n.js?v=c3acfd44"></script>
-  <script src="assets/js/app.js?v=407459fa"></script>
-  <script src="assets/js/intro.js?v=0d20ed6c"></script>
+  <script src="assets/js/config.js?v=6788caad"></script>
+  <script src="assets/js/data.js?v=1b388b8b"></script>
+  <script src="assets/js/i18n.js?v=7ab87ffe"></script>
+  <script src="assets/js/app.js?v=ad498826"></script>
+  <script src="assets/js/intro.js?v=a92e6fae"></script>
 </body>
 </html>
